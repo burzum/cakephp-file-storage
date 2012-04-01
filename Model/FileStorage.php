@@ -68,18 +68,29 @@ class FileStorage extends AppModel {
 
 /**
  * StorageAdapter
+ *
+ * @param mixed $adapterName string or array
+ * @param boolean $renewObject
  */
-	public function storageAdapter($adapter) {
-		if (is_string($adapter)) {
-			if (!empty($this->adapters[$adapter])) {
-				$adapter = $this->adapters[$adapter];
+	public function storageAdapter($adapterName, $renewObject = false) {
+		if (is_string($adapterName)) {
+			if (!empty($this->adapters[$adapterName])) {
+				$adapter = $this->adapters[$adapterName];
 			} else {
-				throw new RuntimeException(__('Invalid Adapter'));
+				throw new RuntimeException(__('Invalid Adapter %s', $adapterName));
+			}
+
+			if (!empty($this->adapters[$adapterName]['object']) && $renewObject === false) {
+				return $this->adapters[$adapterName]['object'];
 			}
 		}
 
-		$adapterObject = call_user_func_array(array($adapter['adapterClass'], '__construct'), $adapter['adapterOptions']);
-		return new $adapter['class']($adapterObject);
+		$class = $adapter['adapterClass'];
+		$rc = new ReflectionClass($class);
+		$adapterObject = $rc->newInstanceArgs($adapter['adapterOptions']);
+		$engineObject = new $adapter['class']($adapterObject);
+		$this->adapters[$adapterName]['object'] = $engineObject;
+		return $this->adapters[$adapterName]['object'];
 	}
 
 }

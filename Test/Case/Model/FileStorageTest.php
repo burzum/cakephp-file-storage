@@ -29,11 +29,12 @@ class FileStorageTest extends CakeTestCase {
 	public function testStorageAdapter() {
 		$this->FileStorage->adapters = array(
 			'Local' => array(
-				'adapterOptions' => array(),
+				'adapterOptions' => array(TMP, true),
 				'adapterClass' => '\Gaufrette\Adapter\Local',
 				'class' => '\Gaufrette\Filesystem'));
 
 		$adapter = $this->FileStorage->storageAdapter('Local');
+		$this->assertTrue(is_a($adapter, '\Gaufrette\Filesystem'));
 	}
 
 }
