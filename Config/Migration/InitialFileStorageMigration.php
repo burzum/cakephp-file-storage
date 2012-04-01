@@ -1,4 +1,11 @@
 <?php
+/**
+ * FileStorage
+ *
+ * @author Florian Krämer
+ * @copyright 2012 Florian Krämer
+ * @license MIT
+ */
 class InitialFileStorageMigration extends CakeMigration {
 
 /**
@@ -40,7 +47,6 @@ class InitialFileStorageMigration extends CakeMigration {
 					'indexes' => array(
 						'PRIMARY' => array('column' => 'id', 'unique' => 1)
 					),
-					'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB'),
 				),
 			),
 		),
