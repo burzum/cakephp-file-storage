@@ -16,11 +16,17 @@ This plugin depends on the Gaufrette library (https://github.com/KnpLabs/Gaufret
 
 If you want to use S3 upload Gaufrette has also submodules to initialize. Here is the whole story to get everything initialized:
 
+	cd YOUR-APP-FOLDER
+	git submodule add git://github.com/burzum/FileStorage.git Plugin/FileStorage
+	git submodule update --init
+	cd Plugin/FileStorage/Vendor/Gaufrette
+	git submodule update --init
+
+If you do not want to add it as submodule just clone it instead of doing submodule add
+
 	git clone git://github.com/burzum/FileStorage.git
-	cd FileStorage
-	git submodule update --init
-	cd Vendor/Gaufrette
-	git submodule update --init
+
+and follow the rest of the steps
 
 ## Usage
 
