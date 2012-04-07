@@ -6,7 +6,7 @@ So please do not ask yet or create issue tickets.
 
 ## Installation
 
-To be able to simple autoload Gaufrette load the plugin with bootstrap enabled. The bootstrap file will register the SPL classloader.
+To be able to simply autoload Gaufrette load the plugin with bootstrap enabled. The bootstrap file will register the SPL classloader.
 
 	CakePlugin::load('FileStorage', array('bootstrap' => true));
 
@@ -32,7 +32,7 @@ You can configure as many file storage adapters as you want with different setti
 			'adapterClass' => '\Gaufrette\Adapter\Local',
 			'class' => '\Gaufrette\Filesystem')));
 
-To invoke a new instace using a configuration call:
+To invoke a new instance using a configuration call:
 
 	$FileStorage->storageAdapter('Local');
 
@@ -68,7 +68,7 @@ All you need to do is basically use the image model and configure versions on a 
 	);
 	ClassRegistry::init('FileStorage.Image')->generateHashes();
 
-Calling generateHashes is important, it will create the hash values for each versioned image.
+Calling generateHashes is important, it will create the hash values for each versioned image and store them in Media.imageHashes in the configuration.
 
 If you do not want to have the script generated the hashes each time its execute it is up to you to store it persistant. This plugin just provides you the tools.
 
