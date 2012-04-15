@@ -124,7 +124,7 @@ class Image extends FileStorage {
  * @return boolean True on success
  */
 	protected function afterDeleteLocalAdapter() {
-		$path = $this->fsBase() . $this->record[$this->alias]['path'];
+		$path = Configure::read('Media.basePath') . $this->record[$this->alias]['path'];
 		if (is_dir($path)) {
 			App::uses('Folder', 'Utility');
 			$Folder = new Folder($path);

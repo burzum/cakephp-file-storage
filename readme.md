@@ -4,6 +4,12 @@ This is work in progress, the code might and very likely will change for some mo
 
 So please do not ask yet or create issue tickets.
 
+## Requirements
+
+ * CakePHP 2.x
+ * PHP 5.3+
+ * CakeDC Imagine Image processing plugin https://github.com/cakedc/imagine if you want to process and storage images
+
 ## Installation
 
 To be able to simply autoload Gaufrette load the plugin with bootstrap enabled. The bootstrap file will register the SPL classloader.
@@ -78,8 +84,15 @@ Calling generateHashes is important, it will create the hash values for each ver
 
 If you do not want to have the script generated the hashes each time its execute it is up to you to store it persistant. This plugin just provides you the tools.
 
-## Requirements
+## Support
 
- * CakePHP 2.x
- * PHP 5.3+
- * CakeDC Imagine Image processing plugin https://github.com/cakedc/imagine if you want to process and storage images
+For support and feature request, please visit the FileStorage issue page
+
+https://github.com/burzum/FileStorage/issues
+
+## License
+
+Copyright 2012, Florian Krömer
+
+Licensed under The MIT License
+Redistributions of files must retain the above copyright notice.

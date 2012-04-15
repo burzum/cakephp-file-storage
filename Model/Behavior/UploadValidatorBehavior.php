@@ -1,0 +1,234 @@
+<?php
+/**
+ * Upload Validation Behavior
+ *
+ * Validates file uploads
+ *
+ * PHP 5
+ *
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
+ * @package       Cake.Model.Behavior
+ * @since         CakePHP(tm) v 2.2.0
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
+App::uses('File', 'Utility');
+/**
+ * This behavior will validate uploaded files, nothing more, it won't take care of storage.
+ *
+ * @package       Cake.Model.Behavior
+ */
+class UploadValidatorBehavior extends ModelBehavior {
+/**
+ * Settings array
+ *
+ * @var array
+ */
+	public $settings = array();
+
+/**
+ * Default settings array
+ *
+ * @var array
+ */
+	protected $_defaults = array(
+		'fileField' => 'file',
+		'validate' => true,
+		'allowedMime' => null,
+		'allowedExtensions' => null,
+		'localFile' => false
+	);
+
+/**
+ * Error message
+ *
+ * If something fails this is populated with an errormsg that can be passed to the view
+ *
+ * @var string
+ */
+	public $uploadError = null;
+
+/**
+ * Behavior setup
+ *
+ * Merge settings with default config, then it is checking if the target directory
+ * exists and if it is writeable. It will throw an error if one of both fails.
+ *
+ * @param AppModel $Model
+ * @param array $settings
+ */
+	public function setup(Model $Model, $settings = array()) {
+		if (!is_array($settings)) {
+			throw new InvalidArgumentException(__d('cake_dev', 'Settings must be passed as array!'));
+		}
+
+		$this->settings = array_merge($this->_defaults, $settings);
+	}
+
+/**
+ * Before validation callback
+ *
+ * Check if the file is really an uploaded file and run custom checks for file 
+ * extensions and / or mime type if configured to do so.
+ *
+ * @param AppModel $Model
+ * @return boolean True on success
+ */
+	public function beforeValidate(Model $Model) {
+		extract($this->settings);
+		if ($validate === true && isset($Model->data[$Model->alias][$fileField]) && is_array($Model->data[$Model->alias][$fileField])) {
+
+			if ($Model->validateUploadError($Model->data[$Model->alias][$fileField]['error']) === false) {
+				$Model->validationErrors[$fileField] = $this->uploadError;
+				return false;
+			}
+
+			if (!empty($Model->data[$Model->alias][$fileField])) {
+				if (empty($localFile) && !is_uploaded_file($Model->data[$Model->alias][$fileField]['tmp_name'])) {
+					$this->uploadError = __d('cake_dev', 'The uploaded file is no valid upload.');
+					$Model->invalidate($fileField, $this->uploadError);
+					return false;
+				}
+			}
+
+			if (is_array($allowedMime)) {
+				if (!$this->validateAllowedMimeTypes($Model, $allowedMime)) {
+					return false;
+				}
+			}
+
+		}
+		return true;
+	}
+
+/**
+ * Validates the extension
+ *
+ * @param Model $Model
+ * @return boolean True if the extension is allowed
+ */
+	public function validateUploadExtension(Model $Model) {
+		extract($this->settings);
+		$extension = $this->fileExtension($Model, $Model->data[$Model->alias][$fileField]['name']);
+
+		if (!in_array($extension, $allowedExtensions)) {
+			$this->uploadError = __d('cake_dev', 'You are not allowed to upload files of this type.');
+			$Model->invalidate($fileField, $this->uploadError);
+			return false;
+		}
+		return true;
+	}
+
+/**
+ * Validates if the mime type of an uploaded file is allowed
+ *
+ * @param array Array of allowed mime types
+ * @return boolean
+ */
+	public function validateAllowedMimeTypes(Model $Model, $mimeTypes = array()) {
+		extract($this->settings);
+		if (!empty($mimeTypes)) {
+			$allowedMime = $mimeTypes;
+		}
+		$File = new File($Model->data[$Model->alias][$fileField]['tmp_name']);
+		$mimeType = $File->mime();
+		if (!in_array($mimeType, $allowedMime)) {
+			$this->uploadError = __d('cake_dev', 'You are not allowed to upload files of this type.');
+			$Model->invalidate($fileField, $this->uploadError);
+			return false;
+		}
+		return true;
+	}
+
+/**
+ * Valdates the error value that comes with the file input file
+ *
+ * @param object Model instance
+ * @param integer Error value from the form input [file_field][error]
+ * @return boolean True on success, if false the error message is set to the models field and also set in $this->uploadError
+ */
+	public function validateUploadError(Model $Model, $error = null) {
+		if (!is_null($error)) {
+			switch ($error) {
+				case UPLOAD_ERR_OK:
+					return true;
+				break;
+				case UPLOAD_ERR_INI_SIZE:
+					$this->uploadError = __d('cake_dev', 'The uploaded file exceeds limit of ('.ini_get('upload_max_filesize').').');
+				break;
+				case UPLOAD_ERR_FORM_SIZE:
+					$this->uploadError = __d('cake_dev', 'The uploaded file is to big, please choose a smaller file or try to compress it.');
+				break;
+				case UPLOAD_ERR_PARTIAL:
+					$this->uploadError = __d('cake_dev', 'The uploaded file was only partially uploaded.');
+				break;
+				case UPLOAD_ERR_NO_FILE:
+					$this->uploadError = __d('cake_dev', 'No file was uploaded.');
+				break;
+				case UPLOAD_ERR_NO_TMP_DIR:
+					$this->uploadError = __d('cake_dev', 'The remote server has no temporary folder for file uploads. Please contact the site admin.');
+				break;
+				case UPLOAD_ERR_CANT_WRITE:
+					$this->uploadError = __d('cake_dev', 'Failed to write file to disk. Please contact the site admin.');
+				break;
+				case UPLOAD_ERR_EXTENSION:
+					$this->uploadError = __d('cake_dev', 'File upload stopped by extension. Please contact the site admin.');
+				break;
+				default:
+					$this->uploadError = __d('cake_dev', 'Unknown File Error. Please contact the site admin.');
+				break;
+			}
+			return false;
+		}
+		return true;
+	}
+
+/**
+ * Returns the latest error message
+ *
+ * @param AppModel $Model
+ * @return string
+ * @access public
+ */
+	public function uploadError(Model $Model) {
+		return $this->uploadError;
+	}
+
+/**
+ * Returns an array that matches the structure of a regular upload for a local file
+ *
+ * @param string File with path
+ * @return array Array that matches the structure of a regular upload
+ */
+	public function uploadArray(Model $Model, $file, $filename = null) {
+		$File = new File($file);
+
+		if (empty($fileName)) {
+			$filename = basename($file);
+		}
+
+		return array(
+			'name' => $filename,
+			'tmp_name' => $file,
+			'error' => 0,
+			'type' => $File->mime(),
+			'size' => $File->size());
+	}
+
+/**
+ * Return file extension from a given filename
+ *
+ * @param string
+ * @return boolean string or false
+ */
+	public function fileExtension(Model $Model, $name) {
+		return pathinfo($name, PATHINFO_EXTENSION);
+	}
+
+}

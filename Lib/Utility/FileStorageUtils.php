@@ -1,0 +1,77 @@
+<?php
+/**
+ * Utility methods for which I could not find a better place
+ *
+ * 
+ */
+class FileStorageUtils {
+
+/**
+ * Return file extension from a given filename
+ *
+ * @param string
+ * @return boolean string or false
+ */
+	public static function fileExtension($name) {
+		$list = explode('.', $name);
+		if (count($list) > 1) {
+			$ext = $list[count($list)-1];
+			return $ext;
+		}
+		return false;
+	}
+
+/**
+ * Builds a semi-random path based on a given string to avoid having thousands of files
+ * or directories in one directory. This would result in a slowdown on most file systems.
+ *
+ * Works up to 5 level deep
+ *
+ * @param mixed $string
+ * @param integer $level 1 to 5
+ * @return mixed
+ */
+	public static function randomPath($string, $level = 3) {
+		if (!$string) {
+			throw new \InvalidArgumentException('First argument is not a string!');
+		}
+		$string = crc32($string);
+
+		$decrement = 0;
+		$path = null;
+		for ($i = 0; $i < $level; $i++) {
+			$decrement = $decrement -2;
+			$path .=  sprintf("%02d" . DS, substr(str_pad('', 2 * $level, '0') . $string, $decrement, 2));
+		}
+		return $path;
+	}
+
+/**
+ * Helper method to trim last trailing slash in file path
+ *
+ * @param string $path Path to trim
+ * @return string Trimmed path
+ */
+	public static function trimPath($path) {
+		$len = strlen($path);
+		if ($path[$len - 1] == '\\' || $path[$len - 1] == '/') {
+			$path = substr($path, 0, $len - 1);
+		}
+		return $path;
+	}
+
+/**
+ * Converts windows to linux pathes and vice versa
+ *
+ * @param string
+ * @return string
+ */
+	public static function sanitizePath($string) {
+		if (DS == '\\') {
+			return str_replace('\\', '', $string);
+		} else {
+			return str_replace('/', '\\', $string);
+		}
+	}
+
+}

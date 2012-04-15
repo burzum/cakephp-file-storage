@@ -210,4 +210,21 @@ class FileStorage extends FileStorageAppModel {
 		return str_replace('-', '', $uuid);
 	}
 
+	public function fsPath($type, $string, $idFolder = true) {
+		$string = str_replace('-', '', $string);
+		$path = $type . DS . FileStorageUtils::randomPath($string);
+		if ($idFolder) {
+			$path .= $string . DS;
+		}
+		return $path;
+	}
+
+	public function fileExtension($name = '') {
+		$list = explode('.', $name);
+		if (count($list) > 1) {
+			$ext = $list[count($list)-1];
+			return $ext;
+		}
+		return false;
+	}
 }
