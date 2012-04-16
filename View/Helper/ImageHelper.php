@@ -30,7 +30,7 @@ class ImageHelper extends AppHelper {
 
 		$hash = Configure::read('Media.imageHashes.' . $image['model'] . '.' . $version);
 		if (empty($hash)) {
-			throw new InvalidArgumentException(__('No valid version key passed!'));
+			throw new InvalidArgumentException(__d('FileStorage', 'No valid version key passed!'));
 		}
 
 		$method = '_' . Inflector::camelize($image['adapter']) . 'Adapter';

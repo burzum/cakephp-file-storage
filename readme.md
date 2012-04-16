@@ -44,11 +44,26 @@ You can configure as many file storage adapters as you want with different setti
 			'adapterClass' => '\Gaufrette\Adapter\Local',
 			'class' => '\Gaufrette\Filesystem')));
 
+The FileStorage model which is using the StorageManager class will auto load them into the StorageManager configuration.
+
+### StorageManager
+
+	StorageManager::config('Local',	array(
+		'adapterOptions' => array(TMP, true),
+		'adapterClass' => '\Gaufrette\Adapter\Local',
+		'class' => '\Gaufrette\Filesystem')));
+
 To invoke a new instance using a configuration call:
 
-	$FileStorage->storageAdapter('Local');
+	StorageManager::adapter('Local');
 
-Alternativly you can pass a config array as first argument.
+Alternativly you can pass a config array as first argument to get an instance using these settings that is not in the configuration.
+
+To delete configs and by this the instance from the StorageManager call
+
+	StorageManager::flush('Local');
+
+If you want to flush *all* adapter configs and instances simply call it without the first argument.
 
 ### Image Versioning
 
@@ -83,6 +98,16 @@ All you need to do is basically use the image model and configure versions on a 
 Calling generateHashes is important, it will create the hash values for each versioned image and store them in Media.imageHashes in the configuration.
 
 If you do not want to have the script generated the hashes each time its execute it is up to you to store it persistant. This plugin just provides you the tools.
+
+Image files will end up wherever you have configured your base path 
+
+	/ModelName/51/21/63/4c0f128f91fc48749662761d407888cc/4c0f128f91fc48749662761d407888cc.jpg
+
+The versioned image files will be in the same folder, which is the id of the record, as the original image and have the truncated hash of the version attached but before the extension.
+
+	/ModelName/51/21/63/4c0f128f91fc48749662761d407888cc/4c0f128f91fc48749662761d407888cc.f91fsc.jpg
+
+You should smylink your image root folder to APP/webroot/images for example to avoid that images go through php and are send directly instead.
 
 ## Support
 
