@@ -2,9 +2,28 @@
 /**
  * Utility methods for which I could not find a better place
  *
- * 
+ * @author Florian Krämer
+ * @copyright 2012 Florian Krämer
+ * @license MIT
  */
 class FileStorageUtils {
+/**
+ * Gaufrette Vendor Classloader
+ *
+ * @param string $class Classname to be loaded
+ * @return void
+ */
+	public static function gaufretteLoader($class) {
+		$base = Configure::read('FileStorage.GaufretteLib');
+		if (empty($base)) {
+			$base = CakePlugin::path('FileStorage') . 'Vendor' . DS . 'Gaufrette' . DS . 'src' . DS;
+		}
+
+		$class = str_replace('\\', DS, $class);
+		if (file_exists($base . $class . '.php')) {
+			include($base . $class . '.php');
+		}
+	}
 
 /**
  * Return file extension from a given filename
@@ -66,7 +85,7 @@ class FileStorageUtils {
  * @param string
  * @return string
  */
-	public static function sanitizePath($string) {
+	public static function normalizePath($string) {
 		if (DS == '\\') {
 			return str_replace('\\', '', $string);
 		} else {

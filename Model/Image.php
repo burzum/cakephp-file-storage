@@ -1,5 +1,6 @@
 <?php
 App::uses('FileStorage', 'FileStorage.Model');
+App::uses('Folder', 'Utility');
 /**
  * Image
  *
@@ -36,23 +37,12 @@ class Image extends FileStorage {
  */
 	public $actsAs = array(
 		'Imagine.Imagine',
-		'FileUpload' => array(
+		'FileStorage.UploadValidator' => array(
 			'localFile' => true,
 			'validateUpload' => false,
 			'allowedExtensions' => array('jpg', 'png', 'gif')
 		),
 	);
-
-/**
- * Renews the FileUpload behavior with a new configuration
- *
- * @param array $options
- * @return void
- */
-	public function configureFileUpload($options = array()) {
-		$this->Behaviors->unload('FileUpload');
-		$this->Behaviors->load('FileUpload', $options);
-	}
 
 /**
  * beforeSave callback
@@ -61,7 +51,6 @@ class Image extends FileStorage {
  */
 	public function beforeSave($options) {
 		parent::beforeSave($options);
-		
 		return true;
 	}
 
@@ -75,8 +64,11 @@ class Image extends FileStorage {
 		if ($created) {
 			if ($this->createVersions === true) {
 				$record = $this->data[$this->alias];
-				$this->createVersions($record['id'], $record['file']['tmp_name'], $record['model'], $record['extension']);
-				$this->save($this->data, array('callbacks' => false, 'validate' => false));
+				if ($this->createVersions($record['id'], $record['file']['tmp_name'], $record['model'], $record['extension'])) {
+					return $this->save($this->data, array('callbacks' => false, 'validate' => false));
+				}
+				//$this->delete($this->id);
+				return false;
 			}
 		}
 	}
@@ -126,7 +118,6 @@ class Image extends FileStorage {
 	protected function afterDeleteLocalAdapter() {
 		$path = Configure::read('Media.basePath') . $this->record[$this->alias]['path'];
 		if (is_dir($path)) {
-			App::uses('Folder', 'Utility');
 			$Folder = new Folder($path);
 			return $Folder->delete();
 		}
@@ -183,14 +174,21 @@ class Image extends FileStorage {
 		$path = $this->fsPath('images' . DS . $model, $uuid);
 		$this->data[$this->alias]['path'] = $path;
 
-		$Gaufrette = $this->storageAdapter('Local');
-		$Gaufrette->write($path . $filename . '.' . $format, file_get_contents($imageFile), true);
-
-		foreach ($sizes as $type => $operations) {
-			$hash = $this->hashOperations($operations);
-			$image = $this->processImage($imageFile, null, array('format' => $format), $operations);
-			$Gaufrette->write($path . $filename . '.' . $hash . '.' . $format, $image->get($format), true);
+		try {
+			$Gaufrette = $this->storageAdapter('Local');
+			$result = $Gaufrette->write($path . $filename . '.' . $format, file_get_contents($imageFile), true);
+			foreach ($sizes as $type => $operations) {
+				$hash = $this->hashOperations($operations);
+				$image = $this->processImage($imageFile, null, array('format' => $format), $operations);
+				$Gaufrette->write($path . $filename . '.' . $hash . '.' . $format, $image->get($format), true);
+			}
+		} catch (Exception $e) {
+			$this->log($e->getMessage(), 'file_storage');
+			//$this->delete($this->id);
+			return false;
 		}
+
+		return true;
 	}
 
 /**

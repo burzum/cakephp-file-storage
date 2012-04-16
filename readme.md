@@ -2,7 +2,7 @@
 
 This is work in progress, the code might and very likely will change for some more time.
 
-So please do not ask yet or create issue tickets.
+The code should be now in a usebale state, feel free to play with it and give feedback, I will appreciate it!
 
 ## Requirements
 
@@ -92,7 +92,11 @@ https://github.com/burzum/FileStorage/issues
 
 ## License
 
-Copyright 2012, Florian Krömer
+Copyright 2012, Florian Krämer
 
 Licensed under The MIT License
 Redistributions of files must retain the above copyright notice.
+
+## Credits
+
+Thanks to Larry Masters and the CakeDC for the chance to work with a great team and Jitka Koukalová for her excelent advice in programming related questions she gave me some years ago. You guys and girls made me a better programmer! :)

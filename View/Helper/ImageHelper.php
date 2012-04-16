@@ -79,12 +79,11 @@ class ImageHelper extends AppHelper {
 		$path = $this->normalizePath($image['path']);
 		$path = $path . str_replace('-', '', $image['id']);
 		$path .= '.' . $hash . '.' . $image['extension'];
-
 		return $path;
 	}
 
 /**
- *
+ * @todo 
  * @param array $image
  * @param string $version
  * @param string $hash

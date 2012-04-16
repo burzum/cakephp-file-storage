@@ -1,6 +1,8 @@
 <?php
 App::uses('Folder', 'Utility');
 App::uses('FileStorageAppModel', 'FileStorage.Model');
+App::uses('StorageManager', 'FileStorage.Lib');
+App::uses('FileStorageUtils', 'FileStorage.Utility');
 /**
  * FileStorage
  *
@@ -31,22 +33,6 @@ class FileStorage extends FileStorageAppModel {
 	public $displayField = 'filename';
 
 /**
- * Adapters
- *
- * @var array
- */
-	public $adapters = array(
-		'Local' => array(
-			'adapterOptions' => array(TMP, true),
-			'adapterClass' => '\Gaufrette\Adapter\Local',
-			'class' => '\Gaufrette\Filesystem'));
-
-/**
- * 
- */
-	public $activeAdapter = 'Local';
-
-/**
  * Constructor
  *
  * @param 
@@ -56,26 +42,13 @@ class FileStorage extends FileStorageAppModel {
  */
 	public function __construct($id = false, $table = null, $ds = null) {
 		parent::__construct($id, $table, $ds);
-		$adapterConfig = Configure::read('FileStorage.adapters');
-		if (is_array($adapterConfig)) {
-			$this->adapters = array_merge($this->adapters, $adapterConfig);
-		}
-	}
 
-/**
- * Sets or gets the active storage adapter
- *
- * @param string
- * @return mixed
- */
-	public function adapter($adapter = null) {
-		if (empty($adapter)) {
-			return $this->activeAdapter;
+		$adapterConfig = Configure::read('FileStorage.adapters');
+		if (!empty($adapterConfig) && is_array($adapterConfig)) {
+			foreach ($adapterConfig as $name => $config) {
+				StorageManager::config($name, $config);
+			}
 		}
-		if (isset($this->adapters[$adapter])) {
-			return $this->activeAdapter = $adapter;
-		}
-		return  false;
 	}
 
 /**
@@ -85,8 +58,8 @@ class FileStorage extends FileStorageAppModel {
  * @return void
  */
 	public function configureFileUpload($options = array()) {
-		$this->Behaviors->unload('FileUpload');
-		$this->Behaviors->load('FileUpload', $options);
+		$this->Behaviors->unload('FileStorage.UploadValidator');
+		$this->Behaviors->load('FileStorage.UploadValidator', $options);
 	}
 
 /**
@@ -106,7 +79,7 @@ class FileStorage extends FileStorageAppModel {
 		if (!empty($this->data[$this->alias]['file']['name'])) {
 			$this->data[$this->alias]['filename'] = $this->data[$this->alias]['file']['name'];
 		}
-		$this->data[$this->alias]['adapter'] = $this->activeAdapter;
+		$this->data[$this->alias]['adapter'] = 'Local';
 		return true;
 	}
 
@@ -130,7 +103,7 @@ class FileStorage extends FileStorageAppModel {
  * @todo error handling, catch exceptions from the adapters
  */
 	public function afterDelete() {
-		$Storage = $this->storageAdapter($this->record[$this->alias]['adapter']);
+		$Storage = Storagemanager::adapter($this->record[$this->alias]['adapter']);
 		$Storage->delete($this->record[$this->alias]['path']);
 	}
 
@@ -142,36 +115,7 @@ class FileStorage extends FileStorageAppModel {
  * @return Gaufrette object as configured by first arg
  */
 	public function storageAdapter($adapterName = null, $renewObject = false) {
-		if (empty($adapterName)) {
-			$adapterName = $this->activeAdapter;
-		}
-
-		$isConfigured = true;
-		if (is_string($adapterName)) {
-			if (!empty($this->adapters[$adapterName])) {
-				$adapter = $this->adapters[$adapterName];
-			} else {
-				throw new RuntimeException(__('Invalid Adapter %s', $adapterName));
-			}
-
-			if (!empty($this->adapters[$adapterName]['object']) && $renewObject === false) {
-				return $this->adapters[$adapterName]['object'];
-			}
-		}
-
-		if (is_array($adapterName)) {
-			$adapter = $adapterName;
-			$isConfigured = false;
-		}
-
-		$class = $adapter['adapterClass'];
-		$rc = new ReflectionClass($class);
-		$adapterObject = $rc->newInstanceArgs($adapter['adapterOptions']);
-		$engineObject = new $adapter['class']($adapterObject);
-		if ($isConfigured) {
-			$this->adapters[$adapterName]['object'] = &$engineObject;
-		}
-		return $engineObject;
+		return Storagemanager::adapter($adapterName, $renewObject);
 	}
 
 /**
@@ -210,6 +154,9 @@ class FileStorage extends FileStorageAppModel {
 		return str_replace('-', '', $uuid);
 	}
 
+/**
+ * 
+ */
 	public function fsPath($type, $string, $idFolder = true) {
 		$string = str_replace('-', '', $string);
 		$path = $type . DS . FileStorageUtils::randomPath($string);
@@ -219,12 +166,14 @@ class FileStorage extends FileStorageAppModel {
 		return $path;
 	}
 
-	public function fileExtension($name = '') {
-		$list = explode('.', $name);
-		if (count($list) > 1) {
-			$ext = $list[count($list)-1];
-			return $ext;
-		}
-		return false;
+/**
+ * Return file extension from a given filename
+ *
+ * @param string
+ * @return boolean string or false
+ */
+	public function fileExtension($path) {
+		return pathinfo($path, PATHINFO_EXTENSION);
 	}
+
 }
