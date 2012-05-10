@@ -99,10 +99,16 @@ class UploadValidatorBehavior extends ModelBehavior {
 
 			if (is_array($allowedMime)) {
 				if (!$this->validateAllowedMimeTypes($Model, $allowedMime)) {
+					$Model->invalidate($fileField, $this->uploadError);
 					return false;
 				}
 			}
 
+			if (is_array($allowedExtensions)) {
+				if (!$this->validateUploadExtension($Model, $allowedExtensions)) {
+					return false;
+				}
+			}
 		}
 		return true;
 	}
@@ -113,11 +119,11 @@ class UploadValidatorBehavior extends ModelBehavior {
  * @param Model $Model
  * @return boolean True if the extension is allowed
  */
-	public function validateUploadExtension(Model $Model) {
+	public function validateUploadExtension(Model $Model, $validExtensions) {
 		extract($this->settings);
-		$extension = $this->fileExtension($Model, $Model->data[$Model->alias][$fileField]['name']);
+		$extension = $this->fileExtension($Model, $Model->data[$Model->alias][$fileField]['name'], false);
 
-		if (!in_array($extension, $allowedExtensions)) {
+		if (!in_array($extension, $validExtensions)) {
 			$this->uploadError = __d('cake_dev', 'You are not allowed to upload files of this type.');
 			$Model->invalidate($fileField, $this->uploadError);
 			return false;
@@ -225,10 +231,14 @@ class UploadValidatorBehavior extends ModelBehavior {
  * Return file extension from a given filename
  *
  * @param string
+ * @param boolean
  * @return boolean string or false
  */
-	public function fileExtension(Model $Model, $name) {
-		return pathinfo($name, PATHINFO_EXTENSION);
+	public function fileExtension(Model $Model, $name, $realFile = true) {
+		if ($fileExists) {
+			return pathinfo($name, PATHINFO_EXTENSION);
+		}
+		return substr(strrchr($name,'.'), 1);
 	}
 
 }
