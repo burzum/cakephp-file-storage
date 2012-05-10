@@ -142,8 +142,10 @@ class UploadValidatorBehavior extends ModelBehavior {
 		if (!empty($mimeTypes)) {
 			$allowedMime = $mimeTypes;
 		}
+
 		$File = new File($Model->data[$Model->alias][$fileField]['tmp_name']);
 		$mimeType = $File->mime();
+
 		if (!in_array($mimeType, $allowedMime)) {
 			$this->uploadError = __d('cake_dev', 'You are not allowed to upload files of this type.');
 			$Model->invalidate($fileField, $this->uploadError);
@@ -235,7 +237,7 @@ class UploadValidatorBehavior extends ModelBehavior {
  * @return boolean string or false
  */
 	public function fileExtension(Model $Model, $name, $realFile = true) {
-		if ($fileExists) {
+		if ($realFile) {
 			return pathinfo($name, PATHINFO_EXTENSION);
 		}
 		return substr(strrchr($name,'.'), 1);

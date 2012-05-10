@@ -17,9 +17,29 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 App::uses('Model', 'Model');
-App::uses('AppModel', 'Model');
 App::uses('UploadValidatorBehavior', 'FileStorage.Model\Behavior');
-require_once dirname(dirname(__FILE__)) . DS . 'models.php';
+
+/**
+ * TheVoid class
+ *
+ * @package       Cake.Test.Case.Model
+ */
+class VoidUploadModel extends CakeTestModel {
+
+	/**
+	 * name property
+	 *
+	 * @var string 'TheVoid'
+	 */
+	public $name = 'VoidUploadModel';
+
+	/**
+	 * useTable property
+	 *
+	 * @var bool false
+	 */
+	public $useTable = false;
+}
 
 /**
  * UploadValidatorBehaviorTest class
@@ -48,11 +68,11 @@ class UploadValidatorBehaviorTest extends CakeTestCase {
  * @return void
  */
 	public function setUp() {
-		$this->Model = new TheVoid();
+		$this->Model = new VoidUploadModel();
 		$this->Model->Behaviors->load('FileStorage.UploadValidator', array(
 			'localFile' => true));
 		$this->FileUpload = $this->Model->Behaviors->UploadValidator;
-		$this->testFilePath = WEBROOT_DIR . DS . 'img' . DS;
+		$this->testFilePath = CakePlugin::path('FileStorage') . 'Test' . DS . 'Fixture' . DS . 'File' . DS;
 	}
 
 /**
@@ -76,10 +96,10 @@ class UploadValidatorBehaviorTest extends CakeTestCase {
 			'localFile' => true,
 			'allowedExtensions' => array('png')));
 		$this->Model->data[$this->Model->alias]['file']['name'] = $this->testFilePath . 'cake.icon.jpg';
-		$this->assertFalse($this->Model->validateUploadExtension());
+		$this->assertFalse($this->Model->validateUploadExtension(array('png')));
 
 		$this->Model->data[$this->Model->alias]['file']['name'] = $this->testFilePath . 'cake.icon.png';
-		$this->assertTrue($this->Model->validateUploadExtension());
+		$this->assertTrue($this->Model->validateUploadExtension(array('png')));
 	}
 
 /**

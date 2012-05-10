@@ -8,6 +8,7 @@ The code should be now in a usebale state, feel free to play with it and give fe
 
  * CakePHP 2.x
  * PHP 5.3+
+ * Gaufrette Library (included as git submodule, just init it)
  * CakeDC Imagine Image processing plugin https://github.com/cakedc/imagine if you want to process and storage images
 
 ## Installation
@@ -67,7 +68,7 @@ If you want to flush *all* adapter configs and instances simply call it without 
 
 ### Image Versioning
 
-You can set up automatic image processing for the FileStorage.Image model.
+You can set up automatic image processing for the FileStorage.Image model. To make the magic happen you have to use the Image model (it extends the FileStorage model) for image file saving.
 
 All you need to do is basically use the image model and configure versions on a per model basis. When you save an Image model record it is important to have the 'model' field filled so that the script can find the correct versions for that model.
 
