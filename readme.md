@@ -26,7 +26,7 @@ If you want to use S3 upload Gaufrette has also submodules to initialize. Here i
 	cd YOUR-APP-FOLDER
 	git submodule add git://github.com/burzum/FileStorage.git Plugin/FileStorage
 	git submodule update --init
-	cd Plugin/FileStorage/Vendor/Gaufrette
+	cd Plugin/FileStorage
 	git submodule update --init
 
 If you do not want to add it as submodule just clone it instead of doing submodule add
