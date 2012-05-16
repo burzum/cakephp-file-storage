@@ -52,7 +52,7 @@ The FileStorage model which is using the StorageManager class will auto load the
 	StorageManager::config('Local',	array(
 		'adapterOptions' => array(TMP, true),
 		'adapterClass' => '\Gaufrette\Adapter\Local',
-		'class' => '\Gaufrette\Filesystem')));
+		'class' => '\Gaufrette\Filesystem'));
 
 To invoke a new instance using a configuration call:
 
@@ -80,7 +80,7 @@ All you need to do is basically use the image model and configure versions on a 
 						'width' => 50, 'height' => 50)),
 				't120' => array(
 					'thumbnail' => array(
-						'width' => 120, 'height' => 120))),
+						'width' => 120, 'height' => 120)),
 				't800' => array(
 					'thumbnail' => array(
 						'width' => 800, 'height' => 600))),
@@ -94,6 +94,7 @@ All you need to do is basically use the image model and configure versions on a 
 			)
 		)
 	);
+	App::uses('ClassRegistry', 'Utility');
 	ClassRegistry::init('FileStorage.Image')->generateHashes();
 
 Calling generateHashes is important, it will create the hash values for each versioned image and store them in Media.imageHashes in the configuration.
