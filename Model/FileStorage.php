@@ -1,4 +1,5 @@
 <?php
+App::uses('File', 'Utility');
 App::uses('Folder', 'Utility');
 App::uses('FileStorageAppModel', 'FileStorage.Model');
 App::uses('StorageManager', 'FileStorage.Lib');
@@ -173,7 +174,11 @@ class FileStorage extends FileStorageAppModel {
  * @return boolean string or false
  */
 	public function fileExtension($path) {
-		return pathinfo($path, PATHINFO_EXTENSION);
+		if (file_exists($path)) {
+			return pathinfo($path, PATHINFO_EXTENSION);
+		} else {
+			return substr(strrchr($path,'.'), 1);
+		}
 	}
 
 }
