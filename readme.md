@@ -1,8 +1,10 @@
 # FileStorage plugin for CakePHP 2.x
 
-This is work in progress, the code might and very likely will change for some more time.
+I would call the status of this plugin now beta.
 
-The code should be now in a usebale state, feel free to play with it and give feedback, I will appreciate it!
+The code should be in a usebale state, feel free to play with it and give feedback, I will appreciate it!
+
+I'll improve it further and try to automate it a little more, you will know what I mean if you read the Usage section of this document.
 
 ## Requirements
 
@@ -37,6 +39,8 @@ and follow the rest of the steps
 
 ## Usage
 
+### Configuration
+
 You can configure as many file storage adapters as you want with different settings via Configure:
 
 	Configure::write('FileStorage.adapters', array(
@@ -65,6 +69,47 @@ To delete configs and by this the instance from the StorageManager call
 	StorageManager::flush('Local');
 
 If you want to flush *all* adapter configs and instances simply call it without the first argument.
+
+### How to store an uploaded file
+
+The basic idea of this plugin is that files are always handled as separate entities and are associated to other models.
+
+So for example let's say you have a Report model and want to save a pdf to it, you would then create an association lile:
+
+	public $hasOne = array(
+		'PdfFile' => array(
+			'className' => 'FileStorage.FileStorage',
+			'foreignKey' => 'foreign_key'));
+
+In your add/edit report you would have something like:
+
+	echo $this->Form->input('Report.title');
+	echo $this->Form->input('PdfFile.file');
+	echo $this->Form->input('Report.description');
+
+#### Now comes the crucial point of the whole implementation:
+
+Because of to many different requirements and personal preferences out there the plugin is *not* automatically storing the file. You'll have to customize it a little but its just a matter for a few lines.
+
+Lets go by this scenario inside the report model, assuming there is an add() method:
+
+	$this->create()
+	if ($this->save($data)) {
+		$key = 'your-file-name';
+		if (StorageManager::adapter('Local')->write(, file_get_contents($this->data['PdfFile']['tmp_name']))) {
+			$this->data['PdfFile']['foreignKey'] = $this->getLastInsertId();
+			$this->data['PdfFile']['model'] = 'Report';
+			$this->data['PdfFile']['path'] = $key;
+		}
+	}
+
+#### Why is it done like this? 
+
+Because every developer might want to store the file at a different point or apply other operations on the file before or after it is store. Based on different circumstances you might want to save an associated file even before you created the record its going to get attached to, in other scenarios like in this documentation you want to do it after.
+
+The $key is also a key aspect of it: Different adapters might expect a different key. A key for the Local adapter of Gaufrette is usally a path and a file name under which the data gets stored. Thats also the reason why you use `file_get_contents()` instead of simply passing the tmp path as its.
+
+It is up to you how you want to generate the key and build your path.
 
 ### Image Versioning
 
@@ -119,11 +164,11 @@ https://github.com/burzum/FileStorage/issues
 
 ## License
 
-Copyright 2012, Florian Kr‰mer
+Copyright 2012, Florian Kr√§mer
 
 Licensed under The MIT License
 Redistributions of files must retain the above copyright notice.
 
 ## Credits
 
-Thanks to Larry Masters and the CakeDC for the chance to work with a great team and Jitka Koukalov· for her excelent advice in programming related questions she gave me some years ago. You guys and girls made me a better programmer! :)
+Thanks to Larry Masters and the CakeDC for the chance to work with a great team and Jitka Koukalov√° for her excelent advice in programming related questions she gave me some years ago. You guys and girls made me a better programmer! :)
