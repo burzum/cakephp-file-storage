@@ -100,8 +100,13 @@ Lets go by this scenario inside the report model, assuming there is an add() met
 			$this->data['PdfFile']['foreignKey'] = $this->getLastInsertId();
 			$this->data['PdfFile']['model'] = 'Report';
 			$this->data['PdfFile']['path'] = $key;
+			$this->data['PdfFile']['adapter'] = 'Local';
 		}
 	}
+
+Later, when you want to delete the file, for example in the beforeDelete() or afterDelete() callback of your Report model, you'll know the adapter you have used to store the attached PdfFile and can get an instance of this adapter configuration using the StorageManager. By having the path or key available you can then simply call:
+
+StorageManager::adapter($data['PdfFile']['adapter'])->delete($data['PdfFile']['path']);
 
 #### Why is it done like this? 
 
