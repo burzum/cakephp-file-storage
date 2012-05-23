@@ -1,4 +1,5 @@
 <?php
+App::uses('File', 'Utility');
 App::uses('Folder', 'Utility');
 App::uses('FileStorageAppModel', 'FileStorage.Model');
 App::uses('StorageManager', 'FileStorage.Lib');
@@ -33,25 +34,6 @@ class FileStorage extends FileStorageAppModel {
 	public $displayField = 'filename';
 
 /**
- * Constructor
- *
- * @param 
- * @param 
- * @param 
- * @return void
- */
-	public function __construct($id = false, $table = null, $ds = null) {
-		parent::__construct($id, $table, $ds);
-
-		$adapterConfig = Configure::read('FileStorage.adapters');
-		if (!empty($adapterConfig) && is_array($adapterConfig)) {
-			foreach ($adapterConfig as $name => $config) {
-				StorageManager::config($name, $config);
-			}
-		}
-	}
-
-/**
  * Renews the FileUpload behavior with a new configuration
  *
  * @param array $options
@@ -79,7 +61,9 @@ class FileStorage extends FileStorageAppModel {
 		if (!empty($this->data[$this->alias]['file']['name'])) {
 			$this->data[$this->alias]['filename'] = $this->data[$this->alias]['file']['name'];
 		}
-		$this->data[$this->alias]['adapter'] = 'Local';
+		if (empty($this->data[$this->alias]['adapter'])) {
+			$this->data[$this->alias]['adapter'] = 'Local';
+		}
 		return true;
 	}
 
@@ -99,6 +83,11 @@ class FileStorage extends FileStorageAppModel {
 		return true;
 	}
 
+	$Adapter = Storagemanager::adapter('Local');
+	if ($Adapter->write($key, file_get_contents($uploadedTmpFile))) {
+		$this->data['Cover']['path'] = $key;
+	}
+	
 /**
  * @todo error handling, catch exceptions from the adapters
  */
@@ -173,7 +162,11 @@ class FileStorage extends FileStorageAppModel {
  * @return boolean string or false
  */
 	public function fileExtension($path) {
-		return pathinfo($path, PATHINFO_EXTENSION);
+		if (file_exists($path)) {
+			return pathinfo($path, PATHINFO_EXTENSION);
+		} else {
+			return substr(strrchr($path,'.'), 1);
+		}
 	}
 
 }
