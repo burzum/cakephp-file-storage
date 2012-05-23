@@ -96,7 +96,7 @@ Lets go by this scenario inside the report model, assuming there is an add() met
 	$this->create()
 	if ($this->save($data)) {
 		$key = 'your-file-name';
-		if (StorageManager::adapter('Local')->write(, file_get_contents($this->data['PdfFile']['tmp_name']))) {
+		if (StorageManager::adapter('Local')->write($key, file_get_contents($this->data['PdfFile']['tmp_name']))) {
 			$this->data['PdfFile']['foreignKey'] = $this->getLastInsertId();
 			$this->data['PdfFile']['model'] = 'Report';
 			$this->data['PdfFile']['path'] = $key;
@@ -110,6 +110,8 @@ Because every developer might want to store the file at a different point or app
 The $key is also a key aspect of it: Different adapters might expect a different key. A key for the Local adapter of Gaufrette is usally a path and a file name under which the data gets stored. Thats also the reason why you use `file_get_contents()` instead of simply passing the tmp path as its.
 
 It is up to you how you want to generate the key and build your path.
+
+I recommend you to read the Gaufrette documentation for the read() and write() methods of the adapters.
 
 ### Image Versioning
 
