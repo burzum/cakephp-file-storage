@@ -68,7 +68,7 @@ class UploadValidatorBehavior extends ModelBehavior {
 			throw new InvalidArgumentException(__d('cake_dev', 'Settings must be passed as array!'));
 		}
 
-		$this->settings = array_merge($this->_defaults, $settings);
+		$this->settings[$Model->alias] = array_merge($this->_defaults, $settings);
 	}
 
 /**
@@ -81,7 +81,7 @@ class UploadValidatorBehavior extends ModelBehavior {
  * @return boolean True on success
  */
 	public function beforeValidate(Model $Model) {
-		extract($this->settings);
+		extract($this->settings[$Model->alias]);
 		if ($validate === true && isset($Model->data[$Model->alias][$fileField]) && is_array($Model->data[$Model->alias][$fileField])) {
 
 			if ($Model->validateUploadError($Model->data[$Model->alias][$fileField]['error']) === false) {
@@ -120,7 +120,7 @@ class UploadValidatorBehavior extends ModelBehavior {
  * @return boolean True if the extension is allowed
  */
 	public function validateUploadExtension(Model $Model, $validExtensions) {
-		extract($this->settings);
+		extract($this->settings[$Model->alias]);
 		$extension = $this->fileExtension($Model, $Model->data[$Model->alias][$fileField]['name'], false);
 
 		if (!in_array($extension, $validExtensions)) {
@@ -138,7 +138,7 @@ class UploadValidatorBehavior extends ModelBehavior {
  * @return boolean
  */
 	public function validateAllowedMimeTypes(Model $Model, $mimeTypes = array()) {
-		extract($this->settings);
+		extract($this->settings[$Model->alias]);
 		if (!empty($mimeTypes)) {
 			$allowedMime = $mimeTypes;
 		}
