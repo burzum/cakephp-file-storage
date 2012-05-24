@@ -76,6 +76,7 @@ The basic idea of this plugin is that files are always handled as separate entit
 
 So for example let's say you have a Report model and want to save a pdf to it, you would then create an association lile:
 
+	<?php
 	public $hasOne = array(
 		'PdfFile' => array(
 			'className' => 'FileStorage.FileStorage',
@@ -107,6 +108,8 @@ Lets go by this scenario inside the report model, assuming there is an add() met
 Later, when you want to delete the file, for example in the beforeDelete() or afterDelete() callback of your Report model, you'll know the adapter you have used to store the attached PdfFile and can get an instance of this adapter configuration using the StorageManager. By having the path or key available you can then simply call:
 
 	StorageManager::adapter($data['PdfFile']['adapter'])->delete($data['PdfFile']['path']);
+
+Insted of doing all of this in the model that has the files associated to it you can also simply extend the FileStorage model from the plugin and add your storage logic there and use that model for your association.
 
 #### Why is it done like this? 
 
