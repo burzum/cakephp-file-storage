@@ -39,7 +39,7 @@ class FileStorage extends FileStorageAppModel {
  * @param array $options
  * @return void
  */
-	public function configureFileUpload($options = array()) {
+	public function configureUploadValidation($options) {
 		$this->Behaviors->unload('FileStorage.UploadValidator');
 		$this->Behaviors->load('FileStorage.UploadValidator', $options);
 	}
@@ -83,11 +83,6 @@ class FileStorage extends FileStorageAppModel {
 		return true;
 	}
 
-	$Adapter = Storagemanager::adapter('Local');
-	if ($Adapter->write($key, file_get_contents($uploadedTmpFile))) {
-		$this->data['Cover']['path'] = $key;
-	}
-	
 /**
  * @todo error handling, catch exceptions from the adapters
  */
