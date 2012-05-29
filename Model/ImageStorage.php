@@ -178,16 +178,14 @@ class ImageStorage extends FileStorage {
 		$sizes = Configure::read('Media.imageSizes.' . $model);
 		$path = $this->fsPath('images' . DS . $model, $id);
 		$this->data[$this->alias]['path'] = $path;
-$this->log($path . $filename . '.' . $format, 'imageupload');
+
 		try {
-			$Gaufrette = StorageManager::adapter('Local');
+			$Gaufrette = StorageManager::adapter($adapter);
 			$result = $Gaufrette->write($path . $filename . '.' . $format, file_get_contents($file['tmp_name']), true);
-			$this->log($result, 'imageupload');
 			foreach ($sizes as $type => $operations) {
 				$hash = $this->hashOperations($operations);
 				$image = $this->processImage($file['tmp_name'], null, array('format' => $format), $operations);
 				$result = $Gaufrette->write($path . $filename . '.' . $hash . '.' . $format, $image->get($format), true);
-				$this->log($result, 'imageupload');
 			}
 		} catch (Exception $e) {
 			$this->log($e->getMessage(), 'file_storage');
