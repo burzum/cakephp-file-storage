@@ -4,18 +4,11 @@ App::uses('Folder', 'Utility');
 /**
  * Image
  *
- * @author Florian Krämer
- * @copyright 2012 Florian Krämer
+ * @author Florian Krï¿½mer
+ * @copyright 2012 Florian Krï¿½mer
  * @license MIT
  */
-class Image extends FileStorage {
-/**
- * Name
- *
- * @var string
- */
-	public $name = 'Image';
-
+class ImageStorage extends FileStorage {
 /**
  * Table to use
  *
@@ -51,6 +44,8 @@ class Image extends FileStorage {
  */
 	public function beforeSave($options) {
 		parent::beforeSave($options);
+
+		$this->log('beforeSave called', 'imageupload');
 		return true;
 	}
 
@@ -61,13 +56,15 @@ class Image extends FileStorage {
  * @return void
  */
 	public function afterSave($created) {
+		parent::afterSave($created);
+
 		if ($created) {
 			if ($this->createVersions === true) {
-				$record = $this->data[$this->alias];
-				if ($this->createVersions($record['id'], $record['file']['tmp_name'], $record['model'], $record['extension'])) {
+				$this->data[$this->alias][$this->primaryKey] = $this->getLastInsertId();
+				if ($this->createVersions($this->data)) {
 					return $this->save($this->data, array('callbacks' => false, 'validate' => false));
 				}
-				//$this->delete($this->id);
+				$this->delete($this->id);
 				return false;
 			}
 		}
@@ -79,18 +76,17 @@ class Image extends FileStorage {
  * @return boolean
  */
 	public function beforeDelete() {
-		$this->record = $this->find('first', array(
-			'contain' => array(),
-			'conditions' => array(
-				$this->alias . '.' . $this->primaryKey => $this->id)));
-		if (empty($this->record)) {
+		if (!parent::beforeDelete()) {
 			return false;
 		}
 
 		if (!empty($this->record[$this->alias]['adapter'])) {
 			$adapter = $this->record[$this->alias]['adapter'];
-			if (!method_exists($this, 'afterDelete' . $adapter . 'Adapter')) {
-				return false;
+			$method = 'beforeDelete' . $adapter . 'Adapter';
+			if (method_exists($this, $method)) {
+				if (!$this->{$method}) {
+					return false;
+				}
 			}
 		}
 		return true;
@@ -102,11 +98,15 @@ class Image extends FileStorage {
  * @return void
  */
 	public function afterDelete() {
-		$adapter = $this->record[$this->alias]['adapter'];
-		$method = 'afterDelete' . $adapter . 'Adapter';
-		if (!$this->{$method}()) {
-			$this->log('Could not delete stored file:', 'file_storage');
-			$this->log($this->record, 'file_storage');
+		if (!empty($this->record[$this->alias]['adapter'])) {
+			$adapter = $this->record[$this->alias]['adapter'];
+			$method = 'afterDelete' . $adapter . 'Adapter';
+			if (method_exists($this, $method)) {
+				if (!$this->{$method}()) {
+					$this->log('Could not delete stored file:', 'file_storage');
+					$this->log($this->record, 'file_storage');
+				}
+			}
 		}
 	}
 
@@ -168,19 +168,24 @@ class Image extends FileStorage {
  * @param string 
  * @return
  */
-	public function createVersions($uuid, $imageFile, $model, $format = 'jpg') {
-		$filename = $this->stripUuid($uuid);
+	public function createVersions($data = array(), $format = 'jpg') {
+		if (empty($data)) {
+			$data = $this->data;
+		}
+		extract($data[$this->alias]);
+
+		$filename = $this->stripUuid($id);
 		$sizes = Configure::read('Media.imageSizes.' . $model);
-		$path = $this->fsPath('images' . DS . $model, $uuid);
+		$path = $this->fsPath('images' . DS . $model, $id);
 		$this->data[$this->alias]['path'] = $path;
 
 		try {
-			$Gaufrette = $this->storageAdapter('Local');
-			$result = $Gaufrette->write($path . $filename . '.' . $format, file_get_contents($imageFile), true);
+			$Gaufrette = StorageManager::adapter($adapter);
+			$result = $Gaufrette->write($path . $filename . '.' . $format, file_get_contents($file['tmp_name']), true);
 			foreach ($sizes as $type => $operations) {
 				$hash = $this->hashOperations($operations);
-				$image = $this->processImage($imageFile, null, array('format' => $format), $operations);
-				$Gaufrette->write($path . $filename . '.' . $hash . '.' . $format, $image->get($format), true);
+				$image = $this->processImage($file['tmp_name'], null, array('format' => $format), $operations);
+				$result = $Gaufrette->write($path . $filename . '.' . $hash . '.' . $format, $image->get($format), true);
 			}
 		} catch (Exception $e) {
 			$this->log($e->getMessage(), 'file_storage');

@@ -39,28 +39,22 @@ and follow the rest of the steps
 
 ## Usage
 
-### Configuration
-
-You can configure as many file storage adapters as you want with different settings via Configure:
-
-	Configure::write('FileStorage.adapters', array(
-		'Local' => array(
-			'adapterOptions' => array(TMP, true),
-			'adapterClass' => '\Gaufrette\Adapter\Local',
-			'class' => '\Gaufrette\Filesystem')));
-
-The FileStorage model which is using the StorageManager class will auto load them into the StorageManager configuration.
-
 ### StorageManager
 
-	StorageManager::config('Local',	array(
+To configure adapters use the StorageManager::config method. First argument is the name of the config, second an array of options for that adapter
+
+	StorageManager::config('Local', array(
 		'adapterOptions' => array(TMP, true),
 		'adapterClass' => '\Gaufrette\Adapter\Local',
 		'class' => '\Gaufrette\Filesystem'));
 
-To invoke a new instance using a configuration call:
+To invoke a new instance using a before set configuration call:
 
-	StorageManager::adapter('Local');
+	$Adapter = StorageManager::adapter('Local');
+
+You can also call the adapter instances methods like this
+
+	StorageManager::adapter('Local')->write($key, $data);
 
 Alternativly you can pass a config array as first argument to get an instance using these settings that is not in the configuration.
 
@@ -106,7 +100,9 @@ Lets go by this scenario inside the report model, assuming there is an add() met
 
 Later, when you want to delete the file, for example in the beforeDelete() or afterDelete() callback of your Report model, you'll know the adapter you have used to store the attached PdfFile and can get an instance of this adapter configuration using the StorageManager. By having the path or key available you can then simply call:
 
-StorageManager::adapter($data['PdfFile']['adapter'])->delete($data['PdfFile']['path']);
+	StorageManager::adapter($data['PdfFile']['adapter'])->delete($data['PdfFile']['path']);
+
+Insted of doing all of this in the model that has the files associated to it you can also simply extend the FileStorage model from the plugin and add your storage logic there and use that model for your association.
 
 #### Why is it done like this? 
 
@@ -147,11 +143,11 @@ All you need to do is basically use the image model and configure versions on a 
 		)
 	);
 	App::uses('ClassRegistry', 'Utility');
-	ClassRegistry::init('FileStorage.Image')->generateHashes();
+	ClassRegistry::init('FileStorage.ImageStorage')->generateHashes();
 
 Calling generateHashes is important, it will create the hash values for each versioned image and store them in Media.imageHashes in the configuration.
 
-If you do not want to have the script generated the hashes each time its execute it is up to you to store it persistant. This plugin just provides you the tools.
+If you do not want to have the script to generate the hashes each time its execute it is up to you to store it persistant. This plugin just provides you the tools.
 
 Image files will end up wherever you have configured your base path 
 
