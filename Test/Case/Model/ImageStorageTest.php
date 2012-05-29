@@ -1,13 +1,13 @@
 <?php
-App::uses('FileStorage', 'FileStorage.Model');
+App::uses('ImageStorage', 'FileStorage.Model');
 /**
- * File Storage Test
+ * Image Storage Test
  *
  * @author Florian Krämer
  * @copyright 2012 Florian Krämer
  * @license MIT
  */
-class FileStorageTest extends CakeTestCase {
+class ImageStorageTest extends CakeTestCase {
 
 /**
  * startTest
@@ -15,7 +15,7 @@ class FileStorageTest extends CakeTestCase {
  * @return void
  */
 	public function startTest() {
-		$this->FileStorage = ClassRegistry::init('FileStorage.FileStorage');
+		$this->Image = ClassRegistry::init('FileStorage.ImageStorage');
 	}
 
 /**
@@ -25,8 +25,15 @@ class FileStorageTest extends CakeTestCase {
  */
 	public function endTest() {
 		parent::tearDown();
-		unset($this->FileStorage);
+		unset($this->Image);
 		ClassRegistry::flush();
+	}
+
+/**
+ * 
+ */
+	public function testProcessVersion() {
+		
 	}
 
 }

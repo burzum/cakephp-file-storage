@@ -39,28 +39,22 @@ and follow the rest of the steps
 
 ## Usage
 
-### Configuration
-
-You can configure as many file storage adapters as you want with different settings via Configure:
-
-	Configure::write('FileStorage.adapters', array(
-		'Local' => array(
-			'adapterOptions' => array(TMP, true),
-			'adapterClass' => '\Gaufrette\Adapter\Local',
-			'class' => '\Gaufrette\Filesystem')));
-
-The FileStorage model which is using the StorageManager class will auto load them into the StorageManager configuration.
-
 ### StorageManager
 
-	StorageManager::config('Local',	array(
+To configure adapters use the StorageManager::config method. First argument is the name of the config, second an array of options for that adapter
+
+	StorageManager::config('Local', array(
 		'adapterOptions' => array(TMP, true),
 		'adapterClass' => '\Gaufrette\Adapter\Local',
 		'class' => '\Gaufrette\Filesystem'));
 
-To invoke a new instance using a configuration call:
+To invoke a new instance using a before set configuration call:
 
-	StorageManager::adapter('Local');
+	$Adapter = StorageManager::adapter('Local');
+
+You can also call the adapter instances methods like this
+
+	StorageManager::adapter('Local')->write($key, $data);
 
 Alternativly you can pass a config array as first argument to get an instance using these settings that is not in the configuration.
 
@@ -76,7 +70,6 @@ The basic idea of this plugin is that files are always handled as separate entit
 
 So for example let's say you have a Report model and want to save a pdf to it, you would then create an association lile:
 
-	<?php
 	public $hasOne = array(
 		'PdfFile' => array(
 			'className' => 'FileStorage.FileStorage',
@@ -150,7 +143,7 @@ All you need to do is basically use the image model and configure versions on a 
 		)
 	);
 	App::uses('ClassRegistry', 'Utility');
-	ClassRegistry::init('FileStorage.Image')->generateHashes();
+	ClassRegistry::init('FileStorage.ImageStorage')->generateHashes();
 
 Calling generateHashes is important, it will create the hash values for each versioned image and store them in Media.imageHashes in the configuration.
 

@@ -123,7 +123,7 @@ class UploadValidatorBehavior extends ModelBehavior {
 		extract($this->settings[$Model->alias]);
 		$extension = $this->fileExtension($Model, $Model->data[$Model->alias][$fileField]['name'], false);
 
-		if (!in_array($extension, $validExtensions)) {
+		if (!in_array(strtolower($extension), $validExtensions)) {
 			$this->uploadError = __d('FileStorage', 'You are not allowed to upload files of this type.');
 			$Model->invalidate($fileField, $this->uploadError);
 			return false;

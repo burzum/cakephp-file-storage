@@ -7,8 +7,8 @@ App::uses('FileStorageUtils', 'FileStorage.Utility');
 /**
  * FileStorage
  *
- * @author Florian Krämer
- * @copyright 2012 Florian Krämer
+ * @author Florian KrÃ¤mer
+ * @copyright 2012 Florian KrÃ¤mer
  * @license MIT
  */
 class FileStorage extends FileStorageAppModel {
@@ -89,17 +89,6 @@ class FileStorage extends FileStorageAppModel {
 	public function afterDelete() {
 		$Storage = Storagemanager::adapter($this->record[$this->alias]['adapter']);
 		$Storage->delete($this->record[$this->alias]['path']);
-	}
-
-/**
- * StorageAdapter
- *
- * @param mixed $adapterName string of adapter configuration or array of settings
- * @param boolean $renewObject
- * @return Gaufrette object as configured by first arg
- */
-	public function storageAdapter($adapterName = null, $renewObject = false) {
-		return Storagemanager::adapter($adapterName, $renewObject);
 	}
 
 /**
