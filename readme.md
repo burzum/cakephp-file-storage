@@ -1,10 +1,25 @@
 # FileStorage plugin for CakePHP 2.x
 
-I would call the status of this plugin now beta.
+This plugin is giving you the possibility to store files in virtually and kind of storage backend. This plugin is wrapping the Gaufrette library (https://github.com/KnpLabs/Gaufrette) library in a CakePHP fashion and provides a simple way to use the storage adapters through the StorageManager class.
 
-The code should be in a usebale state, feel free to play with it and give feedback, I will appreciate it!
+Storage adapters are an unified interface that allow you to store file data to your local file system, in memory, in a database or into a zip file and remote systems. There is a database table keeping track of what you stored were.
 
-I'll improve it further and try to automate it a little more, you will know what I mean if you read the Usage section of this document.
+Included storage adapters through the Gaufrette vendor lib are:
+
+ * Local File System
+ * Amazon S3
+ * ACL Aware Amazon S3
+ * Mogile FS
+ * Rackspace Cloudfiles
+ * Zip File
+ * Ftp
+ * Sftp
+ * In Memory
+ * Grid FS
+ * Apc
+ * Doctrine DBAL
+
+You can always write your own adaper or extend and overload existing ones.
 
 ## Requirements
 
