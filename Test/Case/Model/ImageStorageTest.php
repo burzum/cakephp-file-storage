@@ -8,6 +8,13 @@ App::uses('ImageStorage', 'FileStorage.Model');
  * @license MIT
  */
 class ImageStorageTest extends CakeTestCase {
+/**
+ * Fixtures
+ *
+ * @var array
+ */
+	public $fixtures = array(
+		'plugin.FileStorage.FileStorage');
 
 /**
  * startTest
@@ -15,7 +22,7 @@ class ImageStorageTest extends CakeTestCase {
  * @return void
  */
 	public function startTest() {
-		$this->Image = ClassRegistry::init('FileStorage.ImageStorage');
+		$this->Image = new ImageStorage();
 	}
 
 /**
@@ -33,7 +40,7 @@ class ImageStorageTest extends CakeTestCase {
  * 
  */
 	public function testProcessVersion() {
-		
+
 	}
 
 }

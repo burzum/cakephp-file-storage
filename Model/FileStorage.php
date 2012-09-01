@@ -140,7 +140,7 @@ class FileStorage extends FileStorageAppModel {
 	}
 
 /**
- * Return file extension from a given filename
+ * Return file extension from a given filename no matter if the file exists or not
  *
  * @param string
  * @return boolean string or false
