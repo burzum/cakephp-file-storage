@@ -42,11 +42,10 @@ class ImageStorage extends FileStorage {
  *
  * @return boolean true on success
  */
-	public function beforeSave($options) {
+	public function beforeSave($options = array()) {
 		if (!parent::beforeSave($options)) {
 			return false;
 		}
-
 		$Event = new CakeEvent('ImageStorage.beforeSave', $this, array(
 			'record' => $this->data));
 		//CakeEventManager::instance()->dispatch($Event);
@@ -86,8 +85,8 @@ class ImageStorage extends FileStorage {
  *
  * @return boolean
  */
-	public function beforeDelete() {
-		if (!parent::beforeDelete()) {
+	public function beforeDelete($cascade = true) {
+		if (!parent::beforeDelete($cascade)) {
 			return false;
 		}
 
@@ -115,6 +114,14 @@ class ImageStorage extends FileStorage {
 			'record' => $this->record,
 			'storage' => StorageManager::adapter($this->record[$this->alias]['adapter'])));
 		CakeEventManager::instance()->dispatch($Event);
+	}
+
+/**
+ * @param array $results
+ * @return array
+ */
+	public function afterFind($results, $primary = false) {
+		return $results;
 	}
 
 /**
@@ -152,6 +159,9 @@ class ImageStorage extends FileStorage {
 			$data = $this->data;
 		}
 		extract($data[$this->alias]);
+		if (empty($model)) {
+			$model = $this->alias;
+		}
 
 		$filename = $this->stripUuid($id);
 		$sizes = Configure::read('Media.imageSizes.' . $model);
