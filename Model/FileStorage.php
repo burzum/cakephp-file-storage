@@ -34,6 +34,16 @@ class FileStorage extends FileStorageAppModel {
 	public $displayField = 'filename';
 
 /**
+ * The record that was deleted
+ *
+ * This gets set in the beforeDelete() callback so that the data is available
+ * in the afterDelete() callback
+ *
+ * @var array
+ */
+	public $record = array();
+
+/**
  * Renews the FileUpload behavior with a new configuration
  *
  * @param array $options
@@ -64,7 +74,29 @@ class FileStorage extends FileStorageAppModel {
 		if (empty($this->data[$this->alias]['adapter'])) {
 			$this->data[$this->alias]['adapter'] = 'Local';
 		}
+
+		$Event = new CakeEvent('FileStorage.beforeSave', $this, array(
+			'record' => $this->data,
+			'storage' => StorageManager::adapter($this->data[$this->alias]['adapter'])));
+		CakeEventManager::instance()->dispatch($Event);
+
+		if ($Event->isStopped()) {
+			return false;
+		}
+
 		return true;
+	}
+
+	public function afterSave($created) {
+		if ($created) {
+			$this->data[$this->alias][$this->primaryKey] = $this->getLastInsertId();
+		}
+
+		$Event = new CakeEvent('FileStorage.afterSave', $this, array(
+			'created' => $created,
+			'record' => $this->record,
+			'storage' => StorageManager::adapter($this->data[$this->alias]['adapter'])));
+		CakeEventManager::instance()->dispatch($Event);
 	}
 
 /**
@@ -77,9 +109,11 @@ class FileStorage extends FileStorageAppModel {
 			'contain' => array(),
 			'conditions' => array(
 				$this->alias . '.' . $this->primaryKey => $this->id)));
+
 		if (empty($this->record)) {
 			return false;
 		}
+
 		return true;
 	}
 

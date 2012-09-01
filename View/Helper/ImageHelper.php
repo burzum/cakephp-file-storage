@@ -2,8 +2,8 @@
 /**
  * ImageHelper
  *
- * @author Florian Krämer
- * @copyright 2012 Florian Krämer
+ * @author Florian Krï¿½mer
+ * @copyright 2012 Florian Krï¿½mer
  * @license MIT
  */
 class ImageHelper extends AppHelper {
@@ -33,14 +33,18 @@ class ImageHelper extends AppHelper {
 			throw new InvalidArgumentException(__d('FileStorage', 'No valid version key passed!'));
 		}
 
-		$method = '_' . Inflector::camelize($image['adapter']) . 'Adapter';
-		$path = $this->{$method}($image, $version, $hash);
+		$Event = new CakeEvent('FileStorage.ImageHelper.imagePath', $this, array(
+			'hash' => $hash,
+			'image' => $image,
+			'version' => $version,
+			'options' => $options));
+		CakeEventManager::instance()->dispatch($Event);
 
-		if ($path === false) {
+		if ($Event->isStopped()) {
+			return $this->Html->image('/' . $Event->data['path'], $options);
+		} else {
 			return $this->fallbackImage($options);
 		}
-
-		return $this->Html->image('/' . $path, $options);
 	}
 
 /**
@@ -80,16 +84,6 @@ class ImageHelper extends AppHelper {
 		$path = $path . str_replace('-', '', $image['id']);
 		$path .= '.' . $hash . '.' . $image['extension'];
 		return $path;
-	}
-
-/**
- * @todo 
- * @param array $image
- * @param string $version
- * @param string $hash
- */
-	protected function _amazonS3Adapter($image, $version = null, $hash) {
-		
 	}
 
 }

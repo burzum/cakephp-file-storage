@@ -101,38 +101,6 @@ class ImageVersionShell extends Shell {
 		return $parser;
 	}
 
-/**
- * Checks and generates a new image version
- *
- * @return void
- */
-	protected function _generate() {
-		$operations = Configure::read('Media.imageSizes.Artist.t150');
-		if (empty($operations)) {
-			$this->out('No processing operations configure for model');
-			$this->_stop();
-		}
-
-		try {
-			$this->_loop('generate', $model, $operations);
-		} catch (Exception $e) {
-			$this->out(__d('file_storage', 'Error: %s', $e->getMessage()));
-		}
-	}
-
-/**
- * Removes an existing image version
- *
- * @return void
- */
-	protected function _remove() {
-		try {
-			$this->_loop('remove', $model);
-		} catch (Exception $e) {
-			$this->out(__d('file_storage', 'Error: %s', $e->getMessage()));
-		}
-	}
-
 	protected function _loop($action, $model, $operations = array()) {
 		if (!in_array($action, array('generate', 'remove'))) {
 			$this->_stop();

@@ -43,9 +43,18 @@ class ImageStorage extends FileStorage {
  * @return boolean true on success
  */
 	public function beforeSave($options) {
-		parent::beforeSave($options);
+		if (!parent::beforeSave($options)) {
+			return false;
+		}
 
-		$this->log('beforeSave called', 'imageupload');
+		$Event = new CakeEvent('ImageStorage.beforeSave', $this, array(
+			'record' => $this->data));
+		//CakeEventManager::instance()->dispatch($Event);
+
+		if ($Event->isStopped()) {
+			return false;
+		}
+
 		return true;
 	}
 
@@ -59,13 +68,15 @@ class ImageStorage extends FileStorage {
 		parent::afterSave($created);
 
 		if ($created) {
+			$this->data[$this->alias][$this->primaryKey] = $this->getLastInsertId();
+
 			if ($this->createVersions === true) {
-				$this->data[$this->alias][$this->primaryKey] = $this->getLastInsertId();
-				if ($this->createVersions($this->data)) {
-					return $this->save($this->data, array('callbacks' => false, 'validate' => false));
-				}
-				$this->delete($this->id);
-				return false;
+
+				$Event = new CakeEvent('ImageStorage.afterSave', $this, array(
+					'created' => $created,
+					'storage' => StorageManager::adapter($this->data[$this->alias]['adapter']),
+					'record' => $this->data));
+				CakeEventManager::instance()->dispatch($Event);
 			}
 		}
 	}
@@ -80,15 +91,15 @@ class ImageStorage extends FileStorage {
 			return false;
 		}
 
-		if (!empty($this->record[$this->alias]['adapter'])) {
-			$adapter = $this->record[$this->alias]['adapter'];
-			$method = 'beforeDelete' . $adapter . 'Adapter';
-			if (method_exists($this, $method)) {
-				if (!$this->{$method}) {
-					return false;
-				}
-			}
+		$Event = new CakeEvent('ImageStorage.beforeDelete', $this, array(
+			'record' => $this->record,
+			'storage' => StorageManager::adapter($this->record[$this->alias]['adapter'])));
+		CakeEventManager::instance()->dispatch($Event);
+
+		if ($Event->isStopped()) {
+			return false;
 		}
+
 		return true;
 	}
 
@@ -98,38 +109,12 @@ class ImageStorage extends FileStorage {
  * @return void
  */
 	public function afterDelete() {
-		if (!empty($this->record[$this->alias]['adapter'])) {
-			$adapter = $this->record[$this->alias]['adapter'];
-			$method = 'afterDelete' . $adapter . 'Adapter';
-			if (method_exists($this, $method)) {
-				if (!$this->{$method}()) {
-					$this->log('Could not delete stored file:', 'file_storage');
-					$this->log($this->record, 'file_storage');
-				}
-			}
-		}
-	}
+		parent::afterDelete();
 
-/**
- * Removes an image from the local file storage adapter
- *
- * @return boolean True on success
- */
-	protected function afterDeleteLocalAdapter() {
-		$path = Configure::read('Media.basePath') . $this->record[$this->alias]['path'];
-		if (is_dir($path)) {
-			$Folder = new Folder($path);
-			return $Folder->delete();
-		}
-		return false;
-	}
-
-/**
- * @param array $results
- * @return array
- */
-	public function afterFind($results) {
-		return $results;
+		$Event = new CakeEvent('ImageStorage.afterDelete', $this, array(
+			'record' => $this->record,
+			'storage' => StorageManager::adapter($this->record[$this->alias]['adapter'])));
+		CakeEventManager::instance()->dispatch($Event);
 	}
 
 /**
@@ -160,13 +145,7 @@ class ImageStorage extends FileStorage {
 	}
 
 /**
- * Creates the versions of the image uploads
- *
- * @param string 
- * @param string 
- * @param string 
- * @param string 
- * @return
+ * @deperacted This has been replaced by Events
  */
 	public function createVersions($data = array(), $format = 'jpg') {
 		if (empty($data)) {
