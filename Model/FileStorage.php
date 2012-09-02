@@ -140,11 +140,16 @@ class FileStorage extends FileStorageAppModel {
 	}
 
 /**
- * @todo error handling, catch exceptions from the adapters
+ * 
  */
 	public function afterDelete() {
-		$Storage = Storagemanager::adapter($this->record[$this->alias]['adapter']);
-		$Storage->delete($this->record[$this->alias]['path']);
+		try {
+			$Storage = Storagemanager::adapter($this->record[$this->alias]['adapter']);
+			$Storage->delete($this->record[$this->alias]['path']);
+		} catch (Excepton $e) {
+			$this->log($e->getMessage(), 'file_storage');
+			return false;
+		}
 	}
 
 /**

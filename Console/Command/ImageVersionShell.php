@@ -144,12 +144,12 @@ class ImageVersionShell extends Shell {
 								'operations' => $operations);
 
 							if ($action == 'generate') {
-								$Event = new CakeEvent('ImageStorage.createVersion', $this->Model, $payload);
+								$Event = new CakeEvent('ImageVersion.createVersion', $this->Model, $payload);
 								CakeEventManager::instance()->dispatch($Event);
 							}
 
 							if ($action == 'remove') {
-								$Event = new CakeEvent('ImageStorage.removeVersion', $this->Model, $payload);
+								$Event = new CakeEvent('ImageVersion.removeVersion', $this->Model, $payload);
 								CakeEventManager::instance()->dispatch($Event);
 							}
 

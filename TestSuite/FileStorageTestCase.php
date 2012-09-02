@@ -17,9 +17,11 @@ class FileStorageTestCase extends CakeTestCase {
 	public function setUp() {
 		parent::setUp();
 
-		Configure::write('Media.basePath', TMP . 'file-storage-test' . DS);
-		if (!is_dir(TMP . 'file-storage-test')) {
-			$Folder = new Folder(TMP . 'file-storage-test', true);
+		$this->testPath = TMP . 'file-storage-test' . DS;
+		Configure::write('Media.basePath', $this->testPath);
+
+		if (!is_dir($this->testPath)) {
+			$Folder = new Folder($this->testPath, true);
 		}
 
 		Configure::write('Media.imageSizes', array(
@@ -36,7 +38,7 @@ class FileStorageTestCase extends CakeTestCase {
 		ClassRegistry::init('FileStorage.ImageStorage')->generateHashes();
 
 		StorageManager::config('Local', array(
-			'adapterOptions' => array(Configure::read('Media.basePath'), true),
+			'adapterOptions' => array($this->testPath, true),
 			'adapterClass' => '\Gaufrette\Adapter\Local',
 			'class' => '\Gaufrette\Filesystem'));
 	}

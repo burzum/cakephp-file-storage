@@ -15,8 +15,8 @@ class LocalImageProcessingListener extends Object implements CakeEventListener {
  */
 	public function implementedEvents() {
 		return array(
-			'ImageStorage.createVersion' => 'createVersions',
-			'ImageStorage.removeVersion' => 'removeVersions',
+			'ImageVersion.createVersion' => 'createVersions',
+			'ImageVersion.removeVersion' => 'removeVersions',
 			'ImageStorage.afterSave' => 'afterSave',
 			'ImageStorage.afterDelete' => 'afterDelete',
 			'FileStorage.ImageHelper.imagePath' => 'imagePath',
