@@ -23,7 +23,6 @@ class ImageHelperTest extends FileStorageTestCase {
 		$null = null;
 		$this->View = new View($null);
 		$this->Image = new ImageHelper($this->View);
-		$this->Gravatar->Html = new ImageHelper($this->View);
 	}
 
 /**

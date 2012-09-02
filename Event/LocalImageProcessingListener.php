@@ -23,6 +23,14 @@ class LocalImageProcessingListener extends Object implements CakeEventListener {
 		);
 	}
 
+/**
+ * Creates the different versions of images that are configured
+ * 
+ * @param Model $Model
+ * @param array $record
+ * @param array $operations
+ * @return void
+ */
 	protected function _createVersions($Model, $record, $operations1) {
 		try {
 			$Storage = StorageManager::adapter($record['adapter']);

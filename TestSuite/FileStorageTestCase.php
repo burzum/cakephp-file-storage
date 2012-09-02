@@ -1,5 +1,6 @@
 <?php
 App::uses('CakeTestCase', 'TestSuite');
+App::uses('Folder', 'Utility');
 /**
  * FileStorageTestCase
  *
@@ -8,13 +9,17 @@ App::uses('CakeTestCase', 'TestSuite');
  * @license MIT
  */
 class FileStorageTestCase extends CakeTestCase {
-
-	public function startTest($method) {
-		parent::startTest($method);
+/**
+ * Setup test folders and files
+ *
+ * @return void
+ */
+	public function setUp() {
+		parent::setUp();
 
 		Configure::write('Media.basePath', TMP . 'file-storage-test' . DS);
 		if (!is_dir(TMP . 'file-storage-test')) {
-			mkdir(TMP . 'file-storage-test');
+			$Folder = new Folder(TMP . 'file-storage-test', true);
 		}
 
 		Configure::write('Media.imageSizes', array(
@@ -36,9 +41,15 @@ class FileStorageTestCase extends CakeTestCase {
 			'class' => '\Gaufrette\Filesystem'));
 	}
 
-	public function endTest() {
-		$Folder = new Folder();
-		$Folder->delete(TMP . 'file-storage-test');
+/**
+ * Cleanup test files
+ *
+ * @return void
+ */
+	public function tearDown() {
+		parent::tearDown();
+		$Folder = new Folder(TMP . 'file-storage-test');
+		$Folder->delete();
 	}
 
 }
