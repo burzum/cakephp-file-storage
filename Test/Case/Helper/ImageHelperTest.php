@@ -1,8 +1,9 @@
 <?php
+App::uses('FileStorageTestCase', 'FileStorage.TestSuite');
 App::uses('ImageHelper', 'FileStorage.View/Helper');
 App::uses('View', 'View'); 
 
-class ImageHelperTest extends CakeTestCase {
+class ImageHelperTest extends FileStorageTestCase {
 
 /**
  * Gravatar helper
@@ -22,7 +23,6 @@ class ImageHelperTest extends CakeTestCase {
 		$null = null;
 		$this->View = new View($null);
 		$this->Image = new ImageHelper($this->View);
-		$this->Gravatar->Html = new ImageHelper($this->View);
 	}
 
 /**
@@ -36,19 +36,21 @@ class ImageHelperTest extends CakeTestCase {
 	}
 
 /**
- * testBaseUrlGeneration
+ * testImage
  *
  * @return void
  * @access public
  */
-	public function testDisplay() {
+	public function testImage() {
 		$image = array(
 			'id' => '32523525',
-			'model' => 'Article',
-			'path' => '/test/path/',
+			'model' => 'Test',
+			'path' => 'test/path/',
 			'extension' => 'jpg',
 			'adapter' => 'Local');
-		$result = $this->Image->display($image, 't150');
+
+		$result = $this->Image->image($image, 't150');
+		$this->assertEqual($result, '<img src="/test/path/32523525.c3f33c2a.jpg" alt="" />');
 	}
 
 }

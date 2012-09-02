@@ -119,6 +119,11 @@ Later, when you want to delete the file, for example in the beforeDelete() or af
 
 Insted of doing all of this in the model that has the files associated to it you can also simply extend the FileStorage model from the plugin and add your storage logic there and use that model for your association.
 
+#### Events
+
+ * ImageStorage.beforeSave
+ * ImageStorage.afterSave
+
 #### Why is it done like this? 
 
 Because every developer might want to store the file at a different point or apply other operations on the file before or after it is store. Based on different circumstances you might want to save an associated file even before you created the record its going to get attached to, in other scenarios like in this documentation you want to do it after.
@@ -173,6 +178,10 @@ The versioned image files will be in the same folder, which is the id of the rec
 	/ModelName/51/21/63/4c0f128f91fc48749662761d407888cc/4c0f128f91fc48749662761d407888cc.f91fsc.jpg
 
 You should smylink your image root folder to APP/webroot/images for example to avoid that images go through php and are send directly instead.
+
+#### Extending and changing image versioning
+
+It is possible to totally change the way image versions are created.
 
 ## Support
 
