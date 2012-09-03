@@ -48,7 +48,7 @@ class ImageHelperTest extends CakeTestCase {
 			'path' => '/test/path/',
 			'extension' => 'jpg',
 			'adapter' => 'Local');
-		$result = $this->Image->display($image, 't150');
+		$result = $this->Image->image($image, 't150');
 	}
 
 }
