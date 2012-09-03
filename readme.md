@@ -141,6 +141,7 @@ When you create a new listener it is important that you check the model field an
  * ImageStorage.afterDelete
  * FileStorage.beforeSave
  * FileStorage.afterSave
+ * FileStorage.afterDelete
 
 #### Why is it done like this? 
 

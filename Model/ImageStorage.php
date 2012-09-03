@@ -108,7 +108,7 @@ class ImageStorage extends FileStorage {
  * @return void
  */
 	public function afterDelete() {
-		parent::afterDelete();
+		//parent::afterDelete();
 
 		$Event = new CakeEvent('ImageStorage.afterDelete', $this, array(
 			'record' => $this->record,
