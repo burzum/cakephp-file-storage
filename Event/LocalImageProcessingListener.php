@@ -32,26 +32,26 @@ class LocalImageProcessingListener extends Object implements CakeEventListener {
  * @return void
  */
 	protected function _createVersions($Model, $record, $operations) {
-		try {
-			$Storage = StorageManager::adapter($record['adapter']);
-			$tmpFile = $this->_tmpFile($Storage, $record['path']);
+		$Storage = StorageManager::adapter($record['adapter']);
+		$path = $this->_buildPath($record, true);
+		$tmpFile = $this->_tmpFile($Storage, $path);
 
-			foreach ($operations as $version => $imageOperations) {
-				$hash = $Model->hashOperations($imageOperations);
-				$string = substr($record['path'], 0, - (strlen($record['extension'])) -1);
-				$string .= '.' . $hash . '.' . $record['extension'];
+		foreach ($operations as $version => $imageOperations) {
+			$hash = $Model->hashOperations($imageOperations);
+			$string = $this->_buildPath($record, true, $hash);
 
-				if ($Storage->has($string)) {
-					continue;
-				}
-
-				$image = $Model->processImage($tmpFile, null, array('format' => $record['extension']), $operations);
-				$result = $Storage->write($string, $image->get($record['extension']), true);
+			if ($Storage->has($string)) {
+				continue;
 			}
-		} catch (Exception $e) {
-			$this->log($e->getMessage(), 'file_storage');
-			unlink($tmpFile);
-			throw $e;
+
+			try {
+				$image = $Model->processImage($tmpFile, null, array('format' => $record['extension']), $imageOperations);
+				$result = $Storage->write($string, $image->get($record['extension']), true);
+			} catch (Exception $e) {
+				$this->log($e->getMessage(), 'file_storage');
+				unlink($tmpFile);
+				throw $e;
+			}
 		}
 
 		unlink($tmpFile);
@@ -132,24 +132,22 @@ class LocalImageProcessingListener extends Object implements CakeEventListener {
 		if ($this->_checkEvent($Event)) {
 			$Model = $Event->subject();
 			$Storage = StorageManager::adapter($Model->data[$Model->alias]['adapter']);
-			$record = $Model->data;
+			$record = $Model->data[$Model->alias];
 
 			try {
-				$id = $record[$Model->alias][$Model->primaryKey];
+				$id = $record[$Model->primaryKey];
 				$filename = $Model->stripUuid($id);
-				$file = $record[$Model->alias]['file'];
-				$format = $record[$Model->alias]['extension'];
-				$sizes = Configure::read('Media.imageSizes.' . $record[$Model->alias]['model']);
-				$path = $Model->fsPath('images' . DS . $record[$Model->alias]['model'], $id);
-				$path .= $this->_buildPath($record[$Model->alias], true);
+				$file = $record['file'];
+				$format = $record['extension'];
+				$sizes = Configure::read('Media.imageSizes.' . $record['model']);
+				$record['path'] = $Model->fsPath('images' . DS . $record['model'], $id);
+				$result = $Storage->write($record['path'] . $filename . '.' . $record['extension'], file_get_contents($file['tmp_name']), true);
 
-				$result = $Storage->write($record[$Model->alias]['path'], file_get_contents($file['tmp_name']), true);
-
-				$Model->save($record, array(
+				$Model->save(array($Model->alias => $record), array(
 					'validate' => false,
 					'callbacks' => false));
 
-				$this->_createVersions($Model, $record[$Model->alias], Configure::read('Media.imageSizes.' . $record[$Model->alias]['model']));
+				$this->_createVersions($Model, $record, Configure::read('Media.imageSizes.' . $record['model']));
 
 			} catch (Exception $e) {
 				$this->log($e->getMessage(), 'file_storage');
@@ -204,7 +202,11 @@ class LocalImageProcessingListener extends Object implements CakeEventListener {
 	}
 
 /**
- * 
+ * Builds a path to a file
+ *
+ * @param array $image
+ * @param boolean $extension
+ * @param string $hash
  */
 	protected function _buildPath($image, $extension = true, $hash = null) {
 		$path = $image['path'] . str_replace('-', '', $image['id']);
@@ -227,4 +229,5 @@ class LocalImageProcessingListener extends Object implements CakeEventListener {
 		$Model = $Event->subject();
 		return ($Model instanceOf ImageStorage && isset($Event->data['record'][$Model->alias]['adapter']) && $Event->data['record'][$Model->alias]['adapter'] == 'Local');
 	}
+
 }

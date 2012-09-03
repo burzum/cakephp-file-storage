@@ -24,7 +24,6 @@ class ImageStorageTest extends FileStorageTestCase {
  */
 	public function setUp() {
 		parent::setUp();
-
 		$this->Image = new ImageStorage();
 	}
 
@@ -62,7 +61,8 @@ class ImageStorageTest extends FileStorageTestCase {
 		$this->assertTrue(!empty($result) && is_array($result));
 		$this->assertTrue(file_exists($this->testPath . $result['FileStorage']['path']));
 
-		$Folder = new Folder(dirname($this->testPath . $result['FileStorage']['path']));
+		$path = $this->testPath . $result['FileStorage']['path'];
+		$Folder = new Folder($path);
 		$result = $Folder->read();
 		$this->assertEqual(count($result[1]), 3);
 	}
