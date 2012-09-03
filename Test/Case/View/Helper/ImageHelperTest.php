@@ -20,6 +20,7 @@ class ImageHelperTest extends FileStorageTestCase {
  * @access public
  */
 	public function setUp() {
+		parent::setUp();
 		$null = null;
 		$this->View = new View($null);
 		$this->Image = new ImageHelper($this->View);
@@ -32,6 +33,7 @@ class ImageHelperTest extends FileStorageTestCase {
  * @access public
  */
 	public function tearDown() {
+		parent::tearDown();
 		unset($this->Image);
 	}
 

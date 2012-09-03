@@ -165,9 +165,9 @@ class LocalImageProcessingListener extends Object implements CakeEventListener {
 			$Helper = $Event->subject();
 			extract($Event->data);
 
-			$path = $Helper->normalizePath($image['path']);
-			$path = $path . str_replace('-', '', $image['id']);
+			$path = substr($image['path'], 0, - (strlen($image['extension'])) -1);
 			$path .= '.' . $hash . '.' . $image['extension'];
+			$path = str_replace('\\', '/', $path);
 
 			$Event->data['path'] = $path;
 			$Event->stopPropagation();
