@@ -45,14 +45,14 @@ class ImageHelperTest extends FileStorageTestCase {
  */
 	public function testImage() {
 		$image = array(
-			'id' => '32523525',
+			'id' => 'e479b480-f60b-11e1-a21f-0800200c9a66',
 			'model' => 'Test',
 			'path' => 'test/path/',
 			'extension' => 'jpg',
 			'adapter' => 'Local');
 
 		$result = $this->Image->image($image, 't150');
-		$this->assertEqual($result, '<img src="/test/path/32523525.c3f33c2a.jpg" alt="" />');
+		$this->assertEqual($result, '<img src="/test/path/e479b480f60b11e1a21f0800200c9a66.c3f33c2a.jpg" alt="" />');
 	}
 
 }

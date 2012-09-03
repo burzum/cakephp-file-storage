@@ -31,13 +31,13 @@ class LocalImageProcessingListener extends Object implements CakeEventListener {
  * @param array $operations
  * @return void
  */
-	protected function _createVersions($Model, $record, $operations1) {
+	protected function _createVersions($Model, $record, $operations) {
 		try {
 			$Storage = StorageManager::adapter($record['adapter']);
 			$tmpFile = $this->_tmpFile($Storage, $record['path']);
 
-			foreach ($operations1 as $version => $operations) {
-				$hash = $Model->hashOperations($operations);
+			foreach ($operations as $version => $imageOperations) {
+				$hash = $Model->hashOperations($imageOperations);
 				$string = substr($record['path'], 0, - (strlen($record['extension'])) -1);
 				$string .= '.' . $hash . '.' . $record['extension'];
 
@@ -89,8 +89,7 @@ class LocalImageProcessingListener extends Object implements CakeEventListener {
 
 			foreach ($Event->data['operations'] as $version => $operations) {
 				$hash = $Model->hashOperations($operations);
-				$string = substr($record['path'], 0, - (strlen($record['extension'])) -1);
-				$string .= '.' . $hash . '.' . $record['extension'];
+				$string = $this->_buildPath($record, true, $hash);
 
 				try {
 					if ($Storage->has($string)) {
@@ -113,7 +112,8 @@ class LocalImageProcessingListener extends Object implements CakeEventListener {
  */
 	public function afterDelete($Event) {
 		if ($this->_checkEvent($Event)) {
-			$path = Configure::read('Media.basePath') . $this->record[$this->alias]['path'];
+			$Model = $Event->subject();
+			$path = Configure::read('Media.basePath') . $Event->data['record'][$Model->alias]['path'];
 			if (is_dir($path)) {
 				$Folder = new Folder($path);
 				return $Folder->delete();
@@ -141,7 +141,7 @@ class LocalImageProcessingListener extends Object implements CakeEventListener {
 				$format = $record[$Model->alias]['extension'];
 				$sizes = Configure::read('Media.imageSizes.' . $record[$Model->alias]['model']);
 				$path = $Model->fsPath('images' . DS . $record[$Model->alias]['model'], $id);
-				$record[$Model->alias]['path'] = $path . $filename . '.' . $format;
+				$path .= $this->_buildPath($record[$Model->alias], true);
 
 				$result = $Storage->write($record[$Model->alias]['path'], file_get_contents($file['tmp_name']), true);
 
@@ -158,16 +158,17 @@ class LocalImageProcessingListener extends Object implements CakeEventListener {
 	}
 
 /**
- * 
+ * Generates the path the image depending on the storage adapter
+ *
+ * @param CakeEvent $Event
+ * @return void
  */
 	public function imagePath($Event) {
 		if ($Event->data['image']['adapter'] == 'Local') {
 			$Helper = $Event->subject();
 			extract($Event->data);
 
-			$path = substr($image['path'], 0, - (strlen($image['extension'])) -1);
-			$path .= '.' . $hash . '.' . $image['extension'];
-			$path = str_replace('\\', '/', $path);
+			$path = $this->_buildPath($image, true, $hash);
 
 			$Event->data['path'] = $path;
 			$Event->stopPropagation();
@@ -200,6 +201,20 @@ class LocalImageProcessingListener extends Object implements CakeEventListener {
 		} catch (Exception $e) {
 			return false;
 		}
+	}
+
+/**
+ * 
+ */
+	protected function _buildPath($image, $extension = true, $hash = null) {
+		$path = $image['path'] . str_replace('-', '', $image['id']);
+		if (!empty($hash)) {
+			$path .= '.' . $hash;
+		}
+		if ($extension == true) {
+			$path .= '.' . $image['extension'];
+		}
+		return $path;
 	}
 
 /**
