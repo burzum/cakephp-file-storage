@@ -11,7 +11,7 @@ class FileStorageUtilsTest extends CakeTestCase {
  */
 	public function testRandomPath() {
 		$result = FileStorageUtils::randomPath('someteststring');
-		$this->assertEqual($result, '38\88\98\\');
+		$this->assertEqual($result, '38' . DS . '88' . DS . '98' . DS);
 	}
 
 /**
