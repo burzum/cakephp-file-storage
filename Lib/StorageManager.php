@@ -44,7 +44,7 @@ class StorageManager {
  * @param string
  * @return mixed
  */
-	public function config($adapter = null, $options = array()) {
+	public static function config($adapter = null, $options = array()) {
 		$_this = StorageManager::getInstance();
 
 		if (!empty($adapter) && !empty($options)) {
@@ -68,7 +68,7 @@ class StorageManager {
  * @param string
  * @return mixed
  */
-	public function activeAdapter($name = null) {
+	public static function activeAdapter($name = null) {
 		$_this = StorageManager::getInstance();
 
 		if (empty($name)) {
@@ -87,7 +87,7 @@ class StorageManager {
  * @param string $name Config name, if none all adapters are flushed
  * @return boolean True on success
  */
-	public function flush($name = null) {
+	public static function flush($name = null) {
 		$_this = StorageManager::getInstance();
 
 		if (empty($name)) {
@@ -113,7 +113,7 @@ class StorageManager {
  * @param boolean $renewObject Creates a new instance of the given adapter in the configuration
  * @return Gaufrette object as configured by first arg
  */
-	public function adapter($adapterName = null, $renewObject = false) {
+	public static function adapter($adapterName = null, $renewObject = false) {
 		$_this = StorageManager::getInstance();
 
 		if (empty($adapterName)) {

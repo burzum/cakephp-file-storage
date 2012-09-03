@@ -14,8 +14,9 @@ class FileStorageTest extends CakeTestCase {
  *
  * @return void
  */
-	public function startTest() {
-		$this->FileStorage = ClassRegistry::init('FileStorage.FileStorage');
+	public function startTest($method) {
+		parent::startTest($method);
+		$this->FileStorage = new FileStorage();
 	}
 
 /**

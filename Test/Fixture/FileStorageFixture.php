@@ -1,4 +1,11 @@
 <?php
+/**
+ * File Storage Fixture
+ *
+ * @author Florian Krämer
+ * @copyright 2012 Florian Krämer
+ * @license MIT
+ */
 class FileStorageFixture extends CakeTestFixture {
 
 /**
@@ -38,3 +45,42 @@ class FileStorageFixture extends CakeTestFixture {
 			'PRIMARY' => array('column' => 'id', 'unique' => 1)
 		),
 	);
+
+/**
+ * Records
+ *
+ * @var array
+ */
+	public $records = array(
+		array(
+			'id' => 'file-storage-1',
+			'user_id' => 'user-1',
+			'foreign_key' => 'item-1',
+			'model' => 'Item',
+			'filename' => 'cake.icon.png',
+			'filesize' => '',
+			'mime_type' => 'image/png',
+			'extension' => 'png',
+			'hash' => '',
+			'path' => '',
+			'adapter' => 'Local',
+			'created' => '2012-01-01 12:00:00',
+			'modified' => '2012-01-01 12:00:00',
+		),
+		array(
+			'id' => 'file-storage-2',
+			'user_id' => 'user-1',
+			'foreign_key' => 'item-1',
+			'model' => 'Item',
+			'filename' => 'titus-bienebek-bridle.jpg',
+			'filesize' => '',
+			'mime_type' => 'image/jpg',
+			'extension' => 'jpg',
+			'hash' => '',
+			'path' => '',
+			'adapter' => 'Local',
+			'created' => '2012-01-01 12:00:00',
+			'modified' => '2012-01-01 12:00:00',
+		),
+	);
+}
