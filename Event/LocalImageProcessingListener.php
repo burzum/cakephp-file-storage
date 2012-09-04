@@ -101,9 +101,10 @@ class LocalImageProcessingListener extends Object implements CakeEventListener {
 					}
 				} catch (Exception $e) {
 					$this->log($e->getMessage(), 'file_storage');
+					return false;
 				}
 			}
-
+			$Event->result = true;
 			$Event->stopPropagation();
 		}
 	}
