@@ -7,13 +7,13 @@
  * @license MIT
  */
 class ImageHelper extends AppHelper {
-
 /**
  * Helpers
  *
  * @var array
  */
-	public $helpers = array('Html');
+	public $helpers = array(
+		'Html');
 
 /**
  * Generates an image url based on the image record data and the used gaufrette adapter to store it
@@ -41,7 +41,7 @@ class ImageHelper extends AppHelper {
 		CakeEventManager::instance()->dispatch($Event);
 
 		if ($Event->isStopped()) {
-			return $this->Html->image('/' . $Event->data['path'], $options);
+			return $this->Html->image('/' . $this->normalizePath($Event->data['path']), $options);
 		} else {
 			return $this->fallbackImage($options);
 		}
@@ -70,20 +70,6 @@ class ImageHelper extends AppHelper {
  */
 	public function normalizePath($path) {
 		return str_replace('\\', '/', $path);
-	}
-
-/**
- * Processes an image record and builts that path that was created by gaufrettes local adapter
- *
- * @param array $image
- * @param string $version
- * @param string $hash
- */
-	protected function _localAdapter($image, $version = null, $hash) {
-		$path = $this->normalizePath($image['path']);
-		$path = $path . str_replace('-', '', $image['id']);
-		$path .= '.' . $hash . '.' . $image['extension'];
-		return $path;
 	}
 
 }
