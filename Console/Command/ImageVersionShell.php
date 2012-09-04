@@ -152,8 +152,11 @@ class ImageVersionShell extends Shell {
 								$Event = new CakeEvent('ImageVersion.removeVersion', $this->Model, $payload);
 								CakeEventManager::instance()->dispatch($Event);
 							}
-
-							$this->out(__('%s processed', $image[$this->Model->alias]['id']));
+							if($Event->result) {
+							  $this->out(__('%s processed', $image[$this->Model->alias]['id']));
+							} else {
+							  $this->out(__('%s not processed: File not found!', $image[$this->Model->alias]['id']));
+							}
 						}
 					}
 				}
