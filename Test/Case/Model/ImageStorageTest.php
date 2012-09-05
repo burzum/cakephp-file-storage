@@ -63,8 +63,31 @@ class ImageStorageTest extends FileStorageTestCase {
 
 		$path = $this->testPath . $result['FileStorage']['path'];
 		$Folder = new Folder($path);
-		$result = $Folder->read();
-		$this->assertEqual(count($result[1]), 3);
+		$folderResult = $Folder->read();
+		$this->assertEqual(count($folderResult[1]), 3);
+
+		Configure::write('Media.imageSizes.Test', array(
+			't200' => array(
+				'thumbnail' => array(
+					'mode' => 'outbound',
+					'width' => 200, 'height' => 200))));
+		ClassRegistry::init('FileStorage.ImageStorage')->generateHashes();
+
+		$Event = new CakeEvent('ImageVersion.createVersion', $this->Image, array(
+			'record' => $result,
+			'storage' => StorageManager::adapter('Local'),
+			'operations' => array(
+				't200' => array(
+					'thumbnail' => array(
+						'mode' => 'outbound',
+						'width' => 200, 'height' => 200)))));
+
+		CakeEventManager::instance()->dispatch($Event);
+
+		$path = $this->testPath . $result['FileStorage']['path'];
+		$Folder = new Folder($path);
+		$folderResult = $Folder->read();
+		$this->assertEqual(count($folderResult[1]), 4);
 	}
 
 }

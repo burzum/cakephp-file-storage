@@ -69,7 +69,7 @@ class LocalImageProcessingListener extends Object implements CakeEventListener {
 			$Storage = $Event->data['storage'];
 			$record = $Event->data['record'][$Model->alias];
 
-			$this->_createVersions($Model, $record[$Model->alias], $Event->data['operations']);
+			$this->_createVersions($Model, $record, $Event->data['operations']);
 
 			$Event->stopPropagation();
 		}
@@ -220,7 +220,7 @@ class LocalImageProcessingListener extends Object implements CakeEventListener {
 	}
 
 /**
- * Check if the event can be processed
+ * Check if the event is of a type / model we want to process with this listener
  *
  * @param CakeEvent $Event
  * @return boolean
