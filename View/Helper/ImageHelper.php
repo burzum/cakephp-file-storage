@@ -28,22 +28,32 @@ class ImageHelper extends AppHelper {
 			return $this->fallbackImage($options);
 		}
 
+		$url = $this->url($image, $version, $options);
+
+		if ($url !== false) {
+			return $this->Html->image($url, $options);
+		} else {
+			return $this->fallbackImage($options);
+		}
+	}
+
+	public function url($image, $version = null, $options = array()) {
 		$hash = Configure::read('Media.imageHashes.' . $image['model'] . '.' . $version);
 		if (empty($hash)) {
 			throw new InvalidArgumentException(__d('FileStorage', 'No valid version key passed!'));
 		}
 
 		$Event = new CakeEvent('FileStorage.ImageHelper.imagePath', $this, array(
-			'hash' => $hash,
-			'image' => $image,
-			'version' => $version,
-			'options' => $options));
+				'hash' => $hash,
+				'image' => $image,
+				'version' => $version,
+				'options' => $options));
 		CakeEventManager::instance()->dispatch($Event);
 
 		if ($Event->isStopped()) {
-			return $this->Html->image('/' . $this->normalizePath($Event->data['path']), $options);
+			return '/' . $this->normalizePath($Event->data['path']);
 		} else {
-			return $this->fallbackImage($options);
+			return false;
 		}
 	}
 
