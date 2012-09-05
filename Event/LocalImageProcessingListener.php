@@ -68,9 +68,13 @@ class LocalImageProcessingListener extends Object implements CakeEventListener {
 			$Model = $Event->subject();
 			$Storage = $Event->data['storage'];
 			$record = $Event->data['record'][$Model->alias];
-
-			$this->_createVersions($Model, $record[$Model->alias], $Event->data['operations']);
-
+			$path = $record['path'] . $record['id'] . '.' . $record['extension'];
+			if ($Storage->has($path)) {
+			  $this->_createVersions($Model, $record, $Event->data['operations']);
+			  $Event->result = true;
+			} else {
+			  $Event->result = false;
+			}
 			$Event->stopPropagation();
 		}
 	}
@@ -97,9 +101,10 @@ class LocalImageProcessingListener extends Object implements CakeEventListener {
 					}
 				} catch (Exception $e) {
 					$this->log($e->getMessage(), 'file_storage');
+					return false;
 				}
 			}
-
+			$Event->result = true;
 			$Event->stopPropagation();
 		}
 	}
