@@ -88,6 +88,23 @@ class ImageStorageTest extends FileStorageTestCase {
 		$Folder = new Folder($path);
 		$folderResult = $Folder->read();
 		$this->assertEqual(count($folderResult[1]), 4);
+
+
+		$Event = new CakeEvent('ImageVersion.removeVersion', $this->Image, array(
+			'record' => $result,
+			'storage' => StorageManager::adapter('Local'),
+			'operations' => array(
+				't200' => array(
+					'thumbnail' => array(
+						'mode' => 'outbound',
+						'width' => 200, 'height' => 200)))));
+
+		CakeEventManager::instance()->dispatch($Event);
+
+		$path = $this->testPath . $result['FileStorage']['path'];
+		$Folder = new Folder($path);
+		$folderResult = $Folder->read();
+		$this->assertEqual(count($folderResult[1]), 3);
 	}
 
 }
