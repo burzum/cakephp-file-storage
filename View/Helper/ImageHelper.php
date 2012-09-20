@@ -23,31 +23,46 @@ class ImageHelper extends AppHelper {
  * @param array $options HtmlHelper::image(), 2nd arg options array
  * @return string
  */
-	public function image($image, $version = null, $options = array()) {
-		if (empty($image) || empty($image['id'])) {
-			return $this->fallbackImage($options);
-		}
-
+	public function display($image, $version = null, $options = array()) {
 		$url = $this->url($image, $version, $options);
 
 		if ($url !== false) {
 			return $this->Html->image($url, $options);
-		} else {
-			return $this->fallbackImage($options);
 		}
+
+		return $this->fallbackImage($options);
 	}
 
+/**
+ * @deprecated Use "display" instead
+ */
+	public function image($image, $version = null, $options = array()) {
+		return $this->display($image, $version, $options);
+	}
+
+/**
+ * URL
+ *
+ * @param array $image FileStorage array record or whatever else table that matches this helpers needs without the model, we just want the record fields
+ * @param string $version Image version string
+ * @param array $options HtmlHelper::image(), 2nd arg options array
+ * @return string
+ */
 	public function url($image, $version = null, $options = array()) {
+		if (empty($image) || empty($image['id'])) {
+			return false;
+		}
+
 		$hash = Configure::read('Media.imageHashes.' . $image['model'] . '.' . $version);
 		if (empty($hash)) {
-			throw new InvalidArgumentException(__d('FileStorage', 'No valid version key passed!'));
+			throw new InvalidArgumentException(__d('FileStorage', 'No valid version key (%s %s) passed!', @$image['model'], $version));
 		}
 
 		$Event = new CakeEvent('FileStorage.ImageHelper.imagePath', $this, array(
-				'hash' => $hash,
-				'image' => $image,
-				'version' => $version,
-				'options' => $options));
+			'hash' => $hash,
+			'image' => $image,
+			'version' => $version,
+			'options' => $options));
 		CakeEventManager::instance()->dispatch($Event);
 
 		if ($Event->isStopped()) {
