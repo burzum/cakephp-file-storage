@@ -34,6 +34,35 @@ class FileStorage extends FileStorageAppModel {
 	public $displayField = 'filename';
 
 /**
+ * The record that was deleted
+ *
+ * This gets set in the beforeDelete() callback so that the data is available
+ * in the afterDelete() callback
+ *
+ * @var array
+ */
+	public $record = array();
+
+/**
+ * Validation rules
+ *
+ * @var array
+ */
+	public $validate = array(
+		'adapter' => array(
+			'notEmpty' => array(
+				'rule' => array('notEmpty'))),
+		'path' => array(
+			'notEmpty' => array(
+				'rule' => array('notEmpty'))),
+		'foreign_key' => array(
+			'notEmpty' => array(
+				'rule' => array('notEmpty'))),
+		'model' => array(
+			'notEmpty' => array(
+				'rule' => array('notEmpty'))));
+
+/**
  * Renews the FileUpload behavior with a new configuration
  *
  * @param array $options
@@ -49,7 +78,7 @@ class FileStorage extends FileStorageAppModel {
  *
  * @return boolean true on success
  */
-	public function beforeSave($options) {
+	public function beforeSave($options = array()) {
 		if (!empty($this->data[$this->alias]['file']['tmp_name'])) {
 			$File = new File($this->data[$this->alias]['file']['tmp_name']);
 			$this->data[$this->alias]['filesize'] = $File->size();
@@ -57,14 +86,35 @@ class FileStorage extends FileStorageAppModel {
 		}
 		if (!empty($this->data[$this->alias]['file']['name'])) {
 			$this->data[$this->alias]['extension'] = $this->fileExtension($this->data[$this->alias]['file']['name']);
-		}
-		if (!empty($this->data[$this->alias]['file']['name'])) {
 			$this->data[$this->alias]['filename'] = $this->data[$this->alias]['file']['name'];
 		}
+
 		if (empty($this->data[$this->alias]['adapter'])) {
 			$this->data[$this->alias]['adapter'] = 'Local';
 		}
+
+		$Event = new CakeEvent('FileStorage.beforeSave', $this, array(
+			'record' => $this->data,
+			'storage' => StorageManager::adapter($this->data[$this->alias]['adapter'])));
+		CakeEventManager::instance()->dispatch($Event);
+
+		if ($Event->isStopped()) {
+			return false;
+		}
+
 		return true;
+	}
+
+	public function afterSave($created) {
+		if ($created) {
+			$this->data[$this->alias][$this->primaryKey] = $this->getLastInsertId();
+		}
+
+		$Event = new CakeEvent('FileStorage.afterSave', $this, array(
+			'created' => $created,
+			'record' => $this->record,
+			'storage' => StorageManager::adapter($this->data[$this->alias]['adapter'])));
+		CakeEventManager::instance()->dispatch($Event);
 	}
 
 /**
@@ -72,23 +122,41 @@ class FileStorage extends FileStorageAppModel {
  *
  * @return boolean
  */
-	public function beforeDelete() {
+	public function beforeDelete($cascade = true) {
+		if (!parent::beforeDelete($cascade)) {
+			return false;
+		}
+
 		$this->record = $this->find('first', array(
 			'contain' => array(),
 			'conditions' => array(
 				$this->alias . '.' . $this->primaryKey => $this->id)));
+
 		if (empty($this->record)) {
 			return false;
 		}
+
 		return true;
 	}
 
 /**
- * @todo error handling, catch exceptions from the adapters
+ * afterDelete callback
+ *
+ * @return mixed
  */
 	public function afterDelete() {
-		$Storage = Storagemanager::adapter($this->record[$this->alias]['adapter']);
-		$Storage->delete($this->record[$this->alias]['path']);
+		try {
+			$Storage = Storagemanager::adapter($this->record[$this->alias]['adapter']);
+			$Storage->delete($this->record[$this->alias]['path']);
+		} catch (Exception $e) {
+			$this->log($e->getMessage(), 'file_storage');
+			return false;
+		}
+
+		$Event = new CakeEvent('FileStorage.afterDelete', $this, array(
+			'record' => $this->record,
+			'storage' => StorageManager::adapter($this->record[$this->alias]['adapter'])));
+		CakeEventManager::instance()->dispatch($Event);
 	}
 
 /**
@@ -96,7 +164,7 @@ class FileStorage extends FileStorageAppModel {
  *
  * This method is thought to be used to generate tmp file locations for use cases
  * like audio or image process were you need copies of a file and want to avoid
- * conflicts. By default the tmp file is generated using cakes TMP constant + 
+ * conflicts. By default the tmp file is generated using cakes TMP constant +
  * folder if passed and a uuid as filename.
  *
  * @param string $folder
@@ -128,7 +196,7 @@ class FileStorage extends FileStorageAppModel {
 	}
 
 /**
- * 
+ *
  */
 	public function fsPath($type, $string, $idFolder = true) {
 		$string = str_replace('-', '', $string);
@@ -140,7 +208,7 @@ class FileStorage extends FileStorageAppModel {
 	}
 
 /**
- * Return file extension from a given filename
+ * Return file extension from a given filename no matter if the file exists or not
  *
  * @param string
  * @return boolean string or false

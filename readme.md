@@ -119,6 +119,30 @@ Later, when you want to delete the file, for example in the beforeDelete() or af
 
 Insted of doing all of this in the model that has the files associated to it you can also simply extend the FileStorage model from the plugin and add your storage logic there and use that model for your association.
 
+#### How to store an uploaded file II - using Events
+
+The plugin comes with a class that acts just as a listener to some of the events in this plugin. Take a look at Filestorage/Event/LocalImageProcessingLister.php
+
+This class will listen to all the ImageStorage events and save the uploaded image and then create the versions for that image and storage adapter.
+
+It is important to understand that each storage adapter requires a different handling. You can not threat a local file the same as a file you store in a cloud service. The interface that this plugin and Gaufrette provide is the same but not the internals.
+
+So if you want to store a file using Amazon S3 you would have to store it, create all the versions of that image locally and then upload each of them and then delete the local temp files.
+
+When you create a new listener it is important that you check the model field and the event subject object if it matches what you expect. Using the event system you could create any kind of storage and upload behavior without inheriting or touching the model code. Just write a listener class and attach it to the global CakeEventManager.
+
+#### List of events
+
+ * ImageVersion.createVersion
+ * ImageVersion.removeVersion
+ * ImageStorage.beforeSave
+ * ImageStorage.afterSave
+ * ImageStorage.beforeDelete
+ * ImageStorage.afterDelete
+ * FileStorage.beforeSave
+ * FileStorage.afterSave
+ * FileStorage.afterDelete
+
 #### Why is it done like this? 
 
 Because every developer might want to store the file at a different point or apply other operations on the file before or after it is store. Based on different circumstances you might want to save an associated file even before you created the record its going to get attached to, in other scenarios like in this documentation you want to do it after.
@@ -173,6 +197,10 @@ The versioned image files will be in the same folder, which is the id of the rec
 	/ModelName/51/21/63/4c0f128f91fc48749662761d407888cc/4c0f128f91fc48749662761d407888cc.f91fsc.jpg
 
 You should smylink your image root folder to APP/webroot/images for example to avoid that images go through php and are send directly instead.
+
+#### Extending and changing image versioning
+
+It is possible to totally change the way image versions are created.
 
 ## Support
 

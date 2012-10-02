@@ -2,18 +2,18 @@
 /**
  * ImageHelper
  *
- * @author Florian Krämer
- * @copyright 2012 Florian Krämer
+ * @author Florian Krï¿½mer
+ * @copyright 2012 Florian Krï¿½mer
  * @license MIT
  */
 class ImageHelper extends AppHelper {
-
 /**
  * Helpers
  *
  * @var array
  */
-	public $helpers = array('Html');
+	public $helpers = array(
+		'Html');
 
 /**
  * Generates an image url based on the image record data and the used gaufrette adapter to store it
@@ -23,24 +23,53 @@ class ImageHelper extends AppHelper {
  * @param array $options HtmlHelper::image(), 2nd arg options array
  * @return string
  */
+	public function display($image, $version = null, $options = array()) {
+		$url = $this->url($image, $version, $options);
+
+		if ($url !== false) {
+			return $this->Html->image($url, $options);
+		}
+
+		return $this->fallbackImage($options);
+	}
+
+/**
+ * @deprecated Use "display" instead
+ */
 	public function image($image, $version = null, $options = array()) {
+		return $this->display($image, $version, $options);
+	}
+
+/**
+ * URL
+ *
+ * @param array $image FileStorage array record or whatever else table that matches this helpers needs without the model, we just want the record fields
+ * @param string $version Image version string
+ * @param array $options HtmlHelper::image(), 2nd arg options array
+ * @return string
+ */
+	public function url($image, $version = null, $options = array()) {
 		if (empty($image) || empty($image['id'])) {
-			return $this->fallbackImage($options);
+			return false;
 		}
 
 		$hash = Configure::read('Media.imageHashes.' . $image['model'] . '.' . $version);
 		if (empty($hash)) {
-			throw new InvalidArgumentException(__d('FileStorage', 'No valid version key passed!'));
+			throw new InvalidArgumentException(__d('FileStorage', 'No valid version key (%s %s) passed!', @$image['model'], $version));
 		}
 
-		$method = '_' . Inflector::camelize($image['adapter']) . 'Adapter';
-		$path = $this->{$method}($image, $version, $hash);
+		$Event = new CakeEvent('FileStorage.ImageHelper.imagePath', $this, array(
+			'hash' => $hash,
+			'image' => $image,
+			'version' => $version,
+			'options' => $options));
+		CakeEventManager::instance()->dispatch($Event);
 
-		if ($path === false) {
-			return $this->fallbackImage($options);
+		if ($Event->isStopped()) {
+			return '/' . $this->normalizePath($Event->data['path']);
+		} else {
+			return false;
 		}
-
-		return $this->Html->image('/' . $path, $options);
 	}
 
 /**
@@ -66,30 +95,6 @@ class ImageHelper extends AppHelper {
  */
 	public function normalizePath($path) {
 		return str_replace('\\', '/', $path);
-	}
-
-/**
- * Processes an image record and builts that path that was created by gaufrettes local adapter
- *
- * @param array $image
- * @param string $version
- * @param string $hash
- */
-	protected function _localAdapter($image, $version = null, $hash) {
-		$path = $this->normalizePath($image['path']);
-		$path = $path . str_replace('-', '', $image['id']);
-		$path .= '.' . $hash . '.' . $image['extension'];
-		return $path;
-	}
-
-/**
- * @todo 
- * @param array $image
- * @param string $version
- * @param string $hash
- */
-	protected function _amazonS3Adapter($image, $version = null, $hash) {
-		
 	}
 
 }
