@@ -2,8 +2,8 @@
 /**
  * Utility methods for which I could not find a better place
  *
- * @author Florian Krämer
- * @copyright 2012 Florian Krämer
+ * @author Florian Krï¿½mer
+ * @copyright 2012 Florian Krï¿½mer
  * @license MIT
  */
 class FileStorageUtils {
@@ -91,6 +91,26 @@ class FileStorageUtils {
 		} else {
 			return str_replace('/', '\\', $string);
 		}
+	}
+
+/**
+ * Method to normalize the annoying inconsistency of the $_FILE array structure
+ *
+ * @link http://www.php.net/manual/en/features.file-upload.multiple.php#109437
+ * @return array Empty array if $_FILE is empty, if not normalize array of Filedata.{n}
+ */
+	public static function normalizeGlobalFilesArray() {
+		$newfiles = array();
+		if (!empty($_FILES)) {
+			foreach ($_FILES as $fieldname => $fieldvalue) {
+				foreach ($fieldvalue as $paramname => $paramvalue) {
+					foreach ((array)$paramvalue as $index => $value) {
+						$newfiles[$fieldname][$index][$paramname] = $value;
+					}
+				}
+			}
+		}
+		return $newfiles;
 	}
 
 }
