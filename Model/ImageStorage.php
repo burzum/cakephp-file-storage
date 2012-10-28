@@ -40,6 +40,7 @@ class ImageStorage extends FileStorage {
 /**
  * beforeSave callback
  *
+ * @param array $options
  * @return boolean true on success
  */
 	public function beforeSave($options = array()) {
@@ -70,7 +71,6 @@ class ImageStorage extends FileStorage {
 			$this->data[$this->alias][$this->primaryKey] = $this->getLastInsertId();
 
 			if ($this->createVersions === true) {
-
 				$Event = new CakeEvent('ImageStorage.afterSave', $this, array(
 					'created' => $created,
 					'storage' => StorageManager::adapter($this->data[$this->alias]['adapter']),
@@ -83,6 +83,7 @@ class ImageStorage extends FileStorage {
 /**
  * Get a copy of the actual record before we delete it to have it present in afterDelete
  *
+ * @param boolean $cascade
  * @return boolean
  */
 	public function beforeDelete($cascade = true) {
@@ -105,23 +106,15 @@ class ImageStorage extends FileStorage {
 /**
  * After the main file was deleted remove the the thumbnails
  *
+ * Note that we do not call the parent::afterDelete(), we just want to trigger the ImageStorage.afterDelete event but not the FileStorage.afterDelete at the same time!
+ *
  * @return void
  */
 	public function afterDelete() {
-		//parent::afterDelete();
-
 		$Event = new CakeEvent('ImageStorage.afterDelete', $this, array(
 			'record' => $this->record,
 			'storage' => StorageManager::adapter($this->record[$this->alias]['adapter'])));
 		CakeEventManager::instance()->dispatch($Event);
-	}
-
-/**
- * @param array $results
- * @return array
- */
-	public function afterFind($results, $primary = false) {
-		return $results;
 	}
 
 /**
@@ -155,34 +148,7 @@ class ImageStorage extends FileStorage {
  * @deperacted This has been replaced by Events
  */
 	public function createVersions($data = array(), $format = 'jpg') {
-		if (empty($data)) {
-			$data = $this->data;
-		}
-		extract($data[$this->alias]);
-		if (empty($model)) {
-			$model = $this->alias;
-		}
-
-		$filename = $this->stripUuid($id);
-		$sizes = Configure::read('Media.imageSizes.' . $model);
-		$path = $this->fsPath('images' . DS . $model, $id);
-		$this->data[$this->alias]['path'] = $path;
-
-		try {
-			$Gaufrette = StorageManager::adapter($adapter);
-			$result = $Gaufrette->write($path . $filename . '.' . $format, file_get_contents($file['tmp_name']), true);
-			foreach ($sizes as $type => $operations) {
-				$hash = $this->hashOperations($operations);
-				$image = $this->processImage($file['tmp_name'], null, array('format' => $format), $operations);
-				$result = $Gaufrette->write($path . $filename . '.' . $hash . '.' . $format, $image->get($format), true);
-			}
-		} catch (Exception $e) {
-			$this->log($e->getMessage(), 'file_storage');
-			//$this->delete($this->id);
-			return false;
-		}
-
-		return true;
+		throw new InternalErrorException(__('file_storage', 'ImageStorage::createVersions is deprecated use the event system.'));
 	}
 
 /**

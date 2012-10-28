@@ -105,6 +105,12 @@ class FileStorage extends FileStorageAppModel {
 		return true;
 	}
 
+/**
+ * afterSave callback
+ *
+ * @param boolean $created
+ * @return void
+ */
 	public function afterSave($created) {
 		if ($created) {
 			$this->data[$this->alias][$this->primaryKey] = $this->getLastInsertId();
@@ -120,6 +126,7 @@ class FileStorage extends FileStorageAppModel {
 /**
  * Get a copy of the actual record before we delete it to have it present in afterDelete
  *
+ * @param boolean $cascade
  * @return boolean
  */
 	public function beforeDelete($cascade = true) {
