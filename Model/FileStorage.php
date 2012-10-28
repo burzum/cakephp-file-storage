@@ -145,14 +145,6 @@ class FileStorage extends FileStorageAppModel {
  * @return mixed
  */
 	public function afterDelete() {
-		try {
-			$Storage = Storagemanager::adapter($this->record[$this->alias]['adapter']);
-			$Storage->delete($this->record[$this->alias]['path']);
-		} catch (Exception $e) {
-			$this->log($e->getMessage(), 'file_storage');
-			return false;
-		}
-
 		$Event = new CakeEvent('FileStorage.afterDelete', $this, array(
 			'record' => $this->record,
 			'storage' => StorageManager::adapter($this->record[$this->alias]['adapter'])));
