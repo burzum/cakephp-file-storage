@@ -106,7 +106,7 @@ Lets go by this scenario inside the report model, assuming there is an add() met
 	if ($this->save($data)) {
 		$key = 'your-file-name';
 		if (StorageManager::adapter('Local')->write($key, file_get_contents($this->data['PdfFile']['tmp_name']))) {
-			$this->data['PdfFile']['foreignKey'] = $this->getLastInsertId();
+			$this->data['PdfFile']['foreign_key'] = $this->getLastInsertId();
 			$this->data['PdfFile']['model'] = 'Report';
 			$this->data['PdfFile']['path'] = $key;
 			$this->data['PdfFile']['adapter'] = 'Local';
