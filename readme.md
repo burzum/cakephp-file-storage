@@ -182,7 +182,7 @@ All you need to do is basically use the image model and configure versions on a 
 		)
 	);
 	App::uses('ClassRegistry', 'Utility');
-	ClassRegistry::init('FileStorage.ImageStorage')->generateHashes();
+	ClassRegistry::init('FileStorage.Image')->generateHashes();
 
 Calling generateHashes is important, it will create the hash values for each versioned image and store them in Media.imageHashes in the configuration.
 
