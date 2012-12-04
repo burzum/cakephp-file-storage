@@ -76,6 +76,7 @@ class FileStorage extends FileStorageAppModel {
 /**
  * beforeSave callback
  *
+ * @param array $options
  * @return boolean true on success
  */
 	public function beforeSave($options = array()) {
