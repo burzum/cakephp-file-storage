@@ -168,4 +168,49 @@ class ImageStorage extends FileStorage {
 		return true;
 	}
 
+/**
+ * Image size validation method
+ *
+ * @param mixed $check
+ * @param array $options
+ * @return boolean true
+ * @throws \InvalidArgumentException
+ */
+	public function validateImageSize($check, $options) {
+		if (!isset($options['height']) && !isset($options['width'])) {
+			throw new \InvalidArgumentException(__d('file_storage', 'Invalid image size validation parameters'));
+		}
+
+		if (is_string($check)) {
+			$imageFile = $check;
+		} else {
+			$check = array_values($check);
+			$check = $check[0];
+			if (is_array($check) && isset($check['tmp_name'])) {
+				$imageFile = $check['tmp_name'];
+			} else {
+				$imageFile = $check;
+			}
+		}
+
+		$imageSizes = $this->getImageSize($imageFile);
+
+		if (isset($options['height'])) {
+			$height = Validation::comparison($imageSizes[1], $options['height'][0], $options['height'][1]);
+		} else {
+			$height = true;
+		}
+
+		if (isset($options['width'])) {
+			$width = Validation::comparison($imageSizes[0], $options['width'][0], $options['width'][1]);
+		} else {
+			$width = true;
+		}
+
+		if ($height === false || $width === false) {
+			return false;
+		}
+
+		return true;
+	}
 }
