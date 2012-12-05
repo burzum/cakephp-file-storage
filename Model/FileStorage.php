@@ -12,6 +12,7 @@ App::uses('FileStorageUtils', 'FileStorage.Utility');
  * @license MIT
  */
 class FileStorage extends FileStorageAppModel {
+
 /**
  * Name
  *
@@ -161,7 +162,6 @@ class FileStorage extends FileStorageAppModel {
 			return false;
 		}
 
-
 		$Event = new CakeEvent('FileStorage.afterDelete', $this, array(
 			'record' => $this->record,
 			'storage' => StorageManager::adapter($this->record[$this->alias]['adapter'])));
@@ -191,7 +191,7 @@ class FileStorage extends FileStorageAppModel {
 			new Folder($path, true);
 		}
 
-		return $path . String::uuid();;
+		return $path . String::uuid();
 	}
 
 /**

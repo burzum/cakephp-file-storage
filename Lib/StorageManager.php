@@ -2,11 +2,12 @@
 /**
  * StorageManager - manages and instantiates gaufrette storage engine instances
  *
- * @author Florian Krämer
- * @copyright 2012 Florian Krämer
+ * @author Florian KrÃ¤mer
+ * @copyright 2012 Florian KrÃ¤mer
  * @license MIT
  */
 class StorageManager {
+
 /**
  * Adapter configs
  *
@@ -75,7 +76,7 @@ class StorageManager {
 			return $_this->_activeAdapter;
 		}
 
-		if (isset($this->_adapterConfig[$name])) {
+		if (isset($_this->_adapterConfig[$name])) {
 			return $_this->_activeAdapter = $name;
 		}
 		return false;
@@ -85,6 +86,7 @@ class StorageManager {
  * Flush all or a single adapter from the config
  *
  * @param string $name Config name, if none all adapters are flushed
+ * @throws RuntimeException
  * @return boolean True on success
  */
 	public static function flush($name = null) {
@@ -111,6 +113,7 @@ class StorageManager {
  *
  * @param mixed $adapterName string of adapter configuration or array of settings
  * @param boolean $renewObject Creates a new instance of the given adapter in the configuration
+ * @throws RuntimeException
  * @return Gaufrette object as configured by first arg
  */
 	public static function adapter($adapterName = null, $renewObject = false) {

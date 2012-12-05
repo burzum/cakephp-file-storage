@@ -25,6 +25,7 @@ App::uses('File', 'Utility');
  * @package       Cake.Model.Behavior
  */
 class UploadValidatorBehavior extends ModelBehavior {
+
 /**
  * Settings array
  *
@@ -60,8 +61,10 @@ class UploadValidatorBehavior extends ModelBehavior {
  * Merge settings with default config, then it is checking if the target directory
  * exists and if it is writeable. It will throw an error if one of both fails.
  *
- * @param AppModel $Model
+ * @param \AppModel|\Model $Model
  * @param array $settings
+ * @throws InvalidArgumentException
+ * @return void
  */
 	public function setup(Model $Model, $settings = array()) {
 		if (!is_array($settings)) {
@@ -77,7 +80,7 @@ class UploadValidatorBehavior extends ModelBehavior {
  * Check if the file is really an uploaded file and run custom checks for file 
  * extensions and / or mime type if configured to do so.
  *
- * @param AppModel $Model
+ * @param Model $Model
  * @return boolean True on success
  */
 	public function beforeValidate(Model $Model) {
@@ -168,7 +171,7 @@ class UploadValidatorBehavior extends ModelBehavior {
 					return true;
 				break;
 				case UPLOAD_ERR_INI_SIZE:
-					$this->uploadError = __d('FileStorage', 'The uploaded file exceeds limit of ('.ini_get('upload_max_filesize').').');
+					$this->uploadError = __d('FileStorage', 'The uploaded file exceeds limit of (' . ini_get('upload_max_filesize') . ').');
 				break;
 				case UPLOAD_ERR_FORM_SIZE:
 					$this->uploadError = __d('FileStorage', 'The uploaded file is to big, please choose a smaller file or try to compress it.');

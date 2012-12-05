@@ -9,6 +9,7 @@ App::uses('Folder', 'Utility');
  * @license MIT
  */
 class ImageStorage extends FileStorage {
+
 /**
  * Table to use
  *
@@ -146,6 +147,7 @@ class ImageStorage extends FileStorage {
 
 /**
  * @deperacted This has been replaced by Events
+ * @throws InternalErrorException
  */
 	public function createVersions($data = array(), $format = 'jpg') {
 		throw new InternalErrorException(__('file_storage', 'ImageStorage::createVersions is deprecated use the event system.'));
@@ -159,11 +161,11 @@ class ImageStorage extends FileStorage {
  * @return void
  * @link https://gist.github.com/601849
  */
-	public function ksortRecursive(&$array, $sort_flags = SORT_REGULAR) {
+	public function ksortRecursive(&$array, $sortFlags = SORT_REGULAR) {
 		if (!is_array($array)) return false;
-		ksort($array, $sort_flags);
+		ksort($array, $sortFlags);
 		foreach ($array as &$arr) {
-			$this->ksortRecursive($arr, $sort_flags);
+			$this->ksortRecursive($arr, $sortFlags);
 		}
 		return true;
 	}

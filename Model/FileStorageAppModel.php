@@ -3,10 +3,11 @@ App::uses('AppModel', 'Model');
 /**
  * FileStorageAppModel
  *
- * @copyright 2012 Florian Kr‰mer
+ * @copyright 2012 Florian Kr√§mer
  * @license MIT
  */
 class FileStorageAppModel extends AppModel {
+
 /**
  * Behaviors
  *
