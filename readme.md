@@ -106,7 +106,7 @@ Lets go by this scenario inside the report model, assuming there is an add() met
 	if ($this->save($data)) {
 		$key = 'your-file-name';
 		if (StorageManager::adapter('Local')->write($key, file_get_contents($this->data['PdfFile']['tmp_name']))) {
-			$this->data['PdfFile']['foreignKey'] = $this->getLastInsertId();
+			$this->data['PdfFile']['foreign_key'] = $this->getLastInsertId();
 			$this->data['PdfFile']['model'] = 'Report';
 			$this->data['PdfFile']['path'] = $key;
 			$this->data['PdfFile']['adapter'] = 'Local';
@@ -182,7 +182,7 @@ All you need to do is basically use the image model and configure versions on a 
 		)
 	);
 	App::uses('ClassRegistry', 'Utility');
-	ClassRegistry::init('FileStorage.ImageStorage')->generateHashes();
+	ClassRegistry::init('FileStorage.Image')->generateHashes();
 
 Calling generateHashes is important, it will create the hash values for each versioned image and store them in Media.imageHashes in the configuration.
 
