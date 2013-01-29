@@ -100,7 +100,7 @@ Because of to many different requirements and personal preferences out there the
 
 Lets go by this scenario inside the report model, assuming there is an add() method:
 
-	$this->create()
+	$this->create();
 	if ($this->save($data)) {
 		$key = 'your-file-name';
 		if (StorageManager::adapter('Local')->write($key, file_get_contents($this->data['PdfFile']['tmp_name']))) {
