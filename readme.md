@@ -34,6 +34,10 @@ To be able to simply autoload Gaufrette load the plugin with bootstrap enabled. 
 
 	CakePlugin::load('FileStorage', array('bootstrap' => true));
 
+You also need to setup the plugin database :
+
+    cake schema create --plugin FileStorage
+
 This plugin depends on the Gaufrette library (https://github.com/KnpLabs/Gaufrette), init the submodule, the plugin depends on it.
 
 	git submodule update --init
