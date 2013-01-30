@@ -34,6 +34,10 @@ To be able to simply autoload Gaufrette load the plugin with bootstrap enabled. 
 
 	CakePlugin::load('FileStorage', array('bootstrap' => true));
 
+You also need to setup the plugin database :
+
+    cake schema create --plugin FileStorage
+
 This plugin depends on the Gaufrette library (https://github.com/KnpLabs/Gaufrette), init the submodule, the plugin depends on it.
 
 	git submodule update --init
@@ -42,9 +46,7 @@ If you want to use S3 upload Gaufrette has also submodules to initialize. Here i
 
 	cd YOUR-APP-FOLDER
 	git submodule add git://github.com/burzum/FileStorage.git Plugin/FileStorage
-	git submodule update --init
-	cd Plugin/FileStorage
-	git submodule update --init
+	git submodule update --init --recursive
 
 If you do not want to add it as submodule just clone it instead of doing submodule add
 
@@ -102,7 +104,7 @@ Because of to many different requirements and personal preferences out there the
 
 Lets go by this scenario inside the report model, assuming there is an add() method:
 
-	$this->create()
+	$this->create();
 	if ($this->save($data)) {
 		$key = 'your-file-name';
 		if (StorageManager::adapter('Local')->write($key, file_get_contents($this->data['PdfFile']['tmp_name']))) {
