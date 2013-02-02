@@ -210,6 +210,10 @@ For support and feature request, please visit the FileStorage issue page
 
 https://github.com/burzum/FileStorage/issues
 
+## Contributions
+
+Please send pull request to `devevelop` branch.
+
 ## License
 
 Copyright 2012, Florian Krämer
