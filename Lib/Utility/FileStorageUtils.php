@@ -99,10 +99,14 @@ class FileStorageUtils {
  * @link http://www.php.net/manual/en/features.file-upload.multiple.php#109437
  * @return array Empty array if $_FILE is empty, if not normalize array of Filedata.{n}
  */
-	public static function normalizeGlobalFilesArray() {
+	public static function normalizeGlobalFilesArray($array = null) {
+		if (empty($array)) {
+			$array = $_FILES;
+		}
+
 		$newfiles = array();
-		if (!empty($_FILES)) {
-			foreach ($_FILES as $fieldname => $fieldvalue) {
+		if (!empty($array)) {
+			foreach ($array as $fieldname => $fieldvalue) {
 				foreach ($fieldvalue as $paramname => $paramvalue) {
 					foreach ((array)$paramvalue as $index => $value) {
 						$newfiles[$fieldname][$index][$paramname] = $value;
