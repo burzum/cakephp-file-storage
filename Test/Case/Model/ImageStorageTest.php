@@ -107,4 +107,74 @@ class ImageStorageTest extends FileStorageTestCase {
 		$this->assertEqual(count($folderResult[1]), 3);
 	}
 
+/**
+ * testValidateImazeSize
+ *
+ * @return void
+ */
+	public function testValidateImazeSize() {
+		$this->Image->Behaviors->unload('FileStorage.UploadValidator');
+
+		$this->Image->validate = array(
+			'file' => array(
+				'image' => array(
+					'rule' => array(
+						'validateImageSize', array(
+							'height' => array('>=', 1000),
+							'width' => array('<=', 1000))),
+					'message' => 'Invalid image size')));
+
+		$this->Image->set(array(
+			'file' => array(
+				'tmp_name' => CakePlugin::path('FileStorage') . DS . 'Test' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg')));
+
+		$this->assertFalse($this->Image->validates());
+
+
+		$this->Image->validate = array(
+			'file' => array(
+				'image' => array(
+					'rule' => array(
+						'validateImageSize', array(
+							'height' => array('<=', 1000),
+							'width' => array('<=', 1000))),
+					'message' => 'Invalid image size')));
+
+		$this->Image->set(array(
+			'file' => array(
+				'tmp_name' => CakePlugin::path('FileStorage') . DS . 'Test' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg')));
+
+		$this->assertTrue($this->Image->validates());
+
+
+		$this->Image->validate = array(
+			'file' => array(
+				'image' => array(
+					'rule' => array(
+						'validateImageSize', array(
+							'height' => array('>=', 100),
+							'width' => array('>=', 100))),
+					'message' => 'Invalid image size')));
+
+		$this->Image->set(array(
+			'file' => array(
+				'tmp_name' => CakePlugin::path('FileStorage') . DS . 'Test' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg')));
+
+		$this->assertTrue($this->Image->validates());
+
+
+		$this->Image->validate = array(
+			'file' => array(
+				'image' => array(
+					'rule' => array(
+						'validateImageSize', array(
+							'width' => array('>=', 100))),
+					'message' => 'Invalid image size')));
+
+		$this->Image->set(array(
+			'file' => array(
+				'tmp_name' => CakePlugin::path('FileStorage') . DS . 'Test' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg')));
+
+		$this->assertTrue($this->Image->validates());
+	}
 }

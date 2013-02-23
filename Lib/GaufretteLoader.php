@@ -1,5 +1,6 @@
 <?php
 class GaufretteLoader {
+
 /**
  * Gaufrette Vendor Classloader
  *
@@ -14,7 +15,7 @@ class GaufretteLoader {
 
 		$class = str_replace('\\', DS, $class);
 		if (file_exists($base . $class . '.php')) {
-			include($base . $class . '.php');
+			include ($base . $class . '.php');
 		}
 	}
 }

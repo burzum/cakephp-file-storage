@@ -34,6 +34,10 @@ To be able to simply autoload Gaufrette load the plugin with bootstrap enabled. 
 
 	CakePlugin::load('FileStorage', array('bootstrap' => true));
 
+You also need to setup the plugin database :
+
+    cake schema create --plugin FileStorage
+
 This plugin depends on the Gaufrette library (https://github.com/KnpLabs/Gaufrette), init the submodule, the plugin depends on it.
 
 	git submodule update --init
@@ -42,9 +46,7 @@ If you want to use S3 upload Gaufrette has also submodules to initialize. Here i
 
 	cd YOUR-APP-FOLDER
 	git submodule add git://github.com/burzum/FileStorage.git Plugin/FileStorage
-	git submodule update --init
-	cd Plugin/FileStorage
-	git submodule update --init
+	git submodule update --init --recursive
 
 If you do not want to add it as submodule just clone it instead of doing submodule add
 
@@ -102,11 +104,11 @@ Because of to many different requirements and personal preferences out there the
 
 Lets go by this scenario inside the report model, assuming there is an add() method:
 
-	$this->create()
+	$this->create();
 	if ($this->save($data)) {
 		$key = 'your-file-name';
-		if (StorageManager::adapter('Local')->write($key, file_get_contents($this->data['PdfFile']['tmp_name']))) {
-			$this->data['PdfFile']['foreignKey'] = $this->getLastInsertId();
+		if (StorageManager::adapter('Local')->write($key, file_get_contents($this->data['PdfFile']['file']['tmp_name']))) {
+			$this->data['PdfFile']['foreign_key'] = $this->getLastInsertId();
 			$this->data['PdfFile']['model'] = 'Report';
 			$this->data['PdfFile']['path'] = $key;
 			$this->data['PdfFile']['adapter'] = 'Local';
@@ -182,7 +184,7 @@ All you need to do is basically use the image model and configure versions on a 
 		)
 	);
 	App::uses('ClassRegistry', 'Utility');
-	ClassRegistry::init('FileStorage.ImageStorage')->generateHashes();
+	ClassRegistry::init('FileStorage.Image')->generateHashes();
 
 Calling generateHashes is important, it will create the hash values for each versioned image and store them in Media.imageHashes in the configuration.
 
@@ -207,6 +209,10 @@ It is possible to totally change the way image versions are created.
 For support and feature request, please visit the FileStorage issue page
 
 https://github.com/burzum/FileStorage/issues
+
+## Contributions
+
+Please send pull request to `devevelop` branch.
 
 ## License
 

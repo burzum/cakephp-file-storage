@@ -9,6 +9,7 @@ App::uses('Folder', 'Utility');
  * @license MIT
  */
 class ImageStorage extends FileStorage {
+
 /**
  * Table to use
  *
@@ -40,6 +41,7 @@ class ImageStorage extends FileStorage {
 /**
  * beforeSave callback
  *
+ * @param array $options
  * @return boolean true on success
  */
 	public function beforeSave($options = array()) {
@@ -70,7 +72,6 @@ class ImageStorage extends FileStorage {
 			$this->data[$this->alias][$this->primaryKey] = $this->getLastInsertId();
 
 			if ($this->createVersions === true) {
-
 				$Event = new CakeEvent('ImageStorage.afterSave', $this, array(
 					'created' => $created,
 					'storage' => StorageManager::adapter($this->data[$this->alias]['adapter']),
@@ -83,6 +84,7 @@ class ImageStorage extends FileStorage {
 /**
  * Get a copy of the actual record before we delete it to have it present in afterDelete
  *
+ * @param boolean $cascade
  * @return boolean
  */
 	public function beforeDelete($cascade = true) {
@@ -105,23 +107,15 @@ class ImageStorage extends FileStorage {
 /**
  * After the main file was deleted remove the the thumbnails
  *
+ * Note that we do not call the parent::afterDelete(), we just want to trigger the ImageStorage.afterDelete event but not the FileStorage.afterDelete at the same time!
+ *
  * @return void
  */
 	public function afterDelete() {
-		//parent::afterDelete();
-
 		$Event = new CakeEvent('ImageStorage.afterDelete', $this, array(
 			'record' => $this->record,
 			'storage' => StorageManager::adapter($this->record[$this->alias]['adapter'])));
 		CakeEventManager::instance()->dispatch($Event);
-	}
-
-/**
- * @param array $results
- * @return array
- */
-	public function afterFind($results, $primary = false) {
-		return $results;
 	}
 
 /**
@@ -153,36 +147,10 @@ class ImageStorage extends FileStorage {
 
 /**
  * @deperacted This has been replaced by Events
+ * @throws InternalErrorException
  */
 	public function createVersions($data = array(), $format = 'jpg') {
-		if (empty($data)) {
-			$data = $this->data;
-		}
-		extract($data[$this->alias]);
-		if (empty($model)) {
-			$model = $this->alias;
-		}
-
-		$filename = $this->stripUuid($id);
-		$sizes = Configure::read('Media.imageSizes.' . $model);
-		$path = $this->fsPath('images' . DS . $model, $id);
-		$this->data[$this->alias]['path'] = $path;
-
-		try {
-			$Gaufrette = StorageManager::adapter($adapter);
-			$result = $Gaufrette->write($path . $filename . '.' . $format, file_get_contents($file['tmp_name']), true);
-			foreach ($sizes as $type => $operations) {
-				$hash = $this->hashOperations($operations);
-				$image = $this->processImage($file['tmp_name'], null, array('format' => $format), $operations);
-				$result = $Gaufrette->write($path . $filename . '.' . $hash . '.' . $format, $image->get($format), true);
-			}
-		} catch (Exception $e) {
-			$this->log($e->getMessage(), 'file_storage');
-			//$this->delete($this->id);
-			return false;
-		}
-
-		return true;
+		throw new InternalErrorException(__('file_storage', 'ImageStorage::createVersions is deprecated use the event system.'));
 	}
 
 /**
@@ -193,13 +161,58 @@ class ImageStorage extends FileStorage {
  * @return void
  * @link https://gist.github.com/601849
  */
-	public function ksortRecursive(&$array, $sort_flags = SORT_REGULAR) {
+	public function ksortRecursive(&$array, $sortFlags = SORT_REGULAR) {
 		if (!is_array($array)) return false;
-		ksort($array, $sort_flags);
+		ksort($array, $sortFlags);
 		foreach ($array as &$arr) {
-			$this->ksortRecursive($arr, $sort_flags);
+			$this->ksortRecursive($arr, $sortFlags);
 		}
 		return true;
 	}
 
+/**
+ * Image size validation method
+ *
+ * @param mixed $check
+ * @param array $options
+ * @return boolean true
+ * @throws \InvalidArgumentException
+ */
+	public function validateImageSize($check, $options) {
+		if (!isset($options['height']) && !isset($options['width'])) {
+			throw new \InvalidArgumentException(__d('file_storage', 'Invalid image size validation parameters'));
+		}
+
+		if (is_string($check)) {
+			$imageFile = $check;
+		} else {
+			$check = array_values($check);
+			$check = $check[0];
+			if (is_array($check) && isset($check['tmp_name'])) {
+				$imageFile = $check['tmp_name'];
+			} else {
+				$imageFile = $check;
+			}
+		}
+
+		$imageSizes = $this->getImageSize($imageFile);
+
+		if (isset($options['height'])) {
+			$height = Validation::comparison($imageSizes[1], $options['height'][0], $options['height'][1]);
+		} else {
+			$height = true;
+		}
+
+		if (isset($options['width'])) {
+			$width = Validation::comparison($imageSizes[0], $options['width'][0], $options['width'][1]);
+		} else {
+			$width = true;
+		}
+
+		if ($height === false || $width === false) {
+			return false;
+		}
+
+		return true;
+	}
 }
