@@ -87,9 +87,9 @@ class FileStorageUtils {
  */
 	public static function normalizePath($string) {
 		if (DS == '\\') {
-			return str_replace('\\', '', $string);
-		} else {
 			return str_replace('/', '\\', $string);
+		} else {
+			return str_replace('\\', '/', $string);
 		}
 	}
 

@@ -24,4 +24,18 @@ class FileStorageUtilsTest extends CakeTestCase {
 		$this->assertEqual($result, 'foobar');
 	}
 
+/**
+ * testNormalizePath
+ *
+ * @return void
+ */
+	public function testNormalizePath() {
+		if (DS == '\\') {
+			$result = FileStorageUtils::normalizePath('/nice/path/test');
+			$this->assertEqual($result, '\nice\path\test');
+		} else {
+			$result = FileStorageUtils::normalizePath('\nice\path\test');
+			$this->assertEqual($result, '/nice/path/test');
+		}
+	}
 }
