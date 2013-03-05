@@ -181,9 +181,9 @@ class LocalImageProcessingListener extends Object implements CakeEventListener {
  * later load the new file that was generated based on the tmp file into the
  * storage adapter. This method here just generates the tmp file.
  *
- * @param
- * @param
- * @return
+ * @param $Storage
+ * @param $path
+ * @return bool|string
  */
 	protected function _tmpFile($Storage, $path) {
 		try {
