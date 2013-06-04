@@ -1,0 +1,27 @@
+language: php
+ 
+php:
+  - 5.3
+  - 5.4
+ 
+before_script:
+  - git clone --depth 1 git://github.com/cakephp/cakephp ../cakephp && cd ../cakephp
+  - mv ../FileStorage plugins/FileStorage
+  - sh -c "mysql -e 'CREATE DATABASE cakephp_test;'"
+  - chmod -R 777 ../cakephp/app/tmp
+  - echo "<?php
+    class DATABASE_CONFIG {
+    public \$test = array(
+      'datasource' => 'Database/Mysql',
+      'database' => 'cakephp_test',
+      'host' => '0.0.0.0',
+      'login' => 'travis',
+      'persistent' => false,
+    );
+    }" > ../cakephp/app/Config/database.php
+ 
+script:
+  - ./lib/Cake/Console/cake test FileStorage AllTests --stderr
+ 
+notifications:
+  email: false

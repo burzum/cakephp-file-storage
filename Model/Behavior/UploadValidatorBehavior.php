@@ -185,6 +185,7 @@ class UploadValidatorBehavior extends ModelBehavior {
 				case UPLOAD_ERR_NO_FILE:
 					if ($this->settings[$Model->alias]['allowNoFileError'] === false) {
 						$this->uploadError = __d('FileStorage', 'No file was uploaded.');
+						return false;
 					}
 					return true;
 				break;

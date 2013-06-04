@@ -24,10 +24,19 @@ class FileStorageTest extends CakeTestCase {
  *
  * @return void
  */
-	public function endTest() {
+	public function tearDown() {
 		parent::tearDown();
 		unset($this->FileStorage);
 		ClassRegistry::flush();
+	}
+
+/**
+ * testObject
+ *
+ * @return void
+ */
+	public function testObject() {
+		$this->assertTrue(is_a($this->FileStorage, 'FileStorage'));
 	}
 
 }
