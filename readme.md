@@ -266,7 +266,7 @@ https://github.com/burzum/FileStorage/issues
 
 ## Contributions
 
-Please send pull request to `devevelop` branch.
+Please send pull request to `develop` branch.
 
 ## License
 
