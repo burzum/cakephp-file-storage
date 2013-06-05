@@ -21,7 +21,7 @@ before_script:
     }" > ../cakephp/app/Config/database.php
  
 script:
-  - ./lib/Cake/Console/cake test FileStorage AllTests --stderr
+  - ./lib/Cake/Console/cake test FileStorage AllFileStorage --stderr
  
 notifications:
   email: false
