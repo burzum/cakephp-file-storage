@@ -6,6 +6,7 @@ php:
  
 before_script:
   - git clone --depth 1 git://github.com/cakephp/cakephp ../cakephp && cd ../cakephp
+  - git clone --depth 1 --branch master git://github.com/cakedc/Imagine plugins/Imagine
   - mv ../FileStorage plugins/FileStorage
   - sh -c "mysql -e 'CREATE DATABASE cakephp_test;'"
   - chmod -R 777 ../cakephp/app/tmp
