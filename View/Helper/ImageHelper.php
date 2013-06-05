@@ -48,9 +48,13 @@ class ImageHelper extends AppHelper {
 			return false;
 		}
 
-		$hash = Configure::read('Media.imageHashes.' . $image['model'] . '.' . $version);
-		if (empty($hash)) {
-			throw new InvalidArgumentException(__d('FileStorage', 'No valid version key (%s %s) passed!', @$image['model'], $version));
+		if (!empty($version)) {
+			$hash = Configure::read('Media.imageHashes.' . $image['model'] . '.' . $version);
+			if (empty($hash)) {
+				throw new InvalidArgumentException(__d('FileStorage', 'No valid version key (%s %s) passed!', @$image['model'], $version));
+			}
+		} else {
+			$hash = null;
 		}
 
 		$Event = new CakeEvent('FileStorage.ImageHelper.imagePath', $this, array(
