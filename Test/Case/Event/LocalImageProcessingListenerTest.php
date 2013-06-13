@@ -10,13 +10,13 @@ App::uses('FileStorageTestCase', 'FileStorage.TestSuite');
  */
 class LocalImageProcessingListener extends FileStorageTestCase {
 
-	public setUp() {
+	public function setUp() {
 		parent::setUp();
 		$this->Model = new ImageStorage();
 		$this->Listener = new LocalImageProcessingListener();
 	}
 
-	public tearDown() {
+	public function tearDown() {
 		parent::tearDown();
 		unset($this->Listener, $this->Model);
 		ClassRegistry::flush();
