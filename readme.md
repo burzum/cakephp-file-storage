@@ -61,10 +61,10 @@ and follow the rest of the steps
 To configure adapters use the StorageManager::config method. First argument is the name of the config, second an array of options for that adapter
 
 ```php
-	StorageManager::config('Local', array(
-		'adapterOptions' => array(TMP, true),
-		'adapterClass' => '\Gaufrette\Adapter\Local',
-		'class' => '\Gaufrette\Filesystem'));
+StorageManager::config('Local', array(
+	'adapterOptions' => array(TMP, true),
+	'adapterClass' => '\Gaufrette\Adapter\Local',
+	'class' => '\Gaufrette\Filesystem'));
 ````
 
 To invoke a new instance using a before set configuration call:
@@ -74,7 +74,7 @@ To invoke a new instance using a before set configuration call:
 You can also call the adapter instances methods like this
 
 ```php
-	StorageManager::adapter('Local')->write($key, $data);
+StorageManager::adapter('Local')->write($key, $data);
 ```
 
 Alternativly you can pass a config array as first argument to get an instance using these settings that is not in the configuration.
@@ -82,7 +82,7 @@ Alternativly you can pass a config array as first argument to get an instance us
 To delete configs and by this the instance from the StorageManager call
 
 ```php
-	StorageManager::flush('Local');
+StorageManager::flush('Local');
 ```
 
 If you want to flush *all* adapter configs and instances simply call it without the first argument.
@@ -94,18 +94,18 @@ The basic idea of this plugin is that files are always handled as separate entit
 So for example let's say you have a Report model and want to save a pdf to it, you would then create an association lile:
 
 ```php
-	public $hasOne = array(
-		'PdfFile' => array(
-			'className' => 'FileStorage.FileStorage',
-			'foreignKey' => 'foreign_key'));
+public $hasOne = array(
+	'PdfFile' => array(
+		'className' => 'FileStorage.FileStorage',
+		'foreignKey' => 'foreign_key'));
 ```
 
 In your add/edit report you would have something like:
 
 ```php
-	echo $this->Form->input('Report.title');
-	echo $this->Form->input('PdfFile.file');
-	echo $this->Form->input('Report.description');
+echo $this->Form->input('Report.title');
+echo $this->Form->input('PdfFile.file');
+echo $this->Form->input('Report.description');
 ```
 
 #### Now comes the crucial point of the whole implementation:
@@ -115,22 +115,22 @@ Because of to many different requirements and personal preferences out there the
 Lets go by this scenario inside the report model, assuming there is an add() method:
 
 ```php
-	$this->create();
-	if ($this->save($data)) {
-		$key = 'your-file-name';
-		if (StorageManager::adapter('Local')->write($key, file_get_contents($this->data['PdfFile']['file']['tmp_name']))) {
-			$this->data['PdfFile']['foreign_key'] = $this->getLastInsertId();
-			$this->data['PdfFile']['model'] = 'Report';
-			$this->data['PdfFile']['path'] = $key;
-			$this->data['PdfFile']['adapter'] = 'Local';
-		}
+$this->create();
+if ($this->save($data)) {
+	$key = 'your-file-name';
+	if (StorageManager::adapter('Local')->write($key, file_get_contents($this->data['PdfFile']['file']['tmp_name']))) {
+		$this->data['PdfFile']['foreign_key'] = $this->getLastInsertId();
+		$this->data['PdfFile']['model'] = 'Report';
+		$this->data['PdfFile']['path'] = $key;
+		$this->data['PdfFile']['adapter'] = 'Local';
 	}
+}
 ```
 
 Later, when you want to delete the file, for example in the beforeDelete() or afterDelete() callback of your Report model, you'll know the adapter you have used to store the attached PdfFile and can get an instance of this adapter configuration using the StorageManager. By having the path or key available you can then simply call:
 
 ```php
-	StorageManager::adapter($data['PdfFile']['adapter'])->delete($data['PdfFile']['path']);
+StorageManager::adapter($data['PdfFile']['adapter'])->delete($data['PdfFile']['path']);
 ```
 
 Insted of doing all of this in the model that has the files associated to it you can also simply extend the FileStorage model from the plugin and add your storage logic there and use that model for your association.
@@ -176,30 +176,30 @@ You can set up automatic image processing for the FileStorage.Image model. To ma
 All you need to do is basically use the image model and configure versions on a per model basis. When you save an Image model record it is important to have the 'model' field filled so that the script can find the correct versions for that model.
 
 ```php
-	Configure::write('Media', array(
-		'imageSizes' => array(
-			'GalleryImage' => array(
-				'c50' => array(
-					'crop' => array(
-						'width' => 50, 'height' => 50)),
-				't120' => array(
-					'thumbnail' => array(
-						'width' => 120, 'height' => 120)),
-				't800' => array(
-					'thumbnail' => array(
-						'width' => 800, 'height' => 600))),
-			'User' => array(
-				'c50' => array(
-					'crop' => array(
-						'width' => 50, 'height' => 50)),
-				't150' => array(
-					'crop' => array(
-						'width' => 150, 'height' => 150))),
-			)
+Configure::write('Media', array(
+	'imageSizes' => array(
+		'GalleryImage' => array(
+			'c50' => array(
+				'crop' => array(
+					'width' => 50, 'height' => 50)),
+			't120' => array(
+				'thumbnail' => array(
+					'width' => 120, 'height' => 120)),
+			't800' => array(
+				'thumbnail' => array(
+					'width' => 800, 'height' => 600))),
+		'User' => array(
+			'c50' => array(
+				'crop' => array(
+					'width' => 50, 'height' => 50)),
+			't150' => array(
+				'crop' => array(
+					'width' => 150, 'height' => 150))),
 		)
-	);
-	App::uses('ClassRegistry', 'Utility');
-	ClassRegistry::init('FileStorage.Image')->generateHashes();
+	)
+);
+App::uses('ClassRegistry', 'Utility');
+ClassRegistry::init('FileStorage.Image')->generateHashes();
 ```
 
 Calling generateHashes is important, it will create the hash values for each versioned image and store them in Media.imageHashes in the configuration.
@@ -231,28 +231,28 @@ But you should not blindly copy and paste that code, get an understanding of the
 Get the SDK from here http://github.com/rackspace/php-opencloud and add it to your class autoloader
 
 ```php
-	define('RAXSDK_SSL_VERIFYHOST', 0);
-	define('RAXSDK_SSL_VERIFYPEER', 0);
+define('RAXSDK_SSL_VERIFYHOST', 0);
+define('RAXSDK_SSL_VERIFYPEER', 0);
 
-	$connection = new \OpenCloud\Rackspace(
-		'https://lon.identity.api.rackspacecloud.com/v2.0/', // Rackspace Auth URL
-		array(
-			'username' => 'YOUR-USERNAME',
-			'apiKey' => 'YOUR-API-KEY'
-		)
-	);
+$connection = new \OpenCloud\Rackspace(
+	'https://lon.identity.api.rackspacecloud.com/v2.0/', // Rackspace Auth URL
+	array(
+		'username' => 'YOUR-USERNAME',
+		'apiKey' => 'YOUR-API-KEY'
+	)
+);
 
-	// LON (London) or DFW (Dallas)
-	$objstore = $connection->ObjectStore('cloudFiles', 'LON');
+// LON (London) or DFW (Dallas)
+$objstore = $connection->ObjectStore('cloudFiles', 'LON');
 
-	StorageManager::config('OpenCloudTest', array(
-		'adapterOptions' => array(
-			$objstore,
-			'test1',
-		),
-		'adapterClass' => '\Gaufrette\Adapter\OpenCloud',
-		'class' => '\Gaufrette\Filesystem')
-	);
+StorageManager::config('OpenCloudTest', array(
+	'adapterOptions' => array(
+		$objstore,
+		'test1',
+	),
+	'adapterClass' => '\Gaufrette\Adapter\OpenCloud',
+	'class' => '\Gaufrette\Filesystem')
+);
 ```
 
 ### AmazonS3
@@ -260,22 +260,22 @@ Get the SDK from here http://github.com/rackspace/php-opencloud and add it to yo
 Get the SDK from here http:// github.com/amazonwebservices/aws-sdk-for-php and load the sdk.class.php file from where ever you cloned the SDK.
 
 ```php
-	require_once(APP . 'Vendor' . DS . 'AwsSdk' . DS . 'sdk.class.php');
-	CFCredentials::set(array(
-		'production' => array(
-			'certificate_authority' => true,
-			'key' => 'YOUR-KEY',
-			'secret' => 'YOUR-SECRET')
-		)
-	);
-	$s3 = new AmazonS3();
+require_once(APP . 'Vendor' . DS . 'AwsSdk' . DS . 'sdk.class.php');
+CFCredentials::set(array(
+	'production' => array(
+		'certificate_authority' => true,
+		'key' => 'YOUR-KEY',
+		'secret' => 'YOUR-SECRET')
+	)
+);
+$s3 = new AmazonS3();
 
-	StorageManager::config('S3', array(
-		'adapterOptions' => array(
-			$s3,
-			'YOUR-BUCKET-HERE'),
-		'adapterClass' => '\Gaufrette\Adapter\AmazonS3',
-		'class' => '\Gaufrette\Filesystem'));
+StorageManager::config('S3', array(
+	'adapterOptions' => array(
+		$s3,
+		'YOUR-BUCKET-HERE'),
+	'adapterClass' => '\Gaufrette\Adapter\AmazonS3',
+	'class' => '\Gaufrette\Filesystem'));
 ```
 
 ## Support
