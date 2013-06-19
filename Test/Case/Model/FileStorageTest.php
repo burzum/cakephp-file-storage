@@ -46,10 +46,10 @@ class FileStorageTest extends CakeTestCase {
  */
 	public function testFsPath() {
 		$result = $this->FileStorage->fsPath('Foobar', 'random-id');
-		$this->assertEqual($result, 'Foobar\63\87\12\randomid\\');
+		$this->assertEqual($result, 'Foobar' . DS . '63' . DS . '87' . DS . '12' . DS . 'randomid' . DS);
 
 		$result = $this->FileStorage->fsPath('Foobar', 'random-id', false);
-		$this->assertEqual($result, 'Foobar\63\87\12\\');
+		$this->assertEqual($result, 'Foobar' . DS . '63' . DS . '87' . DS . '12' . DS);
 	}
 
 /**
