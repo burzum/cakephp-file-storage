@@ -278,6 +278,28 @@ StorageManager::config('S3', array(
 	'class' => '\Gaufrette\Filesystem'));
 ```
 
+## Included Event Listeners
+
+### LocalFileStorageListener
+
+The file and folder structure it will generate looks like that:
+
+	basePath/files/xx/xx/xx/<uuid>/<uuid>.<extension>
+
+### LocalImageProcessingListener
+
+This listener will create versions of images if Configure::read('Media.imageSizes.' . $model); is not empty. If no processing operations for that model were specified it will just save the image.
+
+The file and folder structure it will generate looks like that:
+
+	basePath/images/xx/xx/xx/<uuid>/<uuid>.<extension>
+
+Versioned images will look like that
+
+	basePath/images/xx/xx/xx/<uuid>/<uuid>.<hash>.<extension>
+
+basePath is the value from Configure::read('Media.basePath'), xx is a semi random alphanumerical value calculated based on the given file name.
+
 ## Support
 
 For support and feature request, please visit the FileStorage issue page

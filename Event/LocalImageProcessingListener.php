@@ -147,7 +147,10 @@ class LocalImageProcessingListener extends Object implements CakeEventListener {
 					'validate' => false,
 					'callbacks' => false));
 
-				$this->_createVersions($Model, $record, Configure::read('Media.imageSizes.' . $record['model']));
+				$operations = Configure::read('Media.imageSizes.' . $record['model']);
+				if (!empty($operations)) {
+					$this->_createVersions($Model, $record, $operations);
+				}
 
 				$Model->data = $data;
 			} catch (Exception $e) {

@@ -18,13 +18,6 @@ class ImageStorage extends FileStorage {
 	public $useTable = 'file_storage';
 
 /**
- * Create revisions after upload or not
- *
- * @var boolean default true
- */
-	public $createVersions = true;
-
-/**
  * Behaviours
  *
  * @var array
@@ -39,6 +32,18 @@ class ImageStorage extends FileStorage {
 	);
 
 /**
+ * Getter
+ *
+ * @param string $name
+ * @return void
+ */
+	public function __get($name) {
+		if ($name === 'createVersions') {
+			throw new \RuntimeException(__d('file_storage', 'createVersions was removed, see the change log'));
+		}
+	}
+
+/**
  * beforeSave callback
  *
  * @param array $options
@@ -50,7 +55,7 @@ class ImageStorage extends FileStorage {
 		}
 		$Event = new CakeEvent('ImageStorage.beforeSave', $this, array(
 			'record' => $this->data));
-		//CakeEventManager::instance()->dispatch($Event);
+		CakeEventManager::instance()->dispatch($Event);
 
 		if ($Event->isStopped()) {
 			return false;
@@ -71,13 +76,11 @@ class ImageStorage extends FileStorage {
 		if ($created) {
 			$this->data[$this->alias][$this->primaryKey] = $this->getLastInsertId();
 
-			if ($this->createVersions === true) {
-				$Event = new CakeEvent('ImageStorage.afterSave', $this, array(
-					'created' => $created,
-					'storage' => StorageManager::adapter($this->data[$this->alias]['adapter']),
-					'record' => $this->data));
-				CakeEventManager::instance()->dispatch($Event);
-			}
+			$Event = new CakeEvent('ImageStorage.afterSave', $this, array(
+				'created' => $created,
+				'storage' => StorageManager::adapter($this->data[$this->alias]['adapter']),
+				'record' => $this->data));
+			CakeEventManager::instance()->dispatch($Event);
 		}
 	}
 
