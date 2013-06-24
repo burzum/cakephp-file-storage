@@ -286,7 +286,28 @@ The file and folder structure it will generate looks like that:
 
 	basePath/files/xx/xx/xx/<uuid>/<uuid>.<extension>
 
-### LocalImageProcessingListener
+### ImageProcessingListener
+
+This listener will create versions of images if Configure::read('Media.imageSizes.' . $model); is not empty. If no processing operations for that model were specified it will just save the image.
+
+This adapter replaces LocalImageProcessingListener and currently supports the Local and AmazonS3 adapter.
+
+The file and folder structure it will generate looks like that:
+
+	basePath/images/xx/xx/xx/<uuid>/<uuid>.<extension>
+
+Versioned images will look like that
+
+	basePath/images/xx/xx/xx/<uuid>/<uuid>.<hash>.<extension>
+
+ * For the Local adapter basePath is the value from Configure::read('Media.basePath').
+ * For AmazonS3 the basePath will be the bucket and Amazon S3 URL prefix.
+
+xx is a semi random alphanumerical value calculated based on the given file name if the Local adapter was used
+
+### LocalImageProcessingListener (DEPRECATED, use ImageProcessingListener)
+
+This adapter is still around for backward compatibility to not break some projects depending on it.
 
 This listener will create versions of images if Configure::read('Media.imageSizes.' . $model); is not empty. If no processing operations for that model were specified it will just save the image.
 

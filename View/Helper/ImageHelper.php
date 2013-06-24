@@ -65,7 +65,7 @@ class ImageHelper extends AppHelper {
 		CakeEventManager::instance()->dispatch($Event);
 
 		if ($Event->isStopped()) {
-			return '/' . $this->normalizePath($Event->data['path']);
+			return $this->normalizePath($Event->data['path']);
 		} else {
 			return false;
 		}
