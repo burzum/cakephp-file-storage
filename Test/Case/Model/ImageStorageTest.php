@@ -176,5 +176,20 @@ class ImageStorageTest extends FileStorageTestCase {
 				'tmp_name' => CakePlugin::path('FileStorage') . DS . 'Test' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg')));
 
 		$this->assertTrue($this->Image->validates());
+
+
+		$this->Image->validate = array(
+			'file' => array(
+				'image' => array(
+					'rule' => array(
+						'validateImageSize', array(
+							'width' => array('==', 512))),
+					'message' => 'Invalid image size')));
+
+		$this->Image->set(array(
+			'file' => array(
+				'tmp_name' => CakePlugin::path('FileStorage') . DS . 'Test' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg')));
+
+		$this->assertTrue($this->Image->validates());
 	}
 }

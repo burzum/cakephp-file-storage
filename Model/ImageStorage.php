@@ -177,8 +177,13 @@ class ImageStorage extends FileStorage {
  * Image size validation method
  *
  * @param mixed $check
- * @param array $options
+ * @param array $options is an array with key width or height and a value of array
+ *    with two options, operator and value. For example:
+ *    array('height' => array('==', 100)) will only be true if the image has a
+ *    height of exactly 100px. See the CakePHP core class and method
+ *    Validation::comparison for all operators.
  * @return boolean true
+ * @see Validation::comparison()
  * @throws \InvalidArgumentException
  */
 	public function validateImageSize($check, $options) {
