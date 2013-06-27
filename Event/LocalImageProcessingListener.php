@@ -201,7 +201,7 @@ class LocalImageProcessingListener extends Object implements CakeEventListener {
 			file_put_contents($tmpFile, $imageData);
 			return $tmpFile;
 		} catch (Exception $e) {
-			return false;
+			throw $e;
 		}
 	}
 

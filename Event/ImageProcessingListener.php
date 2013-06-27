@@ -20,6 +20,21 @@ class ImageProcessingListener extends Object implements CakeEventListener {
  */
 	public $adapterClass = null;
 
+	public $options = array();
+
+/**
+ * Constructor
+ *
+ * @param array $options
+ * @return ImageProcessingListener
+ */
+	public function __construct($options = array()) {
+		$defaults = array(
+			'preserveFilename' => false
+		);
+		$this->options = array_merge($defaults, $options);
+	}
+
 /**
  * Implemented Events
  *
@@ -107,6 +122,10 @@ class ImageProcessingListener extends Object implements CakeEventListener {
 				$hash = $Model->hashOperations($operations);
 				$string = $this->_buildPath($record, true, $hash);
 
+				if ($this->adapterClass === 'AmazonS3') {
+					$string = str_replace('\\', '/', $string);
+				}
+
 				try {
 					if ($Storage->has($string)) {
 						$Storage->delete($string);
@@ -176,7 +195,12 @@ class ImageProcessingListener extends Object implements CakeEventListener {
 				$filename = $Model->stripUuid($id);
 				$file = $record['file'];
 				$record['path'] = $Model->fsPath('images' . DS . $record['model'], $id);
-				$path = $record['path'] . $filename . '.' . $record['extension'];
+
+				if ($this->options['preserveFilename'] === true) {
+					$path = $record['path'] . $record['filename'];
+				} else {
+					$path = $record['path'] . $filename . '.' . $record['extension'];
+				}
 
 				if ($this->adapterClass === 'AmazonS3') {
 					$path = str_replace('\\', '/', $path);
@@ -260,6 +284,7 @@ class ImageProcessingListener extends Object implements CakeEventListener {
  *
  * @param $Storage
  * @param $path
+ * @throws Exception
  * @return bool|string
  */
 	protected function _tmpFile($Storage, $path) {
@@ -274,7 +299,7 @@ class ImageProcessingListener extends Object implements CakeEventListener {
 			file_put_contents($tmpFile, $imageData);
 			return $tmpFile;
 		} catch (Exception $e) {
-			return false;
+			throw $e;
 		}
 	}
 
@@ -287,14 +312,21 @@ class ImageProcessingListener extends Object implements CakeEventListener {
  * @return string
  */
 	protected function _buildPath($image, $extension = true, $hash = null) {
-		$path = $image['path'] . str_replace('-', '', $image['id']);
-		if (!empty($hash)) {
-			$path .= '.' . $hash;
+		if ($this->options['preserveFilename'] === true) {
+			if (!empty($hash)) {
+				$path = $image['path'] .  preg_replace('/\.[^.]*$/', '', $image['filename']) . '.' . $hash . '.' . $image['extension'];
+			} else {
+				$path = $image['path'] . $image['filename'];
+			}
+		} else {
+			$path = $image['path'] . str_replace('-', '', $image['id']);
+			if (!empty($hash)) {
+				$path .= '.' . $hash;
+			}
+			if ($extension == true) {
+				$path .= '.' . $image['extension'];
+			}
 		}
-		if ($extension == true) {
-			$path .= '.' . $image['extension'];
-		}
-
 		return $path;
 	}
 
