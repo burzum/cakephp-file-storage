@@ -3,6 +3,7 @@ App::uses('CakeEventListener', 'Event');
 /**
  * Local Image Processor Event Listener for the CakePHP FileStorage plugin
  *
+ * @deprecated Use ImageProcessingListener instead
  * @author Florian Krämer
  * @copy 2012 Florian Krämer
  * @license MIT
@@ -25,7 +26,7 @@ class LocalImageProcessingListener extends Object implements CakeEventListener {
 
 /**
  * Creates the different versions of images that are configured
- * 
+ *
  * @param Model $Model
  * @param array $record
  * @param array $operations
