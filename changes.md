@@ -7,6 +7,7 @@ List of changes done to the plugin versions
 * Fix: Removed model FileStorage::$createVersions property, instead of creating no versions no file at all was saved. As replacement for FileStorage::$createVersions the LocalImageStorageListener won't create any revisions if it can find any configuration for the given model. This caused a notice before and further issues.
 * Fix: The event ImageStorage.beforeSave was not triggered
 * Fix: StorageManager::config($configName) now returns the correct config instead of always active
+* Fix: ImageStorage::afterSave() does not call the parent anymore to avoid that the regular file storage event listener saves the image already, this happened when an image and a normal file were used within the same form
 * Change: The / that was prepended in the ImageHelper::imageUrl has been move to the LocalImageProcessingListener because the / won't be used by all, mostly external, adapters
 * Change: LocalImageProcessingListener::_tmpFile() is throwing an exception now instead of returning false
 * Feature: Adding a new ImageProcessingListener that works with Amazon S3 and Local adapters, it can be pretty simple enhanced, let me know or do a PR with your changes for another adapter

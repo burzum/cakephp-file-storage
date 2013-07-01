@@ -67,12 +67,12 @@ class ImageStorage extends FileStorage {
 /**
  * afterSave callback
  *
+ * Does not call the parent to avoid that the regular file storage event listener saves the image already
+ *
  * @param boolean
  * @return void
  */
 	public function afterSave($created) {
-		parent::afterSave($created);
-
 		if ($created) {
 			$this->data[$this->alias][$this->primaryKey] = $this->getLastInsertId();
 
