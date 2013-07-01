@@ -31,7 +31,7 @@ class ImageHelper extends AppHelper {
 			return $this->Html->image($url, $options);
 		}
 
-		return $this->fallbackImage($options);
+		return $this->fallbackImage($options, $image, $version);
 	}
 
 /**
@@ -77,9 +77,13 @@ class ImageHelper extends AppHelper {
  * @param array $options
  * @return string
  */
-	public function fallbackImage($options = array()) {
+	public function fallbackImage($options = array(), $image = array(), $version = null) {
 		if (isset($options['fallback'])) {
-			$image = $options['fallback'];
+			if ($options['fallback'] === true) {
+				$image = 'placeholder/' . $version . '.jpg';
+			} else {
+				$image = $options['fallback'];
+			}
 			unset($options['fallback']);
 			return $this->Html->image($image, $options);
 		}
