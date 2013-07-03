@@ -103,7 +103,6 @@ class UploadValidatorBehavior extends ModelBehavior {
 
 			if (is_array($allowedMime)) {
 				if (!$this->validateAllowedMimeTypes($Model, $allowedMime)) {
-					$Model->invalidate($fileField, $this->uploadError);
 					return false;
 				}
 			}
