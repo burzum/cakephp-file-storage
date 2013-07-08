@@ -26,7 +26,7 @@ class ImageStorage extends FileStorage {
 		'Imagine.Imagine',
 		'FileStorage.UploadValidator' => array(
 			'localFile' => true,
-			'validateUpload' => false,
+			'validate' => false,
 			'allowedExtensions' => array('jpg', 'png', 'gif')
 		),
 	);
