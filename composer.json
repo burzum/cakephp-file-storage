@@ -12,12 +12,13 @@
 			"homepage": "http://florian-kraemer.net"
 		}
 	],
-    "minimum-stability": "dev",
+	"minimum-stability": "dev",
 	"require": {
 		"php": ">=5.3.2",
 		"knplabs/gaufrette": "*"
 	},
 	"suggest": {
-		"cakedc/Imagine": "Allows to process images"
+		"cakedc/Imagine": "Required if you want to use the image processing feature of FileStorage",
+		"cakedc/migrations": "If you want to use the database migrations that come with FileStorage"
 	}
 }
