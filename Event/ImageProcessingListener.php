@@ -266,12 +266,6 @@ class ImageProcessingListener extends Object implements CakeEventListener {
 			$image['path'] = str_replace('\\', '/', $image['path']);
 			$bucketPrefix = !empty($Event->data['options']['bucketPrefix']) && $Event->data['options']['bucketPrefix'] === true;
 
-			if (!empty($Event->data['options']['bucketPrefix']) && $Event->data['options']['bucketPrefix'] === true) {
-				$path =  $http . '://' . $bucket . '.s3.amazonaws.com' . $image['path'];
-			} else {
-				$path =  $http .'://s3.amazonaws.com/' . $bucket . $image['path'];
-			}
-
 			$Event->data['path'] = $this->_buildDistUrl($http, $image['path'], $bucket, $bucketPrefix, $cfDist);
 			$Event->stopPropagation();
 		}
