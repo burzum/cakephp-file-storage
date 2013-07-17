@@ -256,6 +256,7 @@ class ImageProcessingListener extends Object implements CakeEventListener {
 
 			$config = StorageManager::config($Event->data['image']['adapter']);
 			$bucket = $config['adapterOptions'][1];
+			$cfDist = $config['adapterOptions'][2];
 
 			$http = 'http';
 			if (!empty($Event->data['options']['ssl']) && $Event->data['options']['ssl'] === true) {
@@ -263,13 +264,15 @@ class ImageProcessingListener extends Object implements CakeEventListener {
 			}
 
 			$image['path'] = str_replace('\\', '/', $image['path']);
+			$bucketPrefix = !empty($Event->data['options']['bucketPrefix']) && $Event->data['options']['bucketPrefix'] === true;
+
 			if (!empty($Event->data['options']['bucketPrefix']) && $Event->data['options']['bucketPrefix'] === true) {
 				$path =  $http . '://' . $bucket . '.s3.amazonaws.com' . $image['path'];
 			} else {
 				$path =  $http .'://s3.amazonaws.com/' . $bucket . $image['path'];
 			}
 
-			$Event->data['path'] = $path;
+			$Event->data['path'] = $this->_buildDistUrl($http, $image['path'], $bucket, $bucketPrefix, $cfDist);
 			$Event->stopPropagation();
 		}
 	}
@@ -329,6 +332,32 @@ class ImageProcessingListener extends Object implements CakeEventListener {
 		}
 		return $path;
 	}
+
+	/**
+	 * @param $protocol
+	 * @param $image
+	 * @param $bucket
+	 * @param null $bucketPrefix
+	 * @param null $cfDist
+	 * @return string
+	 */
+	protected function _buildDistUrl($protocol, $image, $bucket, $bucketPrefix = null, $cfDist = null){
+		$path = $protocol . '://';
+		if($cfDist){
+			$path .= $cfDist;
+		} else {
+			if($bucketPrefix){
+				$path .= $bucket . '.s3.amazonaws.com';
+			}
+			else{
+				$path .= 's3.amazonaws.com/' . $bucket;
+			}
+		}
+		$path .= $image;
+
+		return $path;
+	}
+
 
 /**
  * Check if the event is of a type / model we want to process with this listener
