@@ -7,8 +7,9 @@ App::uses('CakeEventListener', 'Event');
  * - Local
  * - AmazonS3
  *
+ * @todo I don't like this file very much, find a better way to deal with the handling of all the different adapters in this code
  * @author Florian Krämer
- * @copy 2012 Florian Krämer
+ * @copy 2013 Florian Krämer
  * @license MIT
  */
 class ImageProcessingListener extends Object implements CakeEventListener {
@@ -239,36 +240,85 @@ class ImageProcessingListener extends Object implements CakeEventListener {
 			throw new \RuntimeException(__d('file_storage', 'No adapter config key passed!'));
 		}
 
-		$this->getAdapterClassName($Event->data['image']['adapter']);
+		$adapterClass = $this->getAdapterClassName($Event->data['image']['adapter']);
+		$buildMethod = '_build' . $adapterClass . 'Path';
 
-		if ($this->adapterClass === 'Local') {
-			$path = $this->_buildPath($image, true, $hash);
-			$Event->data['path'] = '/' . $path;
-			$Event->stopPropagation();
+		if (method_exists($this, $buildMethod)) {
+			return $this->$buildMethod($Event);
 		}
 
-		if ($this->adapterClass === 'AmazonS3') {
-			//http(s)://<bucket>.s3.amazonaws.com/<object>
-			//http(s)://s3.amazonaws.com/<bucket>/<object>
+		throw new \RuntimeException(__d('file_storage', 'No callback image url callback implemented for adapter %s', $adapterClass));
+	}
 
-			$path = $this->_buildPath($image, true, $hash);
-			$image['path'] = '/' . $path;
+/**
+ * Builds an url to the given image
+ *
+ * @param CakeEvent $Event
+ * @return void
+ */
+	protected function _buildLocalPath($Event) {
+		extract($Event->data);
+		$path = $this->_buildPath($image, true, $hash);
+		$Event->data['path'] = '/' . $path;
+		$Event->stopPropagation();
+	}
 
-			$config = StorageManager::config($Event->data['image']['adapter']);
-			$bucket = $config['adapterOptions'][1];
-			$cfDist = $config['adapterOptions'][2];
+/**
+ * Builds an url to the given image for the amazon s3 adapter
+ *
+ * http(s)://<bucket>.s3.amazonaws.com/<object>
+ * http(s)://s3.amazonaws.com/<bucket>/<object>
+ *
+ * @param CakeEvent $Event
+ * @return void
+ */
+	protected function _buildAmazonS3Path($Event) {
+		extract($Event->data);
 
-			$http = 'http';
-			if (!empty($Event->data['options']['ssl']) && $Event->data['options']['ssl'] === true) {
-				$http = 'https';
+		$path = $this->_buildPath($image, true, $hash);
+		$image['path'] = '/' . $path;
+
+		$config = StorageManager::config($Event->data['image']['adapter']);
+		$bucket = $config['adapterOptions'][1];
+		$cfDist = $config['adapterOptions'][2];
+
+		$http = 'http';
+		if (!empty($Event->data['options']['ssl']) && $Event->data['options']['ssl'] === true) {
+			$http = 'https';
+		}
+
+		$image['path'] = str_replace('\\', '/', $image['path']);
+		$bucketPrefix = !empty($Event->data['options']['bucketPrefix']) && $Event->data['options']['bucketPrefix'] === true;
+
+		$Event->data['path'] = $this->_buildClouldFrontDistributionUrl($http, $image['path'], $bucket, $bucketPrefix, $cfDist);
+		$Event->stopPropagation();
+	}
+
+/**
+ * Builds an url to serve content from cloudfront
+ *
+ * @param string $protocol
+ * @param string $image
+ * @param string $bucket
+ * @param string null $bucketPrefix
+ * @param string $cfDist
+ * @return string
+ */
+	protected function _buildClouldFrontDistributionUrl($protocol, $image, $bucket, $bucketPrefix = null, $cfDist = null){
+		$path = $protocol . '://';
+		if ($cfDist){
+			$path .= $cfDist;
+		} else {
+			if($bucketPrefix){
+				$path .= $bucket . '.s3.amazonaws.com';
 			}
-
-			$image['path'] = str_replace('\\', '/', $image['path']);
-			$bucketPrefix = !empty($Event->data['options']['bucketPrefix']) && $Event->data['options']['bucketPrefix'] === true;
-
-			$Event->data['path'] = $this->_buildDistUrl($http, $image['path'], $bucket, $bucketPrefix, $cfDist);
-			$Event->stopPropagation();
+			else{
+				$path .= 's3.amazonaws.com/' . $bucket;
+			}
 		}
+		$path .= $image;
+
+		return $path;
 	}
 
 /**
@@ -326,32 +376,6 @@ class ImageProcessingListener extends Object implements CakeEventListener {
 		}
 		return $path;
 	}
-
-	/**
-	 * @param $protocol
-	 * @param $image
-	 * @param $bucket
-	 * @param null $bucketPrefix
-	 * @param null $cfDist
-	 * @return string
-	 */
-	protected function _buildDistUrl($protocol, $image, $bucket, $bucketPrefix = null, $cfDist = null){
-		$path = $protocol . '://';
-		if($cfDist){
-			$path .= $cfDist;
-		} else {
-			if($bucketPrefix){
-				$path .= $bucket . '.s3.amazonaws.com';
-			}
-			else{
-				$path .= 's3.amazonaws.com/' . $bucket;
-			}
-		}
-		$path .= $image;
-
-		return $path;
-	}
-
 
 /**
  * Check if the event is of a type / model we want to process with this listener
