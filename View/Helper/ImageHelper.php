@@ -2,11 +2,12 @@
 /**
  * ImageHelper
  *
- * @author Florian Kr�mer
- * @copyright 2012 Florian Kr�mer
+ * @author Florian Krämer
+ * @copyright 2012 Florian Krämer
  * @license MIT
  */
 class ImageHelper extends AppHelper {
+
 /**
  * Helpers
  *
@@ -16,7 +17,7 @@ class ImageHelper extends AppHelper {
 		'Html');
 
 /**
- * Generates an image url based on the image record data and the used gaufrette adapter to store it
+ * Generates an image url based on the image record data and the used Gaufrette adapter to store it
  *
  * @param array $image FileStorage array record or whatever else table that matches this helpers needs without the model, we just want the record fields
  * @param string $version Image version string
@@ -24,20 +25,13 @@ class ImageHelper extends AppHelper {
  * @return string
  */
 	public function display($image, $version = null, $options = array()) {
-		$url = $this->url($image, $version, $options);
+		$url = $this->imageUrl($image, $version, $options);
 
 		if ($url !== false) {
 			return $this->Html->image($url, $options);
 		}
 
-		return $this->fallbackImage($options);
-	}
-
-/**
- * @deprecated Use "display" instead
- */
-	public function image($image, $version = null, $options = array()) {
-		return $this->display($image, $version, $options);
+		return $this->fallbackImage($options, $image, $version);
 	}
 
 /**
@@ -46,16 +40,21 @@ class ImageHelper extends AppHelper {
  * @param array $image FileStorage array record or whatever else table that matches this helpers needs without the model, we just want the record fields
  * @param string $version Image version string
  * @param array $options HtmlHelper::image(), 2nd arg options array
+ * @throws InvalidArgumentException
  * @return string
  */
-	public function url($image, $version = null, $options = array()) {
+	public function imageUrl($image, $version = null, $options = array()) {
 		if (empty($image) || empty($image['id'])) {
 			return false;
 		}
 
-		$hash = Configure::read('Media.imageHashes.' . $image['model'] . '.' . $version);
-		if (empty($hash)) {
-			throw new InvalidArgumentException(__d('FileStorage', 'No valid version key (%s %s) passed!', @$image['model'], $version));
+		if (!empty($version)) {
+			$hash = Configure::read('Media.imageHashes.' . $image['model'] . '.' . $version);
+			if (empty($hash)) {
+				throw new InvalidArgumentException(__d('FileStorage', 'No valid version key (%s %s) passed!', @$image['model'], $version));
+			}
+		} else {
+			$hash = null;
 		}
 
 		$Event = new CakeEvent('FileStorage.ImageHelper.imagePath', $this, array(
@@ -66,7 +65,7 @@ class ImageHelper extends AppHelper {
 		CakeEventManager::instance()->dispatch($Event);
 
 		if ($Event->isStopped()) {
-			return '/' . $this->normalizePath($Event->data['path']);
+			return $this->normalizePath($Event->data['path']);
 		} else {
 			return false;
 		}
@@ -78,9 +77,13 @@ class ImageHelper extends AppHelper {
  * @param array $options
  * @return string
  */
-	public function fallbackImage($options = array()) {
+	public function fallbackImage($options = array(), $image = array(), $version = null) {
 		if (isset($options['fallback'])) {
-			$image = $options['fallback'];
+			if ($options['fallback'] === true) {
+				$image = 'placeholder/' . $version . '.jpg';
+			} else {
+				$image = $options['fallback'];
+			}
 			unset($options['fallback']);
 			return $this->Html->image($image, $options);
 		}

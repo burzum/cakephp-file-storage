@@ -51,7 +51,7 @@ class ImageHelperTest extends FileStorageTestCase {
 			'extension' => 'jpg',
 			'adapter' => 'Local');
 
-		$result = $this->Image->image($image, 't150');
+		$result = $this->Image->display($image, 't150');
 		$this->assertEqual($result, '<img src="/test/path/e479b480f60b11e1a21f0800200c9a66.c3f33c2a.jpg" alt="" />');
 	}
 

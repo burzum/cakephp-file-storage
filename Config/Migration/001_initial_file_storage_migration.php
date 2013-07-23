@@ -2,8 +2,8 @@
 /**
  * FileStorage
  *
- * @author Florian Krämer
- * @copyright 2012 Florian Krämer
+ * @author Florian KrÃ¤mer
+ * @copyright 2012 Florian KrÃ¤mer
  * @license MIT
  */
 class InitialFileStorageMigration extends CakeMigration {
@@ -60,6 +60,12 @@ class InitialFileStorageMigration extends CakeMigration {
  * @access public
  */
 	public function before($direction) {
+		if (Configure::read('FileStorage.schema.useIntegers') === true) {
+			$this->migration['up']['create_table']['file_storage']['id']['type'] = 'integer';
+			$this->migration['up']['create_table']['file_storage']['id']['length'] = 10;
+			$this->migration['up']['create_table']['file_storage']['foreign_key']['type'] = 'integer';
+			$this->migration['up']['create_table']['file_storage']['foreign_key']['length'] = 10;
+		}
 		return true;
 	}
 

@@ -34,9 +34,13 @@ To be able to simply autoload Gaufrette load the plugin with bootstrap enabled. 
 
 	CakePlugin::load('FileStorage', array('bootstrap' => true));
 
-You also need to setup the plugin database :
+You also need to setup the plugin database using either the schema shell:
 
     cake schema create --plugin FileStorage
+
+or the CakeDC Migrations plugin (http://github.com/CakeDC/migrations):
+
+    cake Migrations.migration run all --plugin FileStorage
 
 This plugin depends on the Gaufrette library (https://github.com/KnpLabs/Gaufrette), init the submodule, the plugin depends on it.
 
@@ -60,10 +64,12 @@ and follow the rest of the steps
 
 To configure adapters use the StorageManager::config method. First argument is the name of the config, second an array of options for that adapter
 
-	StorageManager::config('Local', array(
-		'adapterOptions' => array(TMP, true),
-		'adapterClass' => '\Gaufrette\Adapter\Local',
-		'class' => '\Gaufrette\Filesystem'));
+```php
+StorageManager::config('Local', array(
+	'adapterOptions' => array(TMP, true),
+	'adapterClass' => '\Gaufrette\Adapter\Local',
+	'class' => '\Gaufrette\Filesystem'));
+````
 
 To invoke a new instance using a before set configuration call:
 
@@ -71,13 +77,17 @@ To invoke a new instance using a before set configuration call:
 
 You can also call the adapter instances methods like this
 
-	StorageManager::adapter('Local')->write($key, $data);
+```php
+StorageManager::adapter('Local')->write($key, $data);
+```
 
 Alternativly you can pass a config array as first argument to get an instance using these settings that is not in the configuration.
 
 To delete configs and by this the instance from the StorageManager call
 
-	StorageManager::flush('Local');
+```php
+StorageManager::flush('Local');
+```
 
 If you want to flush *all* adapter configs and instances simply call it without the first argument.
 
@@ -87,16 +97,20 @@ The basic idea of this plugin is that files are always handled as separate entit
 
 So for example let's say you have a Report model and want to save a pdf to it, you would then create an association lile:
 
-	public $hasOne = array(
-		'PdfFile' => array(
-			'className' => 'FileStorage.FileStorage',
-			'foreignKey' => 'foreign_key'));
+```php
+public $hasOne = array(
+	'PdfFile' => array(
+		'className' => 'FileStorage.FileStorage',
+		'foreignKey' => 'foreign_key'));
+```
 
 In your add/edit report you would have something like:
 
-	echo $this->Form->input('Report.title');
-	echo $this->Form->input('PdfFile.file');
-	echo $this->Form->input('Report.description');
+```php
+echo $this->Form->input('Report.title');
+echo $this->Form->input('PdfFile.file');
+echo $this->Form->input('Report.description');
+```
 
 #### Now comes the crucial point of the whole implementation:
 
@@ -104,20 +118,24 @@ Because of to many different requirements and personal preferences out there the
 
 Lets go by this scenario inside the report model, assuming there is an add() method:
 
-	$this->create();
-	if ($this->save($data)) {
-		$key = 'your-file-name';
-		if (StorageManager::adapter('Local')->write($key, file_get_contents($this->data['PdfFile']['file']['tmp_name']))) {
-			$this->data['PdfFile']['foreign_key'] = $this->getLastInsertId();
-			$this->data['PdfFile']['model'] = 'Report';
-			$this->data['PdfFile']['path'] = $key;
-			$this->data['PdfFile']['adapter'] = 'Local';
-		}
+```php
+$this->create();
+if ($this->save($data)) {
+	$key = 'your-file-name';
+	if (StorageManager::adapter('Local')->write($key, file_get_contents($this->data['PdfFile']['file']['tmp_name']))) {
+		$this->data['PdfFile']['foreign_key'] = $this->getLastInsertId();
+		$this->data['PdfFile']['model'] = 'Report';
+		$this->data['PdfFile']['path'] = $key;
+		$this->data['PdfFile']['adapter'] = 'Local';
 	}
+}
+```
 
 Later, when you want to delete the file, for example in the beforeDelete() or afterDelete() callback of your Report model, you'll know the adapter you have used to store the attached PdfFile and can get an instance of this adapter configuration using the StorageManager. By having the path or key available you can then simply call:
 
-	StorageManager::adapter($data['PdfFile']['adapter'])->delete($data['PdfFile']['path']);
+```php
+StorageManager::adapter($data['PdfFile']['adapter'])->delete($data['PdfFile']['path']);
+```
 
 Insted of doing all of this in the model that has the files associated to it you can also simply extend the FileStorage model from the plugin and add your storage logic there and use that model for your association.
 
@@ -161,30 +179,32 @@ You can set up automatic image processing for the FileStorage.Image model. To ma
 
 All you need to do is basically use the image model and configure versions on a per model basis. When you save an Image model record it is important to have the 'model' field filled so that the script can find the correct versions for that model.
 
-	Configure::write('Media', array(
-		'imageSizes' => array(
-			'GalleryImage' => array(
-				'c50' => array(
-					'crop' => array(
-						'width' => 50, 'height' => 50)),
-				't120' => array(
-					'thumbnail' => array(
-						'width' => 120, 'height' => 120)),
-				't800' => array(
-					'thumbnail' => array(
-						'width' => 800, 'height' => 600))),
-			'User' => array(
-				'c50' => array(
-					'crop' => array(
-						'width' => 50, 'height' => 50)),
-				't150' => array(
-					'crop' => array(
-						'width' => 150, 'height' => 150))),
-			)
+```php
+Configure::write('Media', array(
+	'imageSizes' => array(
+		'GalleryImage' => array(
+			'c50' => array(
+				'crop' => array(
+					'width' => 50, 'height' => 50)),
+			't120' => array(
+				'thumbnail' => array(
+					'width' => 120, 'height' => 120)),
+			't800' => array(
+				'thumbnail' => array(
+					'width' => 800, 'height' => 600))),
+		'User' => array(
+			'c50' => array(
+				'crop' => array(
+					'width' => 50, 'height' => 50)),
+			't150' => array(
+				'crop' => array(
+					'width' => 150, 'height' => 150))),
 		)
-	);
-	App::uses('ClassRegistry', 'Utility');
-	ClassRegistry::init('FileStorage.Image')->generateHashes();
+	)
+);
+App::uses('ClassRegistry', 'Utility');
+ClassRegistry::init('FileStorage.Image')->generateHashes();
+```
 
 Calling generateHashes is important, it will create the hash values for each versioned image and store them in Media.imageHashes in the configuration.
 
@@ -204,6 +224,113 @@ You should smylink your image root folder to APP/webroot/images for example to a
 
 It is possible to totally change the way image versions are created.
 
+## Specific Addapter Configuration
+
+Gaufrette does not come with a lot detail about what exactly some adapters expect so here is a list to help you with that.
+
+But you should not blindly copy and paste that code, get an understanding of the storage service you want to use before!
+
+### OpenCloud (Rackspace)
+
+Get the SDK from here http://github.com/rackspace/php-opencloud and add it to your class autoloader
+
+```php
+define('RAXSDK_SSL_VERIFYHOST', 0);
+define('RAXSDK_SSL_VERIFYPEER', 0);
+
+$connection = new \OpenCloud\Rackspace(
+	'https://lon.identity.api.rackspacecloud.com/v2.0/', // Rackspace Auth URL
+	array(
+		'username' => 'YOUR-USERNAME',
+		'apiKey' => 'YOUR-API-KEY'
+	)
+);
+
+// LON (London) or DFW (Dallas)
+$objstore = $connection->ObjectStore('cloudFiles', 'LON');
+
+StorageManager::config('OpenCloudTest', array(
+	'adapterOptions' => array(
+		$objstore,
+		'test1',
+	),
+	'adapterClass' => '\Gaufrette\Adapter\OpenCloud',
+	'class' => '\Gaufrette\Filesystem')
+);
+```
+
+### AmazonS3
+
+Get the SDK from here http:// github.com/amazonwebservices/aws-sdk-for-php and load the sdk.class.php file from where ever you cloned the SDK.
+
+```php
+require_once(APP . 'Vendor' . DS . 'AwsSdk' . DS . 'sdk.class.php');
+CFCredentials::set(array(
+	'production' => array(
+		'certificate_authority' => true,
+		'key' => 'YOUR-KEY',
+		'secret' => 'YOUR-SECRET')
+	)
+);
+$s3 = new AmazonS3();
+
+StorageManager::config('S3', array(
+	'adapterOptions' => array(
+		$s3,
+		'YOUR-BUCKET-HERE'),
+	'adapterClass' => '\Gaufrette\Adapter\AmazonS3',
+	'class' => '\Gaufrette\Filesystem'));
+```
+
+## Included Event Listeners
+
+### LocalFileStorageListener
+
+The file and folder structure it will generate looks like that:
+
+	basePath/files/xx/xx/xx/<uuid>/<uuid>.<extension>
+
+### ImageProcessingListener
+
+This listener will create versions of images if Configure::read('Media.imageSizes.' . $model); is not empty. If no processing operations for that model were specified it will just save the image.
+
+This adapter replaces LocalImageProcessingListener and currently supports the Local and AmazonS3 adapter.
+
+The file and folder structure it will generate looks like that:
+
+	basePath/images/xx/xx/xx/<uuid>/<uuid>.<extension>
+
+Versioned images will look like that
+
+	basePath/images/xx/xx/xx/<uuid>/<uuid>.<hash>.<extension>
+
+ * For the Local adapter basePath is the value from Configure::read('Media.basePath').
+ * For AmazonS3 the basePath will be the bucket and Amazon S3 URL prefix.
+
+xx is a semi random alphanumerical value calculated based on the given file name if the Local adapter was used
+
+#### Important notes about the path the processor generates
+
+The path stored to the db is NOT going to be the complete path it won't add the filename for a reason.
+
+The filename is generated by the processor on the fly when adding/deleting/modifying images because the versions are built on the fly and not stored to the database. See ImageProcessingListener::_buildPath().
+
+### LocalImageProcessingListener (DEPRECATED, use ImageProcessingListener)
+
+This adapter is still around for backward compatibility to not break some projects depending on it.
+
+This listener will create versions of images if Configure::read('Media.imageSizes.' . $model); is not empty. If no processing operations for that model were specified it will just save the image.
+
+The file and folder structure it will generate looks like that:
+
+	basePath/images/xx/xx/xx/<uuid>/<uuid>.<extension>
+
+Versioned images will look like that
+
+	basePath/images/xx/xx/xx/<uuid>/<uuid>.<hash>.<extension>
+
+basePath is the value from Configure::read('Media.basePath'), xx is a semi random alphanumerical value calculated based on the given file name.
+
 ## Support
 
 For support and feature request, please visit the FileStorage issue page
@@ -212,7 +339,7 @@ https://github.com/burzum/FileStorage/issues
 
 ## Contributions
 
-Please send pull request to `devevelop` branch.
+Please send pull request to `develop` branch.
 
 ## License
 
