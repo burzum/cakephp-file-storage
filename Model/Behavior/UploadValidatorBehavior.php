@@ -81,9 +81,10 @@ class UploadValidatorBehavior extends ModelBehavior {
  * extensions and / or mime type if configured to do so.
  *
  * @param Model $Model
+ * @param array $options
  * @return boolean True on success
  */
-	public function beforeValidate(Model $Model) {
+	public function beforeValidate(Model $Model, $options = array()) {
 		extract($this->settings[$Model->alias]);
 		if ($validate === true && isset($Model->data[$Model->alias][$fileField]) && is_array($Model->data[$Model->alias][$fileField])) {
 
