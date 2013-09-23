@@ -62,10 +62,11 @@ class ImageStorage extends FileStorage {
 /**
  * afterSave callback
  *
- * @param boolean
+ * @param boolean $created
+ * @param array $options
  * @return void
  */
-	public function afterSave($created) {
+	public function afterSave($created, $options = array()) {
 		parent::afterSave($created);
 
 		if ($created) {
