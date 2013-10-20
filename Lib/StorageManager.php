@@ -57,7 +57,7 @@ class StorageManager {
 		}
 
 		if (isset($_this->_adapterConfig[$adapter])) {
-			return $_this->_activeAdapter[$adapter];
+			return $_this->_adapterConfig[$adapter];
 		}
 
 		return false;

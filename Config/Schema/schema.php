@@ -21,6 +21,12 @@ class FileStorageSchema extends CakeSchema {
  * @return boolean
  */
 	public function before($event = array()) {
+		if (Configure::read('FileStorage.schema.useIntegers') === true) {
+			$this->file_storage['id']['type'] = 'integer';
+			$this->file_storage['id']['length'] = 10;
+			$this->file_storage['foreign_key']['type'] = 'integer';
+			$this->file_storage['foreign_key']['length'] = 10;
+		}
 		return true;
 	}
 

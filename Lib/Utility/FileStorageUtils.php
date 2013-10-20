@@ -21,7 +21,7 @@ class FileStorageUtils {
 
 		$class = str_replace('\\', DS, $class);
 		if (file_exists($base . $class . '.php')) {
-			include($base . $class . '.php');
+			include ($base . $class . '.php');
 		}
 	}
 
@@ -87,9 +87,9 @@ class FileStorageUtils {
  */
 	public static function normalizePath($string) {
 		if (DS == '\\') {
-			return str_replace('\\', '', $string);
-		} else {
 			return str_replace('/', '\\', $string);
+		} else {
+			return str_replace('\\', '/', $string);
 		}
 	}
 

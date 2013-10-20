@@ -138,6 +138,7 @@ class UploadValidatorBehaviorTest extends CakeTestCase {
 		$this->assertTrue(isset($this->Model->validationErrors['file']));
 		unset($this->Model->validationErrors['file']);
 
+		$this->Model->Behaviors->UploadValidator->settings['VoidUploadModel']['allowNoFileError'] = false;
 		$post[$this->Model->alias]['file']['error'] = 4;
 		$this->Model->data = $post;
 		$this->assertFalse($this->FileUpload->beforeValidate($this->Model));
