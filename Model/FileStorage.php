@@ -111,9 +111,10 @@ class FileStorage extends FileStorageAppModel {
  * afterSave callback
  *
  * @param boolean $created
+ * @param array $options
  * @return void
  */
-	public function afterSave($created) {
+	public function afterSave($created, $options = array()) {
 		if ($created) {
 			$this->data[$this->alias][$this->primaryKey] = $this->getLastInsertId();
 		}
