@@ -280,7 +280,7 @@ class ImageProcessingListener extends Object implements CakeEventListener {
 
 		$config = StorageManager::config($Event->data['image']['adapter']);
 		$bucket = $config['adapterOptions'][1];
-		$cfDist = $config['adapterOptions'][2];
+		$cfDist = $config['cloudFrontUrl'];
 
 		$http = 'http';
 		if (!empty($Event->data['options']['ssl']) && $Event->data['options']['ssl'] === true) {
@@ -290,7 +290,7 @@ class ImageProcessingListener extends Object implements CakeEventListener {
 		$image['path'] = str_replace('\\', '/', $image['path']);
 		$bucketPrefix = !empty($Event->data['options']['bucketPrefix']) && $Event->data['options']['bucketPrefix'] === true;
 
-		$Event->data['path'] = $this->_buildClouldFrontDistributionUrl($http, $image['path'], $bucket, $bucketPrefix, $cfDist);
+		$Event->data['path'] = $this->_buildCloudFrontDistributionUrl($http, $image['path'], $bucket, $bucketPrefix, $cfDist);
 		$Event->stopPropagation();
 	}
 
@@ -304,7 +304,7 @@ class ImageProcessingListener extends Object implements CakeEventListener {
  * @param string $cfDist
  * @return string
  */
-	protected function _buildClouldFrontDistributionUrl($protocol, $image, $bucket, $bucketPrefix = null, $cfDist = null){
+	protected function _buildCloudFrontDistributionUrl($protocol, $image, $bucket, $bucketPrefix = null, $cfDist = null){
 		$path = $protocol . '://';
 		if ($cfDist){
 			$path .= $cfDist;

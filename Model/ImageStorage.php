@@ -69,20 +69,21 @@ class ImageStorage extends FileStorage {
  *
  * Does not call the parent to avoid that the regular file storage event listener saves the image already
  *
- * @param boolean
+ * @param boolean $created
+ * @param array $options
  * @return void
  */
-	public function afterSave($created) {
+	public function afterSave($created, $options = array()) {
 		if ($created) {
 			$this->data[$this->alias][$this->primaryKey] = $this->getLastInsertId();
 
-			$Event = new CakeEvent('ImageStorage.afterSave', $this, array(
-				'created' => $created,
-				'storage' => StorageManager::adapter($this->data[$this->alias]['adapter']),
-				'record' => $this->data));
-			CakeEventManager::instance()->dispatch($Event);
+				$Event = new CakeEvent('ImageStorage.afterSave', $this, array(
+					'created' => $created,
+					'storage' => StorageManager::adapter($this->data[$this->alias]['adapter']),
+					'record' => $this->data));
+				CakeEventManager::instance()->dispatch($Event);
+			}
 		}
-	}
 
 /**
  * Get a copy of the actual record before we delete it to have it present in afterDelete

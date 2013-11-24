@@ -36,11 +36,17 @@ To be able to simply autoload Gaufrette load the plugin with bootstrap enabled. 
 
 You also need to setup the plugin database using either the schema shell:
 
-    cake schema create --plugin FileStorage
+	cake schema create --plugin FileStorage
 
 or the CakeDC Migrations plugin (http://github.com/CakeDC/migrations):
 
-    cake Migrations.migration run all --plugin FileStorage
+	cake Migrations.migration run all --plugin FileStorage
+
+If you want to use integers instead of UUIDs put this into your bootstrap.php *before* you're running the migrations:
+
+	Configure::write('FileStorage.schema.useIntegers', true);
+
+This config option is not available for the regular CakePHP schema that comes with the plugin because it seems not to be possible to override the type on the fly. I didn't want to spend a ton of time on this, if you can figure out how to do it a pull request is welcome!
 
 This plugin depends on the Gaufrette library (https://github.com/KnpLabs/Gaufrette), init the submodule, the plugin depends on it.
 
@@ -68,7 +74,8 @@ To configure adapters use the StorageManager::config method. First argument is t
 StorageManager::config('Local', array(
 	'adapterOptions' => array(TMP, true),
 	'adapterClass' => '\Gaufrette\Adapter\Local',
-	'class' => '\Gaufrette\Filesystem'));
+	'class' => '\Gaufrette\Filesystem')
+);
 ````
 
 To invoke a new instance using a before set configuration call:
