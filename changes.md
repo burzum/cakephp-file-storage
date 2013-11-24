@@ -7,6 +7,7 @@ List of changes done to the plugin versions
 * Updating the Gaufrette Vendor lib
 * Updating readme.md
 * Coding standard fixes
+* Fixes https://github.com/burzum/FileStorage/issues/35
 
 ## 0.3.3
 
