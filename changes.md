@@ -2,15 +2,12 @@
 
 List of changes done to the plugin versions
 
-## 0.3.4
+## 0.3.3
 
 * Updating the Gaufrette Vendor lib
 * Updating readme.md
 * Coding standard fixes
 * Fixes https://github.com/burzum/FileStorage/issues/35
-
-## 0.3.3
-
 * Fix: 2.4 and php5 compatibility, fixed strict errors for model callbacks
 
 ## 0.3.2
