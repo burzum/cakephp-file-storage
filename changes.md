@@ -2,6 +2,12 @@
 
 List of changes done to the plugin versions
 
+## 0.3.4
+
+* Updating the Gaufrette Vendor lib
+* Updating readme.md
+* Coding standard fixes
+
 ## 0.3.3
 
 * Fix: 2.4 and php5 compatibility, fixed strict errors for model callbacks
