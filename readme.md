@@ -22,8 +22,8 @@ Included storage adapters through the Gaufrette vendor lib are:
 
 You can always write your own adapter or extend and overload existing ones.
 
-[![Downloads](https://poser.pugx.org/burzum/FileStorage/d/total.png)](https://packagist.org/packages/CakeDC/search)
-[![Latest Version](https://poser.pugx.org/burzum/FileStorage/v/stable.png)](https://packagist.org/packages/CakeDC/search)
+[![Total Downloads](https://poser.pugx.org/burzum/FileStorage/downloads.png)](https://packagist.org/packages/burzum/FileStorage)
+[![Latest Stable Version](https://poser.pugx.org/burzum/FileStorage/v/stable.png)](https://packagist.org/packages/burzum/FileStorage)
 
 Requirements
 ------------
