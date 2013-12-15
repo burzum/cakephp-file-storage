@@ -20,6 +20,7 @@ before_script:
   - sh -c "mysql -e 'CREATE DATABASE cakephp_test;'"
   - chmod -R 777 ../cakephp/app/tmp
   - echo "<?php
+    class DATABASE_CONFIG {
     public \$default = array(
       'datasource' => 'Database/Mysql',
       'database' => 'cakephp_test',
@@ -27,7 +28,6 @@ before_script:
       'login' => 'travis',
       'persistent' => false,
     );
-    class DATABASE_CONFIG {
     public \$test = array(
       'datasource' => 'Database/Mysql',
       'database' => 'cakephp_test',
