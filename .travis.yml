@@ -9,11 +9,12 @@ env:
   - CAKE_VERSION=2.1.0
   - CAKE_VERSION=2.2.0
   - CAKE_VERSION=2.3.0
+  - CAKE_VERSION=2.4.0
   - CAKE_VERSION=2.5
 
 before_script:
   - git clone git://github.com/cakephp/cakephp ../cakephp && cd ../cakephp && git checkout $CAKE_VERSION
-  - git clone git://github.com/burzum/Imagine ../plugins/Image
+  - git clone git://github.com/burzum/Imagine ../plugins/Imagine
   - cp -R ../FileStorage plugins/FileStorage
   - sh -c "mysql -e 'CREATE DATABASE cakephp_test;'"
   - chmod -R 777 ../cakephp/app/tmp
@@ -27,7 +28,10 @@ before_script:
       'persistent' => false,
     );
     }" > ../cakephp/app/Config/database.php
- 
+  - echo "CakePlugin::loadAll();
+    CakePlugin::load('FileStorage', array('bootstrap' => true);
+    " > ../cakephp/app/Config/bootstrap.php
+
 script:
   - ./lib/Cake/Console/cake test FileStorage AllFileStorage --stderr
  
