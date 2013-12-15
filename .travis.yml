@@ -3,6 +3,7 @@ language: php
 php:
   - 5.3
   - 5.4
+  - 5.5
 
 env:
   - CAKE_VERSION=master
@@ -29,7 +30,7 @@ before_script:
     );
     }" > ../cakephp/app/Config/database.php
   - echo "CakePlugin::loadAll();
-    CakePlugin::load('FileStorage', array('bootstrap' => true);
+    CakePlugin::load('FileStorage', array('bootstrap' => true));
     " >> ../cakephp/app/Config/bootstrap.php
 
 script:
