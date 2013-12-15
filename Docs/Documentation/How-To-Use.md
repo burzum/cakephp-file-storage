@@ -101,7 +101,8 @@ So if you want to store a file using Amazon S3 you would have to store it, creat
 
 When you create a new listener it is important that you check the model field and the event subject object if it matches what you expect. Using the event system you could create any kind of storage and upload behavior without inheriting or touching the model code. Just write a listener class and attach it to the global CakeEventManager.
 
-#### List of events
+List of events
+--------------
 
  * ImageVersion.createVersion
  * ImageVersion.removeVersion
@@ -113,7 +114,8 @@ When you create a new listener it is important that you check the model field an
  * FileStorage.afterSave
  * FileStorage.afterDelete
 
-#### Why is it done like this?
+Why is it done like this?
+-------------------------
 
 Because every developer might want to store the file at a different point or apply other operations on the file before or after it is store. Based on different circumstances you might want to save an associated file even before you created the record its going to get attached to, in other scenarios like in this documentation you want to do it after.
 
@@ -121,7 +123,7 @@ The $key is also a key aspect of it: Different adapters might expect a different
 
 It is up to you how you want to generate the key and build your path.
 
-I recommend you to read the Gaufrette documentation for the read() and write() methods of the adapters.
+It is highly recommended to read the Gaufrette documentation for the read() and write() methods of the adapters.
 
 ## Included Event Listeners
 

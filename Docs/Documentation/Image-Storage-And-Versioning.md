@@ -46,7 +46,7 @@ ClassRegistry::init('FileStorage.Image')->generateHashes();
 
 Calling ```generateHashes()``` is important, it will create the hash values for each versioned image and store them in Media.imageHashes in the configuration.
 
-If you do not want to have the script to generate the hashes each time its execute it is up to you to store it persistant. This plugin just provides you the tools.
+If you don't want to have the script to generate the hashes each time it's executed, it is up to you to store it persistent. This plugin just provides you the tools.
 
 Image files will end up wherever you have configured your base path.
 

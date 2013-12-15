@@ -3,7 +3,14 @@ language: php
 php:
   - 5.3
   - 5.4
- 
+
+env:
+  - CAKE_VERSION=master
+  - CAKE_VERSION=2.1
+  - CAKE_VERSION=2.2
+  - CAKE_VERSION=2.3
+  - CAKE_VERSION=2.5
+
 before_script:
   - git clone --depth 1 git://github.com/cakephp/cakephp ../cakephp && cd ../cakephp
   - git clone --depth 1 --branch develop git://github.com/CakeDC/Imagine plugins/Imagine
@@ -11,6 +18,7 @@ before_script:
   - git submodule update --init --recursive
   - cd ../../
   - mv ../FileStorage plugins/FileStorage
+  - mv ../Imagine plugins/Imagine
   - sh -c "mysql -e 'CREATE DATABASE cakephp_test;'"
   - chmod -R 777 ../cakephp/app/tmp
   - echo "<?php

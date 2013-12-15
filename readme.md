@@ -5,32 +5,19 @@ The **File Storage** plugin is giving you the possibility to store files in virt
 
 Storage adapters are an unified interface that allow you to store file data to your local file system, in memory, in a database or into a zip file and remote systems. There is a database table keeping track of what you stored were.
 
-Included storage adapters through the Gaufrette vendor lib are:
-
- * Local File System
- * Amazon S3
- * ACL Aware Amazon S3
- * Mogile FS
- * Rackspace Cloudfiles
- * Zip File
- * Ftp
- * Sftp
- * In Memory
- * Grid FS
- * Apc
- * Doctrine DBAL
+[See this list of included storage adapters.](Docs/Documentation/List-of-included-Adapters.md)
 
 You can always write your own adapter or extend and overload existing ones.
-
-[![Total Downloads](https://poser.pugx.org/burzum/FileStorage/downloads.png)](https://packagist.org/packages/burzum/FileStorage)
-[![Latest Stable Version](https://poser.pugx.org/burzum/FileStorage/v/stable.png)](https://packagist.org/packages/burzum/FileStorage)
 
 Requirements
 ------------
 
  * CakePHP 2.0+
  * PHP 5.3+
- * Gaufrette Library (included as git submodule, just init it)
+ * Gaufrette Library (included as git submodule or composer dependency)
+
+Optional but required for image processing:
+
  * CakeDC Imagine Image processing plugin https://github.com/cakedc/imagine if you want to process and storage images
 
 Documentation
@@ -43,20 +30,14 @@ Support
 
 For bugs and feature requests, please use the [issues](https://github.com/burzum/FileStorage/issues) section of this repository.
 
-## Support
-
-For support and feature request, please visit the FileStorage issue page
-
-https://github.com/burzum/FileStorage/issues
-
 Contributing
 ------------
 
 To contribute to this plugin please follow a few basic rules.
 
-* Pull rewuests must be send to the ```develop``` branch.
-* Contributions must follow the CakePHP coding standard.
-* Unit tests are required.
+* Pull requests must be send to the ```develop``` branch.
+* Contributions must follow the [CakePHP coding standard](http://book.cakephp.org/2.0/en/contributing/cakephp-coding-conventions.html).
+* [Unit tests](http://book.cakephp.org/2.0/en/development/testing.html) are required.
 
 License
 -------
