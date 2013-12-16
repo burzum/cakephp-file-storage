@@ -1,6 +1,8 @@
 Installation
 ============
 
+Make sure you've checked the [requirements](Requirements.md) first!
+
 Using Git
 ---------
 
@@ -25,6 +27,10 @@ If you do not want to add it as submodule just clone it instead of doing submodu
 	git clone git://github.com/burzum/FileStorage.git
 
 It is **not** recommended to just clone it but instead setting it up as submodule.
+
+If you're not using your own autoloader you'll have to enable bootstrap for the FileStorage plugin. The bootstrap file will register Gaufrette with the SPL classloader.
+
+	CakePlugin::load('FileStorage', array('bootstrap' => true));
 
 Using Composer
 --------------
@@ -52,6 +58,4 @@ Assuming your app folder is called app add this to your projects root folder in 
 CakePHP Bootstrap
 -----------------
 
-To be able to simply autoload Gaufrette load the plugin with bootstrap enabled. The bootstrap file will register the SPL classloader.
 
-	CakePlugin::load('FileStorage', array('bootstrap' => true));
