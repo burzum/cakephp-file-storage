@@ -16,7 +16,7 @@ Requirements
 
 Optional but required for image processing:
 
- * CakeDC Imagine Image processing plugin https://github.com/cakedc/imagine if you want to process and storage images
+ * The [Imagine Image processing plugin](https://github.com/burzum/cakephp-imagine-plugin) if you want to process and storage images
 
 Documentation
 -------------
@@ -48,4 +48,4 @@ Redistributions of files must retain the above copyright notice.
 Credits
 -------
 
-Thanks to Larry Masters and the CakeDC for the chance to work with a great team and Jitka Koukalová for her excelent advice in programming related questions she gave me some years ago. You guys and girls made me a better programmer! :)
+Thanks to Larry Masters and the [CakeDC](http://cakedc.com) for the chance to work with a great team and Jitka Koukalová for her excellent advice in programming related questions she gave me some years ago. You guys and girls made me a better programmer!

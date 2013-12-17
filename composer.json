@@ -17,7 +17,7 @@
 		"knplabs/gaufrette": "*"
 	},
 	"suggest": {
-		"cakedc/Imagine": "Required if you want to use the image processing feature of FileStorage",
+		"burzum/cakephp-image-plugin": "Required if you want to use the image processing feature of FileStorage",
 		"cakedc/migrations": "If you want to use the database migrations that come with FileStorage"
 	}
 }
