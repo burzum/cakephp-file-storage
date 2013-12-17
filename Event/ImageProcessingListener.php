@@ -69,7 +69,7 @@ class ImageProcessingListener extends Object implements CakeEventListener {
 			$hash = $Model->hashOperations($imageOperations);
 			$string = $this->_buildPath($record, true, $hash);
 
-			if ($this->adapterClass === 'AmazonS3') {
+			if ($this->adapterClass === 'AmazonS3' || $this->adapterClass === 'AwsS3' ) {
 				$string = str_replace('\\', '/', $string);
 			}
 
@@ -123,7 +123,7 @@ class ImageProcessingListener extends Object implements CakeEventListener {
 				$hash = $Model->hashOperations($operations);
 				$string = $this->_buildPath($record, true, $hash);
 
-				if ($this->adapterClass === 'AmazonS3') {
+				if ($this->adapterClass === 'AmazonS3' || $this->adapterClass === 'AwsS3' ) {
 					$string = str_replace('\\', '/', $string);
 				}
 
@@ -153,7 +153,7 @@ class ImageProcessingListener extends Object implements CakeEventListener {
 
 			$string = $this->_buildPath($record, true, null);
 
-			if ($this->adapterClass === 'AmazonS3') {
+			if ($this->adapterClass === 'AmazonS3' || $this->adapterClass === 'AwsS3' ) {
 				$string = str_replace('\\', '/', $string);
 			}
 
@@ -203,7 +203,7 @@ class ImageProcessingListener extends Object implements CakeEventListener {
 					$path = $record['path'] . $filename . '.' . $record['extension'];
 				}
 
-				if ($this->adapterClass === 'AmazonS3') {
+				if ($this->adapterClass === 'AmazonS3' || $this->adapterClass === 'AwsS3' ) {
 					$path = str_replace('\\', '/', $path);
 					$record['path'] = str_replace('\\', '/', $record['path']);
 				}
@@ -261,6 +261,16 @@ class ImageProcessingListener extends Object implements CakeEventListener {
 		$path = $this->_buildPath($image, true, $hash);
 		$Event->data['path'] = '/' . $path;
 		$Event->stopPropagation();
+	}
+
+/**
+ * Wrapper around the other AmazonS3 Adapter
+ *
+ * @param CakeEvent $Event
+ * @see ImageProcessingListener::_buildAmazonS3Path()
+ */
+	protected function _buildAwsS3Path($Event) {
+		$this->_buildAmazonS3Path($Event);
 	}
 
 /**
@@ -385,6 +395,7 @@ class ImageProcessingListener extends Object implements CakeEventListener {
  */
 	protected function _checkEvent($Event) {
 		$Model = $Event->subject();
+
 		if (!$Model instanceOf ImageStorage || (!isset($Event->data['record'][$Model->alias]['adapter']) && !isset($Event->data['record']['adapter']))) {
 			return false;
 		}
@@ -407,6 +418,9 @@ class ImageProcessingListener extends Object implements CakeEventListener {
 		switch ($config['adapterClass']) {
 			case '\Gaufrette\Adapter\Local':
 				$this->adapterClass = 'Local';
+				return $this->adapterClass;
+			case '\Gaufrette\Adapter\AwsS3':
+				$this->adapterClass = 'AwsS3';
 				return $this->adapterClass;
 			case '\Gaufrette\Adapter\AmazonS3':
 				$this->adapterClass = 'AmazonS3';
