@@ -45,7 +45,9 @@ abstract class AbstractStorageEventListener extends Object implements CakeEventL
  * @var array
  */
 	protected $_defaults = array(
-		'models' => false
+		'models' => false,
+		'preserveFilename' => false,
+		'preserveExtension' => true,
 	);
 
 /**
@@ -110,7 +112,11 @@ abstract class AbstractStorageEventListener extends Object implements CakeEventL
  */
 	protected function _checkModel(CakeEvent $Event) {
 		$Model = $Event->subject();
-		return (!$Model instanceOf $this->storageModelClass || (!isset($Event->data['record'][$Model->alias]['adapter']) && !isset($Event->data['record']['adapter'])));
+		$instanceCheck = ($Model instanceOf $this->storageModelClass);
+		$adapterCheck = isset($Event->data['record'][$Model->alias]['adapter']);
+		$adapterCheck2 = isset($Event->data['record']['adapter']);
+
+		return ($instanceCheck && ($adapterCheck || $adapterCheck2));
 	}
 
 /**
@@ -146,3 +152,4 @@ abstract class AbstractStorageEventListener extends Object implements CakeEventL
 	}
 
 }
+
