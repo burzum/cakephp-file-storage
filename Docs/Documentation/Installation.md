@@ -8,7 +8,7 @@ Using Git
 
 Go into your project folders root and add the submodule.
 
-	git submodule add git://github.com/burzum/FileStorage.git Plugin/FileStorage
+	git submodule add git://github.com/burzum/cakephp-file-storage-plugin.git Plugin/FileStorage
 
 This plugin depends on the Gaufrette library (https://github.com/KnpLabs/Gaufrette), init the submodule, the plugin depends on it.
 
@@ -24,7 +24,7 @@ If you want to use S3 upload Gaufrette has also submodules to initialize. Here i
 If you do not want to add it as submodule just clone it instead of doing submodule add
 
 	cd app/Plugin/FileStorage
-	git clone git://github.com/burzum/FileStorage.git
+	git clone git://github.com/burzum/cakephp-file-storage-plugin.git
 
 It is **not** recommended to just clone it but instead setting it up as submodule.
 
