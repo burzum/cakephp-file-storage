@@ -9,7 +9,7 @@ or the [CakeDC Migrations plugin](http://github.com/CakeDC/migrations).
 
 	cake Migrations.migration run all --plugin FileStorage
 
-Integer tpye IDs vs UUIDs
+Integer type IDs vs UUIDs
 -------------------------
 
 If you want to use integers instead of [UUIDs](http://en.wikipedia.org/wiki/Universally_unique_identifier) put this into your ```bootstrap.php``` *before* you're running the migrations:

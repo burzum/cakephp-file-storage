@@ -1,7 +1,7 @@
 Home
 ====
 
-The **File Storage** plugin is giving you the possibility to store files in virtually and kind of storage backend. This plugin is wrapping the Gaufrette library (https://github.com/KnpLabs/Gaufrette) library in a CakePHP fashion and provides a simple way to use the storage adapters through the [StorageManager](../Lib/StorageManager.php) class.
+The **File Storage** plugin is giving you the possibility to store files in virtually and kind of storage backend. This plugin is wrapping the [Gaufrette](https://github.com/KnpLabs/Gaufrette) library in a CakePHP fashion and provides a simple way to use the storage adapters through the [StorageManager](../Lib/StorageManager.php) class.
 
 [See this list of included storage adapters.](Docs/Documentation/List-of-included-Adapters.md)
 
@@ -10,6 +10,7 @@ Storage adapters are an unified interface that allow you to store file data to y
 Documentation
 -------------
 
+* [Requirements](Documentation/Requirements.md)
 * [Installation](Documentation/Installation.md)
 * [Database Setup](Documentation/Database-Setup.md)
 * [How to Use it](Documentation/How-To-Use.md)
