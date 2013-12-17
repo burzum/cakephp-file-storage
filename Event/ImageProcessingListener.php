@@ -1,13 +1,6 @@
 <?php
 App::uses('CakeEventListener', 'Event');
 /**
- * Image Processor Event Listener for the CakePHP FileStorage plugin
- *
- * This listener currently supports the following adapters
- * - Local
- * - AmazonS3
- *
- * @todo I don't like this file very much, find a better way to deal with the handling of all the different adapters in this code
  * @author Florian Krämer
  * @copy 2013 Florian Krämer
  * @license MIT
@@ -60,7 +53,7 @@ class ImageProcessingListener extends Object implements CakeEventListener {
  * @throws Exception
  * @return void
  */
-	protected function _createVersions($Model, $record, $operations) {
+	protected function _createVersions(Model $Model, $record, $operations) {
 		$Storage = StorageManager::adapter($record['adapter']);
 		$path = $this->_buildPath($record, true);
 		$tmpFile = $this->_tmpFile($Storage, $path);
@@ -68,10 +61,6 @@ class ImageProcessingListener extends Object implements CakeEventListener {
 		foreach ($operations as $version => $imageOperations) {
 			$hash = $Model->hashOperations($imageOperations);
 			$string = $this->_buildPath($record, true, $hash);
-
-			if ($this->adapterClass === 'AmazonS3') {
-				$string = str_replace('\\', '/', $string);
-			}
 
 			if ($Storage->has($string)) {
 				return false;
@@ -96,7 +85,7 @@ class ImageProcessingListener extends Object implements CakeEventListener {
  * @param CakeEvent $Event
  * @return void
  */
-	public function createVersions($Event) {
+	public function createVersions(CakeEvent $Event) {
 		if ($this->_checkEvent($Event)) {
 			$Model = $Event->subject();
 
@@ -113,7 +102,7 @@ class ImageProcessingListener extends Object implements CakeEventListener {
  * @param CakeEvent $Event
  * @return void
  */
-	protected function _removeVersions($Event) {
+	protected function _removeVersions(CakeEvent $Event) {
 		if ($this->_checkEvent($Event)) {
 			$Model = $Event->subject();
 			$Storage = $Event->data['storage'];
@@ -122,10 +111,6 @@ class ImageProcessingListener extends Object implements CakeEventListener {
 			foreach ($Event->data['operations'] as $version => $operations) {
 				$hash = $Model->hashOperations($operations);
 				$string = $this->_buildPath($record, true, $hash);
-
-				if ($this->adapterClass === 'AmazonS3') {
-					$string = str_replace('\\', '/', $string);
-				}
 
 				try {
 					if ($Storage->has($string)) {
@@ -146,16 +131,12 @@ class ImageProcessingListener extends Object implements CakeEventListener {
  * @param CakeEvent $Event
  * @return void
  */
-	public function afterDelete($Event) {
+	public function afterDelete(CakeEvent $Event) {
 		if ($this->_checkEvent($Event)) {
 			$Model = $Event->subject();
 			$record = $Event->data['record'][$Model->alias];
 
 			$string = $this->_buildPath($record, true, null);
-
-			if ($this->adapterClass === 'AmazonS3') {
-				$string = str_replace('\\', '/', $string);
-			}
 
 			try {
 				$Storage = StorageManager::adapter($record['adapter']);
@@ -179,13 +160,17 @@ class ImageProcessingListener extends Object implements CakeEventListener {
 		}
 	}
 
+	protected function _buildStoragePath() {
+
+	}
+
 /**
  * afterSave
  *
  * @param CakeEvent $Event
  * @return void
  */
-	public function afterSave($Event) {
+	public function afterSave(CakeEvent $Event) {
 		if ($this->_checkEvent($Event)) {
 			$Model = $Event->subject();
 			$Storage = StorageManager::adapter($Model->data[$Model->alias]['adapter']);
@@ -203,7 +188,7 @@ class ImageProcessingListener extends Object implements CakeEventListener {
 					$path = $record['path'] . $filename . '.' . $record['extension'];
 				}
 
-				if ($this->adapterClass === 'AmazonS3') {
+				if ($this->adapterClass === 'AwsS3' || $this->adapterClass === 'AwsS3') {
 					$path = str_replace('\\', '/', $path);
 					$record['path'] = str_replace('\\', '/', $record['path']);
 				}
@@ -233,7 +218,7 @@ class ImageProcessingListener extends Object implements CakeEventListener {
  * @throws RuntimeException
  * @return void
  */
-	public function imagePath($Event) {
+	public function imagePath(CakeEvent $Event) {
 		extract($Event->data);
 
 		if (!isset($Event->data['image']['adapter'])) {
@@ -256,7 +241,7 @@ class ImageProcessingListener extends Object implements CakeEventListener {
  * @param CakeEvent $Event
  * @return void
  */
-	protected function _buildLocalPath($Event) {
+	protected function _buildLocalPath(CakeEvent $Event) {
 		extract($Event->data);
 		$path = $this->_buildPath($image, true, $hash);
 		$Event->data['path'] = '/' . $path;
@@ -272,7 +257,7 @@ class ImageProcessingListener extends Object implements CakeEventListener {
  * @param CakeEvent $Event
  * @return void
  */
-	protected function _buildAmazonS3Path($Event) {
+	protected function _buildAmazonS3Path(CakeEvent $Event) {
 		extract($Event->data);
 
 		$path = $this->_buildPath($image, true, $hash);
@@ -353,27 +338,32 @@ class ImageProcessingListener extends Object implements CakeEventListener {
 /**
  * Builds a path to a file
  *
- * @param array $image
+ * @param array $record
  * @param boolean $extension
  * @param string $hash
  * @return string
  */
-	protected function _buildPath($image, $extension = true, $hash = null) {
+	protected function _buildPath($record, $extension = true, $hash = null) {
 		if ($this->options['preserveFilename'] === true) {
 			if (!empty($hash)) {
-				$path = $image['path'] .  preg_replace('/\.[^.]*$/', '', $image['filename']) . '.' . $hash . '.' . $image['extension'];
+				$path = $record['path'] . preg_replace('/\.[^.]*$/', '', $record['filename']) . '.' . $hash . '.' . $image['extension'];
 			} else {
-				$path = $image['path'] . $image['filename'];
+				$path = $record['path'] . $record['filename'];
 			}
 		} else {
-			$path = $image['path'] . str_replace('-', '', $image['id']);
+			$path = $record['path'] . str_replace('-', '', $record['id']);
 			if (!empty($hash)) {
 				$path .= '.' . $hash;
 			}
 			if ($extension == true) {
-				$path .= '.' . $image['extension'];
+				$path .= '.' . $record['extension'];
 			}
 		}
+
+		if ($this->adapterClass === 'AwsS3') {
+			return str_replace('\\', '/', $path);
+		}
+
 		return $path;
 	}
 
@@ -409,7 +399,10 @@ class ImageProcessingListener extends Object implements CakeEventListener {
 				$this->adapterClass = 'Local';
 				return $this->adapterClass;
 			case '\Gaufrette\Adapter\AmazonS3':
-				$this->adapterClass = 'AmazonS3';
+				$this->adapterClass = 'AwsS3';
+				return $this->adapterClass;
+			case '\Gaufrette\Adapter\AwsS3':
+				$this->adapterClass = 'AwsS3';
 				return $this->adapterClass;
 			default:
 				return false;

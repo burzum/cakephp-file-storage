@@ -114,7 +114,7 @@ class StorageManager {
  * @param mixed $adapterName string of adapter configuration or array of settings
  * @param boolean $renewObject Creates a new instance of the given adapter in the configuration
  * @throws RuntimeException
- * @return Gaufrette object as configured by first arg
+ * @return Gaufrette object as configured by first argument
  */
 	public static function adapter($adapterName = null, $renewObject = false) {
 		$_this = StorageManager::getInstance();
@@ -142,8 +142,8 @@ class StorageManager {
 		}
 
 		$class = $adapter['adapterClass'];
-		$rc = new ReflectionClass($class);
-		$adapterObject = $rc->newInstanceArgs($adapter['adapterOptions']);
+		$Reflection = new ReflectionClass($class);
+		$adapterObject = $Reflection->newInstanceArgs($adapter['adapterOptions']);
 		$engineObject = new $adapter['class']($adapterObject);
 		if ($isConfigured) {
 			$_this->_adapterConfig[$adapterName]['object'] = &$engineObject;

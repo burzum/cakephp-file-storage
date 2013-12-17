@@ -7,6 +7,7 @@ App::uses('CakeEventListener', 'Event');
  * @license MIT
  */
 class LocalFileStorageListener extends Object implements CakeEventListener {
+
 /**
  * Implemented Events
  *
@@ -45,9 +46,9 @@ class LocalFileStorageListener extends Object implements CakeEventListener {
  */
 	public function afterSave($Event) {
         if ($this->_checkEvent($Event)) {
-            $Model = $Event->subject();
-            $record = $Model->data[$Model->alias];
-            $Storage = StorageManager::adapter($record['adapter']);
+			$Model = $Event->subject();
+			$record = $Model->data[$Model->alias];
+			$Storage = StorageManager::adapter($record['adapter']);
 
 			try {
 				$id = $record[$Model->primaryKey];
