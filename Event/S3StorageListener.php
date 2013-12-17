@@ -37,7 +37,7 @@ class S3StorageListener extends AbstractStorageEventListener {
  * @param CakeEvent $Event
  * @return void
  */
-	public function afterDelete($Event) {
+	public function afterDelete(CakeEvent $Event) {
 		if ($this->_checkEvent($Event)) {
 			$Model = $Event->subject();
 			$record = $Event->data['record'][$Model->alias];
@@ -63,7 +63,7 @@ class S3StorageListener extends AbstractStorageEventListener {
  * @param CakeEvent $Event
  * @return void
  */
-	public function afterSave($Event) {
+	public function afterSave(CakeEvent $Event) {
 		if ($this->_checkEvent($Event)) {
 			$Model = $Event->subject();
 			$record = $Model->data[$Model->alias];
@@ -89,7 +89,7 @@ class S3StorageListener extends AbstractStorageEventListener {
 	protected function _buildPath(CakeEvent $Event) {
 		$Model = $Event->subject();
 		$record = $Model->data[$Model->alias];
-		$adapterConfig = StorageManager::config($record['adapter']);
+		$adapterConfig = $this->getAdapterconfig($record['adapter']);
 		$id = $record[$Model->primaryKey];
 
 		$path = $Model->fsPath('files' . DS . $record['model'], $id);
@@ -105,7 +105,7 @@ class S3StorageListener extends AbstractStorageEventListener {
 		}
 
 		$combined = $path . $filename;
-		$url = 'https://' . $adapterConfig['adapterOptions'][1] . 's3.amazonaws.com' . $combined;
+		$url = 'https://' . $adapterConfig['adapterOptions'][1] . '.s3.amazonaws.com' . $combined;
 
 		return array(
 			'filename' => $filename,

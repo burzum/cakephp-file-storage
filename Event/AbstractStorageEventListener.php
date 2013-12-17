@@ -126,7 +126,7 @@ abstract class AbstractStorageEventListener extends Object implements CakeEventL
  * @return boolean|string
  */
 	protected function _getAdapterClassFromConfig($configName) {
-		$config = StorageManager::config($configName);
+		$config = $this->getAdapterconfig($configName);
 		if (!empty($config['adapterClass'])) {
 			return $config['adapterClass'];
 		}
@@ -151,5 +151,8 @@ abstract class AbstractStorageEventListener extends Object implements CakeEventL
 		return false;
 	}
 
+	public function getAdapterconfig($configName) {
+		return StorageManager::config($configName);
+	}
 }
 

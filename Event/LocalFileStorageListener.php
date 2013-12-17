@@ -26,7 +26,7 @@ class LocalFileStorageListener extends Object implements CakeEventListener {
  * @param CakeEvent $Event
  * @return void
  */
-	public function afterDelete($Event) {
+	public function afterDelete(CakeEvent $Event) {
 		if ($this->_checkEvent($Event)) {
 			$Model = $Event->subject();
 			$path = Configure::read('Media.basePath') . $Event->data['record'][$Model->alias]['path'];
@@ -44,8 +44,8 @@ class LocalFileStorageListener extends Object implements CakeEventListener {
  * @param CakeEvent $Event
  * @return void
  */
-	public function afterSave($Event) {
-        if ($this->_checkEvent($Event)) {
+	public function afterSave(CakeEvent $Event) {
+		if ($this->_checkEvent($Event)) {
 			$Model = $Event->subject();
 			$record = $Model->data[$Model->alias];
 			$Storage = StorageManager::adapter($record['adapter']);
