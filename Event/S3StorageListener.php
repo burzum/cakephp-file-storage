@@ -44,7 +44,7 @@ class S3StorageListener extends AbstractStorageEventListener {
 			$path = $this->_buildPath($Event);
 
 			try {
-				$Storage = StorageManager::adapter($record['adapter']);
+				$Storage = $this->getAdapter($record['adapter']);
 				if (!$Storage->has($path['combined'])) {
 					return false;
 				}
@@ -67,7 +67,7 @@ class S3StorageListener extends AbstractStorageEventListener {
 		if ($this->_checkEvent($Event)) {
 			$Model = $Event->subject();
 			$record = $Model->data[$Model->alias];
-			$Storage = StorageManager::adapter($record['adapter']);
+			$Storage = $this->getAdapter($record['adapter']);
 
 			try {
 				$path = $this->_buildPath($Event);

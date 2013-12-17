@@ -151,8 +151,25 @@ abstract class AbstractStorageEventListener extends Object implements CakeEventL
 		return false;
 	}
 
+/**
+ * Wrapper around the singleton call to StorageManager::config
+ *
+ * @param string $configName
+ * @return array
+ */
 	public function getAdapterconfig($configName) {
 		return StorageManager::config($configName);
 	}
+
+/**
+ * Wrapper around the singleton call to StorageManager::config
+ *
+ * @param string $configName
+ * @return Object
+ */
+	public function getAdapter($configName) {
+		return StorageManager::adapter($configName);
+	}
+
 }
 

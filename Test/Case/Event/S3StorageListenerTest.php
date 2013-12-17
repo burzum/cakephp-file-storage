@@ -79,6 +79,26 @@ class S3StorageListenerTest extends FileStorageTestCase {
 		);
 
 		$this->assertEquals($result, $expected);
+
+		$this->Listener = $this->getMock(
+			'TestImageProcessingListener',
+			array('getAdapterconfig'),
+			array(array('preserveFilename' => true))
+		);
+
+		$result = $this->Listener->buildPath(new CakeEvent(
+			'FileStorage.afterSave',
+			$this->Model
+		));
+
+		$expected = array(
+			'filename' => 'test.png',
+			'path' => 'files/Document/16/59/52/144c4170676011e3949a0800200c9a66/',
+			'combined' => 'files/Document/16/59/52/144c4170676011e3949a0800200c9a66/test.png',
+			'url' => 'https://.s3.amazonaws.comfiles/Document/16/59/52/144c4170676011e3949a0800200c9a66/test.png'
+		);
+
+		$this->assertEquals($result, $expected);
 	}
 
 }
