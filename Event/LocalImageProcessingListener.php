@@ -9,6 +9,7 @@ App::uses('CakeEventListener', 'Event');
  * @license MIT
  */
 class LocalImageProcessingListener extends Object implements CakeEventListener {
+
 /**
  * Implemented Events
  *

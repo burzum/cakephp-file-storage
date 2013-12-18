@@ -14,7 +14,8 @@ class ImageHelper extends AppHelper {
  * @var array
  */
 	public $helpers = array(
-		'Html');
+		'Html'
+	);
 
 /**
  * Generates an image url based on the image record data and the used Gaufrette adapter to store it
@@ -51,17 +52,19 @@ class ImageHelper extends AppHelper {
 		if (!empty($version)) {
 			$hash = Configure::read('Media.imageHashes.' . $image['model'] . '.' . $version);
 			if (empty($hash)) {
-				throw new InvalidArgumentException(__d('FileStorage', 'No valid version key (%s %s) passed!', @$image['model'], $version));
+				throw new \InvalidArgumentException(__d('FileStorage', 'No valid version key (%s %s) passed!', @$image['model'], $version));
 			}
 		} else {
 			$hash = null;
 		}
 
 		$Event = new CakeEvent('FileStorage.ImageHelper.imagePath', $this, array(
-			'hash' => $hash,
-			'image' => $image,
-			'version' => $version,
-			'options' => $options));
+				'hash' => $hash,
+				'image' => $image,
+				'version' => $version,
+				'options' => $options
+			)
+		);
 		CakeEventManager::instance()->dispatch($Event);
 
 		if ($Event->isStopped()) {
@@ -75,17 +78,19 @@ class ImageHelper extends AppHelper {
  * Provides a fallback image if the image record is empty
  *
  * @param array $options
+ * @param array $image
+ * @param string $version
  * @return string
  */
 	public function fallbackImage($options = array(), $image = array(), $version = null) {
 		if (isset($options['fallback'])) {
 			if ($options['fallback'] === true) {
-				$image = 'placeholder/' . $version . '.jpg';
+				$imageFile = 'placeholder/' . $version . '.jpg';
 			} else {
-				$image = $options['fallback'];
+				$imageFile = $options['fallback'];
 			}
 			unset($options['fallback']);
-			return $this->Html->image($image, $options);
+			return $this->Html->image($imageFile, $options);
 		}
 		return '';
 	}
