@@ -15,6 +15,7 @@ Documentation
 * [Database Setup](Documentation/Database-Setup.md)
 * [How to Use it](Documentation/How-To-Use.md)
 * [Image Storage and Versioning](Documentation/Image-Storage-And-Versioning.md)
+* [The Image Helper](Documentation/The-Image-Helper.md)
 * [Specific Adapter Configurations](Documentation/Specific-Adapter-Configurations.md)
 
 Tutorials
