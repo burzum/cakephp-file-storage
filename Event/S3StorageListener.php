@@ -11,7 +11,7 @@ App::uses('AbstractStorageEventListener', 'FileStorage.Event');
 class S3StorageListener extends AbstractStorageEventListener {
 
 /**
- * Adapter Classes this Listener can work with
+ * Adapter classes this listener can work with
  *
  * @var array
  */
@@ -94,7 +94,7 @@ class S3StorageListener extends AbstractStorageEventListener {
 		$id = $record[$Model->primaryKey];
 
 		$path = $Model->fsPath('files' . DS . $record['model'], $id);
-		$path = str_replace('\\', '/', $path);
+		$path = '/' . str_replace('\\', '/', $path);
 
 		if ($this->options['preserveFilename'] === false) {
 			$filename = $Model->stripUuid($id);

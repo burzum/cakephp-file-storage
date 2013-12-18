@@ -354,6 +354,7 @@ class ImageProcessingListener extends Object implements CakeEventListener {
 			file_put_contents($tmpFile, $imageData);
 			return $tmpFile;
 		} catch (Exception $e) {
+			$this->log($e->getMessage(), 'file_storage');
 			throw $e;
 		}
 	}
@@ -369,7 +370,7 @@ class ImageProcessingListener extends Object implements CakeEventListener {
 	protected function _buildPath($record, $extension = true, $hash = null) {
 		if ($this->options['preserveFilename'] === true) {
 			if (!empty($hash)) {
-				$path = $record['path'] . preg_replace('/\.[^.]*$/', '', $record['filename']) . '.' . $hash . '.' . $image['extension'];
+				$path = $record['path'] . preg_replace('/\.[^.]*$/', '', $record['filename']) . '.' . $hash . '.' . $record['extension'];
 			} else {
 				$path = $record['path'] . $record['filename'];
 			}
@@ -383,7 +384,7 @@ class ImageProcessingListener extends Object implements CakeEventListener {
 			}
 		}
 
-		if ($this->adapterClass === 'AwsS3') {
+		if ($this->adapterClass === 'AmazonS3' || $this->adapterClass === 'AwsS3' ) {
 			return str_replace('\\', '/', $path);
 		}
 

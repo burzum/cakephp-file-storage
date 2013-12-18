@@ -54,7 +54,7 @@ abstract class AbstractStorageEventListener extends Object implements CakeEventL
  * Constructor
  *
  * @param array $options
- * @return AbstratStorageEventListener
+ * @return AbstractStorageEventListener
  */
 	public function __construct($options = array()) {
 		$this->options = array_merge($this->_defaults, $options);

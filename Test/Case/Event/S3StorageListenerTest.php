@@ -2,6 +2,15 @@
 App::uses('FileStorage', 'FileStorage.Model');
 App::uses('S3StorageListener', 'FileStorage.Event');
 App::uses('FileStorageTestCase', 'FileStorage.TestSuite');
+
+class TestS3StorageListener extends S3StorageListener {
+
+	public function buildPath(CakeEvent $CakeEvent) {
+		return $this->_buildPath($CakeEvent);
+	}
+
+}
+
 /**
  * LocalImageProcessingListener Test
  *
@@ -9,12 +18,6 @@ App::uses('FileStorageTestCase', 'FileStorage.TestSuite');
  * @copyright 2012 Florian Krämer
  * @license MIT
  */
-class TestImageProcessingListener extends S3StorageListener {
-	public function buildPath(CakeEvent $CakeEvent) {
-		return $this->_buildPath($CakeEvent);
-	}
-}
-
 class S3StorageListenerTest extends FileStorageTestCase {
 
 /**
@@ -24,7 +27,7 @@ class S3StorageListenerTest extends FileStorageTestCase {
  */
 	public function setUp() {
 		$this->Model = new FileStorage();
-		$this->Listener = $this->getMock('TestImageProcessingListener', array('getAdapterconfig'));
+		$this->Listener = $this->getMock('TestS3StorageListener', array('getAdapterconfig'), array(array()));
 	}
 
 /**
@@ -73,18 +76,12 @@ class S3StorageListenerTest extends FileStorageTestCase {
 
 		$expected = array(
 			'filename' => '144c4170676011e3949a0800200c9a66.png',
-			'path' => 'files/Document/16/59/52/144c4170676011e3949a0800200c9a66/',
-			'combined' => 'files/Document/16/59/52/144c4170676011e3949a0800200c9a66/144c4170676011e3949a0800200c9a66.png',
-			'url' => 'https://my-cool-bucket.s3.amazonaws.comfiles/Document/16/59/52/144c4170676011e3949a0800200c9a66/144c4170676011e3949a0800200c9a66.png'
+			'path' => '/files/Document/16/59/52/144c4170676011e3949a0800200c9a66/',
+			'combined' => '/files/Document/16/59/52/144c4170676011e3949a0800200c9a66/144c4170676011e3949a0800200c9a66.png',
+			'url' => 'https://my-cool-bucket.s3.amazonaws.com/files/Document/16/59/52/144c4170676011e3949a0800200c9a66/144c4170676011e3949a0800200c9a66.png'
 		);
 
 		$this->assertEquals($result, $expected);
-
-		$this->Listener = $this->getMock(
-			'TestImageProcessingListener',
-			array('getAdapterconfig'),
-			array(array('preserveFilename' => true))
-		);
 
 		$result = $this->Listener->buildPath(new CakeEvent(
 			'FileStorage.afterSave',
@@ -92,10 +89,10 @@ class S3StorageListenerTest extends FileStorageTestCase {
 		));
 
 		$expected = array(
-			'filename' => 'test.png',
-			'path' => 'files/Document/16/59/52/144c4170676011e3949a0800200c9a66/',
-			'combined' => 'files/Document/16/59/52/144c4170676011e3949a0800200c9a66/test.png',
-			'url' => 'https://.s3.amazonaws.comfiles/Document/16/59/52/144c4170676011e3949a0800200c9a66/test.png'
+			'filename' => '144c4170676011e3949a0800200c9a66.png',
+			'path' => '/files/Document/16/59/52/144c4170676011e3949a0800200c9a66/',
+			'combined' => '/files/Document/16/59/52/144c4170676011e3949a0800200c9a66/144c4170676011e3949a0800200c9a66.png',
+			'url' => 'https://my-cool-bucket.s3.amazonaws.com/files/Document/16/59/52/144c4170676011e3949a0800200c9a66/144c4170676011e3949a0800200c9a66.png'
 		);
 
 		$this->assertEquals($result, $expected);

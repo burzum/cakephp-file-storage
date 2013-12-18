@@ -23,6 +23,8 @@ class LocalFileStorageListener extends Object implements CakeEventListener {
 /**
  * afterDelete
  *
+ * No need to use an adapter here, just delete the whole folder using cakes Folder class
+ *
  * @param CakeEvent $Event
  * @return void
  */
@@ -59,7 +61,8 @@ class LocalFileStorageListener extends Object implements CakeEventListener {
 
 				$Model->save(array($Model->alias => $record), array(
 					'validate' => false,
-					'callbacks' => false));
+					'callbacks' => false
+				));
 
 			} catch (Exception $e) {
 				$this->log($e->getMessage(), 'file_storage');
