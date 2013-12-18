@@ -1,6 +1,7 @@
 <?php
 App::uses('FileStorageTestCase', 'FileStorage.TestSuite');
 App::uses('ImageHelper', 'FileStorage.View/Helper');
+App::uses('HtmlHelper', 'View/Helper');
 App::uses('View', 'View');
 
 /**
@@ -29,6 +30,7 @@ class ImageHelperTest extends FileStorageTestCase {
 		$null = null;
 		$this->View = new View($null);
 		$this->Image = new ImageHelper($this->View);
+		$this->Image->Html = new HtmlHelper($this->View);
 	}
 
 /**
