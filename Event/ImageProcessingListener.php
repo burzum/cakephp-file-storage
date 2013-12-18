@@ -1,8 +1,9 @@
 <?php
 App::uses('CakeEventListener', 'Event');
+
 /**
  * @author Florian Krämer
- * @copy 2013 Florian Krämer
+ * @copy 2013 - 2014 Florian Krämer
  * @license MIT
  */
 class ImageProcessingListener extends Object implements CakeEventListener {

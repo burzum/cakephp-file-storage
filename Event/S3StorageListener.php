@@ -5,6 +5,7 @@ App::uses('AbstractStorageEventListener', 'FileStorage.Event');
  * S3StorageListener
  *
  * @author Florian Krämer
+ * @copy 2013 - 2014 Florian Krämer
  * @license MIT
  */
 class S3StorageListener extends AbstractStorageEventListener {
