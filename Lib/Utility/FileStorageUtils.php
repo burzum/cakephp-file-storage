@@ -7,6 +7,7 @@
  * @license MIT
  */
 class FileStorageUtils {
+
 /**
  * Gaufrette Vendor Classloader
  *
@@ -34,7 +35,7 @@ class FileStorageUtils {
 	public static function fileExtension($name) {
 		$list = explode('.', $name);
 		if (count($list) > 1) {
-			$ext = $list[count($list)-1];
+			$ext = $list[count($list) - 1];
 			return $ext;
 		}
 		return false;
@@ -46,6 +47,7 @@ class FileStorageUtils {
  *
  * Works up to 5 level deep
  *
+ * @throws InvalidArgumentException
  * @param mixed $string
  * @param integer $level 1 to 5
  * @return mixed
@@ -59,8 +61,8 @@ class FileStorageUtils {
 		$decrement = 0;
 		$path = null;
 		for ($i = 0; $i < $level; $i++) {
-			$decrement = $decrement -2;
-			$path .=  sprintf("%02d" . DS, substr(str_pad('', 2 * $level, '0') . $string, $decrement, 2));
+			$decrement = $decrement - 2;
+			$path .= sprintf("%02d" . DS, substr(str_pad('', 2 * $level, '0') . $string, $decrement, 2));
 		}
 		return $path;
 	}

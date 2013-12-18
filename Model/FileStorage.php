@@ -121,7 +121,8 @@ class FileStorage extends FileStorageAppModel {
 
 		$Event = new CakeEvent('FileStorage.afterSave', $this, array(
 			'created' => $created,
-			'record' => $this->record,
+			//'record' => $this->record,
+			'record' => $this->data,
 			'storage' => StorageManager::adapter($this->data[$this->alias]['adapter'])));
 		CakeEventManager::instance()->dispatch($Event);
 	}

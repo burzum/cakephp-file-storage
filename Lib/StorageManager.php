@@ -17,7 +17,9 @@ class StorageManager {
 		'Local' => array(
 			'adapterOptions' => array(TMP, true),
 			'adapterClass' => '\Gaufrette\Adapter\Local',
-			'class' => '\Gaufrette\Filesystem'));
+			'class' => '\Gaufrette\Filesystem'
+		)
+	);
 
 /**
  * Sets the default or active adapter that is used
@@ -42,7 +44,8 @@ class StorageManager {
 /**
  * Sets or gets the active storage adapter
  *
- * @param string
+ * @param string $adapter
+ * @param array $options
  * @return mixed
  */
 	public static function config($adapter = null, $options = array()) {
@@ -99,7 +102,7 @@ class StorageManager {
 
 		if (isset($_this->_adapterConfig[$name])) {
 			if ($_this->_activeAdapter == $name) {
-				throw new RuntimeException(__d('FileStorage', 'You can not flush the active adapter %s', $name));
+				throw new RuntimeException(__d('file_storage', 'You can not flush the active adapter %s', $name));
 			}
 			unset($_this->_adapterConfig[$name]);
 			return true;
@@ -114,7 +117,7 @@ class StorageManager {
  * @param mixed $adapterName string of adapter configuration or array of settings
  * @param boolean $renewObject Creates a new instance of the given adapter in the configuration
  * @throws RuntimeException
- * @return Gaufrette object as configured by first arg
+ * @return Gaufrette object as configured by first argument
  */
 	public static function adapter($adapterName = null, $renewObject = false) {
 		$_this = StorageManager::getInstance();
@@ -128,7 +131,7 @@ class StorageManager {
 			if (!empty($_this->_adapterConfig[$adapterName])) {
 				$adapter = $_this->_adapterConfig[$adapterName];
 			} else {
-				throw new RuntimeException(__d('FileStorage', 'Invalid Storage Adapter %s', $adapterName));
+				throw new RuntimeException(__d('file_storage', 'Invalid Storage Adapter %s', $adapterName));
 			}
 
 			if (!empty($_this->_adapterConfig[$adapterName]['object']) && $renewObject === false) {
@@ -142,8 +145,8 @@ class StorageManager {
 		}
 
 		$class = $adapter['adapterClass'];
-		$rc = new ReflectionClass($class);
-		$adapterObject = $rc->newInstanceArgs($adapter['adapterOptions']);
+		$Reflection = new ReflectionClass($class);
+		$adapterObject = $Reflection->newInstanceArgs($adapter['adapterOptions']);
 		$engineObject = new $adapter['class']($adapterObject);
 		if ($isConfigured) {
 			$_this->_adapterConfig[$adapterName]['object'] = &$engineObject;
