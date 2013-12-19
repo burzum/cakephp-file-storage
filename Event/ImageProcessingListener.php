@@ -293,7 +293,11 @@ class ImageProcessingListener extends Object implements CakeEventListener {
 
 		$config = StorageManager::config($Event->data['image']['adapter']);
 		$bucket = $config['adapterOptions'][1];
-		$cfDist = $config['cloudFrontUrl'];
+		if (!empty($config['cloudFrontUrl'])) {
+			$cfDist = $config['cloudFrontUrl'];
+		} else {
+			$cfDist = null;
+		}
 
 		$http = 'http';
 		if (!empty($Event->data['options']['ssl']) && $Event->data['options']['ssl'] === true) {
@@ -317,15 +321,14 @@ class ImageProcessingListener extends Object implements CakeEventListener {
  * @param string $cfDist
  * @return string
  */
-	protected function _buildCloudFrontDistributionUrl($protocol, $image, $bucket, $bucketPrefix = null, $cfDist = null){
+	protected function _buildCloudFrontDistributionUrl($protocol, $image, $bucket, $bucketPrefix = null, $cfDist = null) {
 		$path = $protocol . '://';
-		if ($cfDist){
+		if ($cfDist) {
 			$path .= $cfDist;
 		} else {
-			if($bucketPrefix){
+			if ($bucketPrefix) {
 				$path .= $bucket . '.s3.amazonaws.com';
-			}
-			else{
+			} else {
 				$path .= 's3.amazonaws.com/' . $bucket;
 			}
 		}
