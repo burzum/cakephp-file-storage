@@ -1,28 +1,15 @@
 <?php
+App::uses('File', 'Utility');
+App::uses('CakeNumber', 'Utility');
+
 /**
  * Upload Validation Behavior
  *
- * Validates file uploads
- *
- * PHP 5
- *
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
- *
- * Licensed under The MIT License
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @package       Cake.Model.Behavior
- * @since         CakePHP(tm) v 2.2.0
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
- */
-App::uses('File', 'Utility');
-/**
  * This behavior will validate uploaded files, nothing more, it won't take care of storage.
  *
- * @package       Cake.Model.Behavior
+ * @author Florian Krämer
+ * @copyright 2012 Florian Krämer
+ * @license MIT
  */
 class UploadValidatorBehavior extends ModelBehavior {
 
@@ -69,7 +56,7 @@ class UploadValidatorBehavior extends ModelBehavior {
  */
 	public function setup(Model $Model, $settings = array()) {
 		if (!is_array($settings)) {
-			throw new InvalidArgumentException(__d('FileStorage', 'Settings must be passed as array!'));
+			throw new InvalidArgumentException(__d('file_storage', 'Settings must be passed as array!'));
 		}
 
 		$this->settings[$Model->alias] = array_merge($this->_defaults, $settings);
@@ -96,7 +83,7 @@ class UploadValidatorBehavior extends ModelBehavior {
 
 			if (!empty($Model->data[$Model->alias][$fileField])) {
 				if (empty($localFile) && !is_uploaded_file($Model->data[$Model->alias][$fileField]['tmp_name'])) {
-					$this->uploadError = __d('FileStorage', 'The uploaded file is no valid upload.');
+					$this->uploadError = __d('file_storage', 'The uploaded file is no valid upload.');
 					$Model->invalidate($fileField, $this->uploadError);
 					return false;
 				}
@@ -129,7 +116,7 @@ class UploadValidatorBehavior extends ModelBehavior {
 		$extension = $this->fileExtension($Model, $Model->data[$Model->alias][$fileField]['name'], false);
 
 		if (!in_array(strtolower($extension), $validExtensions)) {
-			$this->uploadError = __d('FileStorage', 'You are not allowed to upload files of this type.');
+			$this->uploadError = __d('file_storage', 'You are not allowed to upload files of this type.');
 			$Model->invalidate($fileField, $this->uploadError);
 			return false;
 		}
@@ -153,7 +140,7 @@ class UploadValidatorBehavior extends ModelBehavior {
 		$mimeType = $File->mime();
 
 		if (!in_array($mimeType, $allowedMime)) {
-			$this->uploadError = __d('FileStorage', 'You are not allowed to upload files of this type.');
+			$this->uploadError = __d('file_storage', 'You are not allowed to upload files of this type.');
 			$Model->invalidate($fileField, $this->uploadError);
 			return false;
 		}
@@ -174,32 +161,32 @@ class UploadValidatorBehavior extends ModelBehavior {
 					return true;
 				break;
 				case UPLOAD_ERR_INI_SIZE:
-					$this->uploadError = __d('FileStorage', 'The uploaded file exceeds limit of (' . ini_get('upload_max_filesize') . ').');
+					$this->uploadError = __d('file_storage', 'The uploaded file exceeds limit of %s.', CakeNumber::toReadableSize(ini_get('upload_max_filesize')));
 				break;
 				case UPLOAD_ERR_FORM_SIZE:
-					$this->uploadError = __d('FileStorage', 'The uploaded file is to big, please choose a smaller file or try to compress it.');
+					$this->uploadError = __d('file_storage', 'The uploaded file is to big, please choose a smaller file or try to compress it.');
 				break;
 				case UPLOAD_ERR_PARTIAL:
-					$this->uploadError = __d('FileStorage', 'The uploaded file was only partially uploaded.');
+					$this->uploadError = __d('file_storage', 'The uploaded file was only partially uploaded.');
 				break;
 				case UPLOAD_ERR_NO_FILE:
 					if ($this->settings[$Model->alias]['allowNoFileError'] === false) {
-						$this->uploadError = __d('FileStorage', 'No file was uploaded.');
+						$this->uploadError = __d('file_storage', 'No file was uploaded.');
 						return false;
 					}
 					return true;
 				break;
 				case UPLOAD_ERR_NO_TMP_DIR:
-					$this->uploadError = __d('FileStorage', 'The remote server has no temporary folder for file uploads. Please contact the site admin.');
+					$this->uploadError = __d('file_storage', 'The remote server has no temporary folder for file uploads. Please contact the site admin.');
 				break;
 				case UPLOAD_ERR_CANT_WRITE:
-					$this->uploadError = __d('FileStorage', 'Failed to write file to disk. Please contact the site admin.');
+					$this->uploadError = __d('file_storage', 'Failed to write file to disk. Please contact the site admin.');
 				break;
 				case UPLOAD_ERR_EXTENSION:
-					$this->uploadError = __d('FileStorage', 'File upload stopped by extension. Please contact the site admin.');
+					$this->uploadError = __d('file_storage', 'File upload stopped by extension. Please contact the site admin.');
 				break;
 				default:
-					$this->uploadError = __d('FileStorage', 'Unknown File Error. Please contact the site admin.');
+					$this->uploadError = __d('file_storage', 'Unknown File Error. Please contact the site admin.');
 				break;
 			}
 			return false;
