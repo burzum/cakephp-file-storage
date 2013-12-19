@@ -3,17 +3,22 @@ Included storage adapters
 
 The following adapters are coming along with the Gaufrette library that is used by this plugin as a base.
 
- * Local File System
+ * Apc
  * Amazon S3
  * ACL Aware Amazon S3
- * Mogile FS
- * Rackspace Cloudfiles
- * Zip File
- * Ftp
- * Sftp
- * In Memory
- * Grid FS
- * Apc
+ * Azure
  * Doctrine DBAL
+ * Dropbox
+ * Ftp
+ * Grid FS
+ * In Memory
+ * Local File System
+ * MogileFS
+ * Open Cloud
+ * Rackspace Cloudfiles
+ * Sftp
+ * Zip File
+
+Check [the adapter folder](https://github.com/KnpLabs/Gaufrette/tree/master/src/Gaufrette/Adapter) of the Gaufrette lib for a complete list.
 
 If you need another adapter that is not included you can implement it yourself or try searching the web first.

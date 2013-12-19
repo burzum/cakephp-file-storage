@@ -8,6 +8,7 @@ Quick-Start
 		"preferred-install": "source"
 	},
 	"require": {
+		"burzum/cakephp-imagine-plugin": "dev-master",
 		"cakedc/migrations": "dev-master",
 		"knplabs/gaufrette": "dev-master",
 		"imagine/imagine": "dev-master"
@@ -15,7 +16,7 @@ Quick-Start
 	"extra": {
 		"installer-paths": {
 			"app/Plugin/FileStorage": ["burzum/FileStorage"],
-			"app/Plugin/Imagine": ["burzum/Imagine"]
+			"app/Plugin/Imagine": ["burzum/cakephp-imagine-plugin"]
 		}
 	}
 }
@@ -123,7 +124,6 @@ class Product extends AppModel {
 App::uses('ImageStorage', 'FileStorage.Model');
 class ProductImage extends ImageStorage {
 	public $actsAs = array(
-		'Imagine.Imagine',
 		'FileStorage.UploadValidator' => array(
 			'allowedExtensions' => array(
 				'jpg',
@@ -148,7 +148,9 @@ Products Controller
 class ProductsController extends AppModel {
 	public function upload($productId = null) {
 		if (!$this->request->is('get')) {
-			$this->Product->Image->upload($productId, $this->request->data);
+			if ($this->Product->Image->upload($productId, $this->request->data)) {
+				$this->Session->set(__('Upload successful!');
+			}
 		}
 	}
 }
