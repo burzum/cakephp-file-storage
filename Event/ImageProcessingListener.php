@@ -105,6 +105,15 @@ class ImageProcessingListener extends Object implements CakeEventListener {
  * Removes versions for a given image record
  *
  * @param CakeEvent $Event
+ */
+	public function removeVersions(CakeEvent $Event) {
+		$this->_removeVersions($Event);
+	}
+
+/**
+ * Removes versions for a given image record
+ *
+ * @param CakeEvent $Event
  * @return void
  */
 	protected function _removeVersions(CakeEvent $Event) {
@@ -171,10 +180,6 @@ class ImageProcessingListener extends Object implements CakeEventListener {
 
 			return true;
 		}
-	}
-
-	protected function _buildStoragePath() {
-
 	}
 
 /**
