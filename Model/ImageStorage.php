@@ -11,6 +11,13 @@ App::uses('Folder', 'Utility');
 class ImageStorage extends FileStorage {
 
 /**
+ * Name
+ *
+ * @var string
+ */
+	public $name = 'ImageStorage';
+
+/**
  * Table to use
  *
  * @var mixed
@@ -35,12 +42,14 @@ class ImageStorage extends FileStorage {
  * Getter
  *
  * @param string $name
+ * @throws RuntimeException
  * @return void
  */
 	public function __get($name) {
 		if ($name === 'createVersions') {
 			throw new \RuntimeException(__d('file_storage', 'createVersions was removed, see the change log'));
 		}
+		parent::__get($name);
 	}
 
 /**
