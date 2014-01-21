@@ -2,6 +2,10 @@
 
 List of changes done to the plugin versions
 
+## 0.4.1
+
+Change: Removed deprecated ImageStorage::createVersions()
+
 ## 0.4.0
 
 * Feature: Configurable fallback images through Configure::write('Media.fallbackImages.<model>.<version>), see ImageHelper::fallbackImage()
