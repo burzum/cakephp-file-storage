@@ -253,7 +253,7 @@ class FileStorage extends FileStorageAppModel {
  * @return \Gaufrette\Adapter
  */
 	public function getStorageAdapter($adapterName, $renewObject = false) {
-		Storagemanager::adapter($adapterName, $renewObject);
+		return Storagemanager::adapter($adapterName, $renewObject);
 	}
 
 }
