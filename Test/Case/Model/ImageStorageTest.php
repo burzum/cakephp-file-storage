@@ -9,13 +9,15 @@ App::uses('FileStorageTestCase', 'FileStorage.TestSuite');
  * @license MIT
  */
 class ImageStorageTest extends FileStorageTestCase {
+
 /**
  * Fixtures
  *
  * @var array
  */
 	public $fixtures = array(
-		'plugin.FileStorage.FileStorage');
+		'plugin.FileStorage.FileStorage'
+	);
 
 /**
  * setUp
@@ -59,9 +61,9 @@ class ImageStorageTest extends FileStorageTestCase {
 				'id' => $this->Image->getLastInsertId())));
 
 		$this->assertTrue(!empty($result) && is_array($result));
-		$this->assertTrue(file_exists($this->testPath . $result['FileStorage']['path']));
+		$this->assertTrue(file_exists($this->testPath . $result['ImageStorage']['path']));
 
-		$path = $this->testPath . $result['FileStorage']['path'];
+		$path = $this->testPath . $result['ImageStorage']['path'];
 		$Folder = new Folder($path);
 		$folderResult = $Folder->read();
 		$this->assertEqual(count($folderResult[1]), 3);
@@ -84,7 +86,7 @@ class ImageStorageTest extends FileStorageTestCase {
 
 		CakeEventManager::instance()->dispatch($Event);
 
-		$path = $this->testPath . $result['FileStorage']['path'];
+		$path = $this->testPath . $result['ImageStorage']['path'];
 		$Folder = new Folder($path);
 		$folderResult = $Folder->read();
 		$this->assertEqual(count($folderResult[1]), 4);
@@ -101,7 +103,7 @@ class ImageStorageTest extends FileStorageTestCase {
 
 		CakeEventManager::instance()->dispatch($Event);
 
-		$path = $this->testPath . $result['FileStorage']['path'];
+		$path = $this->testPath . $result['ImageStorage']['path'];
 		$Folder = new Folder($path);
 		$folderResult = $Folder->read();
 		$this->assertEqual(count($folderResult[1]), 3);
@@ -169,6 +171,21 @@ class ImageStorageTest extends FileStorageTestCase {
 					'rule' => array(
 						'validateImageSize', array(
 							'width' => array('>=', 100))),
+					'message' => 'Invalid image size')));
+
+		$this->Image->set(array(
+			'file' => array(
+				'tmp_name' => CakePlugin::path('FileStorage') . DS . 'Test' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg')));
+
+		$this->assertTrue($this->Image->validates());
+
+
+		$this->Image->validate = array(
+			'file' => array(
+				'image' => array(
+					'rule' => array(
+						'validateImageSize', array(
+							'width' => array('==', 512))),
 					'message' => 'Invalid image size')));
 
 		$this->Image->set(array(

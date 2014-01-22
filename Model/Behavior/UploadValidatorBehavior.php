@@ -1,28 +1,15 @@
 <?php
+App::uses('File', 'Utility');
+App::uses('CakeNumber', 'Utility');
+
 /**
  * Upload Validation Behavior
  *
- * Validates file uploads
- *
- * PHP 5
- *
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
- *
- * Licensed under The MIT License
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @package       Cake.Model.Behavior
- * @since         CakePHP(tm) v 2.2.0
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
- */
-App::uses('File', 'Utility');
-/**
  * This behavior will validate uploaded files, nothing more, it won't take care of storage.
  *
- * @package       Cake.Model.Behavior
+ * @author Florian Krämer
+ * @copyright 2012 Florian Krämer
+ * @license MIT
  */
 class UploadValidatorBehavior extends ModelBehavior {
 
@@ -41,6 +28,7 @@ class UploadValidatorBehavior extends ModelBehavior {
 	protected $_defaults = array(
 		'fileField' => 'file',
 		'validate' => true,
+		'allowNoFileError' => true,
 		'allowedMime' => null,
 		'allowedExtensions' => null,
 		'localFile' => false
@@ -49,7 +37,7 @@ class UploadValidatorBehavior extends ModelBehavior {
 /**
  * Error message
  *
- * If something fails this is populated with an errormsg that can be passed to the view
+ * If something fails this is populated with an error message that can be passed to the view
  *
  * @var string
  */
@@ -68,7 +56,7 @@ class UploadValidatorBehavior extends ModelBehavior {
  */
 	public function setup(Model $Model, $settings = array()) {
 		if (!is_array($settings)) {
-			throw new InvalidArgumentException(__d('FileStorage', 'Settings must be passed as array!'));
+			throw new InvalidArgumentException(__d('file_storage', 'Settings must be passed as array!'));
 		}
 
 		$this->settings[$Model->alias] = array_merge($this->_defaults, $settings);
@@ -81,20 +69,21 @@ class UploadValidatorBehavior extends ModelBehavior {
  * extensions and / or mime type if configured to do so.
  *
  * @param Model $Model
+ * @param array $options
  * @return boolean True on success
  */
-	public function beforeValidate(Model $Model) {
+	public function beforeValidate(Model $Model, $options = array()) {
 		extract($this->settings[$Model->alias]);
 		if ($validate === true && isset($Model->data[$Model->alias][$fileField]) && is_array($Model->data[$Model->alias][$fileField])) {
 
 			if ($Model->validateUploadError($Model->data[$Model->alias][$fileField]['error']) === false) {
-				$Model->validationErrors[$fileField] = $this->uploadError;
+				$Model->validationErrors[$fileField] = array($this->uploadError);
 				return false;
 			}
 
 			if (!empty($Model->data[$Model->alias][$fileField])) {
 				if (empty($localFile) && !is_uploaded_file($Model->data[$Model->alias][$fileField]['tmp_name'])) {
-					$this->uploadError = __d('FileStorage', 'The uploaded file is no valid upload.');
+					$this->uploadError = __d('file_storage', 'The uploaded file is no valid upload.');
 					$Model->invalidate($fileField, $this->uploadError);
 					return false;
 				}
@@ -102,7 +91,6 @@ class UploadValidatorBehavior extends ModelBehavior {
 
 			if (is_array($allowedMime)) {
 				if (!$this->validateAllowedMimeTypes($Model, $allowedMime)) {
-					$Model->invalidate($fileField, $this->uploadError);
 					return false;
 				}
 			}
@@ -120,6 +108,7 @@ class UploadValidatorBehavior extends ModelBehavior {
  * Validates the extension
  *
  * @param Model $Model
+ * @param $validExtensions
  * @return boolean True if the extension is allowed
  */
 	public function validateUploadExtension(Model $Model, $validExtensions) {
@@ -127,7 +116,7 @@ class UploadValidatorBehavior extends ModelBehavior {
 		$extension = $this->fileExtension($Model, $Model->data[$Model->alias][$fileField]['name'], false);
 
 		if (!in_array(strtolower($extension), $validExtensions)) {
-			$this->uploadError = __d('FileStorage', 'You are not allowed to upload files of this type.');
+			$this->uploadError = __d('file_storage', 'You are not allowed to upload files of this type.');
 			$Model->invalidate($fileField, $this->uploadError);
 			return false;
 		}
@@ -137,6 +126,7 @@ class UploadValidatorBehavior extends ModelBehavior {
 /**
  * Validates if the mime type of an uploaded file is allowed
  *
+ * @param Model $Model
  * @param array Array of allowed mime types
  * @return boolean
  */
@@ -150,7 +140,7 @@ class UploadValidatorBehavior extends ModelBehavior {
 		$mimeType = $File->mime();
 
 		if (!in_array($mimeType, $allowedMime)) {
-			$this->uploadError = __d('FileStorage', 'You are not allowed to upload files of this type.');
+			$this->uploadError = __d('file_storage', 'You are not allowed to upload files of this type.');
 			$Model->invalidate($fileField, $this->uploadError);
 			return false;
 		}
@@ -160,7 +150,7 @@ class UploadValidatorBehavior extends ModelBehavior {
 /**
  * Valdates the error value that comes with the file input file
  *
- * @param object Model instance
+ * @param Model $Model
  * @param integer Error value from the form input [file_field][error]
  * @return boolean True on success, if false the error message is set to the models field and also set in $this->uploadError
  */
@@ -171,28 +161,32 @@ class UploadValidatorBehavior extends ModelBehavior {
 					return true;
 				break;
 				case UPLOAD_ERR_INI_SIZE:
-					$this->uploadError = __d('FileStorage', 'The uploaded file exceeds limit of (' . ini_get('upload_max_filesize') . ').');
+					$this->uploadError = __d('file_storage', 'The uploaded file exceeds limit of %s.', CakeNumber::toReadableSize(ini_get('upload_max_filesize')));
 				break;
 				case UPLOAD_ERR_FORM_SIZE:
-					$this->uploadError = __d('FileStorage', 'The uploaded file is to big, please choose a smaller file or try to compress it.');
+					$this->uploadError = __d('file_storage', 'The uploaded file is to big, please choose a smaller file or try to compress it.');
 				break;
 				case UPLOAD_ERR_PARTIAL:
-					$this->uploadError = __d('FileStorage', 'The uploaded file was only partially uploaded.');
+					$this->uploadError = __d('file_storage', 'The uploaded file was only partially uploaded.');
 				break;
 				case UPLOAD_ERR_NO_FILE:
-					$this->uploadError = __d('FileStorage', 'No file was uploaded.');
+					if ($this->settings[$Model->alias]['allowNoFileError'] === false) {
+						$this->uploadError = __d('file_storage', 'No file was uploaded.');
+						return false;
+					}
+					return true;
 				break;
 				case UPLOAD_ERR_NO_TMP_DIR:
-					$this->uploadError = __d('FileStorage', 'The remote server has no temporary folder for file uploads. Please contact the site admin.');
+					$this->uploadError = __d('file_storage', 'The remote server has no temporary folder for file uploads. Please contact the site admin.');
 				break;
 				case UPLOAD_ERR_CANT_WRITE:
-					$this->uploadError = __d('FileStorage', 'Failed to write file to disk. Please contact the site admin.');
+					$this->uploadError = __d('file_storage', 'Failed to write file to disk. Please contact the site admin.');
 				break;
 				case UPLOAD_ERR_EXTENSION:
-					$this->uploadError = __d('FileStorage', 'File upload stopped by extension. Please contact the site admin.');
+					$this->uploadError = __d('file_storage', 'File upload stopped by extension. Please contact the site admin.');
 				break;
 				default:
-					$this->uploadError = __d('FileStorage', 'Unknown File Error. Please contact the site admin.');
+					$this->uploadError = __d('file_storage', 'Unknown File Error. Please contact the site admin.');
 				break;
 			}
 			return false;
@@ -203,7 +197,7 @@ class UploadValidatorBehavior extends ModelBehavior {
 /**
  * Returns the latest error message
  *
- * @param AppModel $Model
+ * @param \AppModel|\Model $Model
  * @return string
  * @access public
  */
@@ -214,6 +208,8 @@ class UploadValidatorBehavior extends ModelBehavior {
 /**
  * Returns an array that matches the structure of a regular upload for a local file
  *
+ * @param Model $Model
+ * @param $file
  * @param string File with path
  * @return array Array that matches the structure of a regular upload
  */
@@ -235,8 +231,10 @@ class UploadValidatorBehavior extends ModelBehavior {
 /**
  * Return file extension from a given filename
  *
- * @param string
- * @param boolean
+ * @param Model $Model
+ * @param $name
+ * @param bool $realFile
+ * @internal param $string
  * @return boolean string or false
  */
 	public function fileExtension(Model $Model, $name, $realFile = true) {

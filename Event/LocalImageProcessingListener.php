@@ -3,11 +3,13 @@ App::uses('CakeEventListener', 'Event');
 /**
  * Local Image Processor Event Listener for the CakePHP FileStorage plugin
  *
+ * @deprecated Use ImageProcessingListener instead
  * @author Florian Krämer
  * @copy 2012 Florian Krämer
  * @license MIT
  */
 class LocalImageProcessingListener extends Object implements CakeEventListener {
+
 /**
  * Implemented Events
  *
@@ -25,7 +27,7 @@ class LocalImageProcessingListener extends Object implements CakeEventListener {
 
 /**
  * Creates the different versions of images that are configured
- * 
+ *
  * @param Model $Model
  * @param array $record
  * @param array $operations
@@ -143,12 +145,16 @@ class LocalImageProcessingListener extends Object implements CakeEventListener {
 				$record['path'] = $Model->fsPath('images' . DS . $record['model'], $id);
 				$result = $Storage->write($record['path'] . $filename . '.' . $record['extension'], file_get_contents($file['tmp_name']), true);
 
-				$Model->save(array($Model->alias => $record), array(
+				$data = $Model->save(array($Model->alias => $record), array(
 					'validate' => false,
 					'callbacks' => false));
 
-				$this->_createVersions($Model, $record, Configure::read('Media.imageSizes.' . $record['model']));
+				$operations = Configure::read('Media.imageSizes.' . $record['model']);
+				if (!empty($operations)) {
+					$this->_createVersions($Model, $record, $operations);
+				}
 
+				$Model->data = $data;
 			} catch (Exception $e) {
 				$this->log($e->getMessage(), 'file_storage');
 			}
@@ -181,9 +187,9 @@ class LocalImageProcessingListener extends Object implements CakeEventListener {
  * later load the new file that was generated based on the tmp file into the
  * storage adapter. This method here just generates the tmp file.
  *
- * @param
- * @param
- * @return
+ * @param $Storage
+ * @param $path
+ * @return bool|string
  */
 	protected function _tmpFile($Storage, $path) {
 		try {
@@ -197,7 +203,7 @@ class LocalImageProcessingListener extends Object implements CakeEventListener {
 			file_put_contents($tmpFile, $imageData);
 			return $tmpFile;
 		} catch (Exception $e) {
-			return false;
+			throw $e;
 		}
 	}
 
@@ -216,7 +222,7 @@ class LocalImageProcessingListener extends Object implements CakeEventListener {
 		if ($extension == true) {
 			$path .= '.' . $image['extension'];
 		}
-		return $path;
+		return '/' . $path;
 	}
 
 /**

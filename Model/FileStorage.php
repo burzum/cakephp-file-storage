@@ -52,16 +52,25 @@ class FileStorage extends FileStorageAppModel {
 	public $validate = array(
 		'adapter' => array(
 			'notEmpty' => array(
-				'rule' => array('notEmpty'))),
+				'rule' => array('notEmpty')
+			)
+		),
 		'path' => array(
 			'notEmpty' => array(
-				'rule' => array('notEmpty'))),
+				'rule' => array('notEmpty')
+			)
+		),
 		'foreign_key' => array(
 			'notEmpty' => array(
-				'rule' => array('notEmpty'))),
+				'rule' => array('notEmpty')
+			)
+		),
 		'model' => array(
 			'notEmpty' => array(
-				'rule' => array('notEmpty'))));
+				'rule' => array('notEmpty')
+			)
+		)
+	);
 
 /**
  * Renews the FileUpload behavior with a new configuration
@@ -97,9 +106,8 @@ class FileStorage extends FileStorageAppModel {
 
 		$Event = new CakeEvent('FileStorage.beforeSave', $this, array(
 			'record' => $this->data,
-			'storage' => StorageManager::adapter($this->data[$this->alias]['adapter'])));
-		CakeEventManager::instance()->dispatch($Event);
-
+			'storage' => $this->getStorageAdapter($this->data[$this->alias]['adapter'])));
+		$this->getEventManager()->dispatch($Event);
 		if ($Event->isStopped()) {
 			return false;
 		}
@@ -111,18 +119,20 @@ class FileStorage extends FileStorageAppModel {
  * afterSave callback
  *
  * @param boolean $created
+ * @param array $options
  * @return void
  */
-	public function afterSave($created) {
+	public function afterSave($created, $options = array()) {
 		if ($created) {
 			$this->data[$this->alias][$this->primaryKey] = $this->getLastInsertId();
 		}
 
 		$Event = new CakeEvent('FileStorage.afterSave', $this, array(
 			'created' => $created,
-			'record' => $this->record,
-			'storage' => StorageManager::adapter($this->data[$this->alias]['adapter'])));
-		CakeEventManager::instance()->dispatch($Event);
+			//'record' => $this->record,
+			'record' => $this->data,
+			'storage' => $this->getStorageAdapter($this->data[$this->alias]['adapter'])));
+		$this->getEventManager()->dispatch($Event);
 	}
 
 /**
@@ -155,7 +165,7 @@ class FileStorage extends FileStorageAppModel {
  */
 	public function afterDelete() {
 		try {
-			$Storage = Storagemanager::adapter($this->record[$this->alias]['adapter']);
+			$Storage = $this->getStorageAdapter($this->record[$this->alias]['adapter']);
 			$Storage->delete($this->record[$this->alias]['path']);
 		} catch (Exception $e) {
 			$this->log($e->getMessage(), 'file_storage');
@@ -164,8 +174,8 @@ class FileStorage extends FileStorageAppModel {
 
 		$Event = new CakeEvent('FileStorage.afterDelete', $this, array(
 			'record' => $this->record,
-			'storage' => StorageManager::adapter($this->record[$this->alias]['adapter'])));
-		CakeEventManager::instance()->dispatch($Event);
+			'storage' => $this->getStorageAdapter($this->record[$this->alias]['adapter'])));
+		$this->getEventManager()->dispatch($Event);
 	}
 
 /**
@@ -205,7 +215,12 @@ class FileStorage extends FileStorageAppModel {
 	}
 
 /**
+ * Generates a semi-random file system path
  *
+ * @param string $type
+ * @param string $string
+ * @param boolean $idFolder
+ * @return string
  */
 	public function fsPath($type, $string, $idFolder = true) {
 		$string = str_replace('-', '', $string);
@@ -228,6 +243,17 @@ class FileStorage extends FileStorageAppModel {
 		} else {
 			return substr(strrchr($path,'.'), 1);
 		}
+	}
+
+/**
+ * Get a storage adapter from the StorageManager
+ *
+ * @param string $adapterName
+ * @param boolean $renewObject
+ * @return \Gaufrette\Adapter
+ */
+	public function getStorageAdapter($adapterName, $renewObject = false) {
+		return Storagemanager::adapter($adapterName, $renewObject);
 	}
 
 }
