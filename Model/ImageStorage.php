@@ -11,6 +11,13 @@ App::uses('Folder', 'Utility');
 class ImageStorage extends FileStorage {
 
 /**
+ * Name
+ *
+ * @var string
+ */
+	public $name = 'ImageStorage';
+
+/**
  * Table to use
  *
  * @var mixed
@@ -35,12 +42,14 @@ class ImageStorage extends FileStorage {
  * Getter
  *
  * @param string $name
+ * @throws RuntimeException
  * @return void
  */
 	public function __get($name) {
 		if ($name === 'createVersions') {
 			throw new \RuntimeException(__d('file_storage', 'createVersions was removed, see the change log'));
 		}
+		parent::__get($name);
 	}
 
 /**
@@ -55,7 +64,7 @@ class ImageStorage extends FileStorage {
 		}
 		$Event = new CakeEvent('ImageStorage.beforeSave', $this, array(
 			'record' => $this->data));
-		CakeEventManager::instance()->dispatch($Event);
+		$this->getEventManager()->dispatch($Event);
 
 		if ($Event->isStopped()) {
 			return false;
@@ -77,13 +86,13 @@ class ImageStorage extends FileStorage {
 		if ($created) {
 			$this->data[$this->alias][$this->primaryKey] = $this->getLastInsertId();
 
-				$Event = new CakeEvent('ImageStorage.afterSave', $this, array(
-					'created' => $created,
-					'storage' => StorageManager::adapter($this->data[$this->alias]['adapter']),
-					'record' => $this->data));
-				CakeEventManager::instance()->dispatch($Event);
-			}
+			$Event = new CakeEvent('ImageStorage.afterSave', $this, array(
+				'created' => $created,
+				'storage' => $this->getStorageAdapter($this->data[$this->alias]['adapter']),
+				'record' => $this->data));
+			$this->getEventManager()->dispatch($Event);
 		}
+	}
 
 /**
  * Get a copy of the actual record before we delete it to have it present in afterDelete
@@ -98,8 +107,8 @@ class ImageStorage extends FileStorage {
 
 		$Event = new CakeEvent('ImageStorage.beforeDelete', $this, array(
 			'record' => $this->record,
-			'storage' => StorageManager::adapter($this->record[$this->alias]['adapter'])));
-		CakeEventManager::instance()->dispatch($Event);
+			'storage' => $this->getStorageAdapter($this->record[$this->alias]['adapter'])));
+		$this->getEventManager()->dispatch($Event);
 
 		if ($Event->isStopped()) {
 			return false;
@@ -118,8 +127,8 @@ class ImageStorage extends FileStorage {
 	public function afterDelete() {
 		$Event = new CakeEvent('ImageStorage.afterDelete', $this, array(
 			'record' => $this->record,
-			'storage' => StorageManager::adapter($this->record[$this->alias]['adapter'])));
-		CakeEventManager::instance()->dispatch($Event);
+			'storage' => $this->getStorageAdapter($this->record[$this->alias]['adapter'])));
+		$this->getEventManager()->dispatch($Event);
 	}
 
 /**
@@ -147,14 +156,6 @@ class ImageStorage extends FileStorage {
 				Configure::write($configPath . '.imageHashes.' . $model . '.' . $name, $this->hashOperations($operations));
 			}
 		}
-	}
-
-/**
- * @deperacted This has been replaced by Events
- * @throws InternalErrorException
- */
-	public function createVersions($data = array(), $format = 'jpg') {
-		throw new InternalErrorException(__('file_storage', 'ImageStorage::createVersions is deprecated use the event system.'));
 	}
 
 /**
@@ -224,4 +225,5 @@ class ImageStorage extends FileStorage {
 
 		return true;
 	}
+
 }

@@ -2,6 +2,16 @@
 
 List of changes done to the plugin versions
 
+## 0.4.0
+
+* Change: Removed deprecated ImageStorage::createVersions()
+* Change: Replaced the static calls of CakeEventManager with getEventManager() in the models
+* Feature: Configurable fallback images through Configure::write('Media.fallbackImages.<model>.<version>), see ImageHelper::fallbackImage()
+* Feature: Added AbstractStorageEventListener that can be used as base for all event listeners
+* Feature: Added S3StorageListener, stores files to S3, no image processing done in this listener
+* Misc: Fixed a bunch of coding standard issues
+* Misc: Updated documentation
+
 ## 0.3.3
 
 * Updating the Gaufrette Vendor lib

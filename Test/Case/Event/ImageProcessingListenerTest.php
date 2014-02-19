@@ -2,6 +2,15 @@
 App::uses('ImageStorage', 'FileStorage.Model');
 App::uses('ImageProcessingListener', 'FileStorage.Event');
 App::uses('FileStorageTestCase', 'FileStorage.TestSuite');
+
+class TestImageProcessingListener extends ImageProcessingListener {
+
+	public function buildPath($image, $extension = true, $hash = null) {
+		return $this->_buildPath($image, $extension, $hash);
+	}
+
+}
+
 /**
  * LocalImageProcessingListener Test
  *
@@ -9,12 +18,6 @@ App::uses('FileStorageTestCase', 'FileStorage.TestSuite');
  * @copyright 2012 Florian Krämer
  * @license MIT
  */
-class TestImageProcessingListener extends ImageProcessingListener {
-	public function buildPath($image, $extension = true, $hash = null) {
-		return $this->_buildPath($image, $extension, $hash);
-	}
-}
-
 class ImageProcessingListenerTest extends FileStorageTestCase {
 
 /**
