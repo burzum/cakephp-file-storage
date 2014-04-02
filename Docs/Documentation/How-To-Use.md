@@ -3,12 +3,16 @@ How to Use
 
 Before you continue to read this page it is recommended that you have read about [the Storage Manager](The-Storage-Manager.md) before.
 
+The following text is going to describe two ways to store a file. Which of both you choose depends at the end on your use case but it is recommended to use the events because they automate the whole process much more.
+
+The basic idea of this plugin is that files are always handled as separate entities and are associated to other models. The reason for that is simple. A file has multiple properties like size, mime type and other entities in the system can have more than one file for example. It is considered as *bad* practice to store lots of file paths as reference in a table together with other data.
+
 How to Store an Uploaded File
 -----------------------------
 
-The basic idea of this plugin is that files are always handled as separate entities and are associated to other models.
+This section is going to show how to store a file using the Storage Manager directly.
 
-So for example you have a Report model and want to save a pdf to it, you would then create an association like:
+For example you have a Report model and want to save a pdf to it, you would then create an association like:
 
 ```php
 public $hasOne = array(
@@ -27,8 +31,7 @@ echo $this->Form->input('PdfFile.file');
 echo $this->Form->input('Report.description');
 ```
 
-Now comes the crucial point of the whole implementation
--------------------------------------------------------
+**Now comes the crucial point of the whole implementation**
 
 Because of to many different requirements and personal preferences out there the plugin is *not* automatically storing the file. You'll have to customize it a little but its just a matter for a few lines.
 
@@ -58,9 +61,9 @@ Insted of doing all of this in the model that has the files associated to it you
 How to store an uploaded file II - using Events
 -----------------------------------------------
 
-The **FileStorage** plugin comes with a class that acts just as a listener to some of the events in this plugin. Take a look at Filestorage/Event/LocalImageProcessingLister.php
+The **FileStorage** plugin comes with a class that acts just as a listener to some of the events in this plugin. Take a look at [LocalImageProcessingLister.php](../../Event/LocalImageProcessingLister.php).
 
-This class will listen to all the ImageStorage events and save the uploaded image and then create the versions for that image and storage adapter.
+This class will listen to all the ImageStorage model events and save the uploaded image and then create the versions for that image and storage adapter.
 
 It is important to understand that each storage adapter requires a different handling. You can not threat a local file the same as a file you store in a cloud service. The interface that this plugin and Gaufrette provide is the same but not the internals.
 
@@ -71,12 +74,17 @@ When you create a new listener it is important that you check the model field an
 List of events
 --------------
 
+Events triggered in the ImageStorage model:
+
  * ImageVersion.createVersion
  * ImageVersion.removeVersion
  * ImageStorage.beforeSave
  * ImageStorage.afterSave
  * ImageStorage.beforeDelete
  * ImageStorage.afterDelete
+
+Events triggered in the FileStorage model:
+
  * FileStorage.beforeSave
  * FileStorage.afterSave
  * FileStorage.afterDelete

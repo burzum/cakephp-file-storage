@@ -13,7 +13,7 @@ Documentation
 * [Requirements](Documentation/Requirements.md)
 * [Installation](Documentation/Installation.md)
 * [Database Setup](Documentation/Database-Setup.md)
-* [The Storage Managert](Documentation/The-Storage-Manager.md)
+* [The Storage Manager](Documentation/The-Storage-Manager.md)
 * [How to Use it](Documentation/How-To-Use.md)
 * [Image Storage and Versioning](Documentation/Image-Storage-And-Versioning.md)
 * [The Image Helper](Documentation/The-Image-Helper.md)
