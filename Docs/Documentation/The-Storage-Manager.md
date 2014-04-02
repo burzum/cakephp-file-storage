@@ -1,5 +1,7 @@
-The StorageManager
-==================
+The Storage Manager
+===================
+
+The [Storage Manager](Lib/StorageManager.php) class is a singleton class that manages a collection of storage adapter instances.
 
 To configure adapters use the ```StorageManager::config()``` method. First argument is the name of the config, second an array of options for that adapter. The options array keys can be different for each adapter, depending on the storage system it connects to.
 
