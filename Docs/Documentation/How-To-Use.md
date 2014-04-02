@@ -7,6 +7,8 @@ The following text is going to describe two ways to store a file. Which of both 
 
 The basic idea of this plugin is that files are always handled as separate entities and are associated to other models. The reason for that is simple. A file has multiple properties like size, mime type and other entities in the system can have more than one file for example. It is considered as *bad* practice to store lots of file paths as reference in a table together with other data.
 
+This plugin resolves that issue by handling each file as a completely separate entity in the application. There is just one tanle `file_storage` that will keep the reference to all your files, no matter where they're stored.
+
 How to Store an Uploaded File
 -----------------------------
 
