@@ -85,8 +85,11 @@ class S3StorageListener extends AbstractStorageEventListener {
 	}
 
 /**
- *
- */
+  * _buildPath
+  *
+  * @param CakeEvent $Event
+  * @return array
+  */
 	protected function _buildPath(CakeEvent $Event) {
 		$Model = $Event->subject();
 		$record = $Model->data[$Model->alias];
