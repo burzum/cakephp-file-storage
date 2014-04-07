@@ -50,11 +50,15 @@ If you don't want to have the script to generate the hashes each time it's execu
 
 Image files will end up wherever you have configured your base path.
 
-	/ModelName/51/21/63/4c0f128f91fc48749662761d407888cc/4c0f128f91fc48749662761d407888cc.jpg
+```
+/ModelName/51/21/63/4c0f128f91fc48749662761d407888cc/4c0f128f91fc48749662761d407888cc.jpg
+```
 
 The versioned image files will be in the same folder, which is the id of the record, as the original image and have the truncated hash of the version attached but before the extension.
 
-	/ModelName/51/21/63/4c0f128f91fc48749662761d407888cc/4c0f128f91fc48749662761d407888cc.f91fsc.jpg
+```
+/ModelName/51/21/63/4c0f128f91fc48749662761d407888cc/4c0f128f91fc48749662761d407888cc.f91fsc.jpg
+```
 
 You should smylink your image root folder to APP/webroot/images for example to avoid that images go through php and are send directly instead.
 
