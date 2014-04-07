@@ -19,5 +19,8 @@
 	"suggest": {
 		"burzum/cakephp-image-plugin": "Required if you want to use the image processing feature of FileStorage",
 		"cakedc/migrations": "If you want to use the database migrations that come with FileStorage"
+	},
+	"extra": {
+		"installer-name" : "FileStorage"
 	}
 }
