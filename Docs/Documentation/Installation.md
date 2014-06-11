@@ -40,12 +40,12 @@ Assuming your app folder is called app add this to your projects root folder in 
 		"preferred-install": "source"
 	},
 	"require": {
-		"burzum/FileStorage": "master",
+		"burzum/file-storage": "master",
 		"knplabs/gaufrette": "*"
 	},
 	"extra": {
 		"installer-paths": {
-			"app/Plugin/FileStorage": ["burzum/FileStorage"],
+			"app/Plugin/FileStorage": ["burzum/file-storage"],
 		}
 	}
 }
