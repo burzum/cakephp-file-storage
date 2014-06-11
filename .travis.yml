@@ -12,6 +12,7 @@ env:
   - CAKE_VERSION=2.3.0
   - CAKE_VERSION=2.4.0
   - CAKE_VERSION=2.5
+  - REQUIRE="phpunit/phpunit:3.7.31"
 
 before_script:
   - git clone git://github.com/cakephp/cakephp ../cakephp && cd ../cakephp && git checkout $CAKE_VERSION
@@ -40,6 +41,11 @@ before_script:
     CakePlugin::load('FileStorage', array('bootstrap' => true));
     CakePlugin::load('Imagine', array('bootstrap' => true));
     " >> ../cakephp/app/Config/bootstrap.php
+  - if [ "$PHPCS" != 1 ]; then
+            echo "
+                require_once APP . DS . 'vendor' . DS . 'phpunit' . DS . 'phpunit' . DS . 'PHPUnit' . DS . 'Autoload.php';
+            " >> ../cakephp/app/Config/bootstrap.php;
+    fi
 
 script:
   - ./lib/Cake/Console/cake test FileStorage AllFileStorage --stderr
