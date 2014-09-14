@@ -1,4 +1,6 @@
 <?php
+namespace FileStorage\Lib;
+
 /**
  * StorageManager - manages and instantiates gaufrette storage engine instances
  *

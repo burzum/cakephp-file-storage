@@ -1,4 +1,8 @@
 <?php
+namespace FileSTorage\View\Helper;
+
+use Cake\View\Helper;
+
 /**
  * ImageHelper
  *
@@ -6,7 +10,7 @@
  * @copyright 2012 Florian Krämer
  * @license MIT
  */
-class ImageHelper extends AppHelper {
+class ImageHelper extends Helper {
 
 /**
  * Helpers

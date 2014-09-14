@@ -14,6 +14,7 @@ class FileStorageAppModel extends AppModel {
  * @var array
  */
 	public $actsAs = array(
-		'Containable');
+		'Containable'
+	);
 
 }

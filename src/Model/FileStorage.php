@@ -1,9 +1,14 @@
 <?php
-App::uses('File', 'Utility');
-App::uses('Folder', 'Utility');
+namespace FileStorage\Model;
+
+use \Cake\Utility\Folder;
+use \Cake\Utility\File;
+use \FileStorage\Lib\StorageManager;
+
 App::uses('FileStorageAppModel', 'FileStorage.Model');
 App::uses('StorageManager', 'FileStorage.Lib');
 App::uses('FileStorageUtils', 'FileStorage.Utility');
+
 /**
  * FileStorage
  *

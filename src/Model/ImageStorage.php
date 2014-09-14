@@ -1,11 +1,13 @@
 <?php
-App::uses('FileStorage', 'FileStorage.Model');
-App::uses('Folder', 'Utility');
+namespace FileStorage\Model;
+
+use \Cake\Utility\Folder;
+
 /**
  * Image
  *
- * @author Florian Kr�mer
- * @copyright 2012 Florian Kr�mer
+ * @author Florian Krämer
+ * @copyright 2012 Florian Krämer
  * @license MIT
  */
 class ImageStorage extends FileStorage {

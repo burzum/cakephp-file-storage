@@ -1,4 +1,6 @@
 <?php
+namespace FileStorage\Lib;
+
 /**
  * Utility methods for which I could not find a better place
  *
@@ -7,24 +9,6 @@
  * @license MIT
  */
 class FileStorageUtils {
-
-/**
- * Gaufrette Vendor Classloader
- *
- * @param string $class Classname to be loaded
- * @return void
- */
-	public static function gaufretteLoader($class) {
-		$base = Configure::read('FileStorage.GaufretteLib');
-		if (empty($base)) {
-			$base = CakePlugin::path('FileStorage') . 'Vendor' . DS . 'Gaufrette' . DS . 'src' . DS;
-		}
-
-		$class = str_replace('\\', DS, $class);
-		if (file_exists($base . $class . '.php')) {
-			include ($base . $class . '.php');
-		}
-	}
 
 /**
  * Return file extension from a given filename
@@ -99,6 +83,7 @@ class FileStorageUtils {
  * Method to normalize the annoying inconsistency of the $_FILE array structure
  *
  * @link http://www.php.net/manual/en/features.file-upload.multiple.php#109437
+ * @param array $array
  * @return array Empty array if $_FILE is empty, if not normalize array of Filedata.{n}
  */
 	public static function normalizeGlobalFilesArray($array = null) {
@@ -118,5 +103,4 @@ class FileStorageUtils {
 		}
 		return $newfiles;
 	}
-
 }
