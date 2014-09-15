@@ -6,7 +6,7 @@ But you should not blindly copy and paste that code, get an understanding of the
 
 ## AmazonS3 - AwsS3 Adapter
 
-Get the SDK from here https://github.com/aws/aws-sdk-php or get it via composer ```amazonwebservices/aws-sdk-for-php```. If you're not using composer you'll have to add it to your own autoloader or load it manually.
+Get the SDK from here https://github.com/aws/aws-sdk-php or get it via composer ```aws/aws-sdk-php```. If you're not using composer you'll have to add it to your own autoloader or load it manually.
 
 ```php
 use Aws\S3;
