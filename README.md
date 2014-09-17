@@ -30,7 +30,7 @@ Requirements
 
 Optional but required for image processing:
 
- * The [Imagine Image processing plugin](https://github.com/burzum/cakephp-imagine-plugin) if you want to process and storage images
+ * The [Imagine Image processing plugin](https://github.com/burzum/cakephp-imagine-plugin) if you want to process and storag images.
 
 Documentation
 -------------
