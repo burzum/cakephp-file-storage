@@ -1,4 +1,8 @@
 <?php
+namespace FileStorage\Test\TestCase\Event;
+
+use Cake\TestSuite\TestCase;
+
 App::uses('FileStorage', 'FileStorage.Model');
 App::uses('S3StorageListener', 'FileStorage.Event');
 App::uses('FileStorageTestCase', 'FileStorage.TestSuite');
@@ -15,10 +19,10 @@ class TestS3StorageListener extends S3StorageListener {
  * LocalImageProcessingListener Test
  *
  * @author Florian Krämer
- * @copyright 2012 Florian Krämer
+ * @copyright 2012 - 2014 Florian Krämer
  * @license MIT
  */
-class S3StorageListenerTest extends FileStorageTestCase {
+class S3StorageListenerTest extends TestCase {
 
 /**
  * setUp

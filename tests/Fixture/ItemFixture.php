@@ -3,7 +3,7 @@
  * Item Fixture
  *
  * @author Florian Krämer
- * @copyright 2012 Florian Krämer
+ * @copyright 2012 - 2014 Florian Krämer
  * @license MIT
  */
 class ItemFixture extends CakeTestFixture {
@@ -28,30 +28,31 @@ class ItemFixture extends CakeTestFixture {
  * @var array
  */
 	public $fields = array(
-			'id' => array('type'=>'string', 'null' => false, 'length' => 36, 'key' => 'primary'),
-			'name' => array('type'=>'string', 'null' => false, 'default' => NULL),
-			'indexes' => array(
-				'PRIMARY' => array('column' => 'id', 'unique' => 1))
-			);
+		'id' => array('type'=>'string', 'null' => false, 'length' => 36, 'key' => 'primary'),
+		'name' => array('type'=>'string', 'null' => false, 'default' => NULL),
+		'indexes' => array(
+		'PRIMARY' => array('column' => 'id', 'unique' => 1)
+		)
+	);
 
 /**
  * Records
  *
  * @var array
  */
-	public $records = array(
-		array(
+	public $records = [
+		[
 			'id'  => 'item-1',
 			'name' => 'Cake',
-		),
-		array(
+		],
+		[
 			'id'  => 'item-2',
 			'name' => 'More Cake',
-		),
-		array(
+		],
+		[
 			'id'  => 'item-3',
 			'name' => 'A lot Cake',
-		),
-	);
+		],
+	];
 
 }

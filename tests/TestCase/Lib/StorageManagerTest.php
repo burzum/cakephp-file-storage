@@ -1,13 +1,16 @@
 <?php
-App::uses('StorageManager', 'FileStorage.Lib');
 /**
  * StorageManagerTest
  *
- * @author Florian Krämer
- * @copyright 2012 Florian Krämer
+ * @author Florian Krï¿½mer
+ * @copyright 2012 - 2014 Florian Krï¿½mer
  * @license MIT
  */
-class StorageManagerTest extends CakeTestCase {
+namespace FileStorage\Test\TestCase\Lib;
+
+use Cake\TestSuite\TestCase;
+
+class StorageManagerTest extends TestCase {
 /**
  * testAdapter
  *

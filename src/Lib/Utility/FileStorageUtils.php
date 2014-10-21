@@ -1,11 +1,11 @@
 <?php
-namespace FileStorage\Lib;
+namespace FileStorage\Lib\Utility;
 
 /**
  * Utility methods for which I could not find a better place
  *
  * @author Florian Kr�mer
- * @copyright 2012 Florian Kr�mer
+ * @copyright 2012 - 2014 Florian Kr�mer
  * @license MIT
  */
 class FileStorageUtils {

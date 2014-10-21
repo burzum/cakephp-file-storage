@@ -1,4 +1,8 @@
 <?php
+namespace FileStorage\Test\TestCase\View\Helper;
+
+use Cake\TestSuite\TestCase;
+
 App::uses('FileStorageTestCase', 'FileStorage.TestSuite');
 App::uses('ImageHelper', 'FileStorage.View/Helper');
 App::uses('HtmlHelper', 'View/Helper');

@@ -3,10 +3,14 @@
  * File Storage Fixture
  *
  * @author Florian Krämer
- * @copyright 2012 Florian Krämer
+ * @copyright 2012 - 2014 Florian Krämer
  * @license MIT
  */
-class FileStorageFixture extends CakeTestFixture {
+namespace FileStorage\Test\Fixture;
+
+use Cake\TestSuite\Fixture\TestFixture;
+
+class FileStorageFixture extends TestFixture {
 
 /**
  * Model name
@@ -81,6 +85,6 @@ class FileStorageFixture extends CakeTestFixture {
 			'adapter' => 'Local',
 			'created' => '2012-01-01 12:00:00',
 			'modified' => '2012-01-01 12:00:00',
-		),
+		)
 	);
 }

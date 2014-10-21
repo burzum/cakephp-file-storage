@@ -1,22 +1,20 @@
 <?php
 namespace FileStorage\Model;
 
+use \Cake\Event\Event;
 use \Cake\Utility\Folder;
 use \Cake\Utility\File;
 use \FileStorage\Lib\StorageManager;
-
-App::uses('FileStorageAppModel', 'FileStorage.Model');
-App::uses('StorageManager', 'FileStorage.Lib');
-App::uses('FileStorageUtils', 'FileStorage.Utility');
+use \FileStorage\Lib\Utility\FileStorageUtils;
 
 /**
- * FileStorage
+ * FileStorageTable
  *
  * @author Florian Krämer
- * @copyright 2012 Florian Krämer
+ * @copyright 2012 - 2014 Florian Krämer
  * @license MIT
  */
-class FileStorage extends FileStorageAppModel {
+class FileStorageTable extends Table {
 
 /**
  * Name
@@ -78,6 +76,16 @@ class FileStorage extends FileStorageAppModel {
 	);
 
 /**
+ * Initialize
+ *
+ * @param array $config
+ * @return void
+ */
+	public function initialize(array $config) {
+		$this->addBehavior('FileStorage.UploadValidator');
+	}
+
+/**
  * Renews the FileUpload behavior with a new configuration
  *
  * @param array $options
@@ -109,7 +117,7 @@ class FileStorage extends FileStorageAppModel {
 			$this->data[$this->alias]['adapter'] = 'Local';
 		}
 
-		$Event = new CakeEvent('FileStorage.beforeSave', $this, array(
+		$Event = new Event('FileStorage.beforeSave', $this, array(
 			'record' => $this->data,
 			'storage' => $this->getStorageAdapter($this->data[$this->alias]['adapter'])));
 		$this->getEventManager()->dispatch($Event);
@@ -132,7 +140,7 @@ class FileStorage extends FileStorageAppModel {
 			$this->data[$this->alias][$this->primaryKey] = $this->getLastInsertId();
 		}
 
-		$Event = new CakeEvent('FileStorage.afterSave', $this, array(
+		$Event = new Event('FileStorage.afterSave', $this, array(
 			'created' => $created,
 			//'record' => $this->record,
 			'record' => $this->data,
@@ -177,7 +185,7 @@ class FileStorage extends FileStorageAppModel {
 			return false;
 		}
 
-		$Event = new CakeEvent('FileStorage.afterDelete', $this, array(
+		$Event = new Event('FileStorage.afterDelete', $this, array(
 			'record' => $this->record,
 			'storage' => $this->getStorageAdapter($this->record[$this->alias]['adapter'])));
 		$this->getEventManager()->dispatch($Event);

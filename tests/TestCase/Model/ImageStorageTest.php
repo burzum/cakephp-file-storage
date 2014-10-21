@@ -5,7 +5,7 @@ App::uses('FileStorageTestCase', 'FileStorage.TestSuite');
  * Image Storage Test
  *
  * @author Florian Krämer
- * @copyright 2012 Florian Krämer
+ * @copyright 2012 - 2014 Florian Krämer
  * @license MIT
  */
 class ImageStorageTest extends FileStorageTestCase {

@@ -7,7 +7,7 @@ use Cake\View\Helper;
  * ImageHelper
  *
  * @author Florian Krämer
- * @copyright 2012 Florian Krämer
+ * @copyright 2012 - 2014 Florian Krämer
  * @license MIT
  */
 class ImageHelper extends Helper {

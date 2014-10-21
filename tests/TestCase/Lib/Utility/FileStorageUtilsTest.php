@@ -1,9 +1,12 @@
 <?php
-App::uses('FileStorageUtils', 'FileStorage.Utility');
+namespace FileStorage\Test\TestCase\Lib\Utility;
+
+use Cake\TestSuite\TestCase;
+
 /**
  * 
  */
-class FileStorageUtilsTest extends CakeTestCase {
+class FileStorageUtilsTest extends TestCase {
 /**
  * testRandomPath
  *

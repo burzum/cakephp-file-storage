@@ -5,7 +5,7 @@ App::uses('Folder', 'Utility');
  * FileStorageTestCase
  *
  * @author Florian Krämer
- * @copyright 2012 Florian Krämer
+ * @copyright 2012 - 2014 Florian Krämer
  * @license MIT
  */
 class FileStorageTestCase extends CakeTestCase {

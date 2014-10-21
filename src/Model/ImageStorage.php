@@ -1,16 +1,18 @@
 <?php
 namespace FileStorage\Model;
 
+use \Cake\Event\Event;
 use \Cake\Utility\Folder;
+use \FileStorage\Model\FileStorageTable;
 
 /**
- * Image
+ * ImageStorageTable
  *
  * @author Florian Krämer
- * @copyright 2012 Florian Krämer
+ * @copyright 2012 - 2014 Florian Krämer
  * @license MIT
  */
-class ImageStorage extends FileStorage {
+class ImageStorageTable extends FileStorageTable {
 
 /**
  * Name
@@ -41,20 +43,6 @@ class ImageStorage extends FileStorage {
 	);
 
 /**
- * Getter
- *
- * @param string $name
- * @throws RuntimeException
- * @return void
- */
-	public function __get($name) {
-		if ($name === 'createVersions') {
-			throw new \RuntimeException(__d('file_storage', 'createVersions was removed, see the change log'));
-		}
-		parent::__get($name);
-	}
-
-/**
  * beforeSave callback
  *
  * @param array $options
@@ -64,7 +52,7 @@ class ImageStorage extends FileStorage {
 		if (!parent::beforeSave($options)) {
 			return false;
 		}
-		$Event = new CakeEvent('ImageStorage.beforeSave', $this, array(
+		$Event = new Event('ImageStorage.beforeSave', $this, array(
 			'record' => $this->data));
 		$this->getEventManager()->dispatch($Event);
 
@@ -88,7 +76,7 @@ class ImageStorage extends FileStorage {
 		if ($created) {
 			$this->data[$this->alias][$this->primaryKey] = $this->getLastInsertId();
 
-			$Event = new CakeEvent('ImageStorage.afterSave', $this, array(
+			$Event = new Event('ImageStorage.afterSave', $this, array(
 				'created' => $created,
 				'storage' => $this->getStorageAdapter($this->data[$this->alias]['adapter']),
 				'record' => $this->data));
@@ -107,7 +95,7 @@ class ImageStorage extends FileStorage {
 			return false;
 		}
 
-		$Event = new CakeEvent('ImageStorage.beforeDelete', $this, array(
+		$Event = new Event('ImageStorage.beforeDelete', $this, array(
 			'record' => $this->record,
 			'storage' => $this->getStorageAdapter($this->record[$this->alias]['adapter'])));
 		$this->getEventManager()->dispatch($Event);
@@ -127,7 +115,7 @@ class ImageStorage extends FileStorage {
  * @return void
  */
 	public function afterDelete() {
-		$Event = new CakeEvent('ImageStorage.afterDelete', $this, array(
+		$Event = new Event('ImageStorage.afterDelete', $this, array(
 			'record' => $this->record,
 			'storage' => $this->getStorageAdapter($this->record[$this->alias]['adapter'])));
 		$this->getEventManager()->dispatch($Event);

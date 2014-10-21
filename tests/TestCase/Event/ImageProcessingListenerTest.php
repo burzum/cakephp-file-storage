@@ -1,4 +1,8 @@
 <?php
+namespace FileStorage\Test\TestCase\Event;
+
+use Cake\TestSuite\TestCase;
+
 App::uses('ImageStorage', 'FileStorage.Model');
 App::uses('ImageProcessingListener', 'FileStorage.Event');
 App::uses('FileStorageTestCase', 'FileStorage.TestSuite');
@@ -15,10 +19,10 @@ class TestImageProcessingListener extends ImageProcessingListener {
  * LocalImageProcessingListener Test
  *
  * @author Florian Krämer
- * @copyright 2012 Florian Krämer
+ * @copyright 2012 - 2014 Florian Krämer
  * @license MIT
  */
-class ImageProcessingListenerTest extends FileStorageTestCase {
+class ImageProcessingListenerTest extends TestCase {
 
 /**
  * setUp
