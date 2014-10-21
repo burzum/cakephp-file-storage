@@ -14,7 +14,6 @@ if (isset($document) && !empty($document['Image']['id'])) {
 	echo $this->Form->input('Image.old_file_id', array(
 		'type' => 'hidden',
 		'value' => $document['Document']['id'],
-		'required' => false,
 	));
 }
 ```
