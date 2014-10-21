@@ -1,4 +1,4 @@
-FileStorage plugin for CakePHP 2.x and 3.x
+FileStorage Plugin for CakePHP 2.x and 3.x
 ==========================================
 
 **The 3.0 branch is still in development!** You can help updating the code (it's not that hard) or make a donation if you want to speed things up. The work done on this plugin is done voluntary by me in my *free* time. So please respect that I'm not in a hurry to get it updated ASAP.
@@ -34,12 +34,12 @@ Requirements
 
 Optional but required for image processing:
 
- * The [Imagine Image processing plugin](https://github.com/burzum/cakephp-imagine-plugin) if you want to process and storage images
+ * The [Imagine Image processing plugin](https://github.com/burzum/cakephp-imagine-plugin) if you want to process and storage images.
 
 Documentation
 -------------
 
-For documentation, as well as tutorials, see the [Docs](Docs/Home.md) directory of this repository.
+For documentation, as well as tutorials, see the [docs](docs/Home.md) directory of this repository.
 
 Support
 -------

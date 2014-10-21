@@ -2,6 +2,7 @@
 namespace FileStorage\Test\TestCase\Lib\Utility;
 
 use Cake\TestSuite\TestCase;
+use FileStorage\Lib\Utility\FileStorageUtils;
 
 /**
  * 
@@ -14,7 +15,7 @@ class FileStorageUtilsTest extends TestCase {
  */
 	public function testRandomPath() {
 		$result = FileStorageUtils::randomPath('someteststring');
-		$this->assertEqual($result, '38' . DS . '88' . DS . '98' . DS);
+		$this->assertEquals($result, '38' . DS . '88' . DS . '98' . DS);
 	}
 
 /**
@@ -24,7 +25,7 @@ class FileStorageUtilsTest extends TestCase {
  */
 	public function testTrimPath() {
 		$result = FileStorageUtils::trimPath('foobar/');
-		$this->assertEqual($result, 'foobar');
+		$this->assertEquals($result, 'foobar');
 	}
 
 /**
@@ -35,10 +36,10 @@ class FileStorageUtilsTest extends TestCase {
 	public function testNormalizePath() {
 		if (DS == '\\') {
 			$result = FileStorageUtils::normalizePath('/nice/path/test');
-			$this->assertEqual($result, '\nice\path\test');
+			$this->assertEquals($result, '\nice\path\test');
 		} else {
 			$result = FileStorageUtils::normalizePath('\nice\path\test');
-			$this->assertEqual($result, '/nice/path/test');
+			$this->assertEquals($result, '/nice/path/test');
 		}
 	}
 }

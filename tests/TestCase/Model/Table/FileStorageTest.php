@@ -1,5 +1,9 @@
 <?php
-App::uses('FileStorage', 'FileStorage.Model');
+namespace FileStorage\Test\TestCase\Model\Table;
+
+use Cake\ORM\TableRegistry;
+use Cake\TestSuite\TestCase;
+use FileStorage\Model\Table\FileStorageTable;
 
 /**
  * File Storage Test
@@ -8,7 +12,7 @@ App::uses('FileStorage', 'FileStorage.Model');
  * @copyright 2012 - 2014 Florian Krämer
  * @license MIT
  */
-class FileStorageTest extends CakeTestCase {
+class FileStorageTest extends TestCase {
 
 /**
  * startTest
@@ -17,7 +21,7 @@ class FileStorageTest extends CakeTestCase {
  */
 	public function setUp() {
 		parent::setUp();
-		$this->FileStorage = new FileStorage();
+		$this->FileStorage = new FileStorageTable();
 	}
 
 /**
@@ -28,7 +32,7 @@ class FileStorageTest extends CakeTestCase {
 	public function tearDown() {
 		parent::tearDown();
 		unset($this->FileStorage);
-		ClassRegistry::flush();
+		TableRegistry::clear();
 	}
 
 /**
@@ -47,10 +51,10 @@ class FileStorageTest extends CakeTestCase {
  */
 	public function testFsPath() {
 		$result = $this->FileStorage->fsPath('Foobar', 'random-id');
-		$this->assertEqual($result, 'Foobar' . DS . '63' . DS . '87' . DS . '12' . DS . 'randomid' . DS);
+		$this->assertEquals($result, 'Foobar' . DS . '63' . DS . '87' . DS . '12' . DS . 'randomid' . DS);
 
 		$result = $this->FileStorage->fsPath('Foobar', 'random-id', false);
-		$this->assertEqual($result, 'Foobar' . DS . '63' . DS . '87' . DS . '12' . DS);
+		$this->assertEquals($result, 'Foobar' . DS . '63' . DS . '87' . DS . '12' . DS);
 	}
 
 /**
@@ -60,7 +64,7 @@ class FileStorageTest extends CakeTestCase {
  */
 	public function testStripUuid() {
 		$result = $this->FileStorage->stripUuid('some-string-with-dashes');
-		$this->assertEqual($result, 'somestringwithdashes');
+		$this->assertEquals($result, 'somestringwithdashes');
 	}
 
 }

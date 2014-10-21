@@ -1,6 +1,9 @@
 <?php
-App::uses('ImageStorage', 'FileStorage.Model');
-App::uses('FileStorageTestCase', 'FileStorage.TestSuite');
+namespace FileStorage\Test\TestCase\Model\Table;
+
+use Cake\TestSuite\TestCase;
+use FileStorage\Model\Table\ImageStorageTable;
+
 /**
  * Image Storage Test
  *
@@ -8,7 +11,7 @@ App::uses('FileStorageTestCase', 'FileStorage.TestSuite');
  * @copyright 2012 - 2014 Florian Krämer
  * @license MIT
  */
-class ImageStorageTest extends FileStorageTestCase {
+class ImageStorageTest extends TestCase {
 
 /**
  * Fixtures
@@ -26,7 +29,7 @@ class ImageStorageTest extends FileStorageTestCase {
  */
 	public function setUp() {
 		parent::setUp();
-		$this->Image = new ImageStorage();
+		$this->Image = new ImageStorageTable();
 	}
 
 /**
@@ -37,7 +40,7 @@ class ImageStorageTest extends FileStorageTestCase {
 	public function tearDown() {
 		parent::tearDown();
 		unset($this->Image);
-		ClassRegistry::flush();
+		TableRegistry::clear();
 	}
 
 /**
@@ -66,7 +69,7 @@ class ImageStorageTest extends FileStorageTestCase {
 		$path = $this->testPath . $result['ImageStorage']['path'];
 		$Folder = new Folder($path);
 		$folderResult = $Folder->read();
-		$this->assertEqual(count($folderResult[1]), 3);
+		$this->assertEquals(count($folderResult[1]), 3);
 
 		Configure::write('Media.imageSizes.Test', array(
 			't200' => array(
@@ -89,7 +92,7 @@ class ImageStorageTest extends FileStorageTestCase {
 		$path = $this->testPath . $result['ImageStorage']['path'];
 		$Folder = new Folder($path);
 		$folderResult = $Folder->read();
-		$this->assertEqual(count($folderResult[1]), 4);
+		$this->assertEquals(count($folderResult[1]), 4);
 
 
 		$Event = new CakeEvent('ImageVersion.removeVersion', $this->Image, array(
@@ -106,7 +109,7 @@ class ImageStorageTest extends FileStorageTestCase {
 		$path = $this->testPath . $result['ImageStorage']['path'];
 		$Folder = new Folder($path);
 		$folderResult = $Folder->read();
-		$this->assertEqual(count($folderResult[1]), 3);
+		$this->assertEquals(count($folderResult[1]), 3);
 	}
 
 /**

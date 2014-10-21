@@ -1,4 +1,10 @@
 <?php
+namespace FileStorage\Test\TestCase\Model\Behavior;
+
+use Cake\ORM\TableRegistry;
+use Cake\TestSuite\TestCase;
+use Cake\ORM\Table;
+
 /**
  * Upload Validator Behavior Test
  *
@@ -6,15 +12,14 @@
  * @copyright 2012 - 2014 Florian Krämer
  * @license MIT
  */
-App::uses('Model', 'Model');
-App::uses('UploadValidatorBehavior', 'FileStorage.Model\Behavior');
+
 
 /**
  * TheVoid class
  *
  * @package       Cake.Test.Case.Model
  */
-class VoidUploadModel extends CakeTestModel {
+class VoidUploadModel extends Table {
 
 	/**
 	 * name property
@@ -36,7 +41,7 @@ class VoidUploadModel extends CakeTestModel {
  *
  * @package       Cake.Test.Case.Model.Behavior
  */
-class UploadValidatorBehaviorTest extends CakeTestCase {
+class UploadValidatorBehaviorTest extends TestCase {
 
 /**
  * Holds the instance of the model
@@ -72,7 +77,7 @@ class UploadValidatorBehaviorTest extends CakeTestCase {
  */
 	public function tearDown() {
 		unset($this->Model);
-		ClassRegistry::flush();
+		TableRegistry::clear();
 	}
 
 /**

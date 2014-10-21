@@ -1,8 +1,11 @@
 <?php
 namespace FileStorage\Test\TestCase\Event;
 
+use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use FileStorage\Event\ImageProcessingListener;
+use FileStorage\Model\Table\FileStorageTable;
+use FileStorage\Model\Table\ImageStorageTable;
 
 class TestImageProcessingListener extends ImageProcessingListener {
 	public function buildPath($image, $extension = true, $hash = null) {
@@ -26,7 +29,7 @@ class ImageProcessingListenerTest extends TestCase {
  */
 	public function setUp() {
 		parent::setUp();
-		$this->Model = new ImageStorage();
+		$this->Model = new FileStorageTable();
 		$this->Listener = new ImageProcessingListener();
 	}
 
@@ -38,7 +41,7 @@ class ImageProcessingListenerTest extends TestCase {
 	public function tearDown() {
 		parent::tearDown();
 		unset($this->Listener, $this->Model);
-		ClassRegistry::flush();
+		TableRegistry::clear();
 	}
 
 	public function testBuildPath() {
@@ -51,14 +54,14 @@ class ImageProcessingListenerTest extends TestCase {
 			'path' => '/xx/xx/xx/uuid/',
 			'extension' => 'jpg'
 		));
-		$this->assertEqual($result, '/xx/xx/xx/uuid/foobar.jpg');
+		$this->assertEquals($result, '/xx/xx/xx/uuid/foobar.jpg');
 
 		$result = $this->Listener->buildPath(array(
 			'filename' => 'foobar.jpg',
 			'path' => '/xx/xx/xx/uuid/',
 			'extension' => 'jpg'
 		), true, '5gh2hf');
-		$this->assertEqual($result, '/xx/xx/xx/uuid/foobar.5gh2hf.jpg');
+		$this->assertEquals($result, '/xx/xx/xx/uuid/foobar.5gh2hf.jpg');
 	}
 
 }

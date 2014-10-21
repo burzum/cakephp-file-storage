@@ -1,6 +1,7 @@
 <?php
-namespace FileStorage\Model;
+namespace FileStorage\Model\Table;
 
+use \Cake\ORM\Table;
 use \Cake\Event\Event;
 use \Cake\Utility\Folder;
 use \Cake\Utility\File;

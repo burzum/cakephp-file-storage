@@ -1,8 +1,10 @@
 <?php
 namespace FileStorage\Test\TestCase\Event;
 
+use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use FileStorage\Event\S3StorageListener;
+use FileStorage\Model\Table\FileStorageTable;
 
 class TestS3StorageListener extends S3StorageListener {
 	public function buildPath(CakeEvent $CakeEvent) {
@@ -25,7 +27,7 @@ class S3StorageListenerTest extends TestCase {
  * @return void
  */
 	public function setUp() {
-		$this->Model = new FileStorage();
+		$this->Model = new FileStorageTable();
 		$this->Listener = $this->getMock('TestS3StorageListener', array('getAdapterconfig'), array(array()));
 	}
 
@@ -37,7 +39,7 @@ class S3StorageListenerTest extends TestCase {
 	public function tearDown() {
 		parent::tearDown();
 		unset($this->Listener, $this->Model);
-		ClassRegistry::flush();
+		TableRegistry::clear();
 	}
 
 /**

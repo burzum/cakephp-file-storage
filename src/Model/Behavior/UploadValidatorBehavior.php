@@ -1,7 +1,7 @@
 <?php
 namespace FileStorage\Model\Behavior;
 
-use \Cake\Model\Behavior;
+use \Cake\ORM\Behavior;
 use \Cake\Utility\File;
 use \Cake\Utility\Number;
 

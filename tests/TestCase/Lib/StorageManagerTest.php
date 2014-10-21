@@ -9,6 +9,7 @@
 namespace FileStorage\Test\TestCase\Lib;
 
 use Cake\TestSuite\TestCase;
+use FileStorage\Lib\StorageManager;;
 
 class StorageManagerTest extends TestCase {
 /**
@@ -19,10 +20,10 @@ class StorageManagerTest extends TestCase {
  */
 	public function testAdapter() {
 		$result = StorageManager::adapter('Local');
-		$this->assertEqual(get_class($result), 'Gaufrette\Filesystem');
+		$this->assertEquals(get_class($result), 'Gaufrette\Filesystem');
 
 		$result = StorageManager::activeAdapter();
-		$this->assertEqual($result, 'Local');
+		$this->assertEquals($result, 'Local');
 
 		$result = StorageManager::activeAdapter('invalid-adapter');
 		$this->assertFalse($result);

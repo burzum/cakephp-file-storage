@@ -1,5 +1,5 @@
 <?php
-namespace FileStorage\Model;
+namespace FileStorage\Model\Table;
 
 use \Cake\Event\Event;
 use \Cake\Utility\Folder;

@@ -147,7 +147,7 @@ class StorageManager {
 		}
 
 		$class = $adapter['adapterClass'];
-		$Reflection = new ReflectionClass($class);
+		$Reflection = new \ReflectionClass($class);
 		$adapterObject = $Reflection->newInstanceArgs($adapter['adapterOptions']);
 		$engineObject = new $adapter['class']($adapterObject);
 		if ($isConfigured) {
