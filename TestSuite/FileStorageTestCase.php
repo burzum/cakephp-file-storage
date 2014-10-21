@@ -1,6 +1,7 @@
 <?php
 App::uses('CakeTestCase', 'TestSuite');
 App::uses('Folder', 'Utility');
+
 /**
  * FileStorageTestCase
  *
@@ -33,14 +34,19 @@ class FileStorageTestCase extends CakeTestCase {
 				't150' => array(
 					'thumbnail' => array(
 						'mode' => 'outbound',
-						'width' => 150, 'height' => 150)))));
+						'width' => 150, 'height' => 150
+					)
+				)
+			)
+		));
 
 		ClassRegistry::init('FileStorage.ImageStorage')->generateHashes();
 
 		StorageManager::config('Local', array(
 			'adapterOptions' => array($this->testPath, true),
 			'adapterClass' => '\Gaufrette\Adapter\Local',
-			'class' => '\Gaufrette\Filesystem'));
+			'class' => '\Gaufrette\Filesystem'
+		));
 	}
 
 /**
@@ -51,7 +57,7 @@ class FileStorageTestCase extends CakeTestCase {
 	public function tearDown() {
 		parent::tearDown();
 		$Folder = new Folder(TMP . 'file-storage-test');
-		//$Folder->delete();
+		$Folder->delete();
 	}
 
 }

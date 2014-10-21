@@ -2,17 +2,12 @@
 namespace FileStorage\Test\TestCase\Event;
 
 use Cake\TestSuite\TestCase;
-
-App::uses('ImageStorage', 'FileStorage.Model');
-App::uses('ImageProcessingListener', 'FileStorage.Event');
-App::uses('FileStorageTestCase', 'FileStorage.TestSuite');
+use FileStorage\Event\ImageProcessingListener;
 
 class TestImageProcessingListener extends ImageProcessingListener {
-
 	public function buildPath($image, $extension = true, $hash = null) {
 		return $this->_buildPath($image, $extension, $hash);
 	}
-
 }
 
 /**

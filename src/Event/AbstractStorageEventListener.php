@@ -1,7 +1,9 @@
 <?php
-App::uses('CakeEventListener', 'Event');
+namespace FileStorage\Event;
 
-abstract class AbstractStorageEventListener extends Object implements CakeEventListener {
+use Cake\Event\EventListenerInterface;
+
+abstract class AbstractStorageEventListener implements EventListenerInterface {
 
 /**
  * The adapter class

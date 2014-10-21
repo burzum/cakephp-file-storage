@@ -2,17 +2,12 @@
 namespace FileStorage\Test\TestCase\Event;
 
 use Cake\TestSuite\TestCase;
-
-App::uses('FileStorage', 'FileStorage.Model');
-App::uses('S3StorageListener', 'FileStorage.Event');
-App::uses('FileStorageTestCase', 'FileStorage.TestSuite');
+use FileStorage\Event\S3StorageListener;
 
 class TestS3StorageListener extends S3StorageListener {
-
 	public function buildPath(CakeEvent $CakeEvent) {
 		return $this->_buildPath($CakeEvent);
 	}
-
 }
 
 /**

@@ -1,12 +1,15 @@
 <?php
-App::uses('CakeEventListener', 'Event');
+namespace FileStorage\Event;
+
+use Cake\Event\EventListenerInterface;
+
 /**
  * Local FileStorage Event Listener for the CakePHP FileStorage plugin
  *
  * @author Tomenko Yegeny
  * @license MIT
  */
-class LocalFileStorageListener extends Object implements CakeEventListener {
+class LocalFileStorageListener implements EventListenerInterface {
 
 /**
  * Implemented Events
