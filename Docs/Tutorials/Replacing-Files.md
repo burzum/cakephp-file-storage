@@ -19,6 +19,6 @@ if (isset($document) && !empty($document['Image']['id'])) {
 }
 ```
 
-The the trick here is the old_file_id. The `FileStorage` model, which `ImageStorage` extends, is checking for that field by calling `FileStorage::deleteOldFileOnSave()` in `FileStorage::afterSave()`.
+The the trick here is the `old_file_id`. The `FileStorage` model, which `ImageStorage` extends, is checking for that field by calling `FileStorage::deleteOldFileOnSave()` in `FileStorage::afterSave()`.
 
 So all you have to do to replace an image is to pass the `old_file_id` along with your new file data.
