@@ -147,6 +147,10 @@ class FileStorageTable extends Table {
 			'record' => $this->data,
 			'storage' => $this->getStorageAdapter($this->data[$this->alias]['adapter'])));
 		$this->getEventManager()->dispatch($Event);
+
+		$this->deleteOldFileOnSave();
+
+		return true;
 	}
 
 /**
@@ -190,6 +194,8 @@ class FileStorageTable extends Table {
 			'record' => $this->record,
 			'storage' => $this->getStorageAdapter($this->record[$this->alias]['adapter'])));
 		$this->getEventManager()->dispatch($Event);
+
+		return true;
 	}
 
 /**
@@ -270,4 +276,21 @@ class FileStorageTable extends Table {
 		return StorageManager::adapter($adapterName, $renewObject);
 	}
 
+/**
+ * Deletes an old file to replace it with the new one if an old id was passed.
+ *
+ * Thought to be called in Model::afterSave() but can be used from any other
+ * place as well like Model::beforeSave() as long as the field data is present.
+ *
+ * The old id has to be the UUID of the file_storage record that should be deleted.
+ *
+ * @param string $oldIdField Name of the field in the data that holds the old id
+ * @return boolean Returns true if the old record was deleted
+ */
+	public function deleteOldFileOnSave($oldIdField = 'old_file_id') {
+		if (!empty($this->data[$this->alias][$oldIdField]) && $this->data[$this->alias]['model']) {
+			return $this->delete($this->data[$this->alias][$oldIdField]);
+		}
+		return false;
+	}
 }

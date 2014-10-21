@@ -24,3 +24,4 @@ Tutorials
 ---------
 
 * [Quick Start](Tutorials/Quick-Start.md)
+* [Replacing Files](Tutorials/Replacing-Files.md)

@@ -70,7 +70,7 @@ class ImageStorageTable extends FileStorageTable {
  *
  * @param boolean $created
  * @param array $options
- * @return void
+ * @return boolean
  */
 	public function afterSave($created, $options = array()) {
 		if ($created) {
@@ -82,6 +82,7 @@ class ImageStorageTable extends FileStorageTable {
 				'record' => $this->data));
 			$this->getEventManager()->dispatch($Event);
 		}
+		return true;
 	}
 
 /**
