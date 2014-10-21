@@ -28,11 +28,11 @@ class ItemFixture extends CakeTestFixture {
  * @var array
  */
 	public $fields = array(
-		'id' => array('type'=>'string', 'null' => false, 'length' => 36, 'key' => 'primary'),
-		'name' => array('type'=>'string', 'null' => false, 'default' => NULL),
-		'indexes' => array(
-		'PRIMARY' => array('column' => 'id', 'unique' => 1)
-		)
+		'id' => array('type' => 'char', 'null' => false, 'length' => 36),
+		'name' => array('type' => 'string', 'null' => true, 'default' => NULL),
+		'_constraints' => [
+			'primary' => ['type' => 'primary', 'columns' => ['id']],
+		]
 	);
 
 /**

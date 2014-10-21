@@ -32,7 +32,7 @@ class FileStorageFixture extends TestFixture {
  * @var array $fields
  */
 	public $fields = array(
-		'id' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 36, 'key' => 'primary'),
+		'id' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 36),
 		'user_id' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 36),
 		'foreign_key' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 36),
 		'model' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 64),
@@ -45,9 +45,9 @@ class FileStorageFixture extends TestFixture {
 		'adapter' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 32, 'comment' => 'Gaufrette Storage Adapter Class'),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 		'modified' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
-		'indexes' => array(
-			'PRIMARY' => array('column' => 'id', 'unique' => 1)
-		),
+		'_constraints' => [
+			'primary' => ['type' => 'primary', 'columns' => ['id']],
+		]
 	);
 
 /**

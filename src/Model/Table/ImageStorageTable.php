@@ -3,7 +3,6 @@ namespace FileStorage\Model\Table;
 
 use \Cake\Event\Event;
 use \Cake\Utility\Folder;
-use \FileStorage\Model\FileStorageTable;
 
 /**
  * ImageStorageTable

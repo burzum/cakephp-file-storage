@@ -1,7 +1,7 @@
 <?php
 namespace FileStorage\Event;
 
-use Cake\Event\EventListenerInterface;
+use FileStorage\Event\AbstractStorageEventListener;
 
 /**
  * S3StorageListener

@@ -2,6 +2,7 @@
 namespace FileSTorage\View\Helper;
 
 use Cake\View\Helper;
+use Cake\Core\Configure;
 
 /**
  * ImageHelper

@@ -2,6 +2,11 @@
 namespace FileStorage\Test\TestCase\View\Helper;
 
 use Cake\TestSuite\TestCase;
+use Cake\View\View;
+use Cake\View\Helper\HtmlHelper;
+use Cake\Network\Request;
+use Cake\Core\Configure;
+use FileStorage\View\Helper\ImageHelper;
 
 /**
  * S3StorageListener
@@ -30,7 +35,7 @@ class ImageHelperTest extends TestCase {
 		$this->View = new View($null);
 		$this->Image = new ImageHelper($this->View);
 		$this->Image->Html = new HtmlHelper($this->View);
-		$this->Image->Html->request = new CakeRequest('contacts/add', false);
+		$this->Image->Html->request = new Request('contacts/add', false);
 		$this->Image->Html->request->webroot = '/';
 		$this->Image->Html->request->base = '/';
 	}
@@ -89,10 +94,10 @@ class ImageHelperTest extends TestCase {
 		Configure::write('Media.fallbackImages.Test.t150', 't150fallback.png');
 
 		$result = $this->Image->fallbackImage(array('fallback' => true), array(), 't150');
-		$this->assertEquals($result, '<img src="/img/placeholder/t150.jpg" alt="" />');
+		$this->assertEquals($result, '<img src="/img/placeholder/t150.jpg" alt=""/>');
 
 		$result = $this->Image->fallbackImage(array('fallback' => 'something.png'), array(), 't150');
-		$this->assertEquals($result, '<img src="/img/something.png" alt="" />');
+		$this->assertEquals($result, '<img src="/img/something.png" alt=""/>');
 
 		$result = $this->Image->fallbackImage(array(), array(), 't150');
 		$this->assertEquals($result, '');
