@@ -1,9 +1,15 @@
 <?php
 namespace FileStorage\Event;
 
+use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
+use Cake\Core\InstanceConfigTrait;
+use FileStorage\Lib\StorageManager;
+use FileStorage\Lib\Utility\FileStorageUtils;
 
 abstract class AbstractStorageEventListener implements EventListenerInterface {
+
+	use InstanceConfigTrait;
 
 /**
  * The adapter class
@@ -13,21 +19,14 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 	public $adapterClass = null;
 
 /**
- * Name of the storage model class the event listener requires the model
+ * Name of the storage table class name the event listener requires the table
  * instances to extend
  *
- * Must be FileStorage OR ImageStorage
+ * Must be \FileStorage\Model\Table\FileStorageTable OR \FileStorage\Model\Table\ImageStorageTable
  *
  * @var string
  */
-	public $storageModelClass = 'FileStorage';
-
-/**
- * Options
- *
- * @var array
- */
-	public $options = array();
+	public $storageTableClass = '\FileStorage\Model\Table\FileStorageTable';
 
 /**
  * List of adapter classes the event listener can work with
@@ -46,20 +45,28 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
  *
  * @var array
  */
-	protected $_defaults = array(
+	protected $_defaultConfig = array(
 		'models' => false,
+		'stripUuid' => true,
 		'preserveFilename' => false,
 		'preserveExtension' => true,
+		'uuidFolder' => true,
+		'randomPath' => true,
+		'tableFolder' => false
 	);
 
 /**
  * Constructor
  *
- * @param array $options
+ * @param array $config
  * @return AbstractStorageEventListener
  */
-	public function __construct($options = array()) {
-		$this->options = array_merge($this->_defaults, $options);
+	public function __construct(array $config = []) {
+		$this->config($config);
+	}
+
+	public function stripUuid($uuid) {
+		return str_replace('-', '', $uuid);
 	}
 
 /**
@@ -70,36 +77,72 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 	abstract public function implementedEvents();
 
 /**
+ * Builds the filename of under which the data gets saved in the storage adapter
+ *
+ * @return string
+ */
+	public function buildFilename($table, $entity) {
+		if ($this->_config['preserveFilename'] === true) {
+			return $entity['filename'];
+		}
+		$filename = $entity['id'];
+		if ($this->_config['stripUuid'] ===  true) {
+			$filename = $this->stripUuid($filename);
+		}
+		if ($this->_config['preserveExtension'] === true) {
+			$filename = $filename . '.' . $entity['extension'];
+		}
+		return $filename;
+	}
+
+/**
+ * Builds the path under which the data gets stored in the storage adapter
+ *
+ * @return string
+ */
+	public function buildPath($table, $entity) {
+		$path = '';
+		if ($this->_config['tableFolder']) {
+			$path .= $table->table() . DS;
+		}
+		if ($this->_config['randomPath'] == true) {
+			$path .= FileStorageUtils::randomPath($entity[$table->primaryKey()]);
+		}
+		if ($this->_config['uuidFolder'] == true) {
+			$path .= $this->stripUuid($entity[$table->primaryKey()]) . DS;
+		}
+		return $path;
+	}
+
+/**
  * Check if the event is of a type or subject object of type model we want to
  * process with this listener
  *
  * @throws InvalidArgumentException
- * @param CakeEvent $Event
+ * @param Event $event
  * @return boolean
  */
-	protected function _checkEvent(CakeEvent $Event) {
-		if (!in_array($this->storageModelClass, array('FileStorage', 'ImageStorage'))) {
-			throw new InvalidArgumentException(__d('file_storage', 'Invalid storage model %s! Must be FileStorage or ImageStorage!', $this->storageModelClass));
+	protected function _checkEvent(Event $event) {
+		if (!in_array($this->storageTableClass, array('\FileStorage\Model\Table\FileStorageTable', '\FileStorage\Model\Table\ImageStorageTable'))) {
+			throw new InvalidArgumentException(__d('file_storage', 'Invalid storage model %s! Must be FileStorage or ImageStorage!', $this->storageTableClass));
 		}
-
-		$Model = $Event->subject();
 		return (
-			$this->_checkModel($Event)
-			&& $this->getAdapterClassName($Event->data['record'][$Model->alias]['adapter'])
-			&& $this->_modelFilter($Event)
+			$this->_checkTable($event)
+			&& $this->getAdapterClassName($event->data['record']['adapter'])
+			&& $this->_modelFilter($event)
 		);
 	}
 
 /**
  * _modelFilter
  *
- * @param CakeEvent $Event
+ * @param Event $event
  * @return boolean
  */
-	protected function _modelFilter(CakeEvent $Event) {
-		if (is_array($this->options['models'])) {
-			$model = $Event->data['record'][$Event->subject()->alias]['model'];
-			if (!in_array($model, $this->options['models'])) {
+	protected function _modelFilter(Event $event) {
+		if (is_array($this->_config['models'])) {
+			$model = $event->data['record']['model'];
+			if (!in_array($model, $this->_config['models'])) {
 				return false;
 			}
 		}
@@ -109,16 +152,14 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 /**
  * Checks if the events subject is a model and extending FileStorage or ImageStorage
  *
- * @param CakeEvent $Event
+ * @param Event $event
  * @return boolean
  */
-	protected function _checkModel(CakeEvent $Event) {
-		$Model = $Event->subject();
-		$instanceCheck = ($Model instanceOf $this->storageModelClass);
-		$adapterCheck = isset($Event->data['record'][$Model->alias]['adapter']);
-		$adapterCheck2 = isset($Event->data['record']['adapter']);
-
-		return ($instanceCheck && ($adapterCheck || $adapterCheck2));
+	protected function _checkTable(Event $event) {
+		$table = $event->subject();
+		$instanceCheck = ($table instanceOf $this->storageTableClass);
+		$adapterCheck = isset($event->data['record']['adapter']);
+		return ($instanceCheck && $adapterCheck);
 	}
 
 /**
@@ -143,13 +184,11 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
  */
 	public function getAdapterClassName($configName) {
 		$className = $this->_getAdapterClassFromConfig($configName);
-
 		if (in_array($className, $this->_adapterClasses)) {
 			$position = strripos($className, '\\');
 			$this->adapterClass = substr($className, $position + 1, strlen($className));
 			return $this->adapterClass;
 		}
-
 		return false;
 	}
 

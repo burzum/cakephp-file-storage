@@ -1,9 +1,15 @@
 <?php
 namespace FileStorage\Model\Behavior;
 
-use \Cake\ORM\Behavior;
-use \Cake\Utility\File;
-use \Cake\Utility\Number;
+use Cake\Core\Configure;
+use Cake\Event\Event;
+use Cake\Event\EventManager;
+use Cake\ORM\Table;
+use Cake\ORM\Entity;
+use Cake\ORM\Behavior;
+use Cake\Utility\File;
+use Cake\Utility\Number;
+use Cake\Utility\Hash;
 
 /**
  * Upload Validation Behavior
@@ -21,7 +27,7 @@ class UploadValidatorBehavior extends Behavior {
  *
  * @var array
  */
-	protected $_defaultSettings = array(
+	protected $_defaultConfig = array(
 		'fileField' => 'file',
 		'validate' => true,
 		'allowNoFileError' => true,
@@ -40,21 +46,22 @@ class UploadValidatorBehavior extends Behavior {
 	public $uploadError = null;
 
 /**
- * Behavior setup
+ * Constructor
  *
- * Merge settings with default config, then it is checking if the target directory
- * exists and if it is writeable. It will throw an error if one of both fails.
- *
- * @param array $settings
- * @throws InvalidArgumentException
- * @return void
+ * @param \Cake\ORM\Table $table The table this behavior is attached to.
+ * @param array $config The settings for this behavior.
  */
-	public function setup($settings = array()) {
-		if (!is_array($settings)) {
-			throw new InvalidArgumentException(__d('file_storage', 'Settings must be passed as array!'));
-		}
+	public function __construct(Table $table, array $config = []) {
+		$this->_defaultConfig = Hash::merge($this->_defaultConfig, (array)Configure::read('FileStorage.Behavior'));
+		parent::__construct($table, $config);
+		$this->_table = $table;
 
-		$this->settings[$this->_table->alias()] = array_merge($this->_defaults, $settings);
+		$eventManager = null;
+		if (!empty($config['eventManager'])) {
+			$eventManager = $config['eventManager'];
+		}
+		$this->_eventManager = $eventManager ?: new EventManager();
+		$this->_eventManager->attach($this->_table);
 	}
 
 /**
@@ -66,17 +73,21 @@ class UploadValidatorBehavior extends Behavior {
  * @param array $options
  * @return boolean True on success
  */
-	public function beforeValidate($options = array()) {
-		extract($this->settings[$this->_table->alias()]);
-		if ($validate === true && isset($this->_table->data[$this->_table->alias()][$fileField]) && is_array($this->_table->data[$this->_table->alias()][$fileField])) {
+	//public function beforeValidate($options = array()) {
+	public function beforeValidate(Event $event, Entity $entity, $array) {
+		//debug($event);
+		//debug($entity);
+		//die();
+		extract($this->_config);
+		if ($validate === true && isset($this->_table->event[$this->_table->alias()][$fileField]) && is_array($this->_table->event[$this->_table->alias()][$fileField])) {
 
-			if ($this->_table->validateUploadError($this->_table->data[$this->_table->alias()][$fileField]['error']) === false) {
+			if ($this->_table->validateUploadError($this->_table->event[$this->_table->alias()][$fileField]['error']) === false) {
 				$this->_table->validationErrors[$fileField] = array($this->uploadError);
 				return false;
 			}
 
-			if (!empty($this->_table->data[$this->_table->alias()][$fileField])) {
-				if (empty($localFile) && !is_uploaded_file($this->_table->data[$this->_table->alias()][$fileField]['tmp_name'])) {
+			if (!empty($this->_table->event[$this->_table->alias()][$fileField])) {
+				if (empty($localFile) && !is_uploaded_file($this->_table->event[$this->_table->alias()][$fileField]['tmp_name'])) {
 					$this->uploadError = __d('file_storage', 'The uploaded file is no valid upload.');
 					$this->_table->invalidate($fileField, $this->uploadError);
 					return false;
@@ -105,7 +116,7 @@ class UploadValidatorBehavior extends Behavior {
  * @return boolean True if the extension is allowed
  */
 	public function validateUploadExtension($validExtensions) {
-		extract($this->settings[$this->_table->alias()]);
+		extract($this->_config);
 		$extension = $this->fileExtension($Model, $this->_table->data[$this->_table->alias()][$fileField]['name'], false);
 
 		if (!in_array(strtolower($extension), $validExtensions)) {
@@ -123,7 +134,7 @@ class UploadValidatorBehavior extends Behavior {
  * @return boolean
  */
 	public function validateAllowedMimeTypes($mimeTypes = array()) {
-		extract($this->settings[$this->_table->alias()]);
+		extract($this->_config);
 		if (!empty($mimeTypes)) {
 			$allowedMime = $mimeTypes;
 		}
@@ -161,7 +172,7 @@ class UploadValidatorBehavior extends Behavior {
 					$this->uploadError = __d('file_storage', 'The uploaded file was only partially uploaded.');
 				break;
 				case UPLOAD_ERR_NO_FILE:
-					if ($this->settings[$this->_table->alias()]['allowNoFileError'] === false) {
+					if ($this->_config['allowNoFileError'] === false) {
 						$this->uploadError = __d('file_storage', 'No file was uploaded.');
 						return false;
 					}

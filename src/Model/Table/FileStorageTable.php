@@ -2,9 +2,12 @@
 namespace FileStorage\Model\Table;
 
 use \Cake\ORM\Table;
+use \Cake\ORM\Entity;
 use \Cake\Event\Event;
+use \Cake\Event\EventManager;
 use \Cake\Utility\Folder;
 use \Cake\Utility\File;
+use \Cake\Utility\String;
 use \FileStorage\Lib\StorageManager;
 use \FileStorage\Lib\Utility\FileStorageUtils;
 
@@ -83,7 +86,7 @@ class FileStorageTable extends Table {
  * @return void
  */
 	public function initialize(array $config) {
-		$this->addBehavior('FileStorage.UploadValidator');
+		//$this->addBehavior('FileStorage.UploadValidator');
 	}
 
 /**
@@ -103,29 +106,32 @@ class FileStorageTable extends Table {
  * @param array $options
  * @return boolean true on success
  */
-	public function beforeSave($options = array()) {
-		if (!empty($this->data[$this->alias]['file']['tmp_name'])) {
-			$File = new File($this->data[$this->alias]['file']['tmp_name']);
-			$this->data[$this->alias]['filesize'] = $File->size();
-			$this->data[$this->alias]['mime_type'] = $File->mime();
+	public function beforeSave(Event $event, Entity $entity, $options) {
+		if (!empty($event->data['entity']['file']['tmp_name'])) {
+			$File = new File($event->data['entity']['file']['tmp_name']);
+			$event->data['entity']['filesize'] = $File->size();
+			$event->data['entity']['mime_type'] = $File->mime();
 		}
-		if (!empty($this->data[$this->alias]['file']['name'])) {
-			$this->data[$this->alias]['extension'] = $this->fileExtension($this->data[$this->alias]['file']['name']);
-			$this->data[$this->alias]['filename'] = $this->data[$this->alias]['file']['name'];
+		if (!empty($event->data['entity']['file']['name'])) {
+			$event->data['entity']['extension'] = $this->fileExtension($event->data['entity']['file']['name']);
+			$event->data['entity']['filename'] = $event->data['entity']['file']['name'];
 		}
-
-		if (empty($this->data[$this->alias]['adapter'])) {
-			$this->data[$this->alias]['adapter'] = 'Local';
+		if (empty($event->data['entity']['table'])) {
+			$event->data['entity']['table'] = $this->table();
+			$event->data['entity']['model'] = $this->table(); // Backward compatibility
 		}
-
+		if (empty($event->data['entity']['adapter'])) {
+			$event->data['entity']['adapter'] = 'Local'; // Backward compatibility
+			$event->data['entity']['adapter_config'] = 'Local';
+		}
 		$Event = new Event('FileStorage.beforeSave', $this, array(
-			'record' => $this->data,
-			'storage' => $this->getStorageAdapter($this->data[$this->alias]['adapter'])));
+			'record' => $entity,
+			'storage' => $this->getStorageAdapter($event->data['entity']['adapter'])
+		));
 		$this->getEventManager()->dispatch($Event);
 		if ($Event->isStopped()) {
 			return false;
 		}
-
 		return true;
 	}
 
@@ -136,20 +142,17 @@ class FileStorageTable extends Table {
  * @param array $options
  * @return void
  */
-	public function afterSave($created, $options = array()) {
-		if ($created) {
-			$this->data[$this->alias][$this->primaryKey] = $this->getLastInsertId();
+	//public function afterSave($created, $options = array()) {
+	public function afterSave(Event $event, Entity $entity, $options) {
+		if ($event->data['entity']->isNew) {
+			$event->data['entity'][$this->primaryKey] = $this->getLastInsertId();
 		}
-
 		$Event = new Event('FileStorage.afterSave', $this, array(
-			'created' => $created,
-			//'record' => $this->record,
-			'record' => $this->data,
-			'storage' => $this->getStorageAdapter($this->data[$this->alias]['adapter'])));
+			'created' => $event->data['entity']->isNew,
+			'record' => $entity,
+			'storage' => $this->getStorageAdapter($event->data['entity']['adapter'])));
 		$this->getEventManager()->dispatch($Event);
-
-		$this->deleteOldFileOnSave();
-
+		$this->deleteOldFileOnSave($entity);
 		return true;
 	}
 
@@ -167,7 +170,9 @@ class FileStorageTable extends Table {
 		$this->record = $this->find('first', array(
 			'contain' => array(),
 			'conditions' => array(
-				$this->alias . '.' . $this->primaryKey => $this->id)));
+				$this->alias . '.' . $this->primaryKey => $this->id
+			)
+		));
 
 		if (empty($this->record)) {
 			return false;
@@ -287,10 +292,14 @@ class FileStorageTable extends Table {
  * @param string $oldIdField Name of the field in the data that holds the old id
  * @return boolean Returns true if the old record was deleted
  */
-	public function deleteOldFileOnSave($oldIdField = 'old_file_id') {
-		if (!empty($this->data[$this->alias][$oldIdField]) && $this->data[$this->alias]['model']) {
-			return $this->delete($this->data[$this->alias][$oldIdField]);
+	public function deleteOldFileOnSave(Entity $entity, $oldIdField = 'old_file_id') {
+		if (!empty($entity[$oldIdField]) && $entity['model']) {
+			return $this->delete($entity[$oldIdField]);
 		}
 		return false;
+	}
+
+	public function getEventManager() {
+		return EventManager::instance();
 	}
 }

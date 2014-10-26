@@ -41,7 +41,6 @@ class FileStorageUtils {
 			throw new \InvalidArgumentException('First argument is not a string!');
 		}
 		$string = crc32($string);
-
 		$decrement = 0;
 		$path = null;
 		for ($i = 0; $i < $level; $i++) {
@@ -90,7 +89,6 @@ class FileStorageUtils {
 		if (empty($array)) {
 			$array = $_FILES;
 		}
-
 		$newfiles = array();
 		if (!empty($array)) {
 			foreach ($array as $fieldname => $fieldvalue) {
