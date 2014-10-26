@@ -1,8 +1,6 @@
 <?php
 namespace FileStorage\Event;
 
-use FileStorage\Event\AbstractStorageEventListener;
-
 /**
  * S3StorageListener
  *
@@ -37,10 +35,10 @@ class S3StorageListener extends AbstractStorageEventListener {
 /**
  * afterDelete
  *
- * @param CakeEvent $Event
+ * @param Event $Event
  * @return void
  */
-	public function afterDelete(CakeEvent $Event) {
+	public function afterDelete(Event $Event) {
 		if ($this->_checkEvent($Event)) {
 			$Model = $Event->subject();
 			$record = $Event->data['record'][$Model->alias];
@@ -63,10 +61,10 @@ class S3StorageListener extends AbstractStorageEventListener {
 /**
  * afterSave
  *
- * @param CakeEvent $Event
+ * @param Event $Event
  * @return void
  */
-	public function afterSave(CakeEvent $Event) {
+	public function afterSave(Event $Event) {
 		if ($this->_checkEvent($Event)) {
 			$Model = $Event->subject();
 			$record = $Model->data[$Model->alias];
@@ -89,10 +87,10 @@ class S3StorageListener extends AbstractStorageEventListener {
 /**
   * _buildPath
   *
-  * @param CakeEvent $Event
+  * @param Event $Event
   * @return array
   */
-	protected function _buildPath(CakeEvent $Event) {
+	protected function _buildPath(Event $Event) {
 		$Model = $Event->subject();
 		$record = $Model->data[$Model->alias];
 		$adapterConfig = $this->getAdapterconfig($record['adapter']);

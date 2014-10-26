@@ -1,8 +1,10 @@
 <?php
-namespace FileSTorage\View\Helper;
+namespace FileStorage\View\Helper;
 
-use Cake\View\Helper;
+use Cake\Event\Event;
+use Cake\Event\EventManager;
 use Cake\Core\Configure;
+use Cake\View\Helper;
 
 /**
  * ImageHelper
@@ -32,11 +34,9 @@ class ImageHelper extends Helper {
  */
 	public function display($image, $version = null, $options = array()) {
 		$url = $this->imageUrl($image, $version, $options);
-
 		if ($url !== false) {
 			return $this->Html->image($url, $options);
 		}
-
 		return $this->fallbackImage($options, $image, $version);
 	}
 
@@ -63,14 +63,14 @@ class ImageHelper extends Helper {
 			$hash = null;
 		}
 
-		$Event = new CakeEvent('FileStorage.ImageHelper.imagePath', $this, array(
+		$Event = new Event('FileStorage.ImageHelper.imagePath', $this, array(
 				'hash' => $hash,
 				'image' => $image,
 				'version' => $version,
 				'options' => $options
 			)
 		);
-		CakeEventManager::instance()->dispatch($Event);
+		EventManager::instance()->dispatch($Event);
 
 		if ($Event->isStopped()) {
 			return $this->normalizePath($Event->data['path']);

@@ -1,14 +1,12 @@
 <?php
 namespace FileStorage\Event;
 
-use Cake\Event\EventListenerInterface;
-
 /**
  * @author Florian Krämer
  * @copy 2013 - 2014 Florian Krämer
  * @license MIT
  */
-class ImageProcessingListener implements EventListenerInterface {
+class ImageProcessingListener extends AbstractStorageEventListener {
 
 /**
  * The adapter class
@@ -17,19 +15,26 @@ class ImageProcessingListener implements EventListenerInterface {
  */
 	public $adapterClass = null;
 
-	public $options = array();
+/**
+ * Name of the storage table class name the event listener requires the table
+ * instances to extend.
+ *
+ * This information is important to know when to use the event callbacks or not.
+ *
+ * Must be \FileStorage\Model\Table\FileStorageTable or \FileStorage\Model\Table\ImageStorageTable
+ *
+ * @var string
+ */
+	public $storageTableClass = '\FileStorage\Model\Table\ImageStorageTable';
 
 /**
  * Constructor
  *
- * @param array $options
+ * @param array $config
  * @return ImageProcessingListener
  */
-	public function __construct($options = array()) {
-		$defaults = array(
-			'preserveFilename' => false
-		);
-		$this->options = array_merge($defaults, $options);
+	public function __construct(array $config = []) {
+		$this->config($config);
 	}
 
 /**
@@ -59,7 +64,7 @@ class ImageProcessingListener implements EventListenerInterface {
 	protected function _createVersions(Model $Model, $record, $operations) {
 		$Storage = StorageManager::adapter($record['adapter']);
 		$path = $this->_buildPath($record, true);
-		$tmpFile = $this->_tmpFile($Storage, $path);
+		$tmpFile = $this->_tmpFile($Storage, $path, TMP . 'image-processing');
 
 		foreach ($operations as $version => $imageOperations) {
 			$hash = $Model->hashOperations($imageOperations);
@@ -89,10 +94,10 @@ class ImageProcessingListener implements EventListenerInterface {
 /**
  * Creates versions for a given image record
  *
- * @param CakeEvent $Event
+ * @param Event $Event
  * @return void
  */
-	public function createVersions(CakeEvent $Event) {
+	public function createVersions(Event $Event) {
 		if ($this->_checkEvent($Event)) {
 			$Model = $Event->subject();
 
@@ -106,32 +111,29 @@ class ImageProcessingListener implements EventListenerInterface {
 /**
  * Removes versions for a given image record
  *
- * @param CakeEvent $Event
+ * @param Event $Event
  */
-	public function removeVersions(CakeEvent $Event) {
+	public function removeVersions(Event $Event) {
 		$this->_removeVersions($Event);
 	}
 
 /**
  * Removes versions for a given image record
  *
- * @param CakeEvent $Event
+ * @param Event $Event
  * @return void
  */
-	protected function _removeVersions(CakeEvent $Event) {
+	protected function _removeVersions(Event $Event) {
 		if ($this->_checkEvent($Event)) {
 			$Model = $Event->subject();
 			$Storage = $Event->data['storage'];
 			$record = $Event->data['record'][$Model->alias];
-
 			foreach ($Event->data['operations'] as $version => $operations) {
 				$hash = $Model->hashOperations($operations);
 				$string = $this->_buildPath($record, true, $hash);
-
 				if ($this->adapterClass === 'AmazonS3' || $this->adapterClass === 'AwsS3' ) {
 					$string = str_replace('\\', '/', $string);
 				}
-
 				try {
 					if ($Storage->has($string)) {
 						$Storage->delete($string);
@@ -140,7 +142,6 @@ class ImageProcessingListener implements EventListenerInterface {
 					$this->log($e->getMessage(), 'file_storage');
 				}
 			}
-
 			$Event->stopPropagation();
 		}
 	}
@@ -148,20 +149,17 @@ class ImageProcessingListener implements EventListenerInterface {
 /**
  * afterDelete
  *
- * @param CakeEvent $Event
+ * @param Event $Event
  * @return void
  */
-	public function afterDelete(CakeEvent $Event) {
+	public function afterDelete(Event $Event) {
 		if ($this->_checkEvent($Event)) {
 			$Model = $Event->subject();
 			$record = $Event->data['record'][$Model->alias];
-
 			$string = $this->_buildPath($record, true, null);
-
 			if ($this->adapterClass === 'AmazonS3' || $this->adapterClass === 'AwsS3' ) {
 				$string = str_replace('\\', '/', $string);
 			}
-
 			try {
 				$Storage = StorageManager::adapter($record['adapter']);
 				if (!$Storage->has($string)) {
@@ -172,14 +170,11 @@ class ImageProcessingListener implements EventListenerInterface {
 				$this->log($e->getMessage(), 'file_storage');
 				return false;
 			}
-
 			$operations = Configure::read('Media.imageSizes.' . $record['model']);
-
 			if (!empty($operations)) {
 				$Event->data['operations'] = $operations;
 				$this->_removeVersions($Event);
 			}
-
 			return true;
 		}
 	}
@@ -187,10 +182,10 @@ class ImageProcessingListener implements EventListenerInterface {
 /**
  * afterSave
  *
- * @param CakeEvent $Event
+ * @param Event $Event
  * @return void
  */
-	public function afterSave(CakeEvent $Event) {
+	public function afterSave(Event $Event) {
 		if ($this->_checkEvent($Event)) {
 			$Model = $Event->subject();
 			$Storage = StorageManager::adapter($Model->data[$Model->alias]['adapter']);
@@ -202,7 +197,7 @@ class ImageProcessingListener implements EventListenerInterface {
 				$file = $record['file'];
 				$record['path'] = $Model->fsPath('images' . DS . $record['model'], $id);
 
-				if ($this->options['preserveFilename'] === true) {
+				if ($this->_config['preserveFilename'] === true) {
 					$path = $record['path'] . $record['filename'];
 				} else {
 					$path = $record['path'] . $filename . '.' . $record['extension'];
@@ -217,7 +212,8 @@ class ImageProcessingListener implements EventListenerInterface {
 
 				$data = $Model->save(array($Model->alias => $record), array(
 					'validate' => false,
-					'callbacks' => false));
+					'callbacks' => false
+				));
 
 				$operations = Configure::read('Media.imageSizes.' . $record['model']);
 				if (!empty($operations)) {
@@ -234,11 +230,11 @@ class ImageProcessingListener implements EventListenerInterface {
 /**
  * Generates the path the image url / path for viewing it in a browser depending on the storage adapter
  *
- * @param CakeEvent $Event
+ * @param Event $Event
  * @throws RuntimeException
  * @return void
  */
-	public function imagePath(CakeEvent $Event) {
+	public function imagePath(Event $Event) {
 		extract($Event->data);
 
 		if (!isset($Event->data['image']['adapter'])) {
@@ -258,10 +254,10 @@ class ImageProcessingListener implements EventListenerInterface {
 /**
  * Builds an url to the given image
  *
- * @param CakeEvent $Event
+ * @param Event $Event
  * @return void
  */
-	protected function _buildLocalPath(CakeEvent $Event) {
+	protected function _buildLocalPath(Event $Event) {
 		extract($Event->data);
 		$path = $this->_buildPath($image, true, $hash);
 		$Event->data['path'] = '/' . $path;
@@ -271,7 +267,7 @@ class ImageProcessingListener implements EventListenerInterface {
 /**
  * Wrapper around the other AmazonS3 Adapter
  *
- * @param CakeEvent $Event
+ * @param Event $Event
  * @see ImageProcessingListener::_buildAmazonS3Path()
  */
 	protected function _buildAwsS3Path($Event) {
@@ -284,10 +280,10 @@ class ImageProcessingListener implements EventListenerInterface {
  * http(s)://<bucket>.s3.amazonaws.com/<object>
  * http(s)://s3.amazonaws.com/<bucket>/<object>
  *
- * @param CakeEvent $Event
+ * @param Event $Event
  * @return void
  */
-	protected function _buildAmazonS3Path(CakeEvent $Event) {
+	protected function _buildAmazonS3Path(Event $Event) {
 		extract($Event->data);
 
 		$path = $this->_buildPath($image, true, $hash);
@@ -340,35 +336,6 @@ class ImageProcessingListener implements EventListenerInterface {
 	}
 
 /**
- * It is required to get the file first and write it to a tmp file
- *
- * The adapter might not be one that is using a local file system, so we first
- * get the file from the storage system, store it locally in a tmp file and
- * later load the new file that was generated based on the tmp file into the
- * storage adapter. This method here just generates the tmp file.
- *
- * @param $Storage
- * @param $path
- * @throws Exception
- * @return bool|string
- */
-	protected function _tmpFile($Storage, $path) {
-		try {
-			if (!is_dir(TMP . 'image-processing')) {
-				mkdir(TMP . 'image-processing');
-			}
-
-			$tmpFile = TMP . 'image-processing' . DS . String::uuid();
-			file_put_contents($tmpFile, $Storage->read($path));
-
-			return $tmpFile;
-		} catch (Exception $e) {
-			$this->log($e->getMessage(), 'file_storage');
-			throw $e;
-		}
-	}
-
-/**
  * Builds a path to a file
  *
  * @param array $record
@@ -377,7 +344,7 @@ class ImageProcessingListener implements EventListenerInterface {
  * @return string
  */
 	protected function _buildPath($record, $extension = true, $hash = null) {
-		if ($this->options['preserveFilename'] === true) {
+		if ($this->_config['preserveFilename'] === true) {
 			if (!empty($hash)) {
 				$path = $record['path'] . preg_replace('/\.[^.]*$/', '', $record['filename']) . '.' . $hash . '.' . $record['extension'];
 			} else {
@@ -403,10 +370,11 @@ class ImageProcessingListener implements EventListenerInterface {
 /**
  * Check if the event is of a type / model we want to process with this listener
  *
- * @param CakeEvent $Event
+ * @param Event $Event
  * @return boolean
  */
-	protected function _checkEvent($Event) {
+/*
+	protected function _checkEvent(Event $Event) {
 		$Model = $Event->subject();
 
 		if (!$Model instanceOf ImageStorage || (!isset($Event->data['record'][$Model->alias]['adapter']) && !isset($Event->data['record']['adapter']))) {
@@ -418,7 +386,7 @@ class ImageProcessingListener implements EventListenerInterface {
 		}
 		return false;
 	}
-
+*/
 /**
  * Gets the adapter class name from the adapter configuration key
  *

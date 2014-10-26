@@ -1,9 +1,11 @@
 <?php
 namespace FileStorage\Event;
 
+use Cake\Core\InstanceConfigTrait;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
-use Cake\Core\InstanceConfigTrait;
+use Cake\ORM\Table;
+use Cake\ORM\Entity;
 use FileStorage\Lib\StorageManager;
 use FileStorage\Lib\Utility\FileStorageUtils;
 
@@ -20,9 +22,11 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 
 /**
  * Name of the storage table class name the event listener requires the table
- * instances to extend
+ * instances to extend.
  *
- * Must be \FileStorage\Model\Table\FileStorageTable OR \FileStorage\Model\Table\ImageStorageTable
+ * This information is important to know when to use the event callbacks or not.
+ *
+ * Must be \FileStorage\Model\Table\FileStorageTable or \FileStorage\Model\Table\ImageStorageTable
  *
  * @var string
  */
@@ -65,7 +69,13 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 		$this->config($config);
 	}
 
-	public function stripUuid($uuid) {
+/**
+ * Strips dashes from a string
+ *
+ * @param string
+ * @return string String without the dashed
+ */
+	public function stripDashes($uuid) {
 		return str_replace('-', '', $uuid);
 	}
 
@@ -79,6 +89,8 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 /**
  * Builds the filename of under which the data gets saved in the storage adapter
  *
+ * @param Table $table
+ * @param Entity $entity
  * @return string
  */
 	public function buildFilename($table, $entity) {
@@ -87,7 +99,7 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 		}
 		$filename = $entity['id'];
 		if ($this->_config['stripUuid'] ===  true) {
-			$filename = $this->stripUuid($filename);
+			$filename = $this->stripDashes($filename);
 		}
 		if ($this->_config['preserveExtension'] === true) {
 			$filename = $filename . '.' . $entity['extension'];
@@ -98,6 +110,8 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 /**
  * Builds the path under which the data gets stored in the storage adapter
  *
+ * @param Table $table
+ * @param Entity $entity
  * @return string
  */
 	public function buildPath($table, $entity) {
@@ -109,7 +123,7 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 			$path .= FileStorageUtils::randomPath($entity[$table->primaryKey()]);
 		}
 		if ($this->_config['uuidFolder'] == true) {
-			$path .= $this->stripUuid($entity[$table->primaryKey()]) . DS;
+			$path .= $this->stripDashes($entity[$table->primaryKey()]) . DS;
 		}
 		return $path;
 	}
@@ -163,10 +177,10 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 	}
 
 /**
- * _getAdapterClassFromConfig
+ * Gets the adapter class name from the adapter config
  *
- * @param string $configName
- * @return boolean|string
+ * @param string $configName Name of the configuration
+ * @return boolean|string False if the config is not present
  */
 	protected function _getAdapterClassFromConfig($configName) {
 		$config = $this->getAdapterconfig($configName);
@@ -212,5 +226,39 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 		return StorageManager::adapter($configName);
 	}
 
+/**
+ * Create a temporary file locally based on a file from an adapter.
+ *
+ * A common case is image manipulation or video processing for example. It is
+ * required to get the file first from the adapter and then write it to
+ * a tmp file. Then manipulate it and upload the changed file.
+ *
+ * The adapter might not be one that is using a local file system, so we first
+ * get the file from the storage system, store it locally in a tmp file and
+ * later load the new file that was generated based on the tmp file into the
+ * storage adapter. This method here just generates the tmp file.
+ *
+ * @param Adapter $Storage Storage adapter
+ * @param string $path Path / key of the storage adapter file
+ * @param string $tmpFolder
+ * @throws Exception
+ * @return bool|string
+ */
+	protected function _tmpFile($Storage, $path, $tmpFolder = null) {
+		try {
+			if (is_null($tmpFolder)) {
+				$tmpFolder = TMP . 'file-processing';
+			}
+			if (!is_dir($tmpFolder)) {
+				mkdir($tmpFolder);
+			}
+			$tmpFile = $tmpFolder . DS . String::uuid();
+			file_put_contents($tmpFile, $Storage->read($path));
+			return $tmpFile;
+		} catch (Exception $e) {
+			$this->log($e->getMessage(), 'file_storage');
+			throw $e;
+		}
+	}
 }
 

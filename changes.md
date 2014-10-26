@@ -34,7 +34,6 @@ List of changes done to the plugin versions
 * Feature: ImageProcessingListener can be configured to preserve the original filename instead of using an uuid for the filename, see it's constructor
 * Feature: Added jpeg to the allowed extensions besides jpg of the ImageStorage model 
 
-
 ## Change log before 0.3.2
 
 Not available.

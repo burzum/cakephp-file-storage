@@ -1,14 +1,14 @@
 <?php
 namespace FileStorage\Event;
 
-use Cake\Event\EventListenerInterface;
 use Cake\Event\Event;
+use Cake\Utility\Folder;
 use FileStorage\Lib\StorageManager;
-use FileStorage\Event\AbstractStorageEventListener;;
 
 /**
  * Local FileStorage Event Listener for the CakePHP FileStorage plugin
  *
+ * @author Florian Krämer
  * @author Tomenko Yegeny
  * @license MIT
  */
@@ -60,7 +60,11 @@ class LocalFileStorageListener extends AbstractStorageEventListener {
 	}
 
 /**
+ * Builds the path under which the data gets stored in the storage adapter
  *
+ * @param Table $table
+ * @param Entity $entity
+ * @return string
  */
 	public function buildPath($table, $entity) {
 		$path = parent::buildPath($table, $entity);
