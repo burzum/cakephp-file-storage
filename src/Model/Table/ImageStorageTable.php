@@ -3,6 +3,7 @@ namespace Burzum\FileStorage\Model\Table;
 
 use Cake\Event\Event;
 use Cake\Utility\Folder;
+use Cake\Core\Plugin;
 
 /**
  * ImageStorageTable
@@ -28,37 +29,39 @@ class ImageStorageTable extends FileStorageTable {
 	public $useTable = 'file_storage';
 
 /**
- * Behaviours
+ * Initialize
  *
- * @var array
+ * @param array $config
+ * @return void
  */
-	public $actsAs = array(
-		'Imagine.Imagine',
-		'FileStorage.UploadValidator' => array(
+	public function initialize(array $config) {
+		$this->addBehavior('Burzum/Imagine.Imagine');
+		$this->addBehavior('Burzum/FileStorage.UploadValidator', array(
 			'localFile' => true,
 			'validate' => false,
 			'allowedExtensions' => array('jpg', 'jpeg', 'png', 'gif')
-		),
-	);
+		));
+	}
 
 /**
  * beforeSave callback
  *
+ * @param \Cake\Event\Event $event
+ * @param \Burzum\FileStorage\Model\Table\Entity $entity
  * @param array $options
  * @return boolean true on success
  */
-	public function beforeSave($options = array()) {
-		if (!parent::beforeSave($options)) {
+	public function beforeSave(Event $event, Entity $entity, $options) {
+		if (!parent::beforeSave($event, $entity, $options)) {
 			return false;
 		}
 		$Event = new Event('ImageStorage.beforeSave', $this, array(
-			'record' => $this->data));
+			'record' => $entity
+		));
 		$this->getEventManager()->dispatch($Event);
-
 		if ($Event->isStopped()) {
 			return false;
 		}
-
 		return true;
 	}
 
@@ -67,18 +70,18 @@ class ImageStorageTable extends FileStorageTable {
  *
  * Does not call the parent to avoid that the regular file storage event listener saves the image already
  *
- * @param boolean $created
+ * @param \Cake\Event\Event $event
+ * @param \Burzum\FileStorage\Model\Table\Entity $entity
  * @param array $options
  * @return boolean
  */
-	public function afterSave($created, $options = array()) {
-		if ($created) {
-			$this->data[$this->alias][$this->primaryKey] = $this->getLastInsertId();
-
+	public function afterSave(Event $event, Entity $entity, $options) {
+		if ($entity->isNew) {
 			$Event = new Event('ImageStorage.afterSave', $this, array(
-				'created' => $created,
-				'storage' => $this->getStorageAdapter($this->data[$this->alias]['adapter']),
-				'record' => $this->data));
+				'created' => $event->data['entity']->isNew,
+				'storage' => $this->getStorageAdapter($entity['adapter']),
+				'record' => $entity
+			));
 			$this->getEventManager()->dispatch($Event);
 		}
 		return true;
@@ -87,17 +90,20 @@ class ImageStorageTable extends FileStorageTable {
 /**
  * Get a copy of the actual record before we delete it to have it present in afterDelete
  *
- * @param boolean $cascade
+ * @param \Cake\Event\Event $event
+ * @param \Burzum\FileStorage\Model\Table\Entity $entity
+ * @param array $options
  * @return boolean
  */
-	public function beforeDelete($cascade = true) {
-		if (!parent::beforeDelete($cascade)) {
+	public function beforeDelete(Event $event, Entity $entity, ArrayObject $options) {
+		if (!parent::beforeDelete($event, $entity, $options)) {
 			return false;
 		}
 
 		$Event = new Event('ImageStorage.beforeDelete', $this, array(
 			'record' => $this->record,
-			'storage' => $this->getStorageAdapter($this->record[$this->alias]['adapter'])));
+			'storage' => $this->getStorageAdapter($this->record[$this->alias]['adapter'])
+		));
 		$this->getEventManager()->dispatch($Event);
 
 		if ($Event->isStopped()) {
@@ -114,10 +120,11 @@ class ImageStorageTable extends FileStorageTable {
  *
  * @return void
  */
-	public function afterDelete() {
+	public function afterDelete(Event $event, Entity $entity, $options) {
 		$Event = new Event('ImageStorage.afterDelete', $this, array(
-			'record' => $this->record,
-			'storage' => $this->getStorageAdapter($this->record[$this->alias]['adapter'])));
+			'record' => $entity,
+			'storage' => $this->getStorageAdapter($entity['adapter'])
+		));
 		$this->getEventManager()->dispatch($Event);
 	}
 

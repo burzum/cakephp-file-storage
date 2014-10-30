@@ -100,10 +100,8 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 	public function createVersions(Event $Event) {
 		if ($this->_checkEvent($Event)) {
 			$Model = $Event->subject();
-
 			$record = $Event->data['record'][$Model->alias];
 			$this->_createVersions($Model, $record, $Event->data['operations']);
-
 			$Event->stopPropagation();
 		}
 	}
@@ -367,26 +365,6 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 		return $path;
 	}
 
-/**
- * Check if the event is of a type / model we want to process with this listener
- *
- * @param Event $Event
- * @return boolean
- */
-/*
-	protected function _checkEvent(Event $Event) {
-		$Model = $Event->subject();
-
-		if (!$Model instanceOf ImageStorage || (!isset($Event->data['record'][$Model->alias]['adapter']) && !isset($Event->data['record']['adapter']))) {
-			return false;
-		}
-
-		if ($this->getAdapterClassName($Event->data['record'][$Model->alias]['adapter'])) {
-			return true;
-		}
-		return false;
-	}
-*/
 /**
  * Gets the adapter class name from the adapter configuration key
  *

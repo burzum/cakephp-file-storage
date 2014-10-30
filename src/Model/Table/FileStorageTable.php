@@ -1,15 +1,15 @@
 <?php
 namespace Burzum\FileStorage\Model\Table;
 
-use \Cake\ORM\Table;
-use \Cake\ORM\Entity;
-use \Cake\Event\Event;
-use \Cake\Event\EventManager;
-use \Cake\Utility\Folder;
-use \Cake\Utility\File;
-use \Cake\Utility\String;
-use \FileStorage\Lib\StorageManager;
-use \FileStorage\Lib\Utility\FileStorageUtils;
+use Cake\ORM\Table;
+use Cake\ORM\Entity;
+use Cake\Event\Event;
+use Cake\Event\EventManager;
+use Cake\Utility\Folder;
+use Cake\Utility\File;
+use Cake\Utility\String;
+use Burzum\FileStorage\Lib\StorageManager;
+use Burzum\FileStorage\Lib\Utility\FileStorageUtils;
 
 /**
  * FileStorageTable
@@ -142,7 +142,6 @@ class FileStorageTable extends Table {
  * @param array $options
  * @return void
  */
-	//public function afterSave($created, $options = array()) {
 	public function afterSave(Event $event, Entity $entity, $options) {
 		if ($event->data['entity']->isNew) {
 			$event->data['entity'][$this->primaryKey] = $this->getLastInsertId();
@@ -150,7 +149,8 @@ class FileStorageTable extends Table {
 		$Event = new Event('FileStorage.afterSave', $this, array(
 			'created' => $event->data['entity']->isNew,
 			'record' => $entity,
-			'storage' => $this->getStorageAdapter($event->data['entity']['adapter'])));
+			'storage' => $this->getStorageAdapter($event->data['entity']['adapter'])
+		));
 		$this->getEventManager()->dispatch($Event);
 		$this->deleteOldFileOnSave($entity);
 		return true;
@@ -170,7 +170,7 @@ class FileStorageTable extends Table {
 		$this->record = $this->find('first', array(
 			'contain' => array(),
 			'conditions' => array(
-				$this->alias . '.' . $this->primaryKey => $this->id
+				$this->alias() . '.' . $this->primaryKey() => $this->id
 			)
 		));
 
@@ -186,10 +186,10 @@ class FileStorageTable extends Table {
  *
  * @return mixed
  */
-	public function afterDelete() {
+	public function afterDelete(Event $event, Entity $entity, $options) {
 		try {
-			$Storage = $this->getStorageAdapter($this->record[$this->alias]['adapter']);
-			$Storage->delete($this->record[$this->alias]['path']);
+			$Storage = $this->getStorageAdapter($entity['adapter']);
+			$Storage->delete($entity['path']);
 		} catch (Exception $e) {
 			$this->log($e->getMessage(), 'file_storage');
 			return false;
@@ -197,7 +197,7 @@ class FileStorageTable extends Table {
 
 		$Event = new Event('FileStorage.afterDelete', $this, array(
 			'record' => $this->record,
-			'storage' => $this->getStorageAdapter($this->record[$this->alias]['adapter'])));
+			'storage' => $this->getStorageAdapter($entity['adapter'])));
 		$this->getEventManager()->dispatch($Event);
 
 		return true;
@@ -299,7 +299,13 @@ class FileStorageTable extends Table {
 		return false;
 	}
 
+/**
+ * Returns an EventManager instance
+ *
+ * @return \Cake\Event\EventManager;
+ */
 	public function getEventManager() {
 		return EventManager::instance();
 	}
+
 }
