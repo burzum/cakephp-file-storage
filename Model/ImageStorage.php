@@ -49,7 +49,7 @@ class ImageStorage extends FileStorage {
 		if ($name === 'createVersions') {
 			throw new \RuntimeException(__d('file_storage', 'createVersions was removed, see the change log'));
 		}
-		parent::__get($name);
+		return parent::__get($name);
 	}
 
 /**
