@@ -16,6 +16,18 @@
 		"php": ">=5.3.2",
 		"knplabs/gaufrette": "*"
 	},
+	"autoload": {
+		"psr-4": {
+			"Burzum\\FileStorage\\": "src",
+			"Burzum\\FileStorage\\Test\\Fixture\\": "tests\\Fixture"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Cake\\Test\\": "vendor/cakephp/cakephp/tests",
+			"Burzum\\FileStorage\\Test\\": "tests"
+		}
+	},
 	"suggest": {
 		"burzum/cakephp-imagine-plugin": "Required if you want to use the image processing feature of FileStorage",
 		"cakedc/migrations": "If you want to use the database migrations that come with FileStorage"
