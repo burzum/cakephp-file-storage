@@ -1,8 +1,8 @@
 <?php
-namespace FileStorage\Test\TestCase\Lib\Utility;
+namespace Burzum\FileStorage\Test\TestCase\Lib\Utility;
 
 use Cake\TestSuite\TestCase;
-use FileStorage\Lib\Utility\FileStorageUtils;
+use Burzum\FileStorage\Lib\Utility\FileStorageUtils;
 
 /**
  * 

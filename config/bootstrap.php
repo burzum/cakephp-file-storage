@@ -6,8 +6,8 @@
 //App::uses('CakeEventManager', 'Event');
 
 use Cake\Event\EventManager;
-use FileStorage\Event\ImageProcessingListener;
-use FileStorage\Event\LocalFileStorageListener;
+use Burzum\FileStorage\Event\ImageProcessingListener;
+use Burzum\FileStorage\Event\LocalFileStorageListener;
 
 $listener = new ImageProcessingListener();
 EventManager::instance()->attach($listener);

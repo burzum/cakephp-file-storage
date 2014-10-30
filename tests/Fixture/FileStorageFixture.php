@@ -6,7 +6,7 @@
  * @copyright 2012 - 2014 Florian Krämer
  * @license MIT
  */
-namespace FileStorage\Test\Fixture;
+namespace Burzum\FileStorage\Test\Fixture;
 
 use Cake\TestSuite\Fixture\TestFixture;
 

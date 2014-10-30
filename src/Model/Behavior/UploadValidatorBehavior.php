@@ -1,5 +1,5 @@
 <?php
-namespace FileStorage\Model\Behavior;
+namespace Burzum\FileStorage\Model\Behavior;
 
 use Cake\Core\Configure;
 use Cake\Event\Event;

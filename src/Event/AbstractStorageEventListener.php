@@ -1,13 +1,13 @@
 <?php
-namespace FileStorage\Event;
+namespace Burzum\FileStorage\Event;
 
 use Cake\Core\InstanceConfigTrait;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\ORM\Table;
 use Cake\ORM\Entity;
-use FileStorage\Lib\StorageManager;
-use FileStorage\Lib\Utility\FileStorageUtils;
+use Burzum\FileStorage\Lib\StorageManager;
+use Burzum\FileStorage\Lib\Utility\FileStorageUtils;
 
 abstract class AbstractStorageEventListener implements EventListenerInterface {
 

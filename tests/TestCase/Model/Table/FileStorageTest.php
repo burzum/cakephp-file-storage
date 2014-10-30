@@ -1,9 +1,9 @@
 <?php
-namespace FileStorage\Test\TestCase\Model\Table;
+namespace Burzum\FileStorage\Test\TestCase\Model\Table;
 
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use FileStorage\Model\Table\FileStorageTable;
+use Burzum\FileStorage\Model\Table\FileStorageTable;
 
 /**
  * File Storage Test

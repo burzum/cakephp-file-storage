@@ -1,10 +1,10 @@
 <?php
-namespace FileStorage\Test\TestCase\Event;
+namespace Burzum\FileStorage\Test\TestCase\Event;
 
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use FileStorage\Event\S3StorageListener;
-use FileStorage\Model\Table\FileStorageTable;
+use Burzum\FileStorage\Event\S3StorageListener;
+use Burzum\FileStorage\Model\Table\FileStorageTable;
 
 class TestS3StorageListener extends S3StorageListener {
 	public function buildPath(CakeEvent $CakeEvent) {

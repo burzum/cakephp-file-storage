@@ -1,5 +1,5 @@
 <?php
-namespace FileStorage\Lib;
+namespace Burzum\FileStorage\Lib;
 
 /**
  * StorageManager - manages and instantiates gaufrette storage engine instances

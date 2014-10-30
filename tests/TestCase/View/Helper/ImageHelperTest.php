@@ -1,12 +1,12 @@
 <?php
-namespace FileStorage\Test\TestCase\View\Helper;
+namespace Burzum\FileStorage\Test\TestCase\View\Helper;
 
 use Cake\TestSuite\TestCase;
 use Cake\View\View;
 use Cake\View\Helper\HtmlHelper;
 use Cake\Network\Request;
 use Cake\Core\Configure;
-use FileStorage\View\Helper\ImageHelper;
+use Burzum\FileStorage\View\Helper\ImageHelper;
 
 /**
  * S3StorageListener

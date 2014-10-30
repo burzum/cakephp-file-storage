@@ -1,5 +1,5 @@
 <?php
-namespace FileStorage\Model\Table;
+namespace Burzum\FileStorage\Model\Table;
 
 use \Cake\ORM\Table;
 use \Cake\ORM\Entity;

@@ -1,5 +1,5 @@
 <?php
-namespace FileStorage\Lib\Utility;
+namespace Burzum\FileStorage\Lib\Utility;
 
 /**
  * Utility methods for which I could not find a better place

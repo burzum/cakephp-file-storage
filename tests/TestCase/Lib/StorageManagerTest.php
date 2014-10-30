@@ -6,10 +6,10 @@
  * @copyright 2012 - 2014 Florian Kr�mer
  * @license MIT
  */
-namespace FileStorage\Test\TestCase\Lib;
+namespace Burzum\FileStorage\Test\TestCase\Lib;
 
 use Cake\TestSuite\TestCase;
-use FileStorage\Lib\StorageManager;;
+use Burzum\FileStorage\Lib\StorageManager;;
 
 class StorageManagerTest extends TestCase {
 /**

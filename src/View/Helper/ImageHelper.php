@@ -1,5 +1,5 @@
 <?php
-namespace FileStorage\View\Helper;
+namespace Burzum\FileStorage\View\Helper;
 
 use Cake\Event\Event;
 use Cake\Event\EventManager;

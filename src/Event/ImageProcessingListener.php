@@ -1,5 +1,5 @@
 <?php
-namespace FileStorage\Event;
+namespace Burzum\FileStorage\Event;
 
 /**
  * @author Florian Krämer

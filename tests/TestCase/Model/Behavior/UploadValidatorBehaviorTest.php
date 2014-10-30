@@ -1,5 +1,5 @@
 <?php
-namespace FileStorage\Test\TestCase\Model\Behavior;
+namespace Burzum\FileStorage\Test\TestCase\Model\Behavior;
 
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;

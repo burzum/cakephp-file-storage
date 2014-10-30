@@ -1,9 +1,9 @@
 <?php
-namespace FileStorage\Event;
+namespace Burzum\FileStorage\Event;
 
 use Cake\Event\Event;
 use Cake\Utility\Folder;
-use FileStorage\Lib\StorageManager;
+use Burzum\FileStorage\Lib\StorageManager;
 
 /**
  * Local FileStorage Event Listener for the CakePHP FileStorage plugin
