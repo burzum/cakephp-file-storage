@@ -9,6 +9,25 @@ use Cake\ORM\Entity;
 use Burzum\FileStorage\Lib\StorageManager;
 use Burzum\FileStorage\Lib\Utility\FileStorageUtils;
 
+/**
+ * AbstractStorageEventListener
+ *
+ * Filters events and entities to decide if they should be processed or not by
+ * a specific adapter.
+ *
+ * - Filter by table base class name
+ * - Filter by the entities model field
+ * - Filter by adapter class
+ *
+ * Provides basic functionality to build
+ *
+ * - filename
+ * - path
+ *
+ * @author Florian Krämer
+ * @copyright 2012 - 2014 Florian Krämer
+ * @license MIT
+ */
 abstract class AbstractStorageEventListener implements EventListenerInterface {
 
 	use InstanceConfigTrait;
@@ -132,13 +151,13 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
  * Check if the event is of a type or subject object of type model we want to
  * process with this listener
  *
- * @throws InvalidArgumentException
+ * @throws \InvalidArgumentException
  * @param Event $event
  * @return boolean
  */
 	protected function _checkEvent(Event $event) {
 		if (!in_array($this->storageTableClass, array('\FileStorage\Model\Table\FileStorageTable', '\FileStorage\Model\Table\ImageStorageTable'))) {
-			throw new InvalidArgumentException(__d('file_storage', 'Invalid storage model %s! Must be FileStorage or ImageStorage!', $this->storageTableClass));
+			throw new \InvalidArgumentException(__d('file_storage', 'Invalid storage table `%s`! Table must be FileStorage or ImageStorage or extend one of both!', $this->storageTableClass));
 		}
 		return (
 			$this->_checkTable($event)
@@ -148,7 +167,7 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 	}
 
 /**
- * _modelFilter
+ * Detects if an entities model field has name of one of the allowed models set.
  *
  * @param Event $event
  * @return boolean
@@ -164,7 +183,7 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 	}
 
 /**
- * Checks if the events subject is a model and extending FileStorage or ImageStorage
+ * Checks if the events subject is a model and extending FileStorage or ImageStorage.
  *
  * @param Event $event
  * @return boolean
@@ -191,10 +210,10 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 	}
 
 /**
- * Gets the adapter class name from the adapter configuration key
+ * Gets the adapter class name from the adapter configuration key.
  *
- * @param string
- * @return void
+ * @param string $configName Name of the adapter configuration.
+ * @return boolean|string String, the adapter class name or false if it was not found.
  */
 	public function getAdapterClassName($configName) {
 		$className = $this->_getAdapterClassFromConfig($configName);
@@ -209,6 +228,8 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 /**
  * Wrapper around the singleton call to StorageManager::config
  *
+ * Makes it easy to mock the adapter in tests.
+ *
  * @param string $configName
  * @return array
  */
@@ -218,6 +239,8 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 
 /**
  * Wrapper around the singleton call to StorageManager::config
+ *
+ * Makes it easy to mock the adapter in tests.
  *
  * @param string $configName
  * @return Object

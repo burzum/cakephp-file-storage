@@ -49,7 +49,7 @@ class ImageHelper extends Helper {
  * @throws InvalidArgumentException
  * @return string
  */
-	public function imageUrl($image, $version = null, $options = array()) {
+	public function imageUrl($image, $version = null, $options = []) {
 		if (empty($image) || empty($image['id'])) {
 			return false;
 		}
@@ -63,12 +63,12 @@ class ImageHelper extends Helper {
 			$hash = null;
 		}
 
-		$Event = new Event('FileStorage.ImageHelper.imagePath', $this, array(
+		$Event = new Event('FileStorage.ImageHelper.imagePath', $this, [
 				'hash' => $hash,
 				'image' => $image,
 				'version' => $version,
 				'options' => $options
-			)
+			]
 		);
 		EventManager::instance()->dispatch($Event);
 
@@ -87,7 +87,7 @@ class ImageHelper extends Helper {
  * @param string $version
  * @return string
  */
-	public function fallbackImage($options = array(), $image = array(), $version = null) {
+	public function fallbackImage($options = [], $image = [], $version = null) {
 		if (isset($options['fallback'])) {
 			if ($options['fallback'] === true) {
 				$imageFile = 'placeholder/' . $version . '.jpg';

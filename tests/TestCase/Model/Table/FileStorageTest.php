@@ -15,6 +15,15 @@ use Burzum\FileStorage\Model\Table\FileStorageTable;
 class FileStorageTest extends TestCase {
 
 /**
+ * Fixtures
+ *
+ * @var array
+ */
+	public $fixtures = array(
+		'plugin.Burzum\FileStorage.FileStorage'
+	);
+
+/**
  * startTest
  *
  * @return void

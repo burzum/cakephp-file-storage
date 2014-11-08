@@ -20,7 +20,7 @@ class ImageStorageTest extends TestCase {
  * @var array
  */
 	public $fixtures = array(
-		'plugin.FileStorage.FileStorage'
+		'plugin.Burzum\FileStorage.FileStorage'
 	);
 
 /**
