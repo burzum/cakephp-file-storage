@@ -5,6 +5,7 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Folder;
 use Cake\Core\Configure;
+use Burzum\FileStorage\Lib\StorageManager;
 
 /**
  * FileStorageTestCase

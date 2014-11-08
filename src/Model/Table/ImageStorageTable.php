@@ -1,9 +1,9 @@
 <?php
 namespace Burzum\FileStorage\Model\Table;
 
+use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Utility\Folder;
-use Cake\Core\Plugin;
 
 /**
  * ImageStorageTable

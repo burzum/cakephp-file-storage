@@ -159,11 +159,13 @@ class FileStorageTable extends Table {
 /**
  * Get a copy of the actual record before we delete it to have it present in afterDelete
  *
- * @param boolean $cascade
+ * @param \Cake\Event\Event $event
+ * @param \Burzum\FileStorage\Model\Table\Entity $entity
+ * @param array $options
  * @return boolean
  */
-	public function beforeDelete($cascade = true) {
-		if (!parent::beforeDelete($cascade)) {
+	public function beforeDelete(Event $event, Entity $entity, ArrayObject $options) {
+		if (!parent::beforeDelete($event, $entity, $options)) {
 			return false;
 		}
 

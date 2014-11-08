@@ -1,6 +1,8 @@
 <?php
 namespace Burzum\FileStorage\Event;
 
+use Burzum\FileStorage\Lib\StorageManager;
+
 /**
  * @author Florian Krämer
  * @copy 2013 - 2014 Florian Krämer
