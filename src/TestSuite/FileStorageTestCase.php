@@ -1,8 +1,10 @@
 <?php
 namespace Burzum\FileStorage\TestSuite;
 
+use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Folder;
+use Cake\Core\Configure;
 
 /**
  * FileStorageTestCase
@@ -43,7 +45,7 @@ class FileStorageTestCase extends TestCase {
 			)
 		));
 
-		TableRegistry::init('Burzum/FileStorage.ImageStorage')->generateHashes();
+		TableRegistry::get('Burzum/FileStorage.ImageStorage')->generateHashes();
 
 		StorageManager::config('Local', array(
 			'adapterOptions' => array($this->testPath, true),
