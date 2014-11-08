@@ -1,7 +1,7 @@
 <?php
 namespace Burzum\FileStorage\Test\TestCase\View\Helper;
 
-use Cake\TestSuite\TestCase;
+use Burzum\FileStorage\TestSuite\FileStorageTestCase;
 use Cake\View\View;
 use Cake\View\Helper\HtmlHelper;
 use Cake\Network\Request;
@@ -15,7 +15,7 @@ use Burzum\FileStorage\View\Helper\ImageHelper;
  * @copy 2012 - 2014 Florian Krämer
  * @license MIT
  */
-class ImageHelperTest extends TestCase {
+class ImageHelperTest extends FileStorageTestCase {
 
 /**
  * Image Helper

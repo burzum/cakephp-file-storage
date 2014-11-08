@@ -42,7 +42,7 @@ class ImageVersionShell extends Shell {
 			$storageModel = $this->params['storageModel'];
 		}
 
-		$this->Model = TableRegistry::init($storageModel);
+		$this->Model = TableRegistry::get($storageModel);
 
 		if (!$this->Model instanceOf \Burzum\FileStorage\Model\Table\ImageStorage) {
 			$this->out(__d('file_storage', 'Invalid Storage Table: %s', $storageModel));

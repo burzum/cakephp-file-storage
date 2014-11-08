@@ -2,7 +2,7 @@
 namespace Burzum\FileStorage\Test\TestCase\Model\Table;
 
 use Cake\ORM\TableRegistry;
-use Cake\TestSuite\TestCase;
+use Burzum\FileStorage\TestSuite\FileStorageTestCase;
 use Burzum\FileStorage\Model\Table\ImageStorageTable;
 
 /**
@@ -12,7 +12,7 @@ use Burzum\FileStorage\Model\Table\ImageStorageTable;
  * @copyright 2012 - 2014 Florian Krämer
  * @license MIT
  */
-class ImageStorageTest extends TestCase {
+class ImageStorageTest extends FileStorageTestCase {
 
 /**
  * Fixtures
@@ -77,7 +77,7 @@ class ImageStorageTest extends TestCase {
 				'thumbnail' => array(
 					'mode' => 'outbound',
 					'width' => 200, 'height' => 200))));
-		ClassRegistry::init('FileStorage.ImageStorage')->generateHashes();
+		TableRegistry::init('Burzum/FileStorage.ImageStorage')->generateHashes();
 
 		$Event = new CakeEvent('ImageVersion.createVersion', $this->Image, array(
 			'record' => $result,

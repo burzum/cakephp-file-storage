@@ -1,13 +1,13 @@
 <?php
 namespace Burzum\FileStorage\Test\TestCase\Lib\Utility;
 
-use Cake\TestSuite\TestCase;
+use Burzum\FileStorage\TestSuite\FileStorageTestCase;
 use Burzum\FileStorage\Lib\Utility\FileStorageUtils;
 
 /**
  * 
  */
-class FileStorageUtilsTest extends TestCase {
+class FileStorageUtilsTest extends FileStorageTestCase {
 /**
  * testRandomPath
  *

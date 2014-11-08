@@ -2,7 +2,7 @@
 namespace Burzum\FileStorage\Test\TestCase\Model\Behavior;
 
 use Cake\ORM\TableRegistry;
-use Cake\TestSuite\TestCase;
+use Burzum\FileStorage\TestSuite\FileStorageTestCase;
 use Cake\ORM\Table;
 
 /**
@@ -41,7 +41,7 @@ class VoidUploadModel extends Table {
  *
  * @package       Cake.Test.Case.Model.Behavior
  */
-class UploadValidatorBehaviorTest extends TestCase {
+class UploadValidatorBehaviorTest extends FileStorageTestCase {
 
 /**
  * Holds the instance of the model

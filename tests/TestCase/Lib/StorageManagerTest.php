@@ -8,10 +8,10 @@
  */
 namespace Burzum\FileStorage\Test\TestCase\Lib;
 
-use Cake\TestSuite\TestCase;
+use Burzum\FileStorage\TestSuite\FileStorageTestCase;
 use Burzum\FileStorage\Lib\StorageManager;;
 
-class StorageManagerTest extends TestCase {
+class StorageManagerTest extends FileStorageTestCase {
 /**
  * testAdapter
  *

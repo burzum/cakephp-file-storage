@@ -2,7 +2,7 @@
 namespace Burzum\FileStorage\Test\TestCase\Event;
 
 use Cake\ORM\TableRegistry;
-use Cake\TestSuite\TestCase;
+use Burzum\FileStorage\TestSuite\FileStorageTestCase;
 use Burzum\FileStorage\Event\S3StorageListener;
 use Burzum\FileStorage\Model\Table\FileStorageTable;
 
@@ -21,7 +21,7 @@ class TestS3StorageListener extends S3StorageListener {
  *
  * @property ImageProcessingListener $Listener
  */
-class S3StorageListenerTest extends TestCase {
+class S3StorageListenerTest extends FileStorageTestCase {
 
 /**
  * setUp

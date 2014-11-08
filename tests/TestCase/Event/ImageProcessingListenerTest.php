@@ -2,7 +2,7 @@
 namespace Burzum\FileStorage\Test\TestCase\Event;
 
 use Cake\ORM\TableRegistry;
-use Cake\TestSuite\TestCase;
+use Burzum\FileStorage\TestSuite\FileStorageTestCase;
 use Burzum\FileStorage\Event\ImageProcessingListener;
 use Burzum\FileStorage\Model\Table\FileStorageTable;
 use Burzum\FileStorage\Model\Table\ImageStorageTable;
@@ -22,7 +22,7 @@ class TestImageProcessingListener extends ImageProcessingListener {
  *
  * @property ImageProcessingListener $Listener
  */
-class ImageProcessingListenerTest extends TestCase {
+class ImageProcessingListenerTest extends FileStorageTestCase {
 
 /**
  * setUp

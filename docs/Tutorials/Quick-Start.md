@@ -74,7 +74,7 @@ Configure::write('Media', array(
 ));
 
 // This is very important! The hashes are needed to calculate the image versions!
-ClassRegistry::init('FileStorage.ImageStorage')->generateHashes();
+TableRegistry::get('Burzum/FileStorage.ImageStorage')->generateHashes();
 
 // Optional, lets use the AwsS3 adapter here instead of local here
 $S3Client = \Aws\S3\S3Client::factory(array(
