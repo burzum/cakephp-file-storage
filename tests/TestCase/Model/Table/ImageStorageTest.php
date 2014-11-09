@@ -1,6 +1,8 @@
 <?php
 namespace Burzum\FileStorage\Test\TestCase\Model\Table;
 
+use Cake\Event\Event;
+use Cake\Core\Plugin;
 use Cake\ORM\TableRegistry;
 use Burzum\FileStorage\TestSuite\FileStorageTestCase;
 use Burzum\FileStorage\Model\Table\ImageStorageTable;
@@ -50,19 +52,23 @@ class ImageStorageTest extends FileStorageTestCase {
  * @return void
  */
 	public function testProcessVersion() {
-		$this->Image->create();
-		$result = $this->Image->save(array(
+		$entity = $this->Image->newEntity(array(
 			'foreign_key' => 'test-1',
 			'model' => 'Test',
 			'file' => array(
 				'name' => 'titus.jpg',
 				'size' => 332643,
-				'tmp_name' => CakePlugin::path('FileStorage') . DS . 'Test' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg',
-				'error' => 0)));
+				'tmp_name' => Plugin::path('Burzum/FileStorage') . DS . 'Test' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg',
+				'error' => 0
+			)
+		));
+		$result = $this->Image->save($entity);
 
 		$result = $this->Image->find('first', array(
 			'conditions' => array(
-				'id' => $this->Image->getLastInsertId())));
+				'id' => $this->Image->getLastInsertId()
+			)
+		));
 
 		$this->assertTrue(!empty($result) && is_array($result));
 		$this->assertTrue(file_exists($this->testPath . $result['ImageStorage']['path']));
@@ -76,17 +82,24 @@ class ImageStorageTest extends FileStorageTestCase {
 			't200' => array(
 				'thumbnail' => array(
 					'mode' => 'outbound',
-					'width' => 200, 'height' => 200))));
-		TableRegistry::init('Burzum/FileStorage.ImageStorage')->generateHashes();
+					'width' => 200, 'height' => 200
+				)
+			)
+		));
+		TableRegistry::get('Burzum/FileStorage.ImageStorage')->generateHashes();
 
-		$Event = new CakeEvent('ImageVersion.createVersion', $this->Image, array(
+		$Event = new Event('ImageVersion.createVersion', $this->Image, array(
 			'record' => $result,
 			'storage' => StorageManager::adapter('Local'),
 			'operations' => array(
 				't200' => array(
 					'thumbnail' => array(
 						'mode' => 'outbound',
-						'width' => 200, 'height' => 200)))));
+						'width' => 200, 'height' => 200
+					)
+				)
+			)
+		));
 
 		CakeEventManager::instance()->dispatch($Event);
 
@@ -96,14 +109,18 @@ class ImageStorageTest extends FileStorageTestCase {
 		$this->assertEquals(count($folderResult[1]), 4);
 
 
-		$Event = new CakeEvent('ImageVersion.removeVersion', $this->Image, array(
+		$Event = new Event('ImageVersion.removeVersion', $this->Image, array(
 			'record' => $result,
 			'storage' => StorageManager::adapter('Local'),
 			'operations' => array(
 				't200' => array(
 					'thumbnail' => array(
 						'mode' => 'outbound',
-						'width' => 200, 'height' => 200)))));
+						'width' => 200, 'height' => 200
+					)
+				)
+			)
+		));
 
 		CakeEventManager::instance()->dispatch($Event);
 
@@ -132,7 +149,7 @@ class ImageStorageTest extends FileStorageTestCase {
 
 		$this->Image->set(array(
 			'file' => array(
-				'tmp_name' => CakePlugin::path('FileStorage') . DS . 'Test' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg')));
+				'tmp_name' => Plugin::path('Burzum/FileStorage') . DS . 'Test' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg')));
 
 		$this->assertFalse($this->Image->validates());
 
@@ -148,7 +165,7 @@ class ImageStorageTest extends FileStorageTestCase {
 
 		$this->Image->set(array(
 			'file' => array(
-				'tmp_name' => CakePlugin::path('FileStorage') . DS . 'Test' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg')));
+				'tmp_name' => Plugin::path('Burzum/FileStorage') . DS . 'Test' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg')));
 
 		$this->assertTrue($this->Image->validates());
 
@@ -164,7 +181,7 @@ class ImageStorageTest extends FileStorageTestCase {
 
 		$this->Image->set(array(
 			'file' => array(
-				'tmp_name' => CakePlugin::path('FileStorage') . DS . 'Test' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg')));
+				'tmp_name' => Plugin::path('Burzum/FileStorage') . DS . 'Test' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg')));
 
 		$this->assertTrue($this->Image->validates());
 
@@ -179,7 +196,7 @@ class ImageStorageTest extends FileStorageTestCase {
 
 		$this->Image->set(array(
 			'file' => array(
-				'tmp_name' => CakePlugin::path('FileStorage') . DS . 'Test' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg')));
+				'tmp_name' => Plugin::path('Burzum/FileStorage') . DS . 'Test' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg')));
 
 		$this->assertTrue($this->Image->validates());
 
@@ -194,7 +211,7 @@ class ImageStorageTest extends FileStorageTestCase {
 
 		$this->Image->set(array(
 			'file' => array(
-				'tmp_name' => CakePlugin::path('FileStorage') . DS . 'Test' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg')));
+				'tmp_name' => Plugin::path('Burzum/FileStorage') . DS . 'Test' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg')));
 
 		$this->assertTrue($this->Image->validates());
 	}

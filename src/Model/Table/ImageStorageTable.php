@@ -4,6 +4,7 @@ namespace Burzum\FileStorage\Model\Table;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Utility\Folder;
+use Burzum\FileStorage\Lib\Utility\FileStorageUtils;
 
 /**
  * ImageStorageTable
@@ -37,9 +38,11 @@ class ImageStorageTable extends FileStorageTable {
 	public function initialize(array $config) {
 		$this->addBehavior('Burzum/Imagine.Imagine');
 		$this->addBehavior('Burzum/FileStorage.UploadValidator', array(
-			'localFile' => true,
-			'validate' => false,
-			'allowedExtensions' => array('jpg', 'jpeg', 'png', 'gif')
+			'localFile' => false,
+			'validate' => true,
+			'allowedExtensions' => array(
+				'jpg', 'jpeg', 'png', 'gif'
+			)
 		));
 	}
 
@@ -135,8 +138,7 @@ class ImageStorageTable extends FileStorageTable {
  * @return array
  */
 	public function hashOperations($operations) {
-		$this->ksortRecursive($operations);
-		return substr(md5(serialize($operations)), 0, 8);
+		return FileStorageUtils::hashOperations($operations);
 	}
 
 /**
@@ -146,13 +148,7 @@ class ImageStorageTable extends FileStorageTable {
  * @return void
  */
 	public function generateHashes($configPath = 'Media') {
-		$imageSizes = Configure::read($configPath . '.imageSizes');
-		$this->ksortRecursive($imageSizes);
-		foreach ($imageSizes as $model => $version) {
-			foreach ($version as $name => $operations) {
-				Configure::write($configPath . '.imageHashes.' . $model . '.' . $name, $this->hashOperations($operations));
-			}
-		}
+		return FileStorageUtils::generateHashes($configPath);
 	}
 
 /**
@@ -164,12 +160,7 @@ class ImageStorageTable extends FileStorageTable {
  * @link https://gist.github.com/601849
  */
 	public function ksortRecursive(&$array, $sortFlags = SORT_REGULAR) {
-		if (!is_array($array)) return false;
-		ksort($array, $sortFlags);
-		foreach ($array as &$arr) {
-			$this->ksortRecursive($arr, $sortFlags);
-		}
-		return true;
+		return FileStorageUtils::ksortRecursive($array, $sortFlags);
 	}
 
 /**

@@ -50,7 +50,7 @@ class FileStorageTest extends FileStorageTestCase {
  * @return void
  */
 	public function testObject() {
-		$this->assertTrue(is_a($this->FileStorage, 'FileStorage'));
+		$this->assertTrue(is_a($this->FileStorage, 'Burzum\FileStorage\Model\Table\FileStorageTable'));
 	}
 
 /**

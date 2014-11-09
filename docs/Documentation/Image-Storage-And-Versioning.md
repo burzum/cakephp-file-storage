@@ -1,12 +1,12 @@
 Image Versioning
 ================
 
-You can set up automatic image processing for the FileStorage.Image model. To make the magic happen you have to use the Image model (it extends the FileStorage model) for image file saving.
+You can set up automatic image processing for the ImageStorage table. To make the magic happen you have to use the ImageStorage table (it extends the FileStorage table) for image file saving.
 
-All you need to do is basically use the image model and configure versions on a per model basis. When you save an Image model record it is important to have the 'model' field filled so that the script can find the correct versions for that model.
+All you need to do is basically use the image model and configure versions on a per model basis. When you save an ImageStorage table entity it is important to have the 'model' field filled so that the script can find the correct versions for that model.
 
 ```php
-Configure::write('Media', array(
+Configure::write('FileStorage', array(
 	'imageSizes' => array(
 		'GalleryImage' => array(
 			'c50' => array(
@@ -40,8 +40,7 @@ Configure::write('Media', array(
 	)
 );
 
-App::uses('ClassRegistry', 'Utility');
-ClassRegistry::init('FileStorage.Image')->generateHashes();
+\Burzum\FileStorage\Lib\FileStorageUtils::generateHashes();
 ```
 
 Calling ```generateHashes()``` is important, it will create the hash values for each versioned image and store them in Media.imageHashes in the configuration.

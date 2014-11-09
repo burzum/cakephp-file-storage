@@ -1,6 +1,8 @@
 <?php
 namespace Burzum\FileStorage\Lib\Utility;
 
+use Cake\Core\Configure;
+
 /**
  * Utility methods for which I could not find a better place
  *
@@ -100,5 +102,54 @@ class FileStorageUtils {
 			}
 		}
 		return $newfiles;
+	}
+
+/**
+ * Serializes and then hashes an array of operations that are applied to an image
+ *
+ * @param array $operations
+ * @return array
+ */
+	public static function hashOperations($operations) {
+		self::ksortRecursive($operations);
+		return substr(md5(serialize($operations)), 0, 8);
+	}
+
+/**
+ * Generate hashes
+ *
+ * @param string
+ * @return void
+ */
+	public static function generateHashes($configPath = 'FileStorage') {
+		$imageSizes = Configure::read($configPath . '.imageSizes');
+		if (is_null($imageSizes)) {
+			throw new \RuntimeException(__d('file_storage', 'Image processing configuration in %s is missing!', $configPath . '.imageSizes'));
+		}
+		self::ksortRecursive($imageSizes);
+		foreach ($imageSizes as $model => $version) {
+			foreach ($version as $name => $operations) {
+				Configure::write($configPath . '.imageHashes.' . $model . '.' . $name, self::hashOperations($operations));
+			}
+		}
+	}
+
+/**
+ * Recursive ksort() implementation
+ *
+ * @param array $array
+ * @param integer
+ * @return void
+ * @link https://gist.github.com/601849
+ */
+	public static function ksortRecursive(&$array, $sortFlags = SORT_REGULAR) {
+		if (!is_array($array)) {
+			return false;
+		}
+		ksort($array, $sortFlags);
+		foreach ($array as &$arr) {
+			self::ksortRecursive($arr, $sortFlags);
+		}
+		return true;
 	}
 }

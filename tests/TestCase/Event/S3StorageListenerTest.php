@@ -72,7 +72,7 @@ class S3StorageListenerTest extends FileStorageTestCase {
 			->with('Test')
 			->will($this->returnValue($adapterConfig));
 
-		$result = $this->Listener->buildPath(new CakeEvent(
+		$result = $this->Listener->buildPath(new Event(
 			'FileStorage.afterSave',
 			$this->Model
 		));
@@ -86,7 +86,7 @@ class S3StorageListenerTest extends FileStorageTestCase {
 
 		$this->assertEquals($result, $expected);
 
-		$result = $this->Listener->buildPath(new CakeEvent(
+		$result = $this->Listener->buildPath(new Event(
 			'FileStorage.afterSave',
 			$this->Model
 		));

@@ -46,6 +46,11 @@ class ImageProcessingListenerTest extends FileStorageTestCase {
 		TableRegistry::clear();
 	}
 
+/**
+ * testBuildPath
+ *
+ * @return void
+ */
 	public function testBuildPath() {
 		$this->Listener = new TestImageProcessingListener(array(
 			'preserveFilename' => true,
