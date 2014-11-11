@@ -78,7 +78,7 @@ class ImageStorageTest extends FileStorageTestCase {
 		$folderResult = $Folder->read();
 		$this->assertEquals(count($folderResult[1]), 3);
 
-		Configure::write('Media.imageSizes.Test', array(
+		Configure::write('FileStorage.imageSizes.Test', array(
 			't200' => array(
 				'thumbnail' => array(
 					'mode' => 'outbound',

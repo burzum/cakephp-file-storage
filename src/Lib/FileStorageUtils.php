@@ -1,5 +1,5 @@
 <?php
-namespace Burzum\FileStorage\Lib\Utility;
+namespace Burzum\FileStorage\Lib;
 
 use Cake\Core\Configure;
 

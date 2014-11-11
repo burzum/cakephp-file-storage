@@ -2,7 +2,7 @@
 namespace Burzum\FileStorage\Test\TestCase\Lib\Utility;
 
 use Burzum\FileStorage\TestSuite\FileStorageTestCase;
-use Burzum\FileStorage\Lib\Utility\FileStorageUtils;
+use Burzum\FileStorage\Lib\FileStorageUtils;
 
 /**
  * StorageManagerTest

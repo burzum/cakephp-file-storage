@@ -9,7 +9,7 @@ use Cake\Utility\Folder;
 use Cake\Utility\File;
 use Cake\Utility\String;
 use Burzum\FileStorage\Lib\StorageManager;
-use Burzum\FileStorage\Lib\Utility\FileStorageUtils;
+use Burzum\FileStorage\Lib\FileStorageUtils;
 
 /**
  * FileStorageTable

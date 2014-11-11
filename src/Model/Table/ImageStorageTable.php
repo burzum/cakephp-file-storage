@@ -4,7 +4,7 @@ namespace Burzum\FileStorage\Model\Table;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Utility\Folder;
-use Burzum\FileStorage\Lib\Utility\FileStorageUtils;
+use Burzum\FileStorage\Lib\FileStorageUtils;
 
 /**
  * ImageStorageTable
