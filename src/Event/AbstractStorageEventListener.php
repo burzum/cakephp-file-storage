@@ -269,19 +269,55 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
  */
 	protected function _tmpFile($Storage, $path, $tmpFolder = null) {
 		try {
-			if (is_null($tmpFolder)) {
-				$tmpFolder = TMP . 'file-processing';
-			}
-			if (!is_dir($tmpFolder)) {
-				mkdir($tmpFolder);
-			}
-			$tmpFile = $tmpFolder . DS . String::uuid();
+			$tmpFile = $this->createTemporaryFile($tmpFolder);
 			file_put_contents($tmpFile, $Storage->read($path));
 			return $tmpFile;
 		} catch (Exception $e) {
 			$this->log($e->getMessage(), 'file_storage');
 			throw $e;
 		}
+	}
+
+/**
+ * Creates a temporary file name and checks the tmp path, creates one if required
+ *
+ * This method is thought to be used to generate tmp file locations for use cases
+ * like audio or image process were you need copies of a file and want to avoid
+ * conflicts. By default the tmp file is generated using cakes TMP constant +
+ * folder if passed and a uuid as filename.
+ *
+ * @param string $folder
+ * @param boolean $checkAndCreatePath
+ * @return string For example /var/www/app/tmp/<uuid> or /var/www/app/tmp/<my-folder>/<uuid>
+ */
+	public function createTmpFile($folder = null, $checkAndCreatePath = true) {
+		if (is_null($folder)) {
+			$path = TMP;
+		} else {
+			$path = TMP . $folder . DS;
+		}
+		if ($checkAndCreatePath === true && !is_dir($path)) {
+			new Folder($path, true);
+		}
+		return $path . String::uuid();
+	}
+
+/**
+ * Generates a semi-random file system path
+ *
+ * @deprecated Don't use this anymore but it is still used by two listeners :(
+ * @param string $type
+ * @param string $string
+ * @param boolean $idFolder
+ * @return string
+ */
+	public function fsPath($type, $string, $idFolder = true) {
+		$string = str_replace('-', '', $string);
+		$path = $type . DS . FileStorageUtils::randomPath($string);
+		if ($idFolder) {
+			$path .= $string . DS;
+		}
+		return $path;
 	}
 }
 

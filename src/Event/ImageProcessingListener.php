@@ -196,7 +196,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 				$id = $record[$Model->primaryKey];
 				$filename = $Model->stripUuid($id);
 				$file = $record['file'];
-				$record['path'] = $Model->fsPath('images' . DS . $record['model'], $id);
+				$record['path'] = $this->fsPath('images' . DS . $record['model'], $id);
 
 				if ($this->_config['preserveFilename'] === true) {
 					$path = $record['path'] . $record['filename'];

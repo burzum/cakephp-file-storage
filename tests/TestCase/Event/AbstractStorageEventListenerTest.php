@@ -35,4 +35,26 @@ class AbstractStorageEventListenerTest extends FileStorageTestCase {
 		TableRegistry::clear();
 	}
 
+/**
+ * testFsPath
+ *
+ * @return void
+ */
+	public function testFsPath() {
+		$result = $this->Listener->fsPath('Foobar', 'random-id');
+		$this->assertEquals($result, 'Foobar' . DS . '63' . DS . '87' . DS . '12' . DS . 'randomid' . DS);
+
+		$result = $this->Listener->fsPath('Foobar', 'random-id', false);
+		$this->assertEquals($result, 'Foobar' . DS . '63' . DS . '87' . DS . '12' . DS);
+	}
+
+/**
+ * testStripDashes
+ *
+ * @return void
+ */
+	public function testStripDashes() {
+		$result = $this->Listener->stripDashes('some-string-with-dashes');
+		$this->assertEquals($result, 'somestringwithdashes');
+	}
 }

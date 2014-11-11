@@ -96,7 +96,7 @@ class S3StorageListener extends AbstractStorageEventListener {
 		$adapterConfig = $this->getAdapterconfig($record['adapter']);
 		$id = $record[$Model->primaryKey];
 
-		$path = $Model->fsPath('files' . DS . $record['model'], $id);
+		$path = $this->fsPath('files' . DS . $record['model'], $id);
 		$path = '/' . str_replace('\\', '/', $path);
 
 		if ($this->options['preserveFilename'] === false) {

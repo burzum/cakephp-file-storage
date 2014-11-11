@@ -2,8 +2,8 @@
 /**
  * StorageManagerTest
  *
- * @author Florian Kr�mer
- * @copyright 2012 - 2014 Florian Kr�mer
+ * @author Florian Krämer
+ * @copyright 2012 - 2014 Florian Krämer
  * @license MIT
  */
 namespace Burzum\FileStorage\Test\TestCase\Lib;

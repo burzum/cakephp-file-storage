@@ -1,6 +1,7 @@
 <?php
 namespace Burzum\FileStorage\Model\Behavior;
 
+use Burzum\FileStorage\Lib\Utility\FileStorageUtils;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
@@ -117,7 +118,7 @@ class UploadValidatorBehavior extends Behavior {
  */
 	public function validateUploadExtension($validExtensions) {
 		extract($this->_config);
-		$extension = $this->fileExtension($Model, $this->_table->data[$this->_table->alias()][$fileField]['name'], false);
+		$extension = pathinfo($this->_table->data[$this->_table->alias()][$fileField]['name'], PATHINFO_EXTENSION);
 
 		if (!in_array(strtolower($extension), $validExtensions)) {
 			$this->uploadError = __d('file_storage', 'You are not allowed to upload files of this type.');
@@ -227,20 +228,4 @@ class UploadValidatorBehavior extends Behavior {
 			'size' => $File->size()
 		];
 	}
-
-/**
- * Return file extension from a given filename
- *
- * @param $name
- * @param bool $realFile
- * @internal param $string
- * @return boolean string or false
- */
-	public function fileExtension($name, $realFile = true) {
-		if ($realFile) {
-			return pathinfo($name, PATHINFO_EXTENSION);
-		}
-		return substr(strrchr($name,'.'), 1);
-	}
-
 }

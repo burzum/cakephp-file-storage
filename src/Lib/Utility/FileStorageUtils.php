@@ -6,8 +6,8 @@ use Cake\Core\Configure;
 /**
  * Utility methods for which I could not find a better place
  *
- * @author Florian Kr�mer
- * @copyright 2012 - 2014 Florian Kr�mer
+ * @author Florian Krämer
+ * @copyright 2012 - 2014 Florian Krämer
  * @license MIT
  */
 class FileStorageUtils {
@@ -15,16 +15,19 @@ class FileStorageUtils {
 /**
  * Return file extension from a given filename
  *
- * @param string
+ * @param string $name
+ * @param boolean $realFile
+ * @link http://php.net/manual/en/function.pathinfo.php
  * @return boolean string or false
  */
-	public static function fileExtension($name) {
-		$list = explode('.', $name);
-		if (count($list) > 1) {
-			$ext = $list[count($list) - 1];
-			return $ext;
+	public static function fileExtension($name, $realFile = false) {
+		if ($realFile) {
+			$result = pathinfo($name, PATHINFO_EXTENSION);
+			if (empty($result)) {
+				return false;
+			}
 		}
-		return false;
+		return substr(strrchr($name, '.'), 1);
 	}
 
 /**

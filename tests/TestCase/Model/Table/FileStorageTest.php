@@ -53,27 +53,4 @@ class FileStorageTest extends FileStorageTestCase {
 		$this->assertTrue(is_a($this->FileStorage, 'Burzum\FileStorage\Model\Table\FileStorageTable'));
 	}
 
-/**
- * testFsPath
- *
- * @return void
- */
-	public function testFsPath() {
-		$result = $this->FileStorage->fsPath('Foobar', 'random-id');
-		$this->assertEquals($result, 'Foobar' . DS . '63' . DS . '87' . DS . '12' . DS . 'randomid' . DS);
-
-		$result = $this->FileStorage->fsPath('Foobar', 'random-id', false);
-		$this->assertEquals($result, 'Foobar' . DS . '63' . DS . '87' . DS . '12' . DS);
-	}
-
-/**
- * testStripUuid
- *
- * @return void
- */
-	public function testStripUuid() {
-		$result = $this->FileStorage->stripUuid('some-string-with-dashes');
-		$this->assertEquals($result, 'somestringwithdashes');
-	}
-
 }

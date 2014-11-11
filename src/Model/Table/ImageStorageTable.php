@@ -23,19 +23,13 @@ class ImageStorageTable extends FileStorageTable {
 	public $name = 'ImageStorage';
 
 /**
- * Table to use
- *
- * @var mixed
- */
-	public $useTable = 'file_storage';
-
-/**
  * Initialize
  *
  * @param array $config
  * @return void
  */
 	public function initialize(array $config) {
+		parent::initialize($config);
 		$this->addBehavior('Burzum/Imagine.Imagine');
 		$this->addBehavior('Burzum/FileStorage.UploadValidator', array(
 			'localFile' => false,
@@ -134,6 +128,7 @@ class ImageStorageTable extends FileStorageTable {
 /**
  * Serializes and then hashes an array of operations that are applied to an image
  *
+ * @deprecated Don't use this anymore but FileStorageUtils::hashOperations() instead.
  * @param array $operations
  * @return array
  */
@@ -144,16 +139,18 @@ class ImageStorageTable extends FileStorageTable {
 /**
  * Generate hashes
  *
+ * @deprecated Don't use this anymore but FileStorageUtils::generateHashes() instead.
  * @param string
  * @return void
  */
-	public function generateHashes($configPath = 'Media') {
+	public function generateHashes($configPath = 'FileStorage') {
 		return FileStorageUtils::generateHashes($configPath);
 	}
 
 /**
  * Recursive ksort() implementation
  *
+ * @deprecated Don't use this anymore but FileStorageUtils::ksortRecursive() instead.
  * @param array $array
  * @param integer
  * @return void

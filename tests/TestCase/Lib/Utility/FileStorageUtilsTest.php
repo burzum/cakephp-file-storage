@@ -5,9 +5,14 @@ use Burzum\FileStorage\TestSuite\FileStorageTestCase;
 use Burzum\FileStorage\Lib\Utility\FileStorageUtils;
 
 /**
- * 
+ * StorageManagerTest
+ *
+ * @author Florian Krämer
+ * @copyright 2012 - 2014 Florian Krämer
+ * @license MIT
  */
 class FileStorageUtilsTest extends FileStorageTestCase {
+
 /**
  * testRandomPath
  *

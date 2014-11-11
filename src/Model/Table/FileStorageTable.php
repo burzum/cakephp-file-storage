@@ -35,13 +35,6 @@ class FileStorageTable extends Table {
 	public $useTable = 'file_storage';
 
 /**
- * Displayfield
- *
- * @var string
- */
-	public $displayField = 'filename';
-
-/**
  * The record that was deleted
  *
  * This gets set in the beforeDelete() callback so that the data is available
@@ -87,6 +80,8 @@ class FileStorageTable extends Table {
  */
 	public function initialize(array $config) {
 		//$this->addBehavior('FileStorage.UploadValidator');
+		$this->displayField('filename');
+		$this->table('file_storage');
 	}
 
 /**
@@ -113,7 +108,7 @@ class FileStorageTable extends Table {
 			$event->data['entity']['mime_type'] = $File->mime();
 		}
 		if (!empty($event->data['entity']['file']['name'])) {
-			$event->data['entity']['extension'] = $this->fileExtension($event->data['entity']['file']['name']);
+			$event->data['entity']['extension'] = pathinfo($event->data['entity']['file']['name'], PATHINFO_EXTENSION);
 			$event->data['entity']['filename'] = $event->data['entity']['file']['name'];
 		}
 		if (empty($event->data['entity']['table'])) {
@@ -203,73 +198,6 @@ class FileStorageTable extends Table {
 		$this->getEventManager()->dispatch($Event);
 
 		return true;
-	}
-
-/**
- * Creates a tmp file name and checks the tmp path, creates one if required
- *
- * This method is thought to be used to generate tmp file locations for use cases
- * like audio or image process were you need copies of a file and want to avoid
- * conflicts. By default the tmp file is generated using cakes TMP constant +
- * folder if passed and a uuid as filename.
- *
- * @param string $folder
- * @param boolean $checkAndCreatePath
- * @return string For example /var/www/app/tmp/<uuid> or /var/www/app/tmp/<my-folder>/<uuid>
- */
-	public function tmpFile($folder = null, $checkAndCreatePath = true) {
-		if (empty($folder)) {
-			$path = TMP;
-		} else {
-			$path = TMP . $folder . DS;
-		}
-
-		if ($checkAndCreatePath === true && !is_dir($path)) {
-			new Folder($path, true);
-		}
-
-		return $path . String::uuid();
-	}
-
-/**
- * Removes the - from the uuid
- *
- * @param string uuid with -
- * @return string uuid without -
- */
-	public function stripUuid($uuid) {
-		return str_replace('-', '', $uuid);
-	}
-
-/**
- * Generates a semi-random file system path
- *
- * @param string $type
- * @param string $string
- * @param boolean $idFolder
- * @return string
- */
-	public function fsPath($type, $string, $idFolder = true) {
-		$string = str_replace('-', '', $string);
-		$path = $type . DS . FileStorageUtils::randomPath($string);
-		if ($idFolder) {
-			$path .= $string . DS;
-		}
-		return $path;
-	}
-
-/**
- * Return file extension from a given filename no matter if the file exists or not
- *
- * @param string
- * @return boolean string or false
- */
-	public function fileExtension($path) {
-		if (file_exists($path)) {
-			return pathinfo($path, PATHINFO_EXTENSION);
-		} else {
-			return substr(strrchr($path,'.'), 1);
-		}
 	}
 
 /**

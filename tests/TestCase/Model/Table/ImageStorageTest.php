@@ -52,16 +52,16 @@ class ImageStorageTest extends FileStorageTestCase {
  * @return void
  */
 	public function testProcessVersion() {
-		$entity = $this->Image->newEntity(array(
+		$entity = $this->Image->newEntity([
 			'foreign_key' => 'test-1',
 			'model' => 'Test',
-			'file' => array(
+			'file' => [
 				'name' => 'titus.jpg',
 				'size' => 332643,
 				'tmp_name' => Plugin::path('Burzum/FileStorage') . DS . 'Test' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg',
 				'error' => 0
-			)
-		));
+			]
+		]);
 		$result = $this->Image->save($entity);
 
 		$result = $this->Image->find('first', array(
@@ -145,11 +145,16 @@ class ImageStorageTest extends FileStorageTestCase {
 						'validateImageSize', array(
 							'height' => array('>=', 1000),
 							'width' => array('<=', 1000))),
-					'message' => 'Invalid image size')));
+					'message' => 'Invalid image size'
+				)
+			)
+		);
 
 		$this->Image->set(array(
 			'file' => array(
-				'tmp_name' => Plugin::path('Burzum/FileStorage') . DS . 'Test' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg')));
+				'tmp_name' => Plugin::path('Burzum/FileStorage') . DS . 'Test' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg')
+			)
+		);
 
 		$this->assertFalse($this->Image->validates());
 
@@ -160,15 +165,21 @@ class ImageStorageTest extends FileStorageTestCase {
 					'rule' => array(
 						'validateImageSize', array(
 							'height' => array('<=', 1000),
-							'width' => array('<=', 1000))),
-					'message' => 'Invalid image size')));
+							'width' => array('<=', 1000)
+						)
+					),
+					'message' => 'Invalid image size'
+				)
+			)
+		);
 
 		$this->Image->set(array(
 			'file' => array(
-				'tmp_name' => Plugin::path('Burzum/FileStorage') . DS . 'Test' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg')));
+				'tmp_name' => Plugin::path('Burzum/FileStorage') . DS . 'Test' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg')
+			)
+		);
 
 		$this->assertTrue($this->Image->validates());
-
 
 		$this->Image->validate = array(
 			'file' => array(
@@ -177,11 +188,16 @@ class ImageStorageTest extends FileStorageTestCase {
 						'validateImageSize', array(
 							'height' => array('>=', 100),
 							'width' => array('>=', 100))),
-					'message' => 'Invalid image size')));
+					'message' => 'Invalid image size'
+				)
+			)
+		);
 
 		$this->Image->set(array(
 			'file' => array(
-				'tmp_name' => Plugin::path('Burzum/FileStorage') . DS . 'Test' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg')));
+				'tmp_name' => Plugin::path('Burzum/FileStorage') . DS . 'Test' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg')
+			)
+		);
 
 		$this->assertTrue($this->Image->validates());
 
@@ -192,11 +208,16 @@ class ImageStorageTest extends FileStorageTestCase {
 					'rule' => array(
 						'validateImageSize', array(
 							'width' => array('>=', 100))),
-					'message' => 'Invalid image size')));
+					'message' => 'Invalid image size'
+				)
+			)
+		);
 
 		$this->Image->set(array(
 			'file' => array(
-				'tmp_name' => Plugin::path('Burzum/FileStorage') . DS . 'Test' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg')));
+				'tmp_name' => Plugin::path('Burzum/FileStorage') . DS . 'Test' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg')
+			)
+		);
 
 		$this->assertTrue($this->Image->validates());
 
@@ -207,11 +228,16 @@ class ImageStorageTest extends FileStorageTestCase {
 					'rule' => array(
 						'validateImageSize', array(
 							'width' => array('==', 512))),
-					'message' => 'Invalid image size')));
+					'message' => 'Invalid image size'
+				)
+			)
+		);
 
 		$this->Image->set(array(
 			'file' => array(
-				'tmp_name' => Plugin::path('Burzum/FileStorage') . DS . 'Test' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg')));
+				'tmp_name' => Plugin::path('Burzum/FileStorage') . DS . 'Test' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg')
+			)
+		);
 
 		$this->assertTrue($this->Image->validates());
 	}

@@ -1,10 +1,10 @@
 <?php
 namespace Burzum\FileStorage\TestSuite;
 
+use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Folder;
-use Cake\Core\Configure;
 use Burzum\FileStorage\Lib\StorageManager;
 
 /**
@@ -25,13 +25,13 @@ class FileStorageTestCase extends TestCase {
 		parent::setUp();
 
 		$this->testPath = TMP . 'file-storage-test' . DS;
-		Configure::write('Media.basePath', $this->testPath);
+		Configure::write('FileStorage.basePath', $this->testPath);
 
 		if (!is_dir($this->testPath)) {
 			$Folder = new Folder($this->testPath, true);
 		}
 
-		Configure::write('Media.imageSizes', array(
+		Configure::write('FileStorage.imageSizes', array(
 			'Test' => array(
 				't50' => array(
 					'thumbnail' => array(
