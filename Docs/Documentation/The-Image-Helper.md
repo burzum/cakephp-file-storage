@@ -19,6 +19,14 @@ In your views you can now access all your image versions, which you have declare
 echo $this->Image->display($product['Image'], 'small');
 ```
 
+You have to pass the file storage record array without the alias, just passing `$product` in the above example would be wrong, the helper won't find the field it is looking for then. In the case of a [hasMany](http://book.cakephp.org/2.0/en/models/associations-linking-models-together.html#hasmany) or [HABTM](http://book.cakephp.org/2.0/en/models/associations-linking-models-together.html#hasandbelongstomany-habtm) association you'll have to do it this way because the data structure that CakePHP returns for them is different:
+
+```php
+foreach ($product['Image'] as $image) {
+    echo $this->Image->display($image);
+}
+```
+
 If you want to get only the URL to an image you can call ```imageUrl()```.
 
 ```php
