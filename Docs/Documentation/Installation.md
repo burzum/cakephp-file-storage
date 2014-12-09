@@ -57,10 +57,13 @@ CakePHP Bootstrap
 Add the following part to your ```app/Config/bootstrap.php```.
 
 ```php
+//Don't forget to load the plugin if you aren't already
+CakePlugin::load('FileStorage');
+
 App::uses('CakeEventManager', 'Event');
 App::uses('FileStorageUtils', 'FileStorage.Lib/Utility');
 App::uses('StorageManager', 'FileStorage.Lib');
-App::uses('LocalImageProcessingListener', 'FileStorage.Event');
+App::uses('ImageProcessingListener', 'FileStorage.Event');
 App::uses('LocalFileStorageListener', 'FileStorage.Event');
 App::uses('FileStorageListener', 'FileStorage.Event');
 
