@@ -133,7 +133,7 @@ class ProductImage extends ImageStorage {
 	);
 	public function upload($productId, $data) {
 		$data[$this->alias]['adapter'] = 'Local';
-		$data[$this->alias]['model'] = $this->name;
+		$data[$this->alias]['model'] = 'ProductImage';
 		$data[$this->alias]['foreign_key'] = $productId;
 		$this->create();
 		return $this->save($data);
