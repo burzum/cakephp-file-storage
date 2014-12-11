@@ -17,8 +17,7 @@ The files (using the default local adapter config) are stored in /tmp because in
 	'adapterOptions' => array(APP.'FileStorage', true),
 ````
 Another reason files don’t go into the webroot and that you have to explicity change that is security. Good practice is to expose absolutely nothing except what we really want to. So either smylink the whole folder or just the folders you really want to be public accessible by URL. From the project root, that would look something like this: 
-```$ ln -s ../FileStorage/images app/webroot/images```` 
-This will allow public access to images outside of webroot.
+`$ ln -s ../FileStorage/images app/webroot/images`. This will allow public access to images outside of webroot.
 
 To invoke a new instance using a before set configuration call.
 
