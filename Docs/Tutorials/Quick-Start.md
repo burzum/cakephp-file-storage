@@ -45,8 +45,6 @@ $listener = new ImageProcessingListener();
 CakeEventManager::instance()->attach($listener);
 
 Configure::write('Media', array(
-	// Configure the `basePath` for the Local adapter, not needed when not using it
-	'basePath' => APP . 'FileStorage' . DS,
 	// Configure image versions on a per model base
 	'imageSizes' => array(
 		'ProductImage' => array(
