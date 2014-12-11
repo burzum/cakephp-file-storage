@@ -85,7 +85,7 @@ class UploadValidatorBehaviorTest extends CakeTestCase {
 		$this->Model->Behaviors->load('FileStorage.UploadValidator', array(
 			'localFile' => true,
 			'allowedExtensions' => array('png')));
-		$this->Model->data[$this->Model->alias]['file']['name'] = $this->testFilePath . 'cake.icon.jpg';
+		$this->Model->data[$this->Model->alias]['file']['name'] = $this->testFilePath . 'titus.jpg';
 		$this->assertFalse($this->Model->validateUploadExtension(array('png')));
 
 		$this->Model->data[$this->Model->alias]['file']['name'] = $this->testFilePath . 'cake.icon.png';
