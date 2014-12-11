@@ -45,8 +45,6 @@ $listener = new ImageProcessingListener();
 CakeEventManager::instance()->attach($listener);
 
 Configure::write('Media', array(
-	// Configure the `basePath` for the Local adapter, not needed when not using it
-	'basePath' => APP . 'FileStorage' . DS,
 	// Configure image versions on a per model base
 	'imageSizes' => array(
 		'ProductImage' => array(
@@ -133,7 +131,7 @@ class ProductImage extends ImageStorage {
 	);
 	public function upload($productId, $data) {
 		$data[$this->alias]['adapter'] = 'Local';
-		$data[$this->alias]['model'] = $this->name;
+		$data[$this->alias]['model'] = $this->alias;
 		$data[$this->alias]['foreign_key'] = $productId;
 		$this->create();
 		return $this->save($data);
