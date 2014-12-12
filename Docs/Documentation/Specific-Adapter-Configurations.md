@@ -1,10 +1,12 @@
-# Specific Addapter Configuration
+Specific Addapter Configuration
+===============================
 
 Gaufrette doesn't come with a lot detail about what exactly some adapters expect so here is a list to help you with that.
 
 But you **should not** blindly copy and paste that code, get an understanding of the storage service you want to use before!
 
-## Local (File System)
+Local (File System)
+-------------------
 
 The StorageManager has by default a "Local" config configured that is going to store files in the temporary folder of the application and is using the TMP constant for that. You don't have to configure that adapter it is already present.
 
@@ -24,7 +26,10 @@ array('adapterOptions' => array(APP . 'MyCustomFileFolder', true));
 
 Or simply create another configuration and use that instead of the default.
 
-## AmazonS3 - AwsS3 Adapter
+The reason TMP is used here is that a proper application setup this should be the only writeable folder. To make the plugin work out of the box it is using TMP. For a live application you should change the folder to another location.
+
+AmazonS3 - AwsS3 Adapter
+------------------------
 
 Get the SDK from here https://github.com/aws/aws-sdk-php or get it via composer ```aws/aws-sdk-php```. If you're not using composer you'll have to add it to your own autoloader or load it manually.
 
@@ -48,7 +53,8 @@ StorageManager::config('S3Image', array(
 );
 ```
 
-## AmazonS3 - AmazonS3 Adapter (legacy)
+AmazonS3 - AmazonS3 Adapter (legacy!)
+-------------------------------------
 
 *This adapter is legacy code, you should use the AwsS3 adapter instead!*
 
@@ -77,7 +83,8 @@ StorageManager::config('S3', array(
 );
 ```
 
-## OpenCloud (Rackspace)
+OpenCloud (Rackspace)
+---------------------
 
 Get the SDK from here http://github.com/rackspace/php-opencloud and add it to your class autoloader
 
