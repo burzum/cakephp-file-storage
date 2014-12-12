@@ -45,8 +45,6 @@ $listener = new ImageProcessingListener();
 CakeEventManager::instance()->attach($listener);
 
 Configure::write('Media', array(
-	// Configure the `basePath` for the Local adapter, not needed when not using it
-	'basePath' => APP . 'FileStorage' . DS,
 	// Configure image versions on a per model base
 	'imageSizes' => array(
 		'ProductImage' => array(
@@ -94,6 +92,8 @@ StorageManager::config('S3Image', array(
 	'class' => '\Gaufrette\FileSystem')
 );
 ```
+
+Read the [Specific Adapter Configuration](Specific-Adapter-Configurations.md) documentation to see how different adapters are configured.
 
 app/Config/bootstrap.php
 ------------------------

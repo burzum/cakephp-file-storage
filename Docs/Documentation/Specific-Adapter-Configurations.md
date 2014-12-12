@@ -1,8 +1,28 @@
 # Specific Addapter Configuration
 
-Gaufrette does not come with a lot detail about what exactly some adapters expect so here is a list to help you with that.
+Gaufrette doesn't come with a lot detail about what exactly some adapters expect so here is a list to help you with that.
 
-But you should not blindly copy and paste that code, get an understanding of the storage service you want to use before!
+But you **should not** blindly copy and paste that code, get an understanding of the storage service you want to use before!
+
+## Local (File System)
+
+The StorageManager has by default a "Local" config configured that is going to store files in the temporary folder of the application and is using the TMP constant for that. You don't have to configure that adapter it is already present.
+
+```php
+StorageManager::config('Local', array(
+	'adapterOptions' => array(TMP, true),
+	'adapterClass' => '\Gaufrette\Adapter\Local',
+	'class' => '\Gaufrette\Filesystem'
+);
+```
+
+If you want to change the base path where it saves the files you will have to modify the adapter options:
+
+```
+array('adapterOptions' => array(APP . 'MyCustomFileFolder', true));
+```
+
+Or simply create another configuration and use that instead of the default.
 
 ## AmazonS3 - AwsS3 Adapter
 
