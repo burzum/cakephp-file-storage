@@ -39,4 +39,6 @@ Options for display() and imageUrl()
 
 The third argument of both methods is an option array, right now it has only one option to set.
 
-* **fallback:** Optional, can be boolean true or string. If boolean true it will use ```placeholder/<YOUR-VERSION>.jpg``` as place  holder. If string it will use that as image.
+* **image:** The image data array, for `example $product['Image']`.
+* **version:** Optional, image version string. If not defined the helper will use the original image, not a version.
+* **fallback:** Optional, can be `boolean` true or `string`. If boolean true it will use ```placeholder/<YOUR-VERSION>.jpg``` as place  holder. If string it will use that string as image.
