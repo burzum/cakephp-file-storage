@@ -34,6 +34,17 @@ class VoidUploadModel extends Table {
 	 * @var bool false
 	 */
 	public $useTable = false;
+
+	/**
+	 * Initialize
+	 *
+	 * @param array $config
+	 * @return void
+	 */
+		public function initialize(array $config) {
+			parent::initialize($config);
+			$this->addBehavior('Burzum/FileStorage.UploadValidator');
+		}
 }
 
 /**
@@ -64,7 +75,7 @@ class UploadValidatorBehaviorTest extends FileStorageTestCase {
  */
 	public function setUp() {
 		$this->Model = new VoidUploadModel();
-		$this->Model->Behaviors->load('FileStorage.UploadValidator', array(
+		$this->Model->addBehavior('FileStorage.UploadValidator', array(
 			'localFile' => true));
 		$this->FileUpload = $this->Model->Behaviors->UploadValidator;
 		$this->testFilePath = CakePlugin::path('FileStorage') . 'Test' . DS . 'Fixture' . DS . 'File' . DS;
@@ -86,8 +97,8 @@ class UploadValidatorBehaviorTest extends FileStorageTestCase {
  * @return void
  */
 	public function testValidateUploadExtension() {
-		$this->Model->Behaviors->unload('FileStorage.UploadValidator');
-		$this->Model->Behaviors->load('FileStorage.UploadValidator', array(
+		$this->Model->removeBehavior('FileStorage.UploadValidator');
+		$this->Model->addBehavior('FileStorage.UploadValidator', array(
 			'localFile' => true,
 			'allowedExtensions' => array('png')));
 		$this->Model->data[$this->Model->alias]['file']['name'] = $this->testFilePath . 'cake.icon.jpg';

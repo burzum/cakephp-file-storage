@@ -15,12 +15,12 @@ $root = $findRoot(__FILE__);
 unset($findRoot);
 chdir($root);
 if (file_exists($root . '/config/bootstrap.php')) {
-	require $root . '/config/bootstrap.php';
-	return;
+	//require $root . '/config/bootstrap.php';
+	//return;
 }
 require $root . '/vendor/cakephp/cakephp/tests/bootstrap.php';
 $loader->addNamespace('Cake\Test', './vendor/cakephp/cakephp/tests');
-//$loader->addNamespace('Burzum\FileStorage', './src');
+$loader->addNamespace('Burzum\Imagine', './plugins/Burzum/Imagine/src');
 Plugin::load('Burzum/FileStorage', [
 	'path' => dirname(dirname(__FILE__)) . DS,
 	'autoload' => true,

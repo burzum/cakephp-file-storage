@@ -48,7 +48,7 @@ class ImageStorageTable extends FileStorageTable {
  * @param array $options
  * @return boolean true on success
  */
-	public function beforeSave(Event $event, Entity $entity, $options) {
+	public function beforeSave(\Cake\Event\Event $event,  \Cake\ORM\Entity $entity, $options) {
 		if (!parent::beforeSave($event, $entity, $options)) {
 			return false;
 		}
@@ -72,7 +72,7 @@ class ImageStorageTable extends FileStorageTable {
  * @param array $options
  * @return boolean
  */
-	public function afterSave(Event $event, Entity $entity, $options) {
+	public function afterSave(\Cake\Event\Event $event,  \Cake\ORM\Entity $entity, $options) {
 		if ($entity->isNew) {
 			$Event = new Event('ImageStorage.afterSave', $this, array(
 				'created' => $event->data['entity']->isNew,
@@ -92,7 +92,7 @@ class ImageStorageTable extends FileStorageTable {
  * @param array $options
  * @return boolean
  */
-	public function beforeDelete(Event $event, Entity $entity, ArrayObject $options) {
+	public function beforeDelete(\Cake\Event\Event $event, \Cake\ORM\Entity $entity, $options) {
 		if (!parent::beforeDelete($event, $entity, $options)) {
 			return false;
 		}

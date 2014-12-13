@@ -79,7 +79,7 @@ class FileStorageTable extends Table {
  * @return void
  */
 	public function initialize(array $config) {
-		//$this->addBehavior('FileStorage.UploadValidator');
+		$this->addBehavior('Burzum/FileStorage.UploadValidator');
 		$this->displayField('filename');
 		$this->table('file_storage');
 	}
@@ -91,8 +91,8 @@ class FileStorageTable extends Table {
  * @return void
  */
 	public function configureUploadValidation($options) {
-		$this->Behaviors->unload('FileStorage.UploadValidator');
-		$this->Behaviors->load('FileStorage.UploadValidator', $options);
+		$this->removeBehavior('Burzum/FileStorage.UploadValidator');
+		$this->addBehavior('Burzum/FileStorage.UploadValidator', $options);
 	}
 
 /**

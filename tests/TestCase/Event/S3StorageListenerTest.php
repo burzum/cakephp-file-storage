@@ -1,6 +1,7 @@
 <?php
 namespace Burzum\FileStorage\Test\TestCase\Event;
 
+use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Burzum\FileStorage\TestSuite\FileStorageTestCase;
 use Burzum\FileStorage\Event\S3StorageListener;
@@ -30,7 +31,8 @@ class S3StorageListenerTest extends FileStorageTestCase {
  */
 	public function setUp() {
 		$this->Model = new FileStorageTable();
-		$this->Listener = $this->getMock('TestS3StorageListener', array('getAdapterconfig'), array(array()));
+		//$this->Listener = $this->getMock('TestS3StorageListener');
+		$this->Listener = new TestS3StorageListener();
 	}
 
 /**
@@ -66,12 +68,12 @@ class S3StorageListenerTest extends FileStorageTestCase {
 				1 => 'my-cool-bucket'
 			)
 		);
-
+/*
 		$this->Listener->expects($this->any())
 			->method('getAdapterConfig')
 			->with('Test')
 			->will($this->returnValue($adapterConfig));
-
+*/
 		$result = $this->Listener->buildPath(new Event(
 			'FileStorage.afterSave',
 			$this->Model

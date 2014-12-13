@@ -1,4 +1,5 @@
 <?php
+
 namespace Burzum\FileStorage\Model\Behavior;
 
 use Burzum\FileStorage\Lib\FileStorageUtils;
@@ -68,7 +69,7 @@ class UploadValidatorBehavior extends Behavior {
 /**
  * Before validation callback
  *
- * Check if the file is really an uploaded file and run custom checks for file 
+ * Check if the file is really an uploaded file and run custom checks for file
  * extensions and / or mime type if configured to do so.
  *
  * @param array $options
