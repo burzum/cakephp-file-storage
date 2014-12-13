@@ -7,8 +7,8 @@ use Burzum\FileStorage\Event\S3StorageListener;
 use Burzum\FileStorage\Model\Table\FileStorageTable;
 
 class TestS3StorageListener extends S3StorageListener {
-	public function buildPath(CakeEvent $CakeEvent) {
-		return $this->_buildPath($CakeEvent);
+	public function buildPath($table, $entity) {
+		return $this->_buildPath($table, $entity);
 	}
 }
 
