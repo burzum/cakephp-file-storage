@@ -58,7 +58,6 @@ class UploadValidatorBehavior extends ModelBehavior {
 		if (!is_array($settings)) {
 			throw new InvalidArgumentException(__d('file_storage', 'Settings must be passed as array!'));
 		}
-
 		$this->settings[$Model->alias] = array_merge($this->_defaults, $settings);
 	}
 
@@ -225,7 +224,8 @@ class UploadValidatorBehavior extends ModelBehavior {
 			'tmp_name' => $file,
 			'error' => 0,
 			'type' => $File->mime(),
-			'size' => $File->size());
+			'size' => $File->size()
+		);
 	}
 
 /**
