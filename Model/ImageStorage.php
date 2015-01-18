@@ -242,14 +242,16 @@ class ImageStorage extends FileStorage {
  * the plugin to a more generic one.
  *
  * @param array $record An ImageStorage database record
+ * @param array $options. Options for the version.
  * @return array A list of versions for this image file. Key is the version, value is the path or URL to that image.
  */
-	public function getImageVersions($record) {
+	public function getImageVersions($record, $options = array()) {
 		if (isset($record[$this->alias])) {
 			$record = $record[$this->alias];
 		}
 		$versions = array();
 		$versionData = (array)Configure::read('Media.imageSizes.' . $record['model']);
+		$versionData['original'] = isset($options['originalVersion']) ? $options['originalVersion'] : 'original';
 		foreach ($versionData as $version => $data) {
 			$hash = Configure::read('Media.imageHashes.' . $record['model'] . '.' . $version);
 			$Event = new CakeEvent('FileStorage.ImageHelper.imagePath', $this, array(
