@@ -92,8 +92,8 @@ class ImageStorageTable extends FileStorageTable {
  * @param array $options
  * @return boolean
  */
-	public function beforeDelete(\Cake\Event\Event $event, \Cake\ORM\Entity $entity, $options) {
-		if (!parent::beforeDelete($event, $entity, $options)) {
+	public function beforeDelete(Event $event, Entity $entity) {
+		if (!parent::beforeDelete($event, $entity)) {
 			return false;
 		}
 

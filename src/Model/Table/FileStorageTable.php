@@ -9,7 +9,6 @@ use Cake\Utility\Folder;
 use Cake\Utility\File;
 use Cake\Utility\String;
 use Burzum\FileStorage\Lib\StorageManager;
-use Burzum\FileStorage\Lib\FileStorageUtils;
 
 /**
  * FileStorageTable
@@ -159,8 +158,8 @@ class FileStorageTable extends Table {
  * @param array $options
  * @return boolean
  */
-	public function beforeDelete(Event $event, Entity $entity, ArrayObject $options) {
-		if (!parent::beforeDelete($event, $entity, $options)) {
+	public function beforeDelete(Event $event, Entity $entity) {
+		if (!parent::beforeDelete($event, $entity)) {
 			return false;
 		}
 
