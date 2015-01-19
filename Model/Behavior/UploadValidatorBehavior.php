@@ -58,7 +58,6 @@ class UploadValidatorBehavior extends ModelBehavior {
 		if (!is_array($settings)) {
 			throw new InvalidArgumentException(__d('file_storage', 'Settings must be passed as array!'));
 		}
-
 		$this->settings[$Model->alias] = array_merge($this->_defaults, $settings);
 	}
 
@@ -206,6 +205,26 @@ class UploadValidatorBehavior extends ModelBehavior {
 	}
 
 /**
+ * Validates the file size of an uploaded file.
+ *
+ * @todo Needs testing!
+ * @param Model $model Model instance.
+ * @param mixed $check Field to check.
+ * @param integer $maxSize File size in bytes.
+ * @return boolean
+ */
+	public function validateUploadSize(Model $Model, $check, $maxSize) {
+		$check = array_values($check);
+		$check = $check[0];
+		if (isset($this->data[$this->alias][$check]['size'])) {
+			if ($this->data[$this->alias][$check]['size'] > $maxSize) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+/**
  * Returns an array that matches the structure of a regular upload for a local file
  *
  * @param Model $Model
@@ -225,7 +244,8 @@ class UploadValidatorBehavior extends ModelBehavior {
 			'tmp_name' => $file,
 			'error' => 0,
 			'type' => $File->mime(),
-			'size' => $File->size());
+			'size' => $File->size()
+		);
 	}
 
 /**

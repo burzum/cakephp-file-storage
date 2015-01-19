@@ -45,8 +45,6 @@ $listener = new ImageProcessingListener();
 CakeEventManager::instance()->attach($listener);
 
 Configure::write('Media', array(
-	// Configure the `basePath` for the Local adapter, not needed when not using it
-	'basePath' => APP . 'FileStorage' . DS,
 	// Configure image versions on a per model base
 	'imageSizes' => array(
 		'ProductImage' => array(
@@ -94,6 +92,8 @@ StorageManager::config('S3Image', array(
 	'class' => '\Gaufrette\FileSystem')
 );
 ```
+
+Read the [Specific Adapter Configuration](Specific-Adapter-Configurations.md) documentation to see how different adapters are configured.
 
 app/Config/bootstrap.php
 ------------------------
@@ -168,3 +168,25 @@ echo $this->Form->error('file');
 echo $this->Form->submit(__('Upload'));
 echo $this->Form->end();
 ```
+
+The Default Adapter Configuration
+---------------------------------
+
+The StorageManager has by default a "Local" config configured that is going to store files in the temporary folder of the application and is using the `TMP` constant for that. You don't have to configure that adapter it is already present in the `$_adapterConfig` property of the [StorageManager](../../Lib/StorageManager.php) class.
+
+```php
+StorageManager::config('Local', array(
+	'adapterOptions' => array(TMP, true),
+	'adapterClass' => '\Gaufrette\Adapter\Local',
+	'class' => '\Gaufrette\Filesystem'
+);
+```
+
+If you want to change the base path where it saves the files you will have to modify the adapter options:
+
+```
+array('adapterOptions' => array(APP . 'MyCustomFileFolder', true));
+```
+
+
+Another reason files are not saved to the webroot by default and that you have to explicitly change that is security. Good practice is to expose absolutely *nothing* except what we really have to. So either [smylink](http://en.wikipedia.org/wiki/Symbolic_link) the whole file folder or just the sub-folders you really want to be public accessible by URL.

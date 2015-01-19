@@ -41,15 +41,15 @@ class InitialFileStorageMigration extends CakeMigration {
 					'extension' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 5),
 					'hash' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 64),
 					'path' => array('type' => 'string', 'null' => false, 'default' => null),
-					'adapter' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 32, 'comment' => 'Gaufrette Storage Adapter Class'),
+					'adapter' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 32, 'comment' => 'Storage Adapter Config Name'),
 					'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
 					'modified' => array('type' => 'datetime', 'null' => true, 'default' => null),
 					'indexes' => array(
 						'PRIMARY' => array('column' => 'id', 'unique' => 1)
-					),
-				),
-			),
-		),
+					)
+				)
+			)
+		)
 	);
 
 /**

@@ -82,7 +82,7 @@ class FileStorageUtils {
 	}
 
 /**
- * Converts windows to linux pathes and vice versa
+ * Converts windows to linux paths and vice versa
  *
  * @param string
  * @return string
