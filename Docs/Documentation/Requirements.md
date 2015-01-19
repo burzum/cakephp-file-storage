@@ -7,4 +7,6 @@ Requirements
 
 Optional but required for image processing:
 
- * CakeDC Imagine Image processing plugin https://github.com/cakedc/imagine if you want to process and storage images
+ * The [Imagine image processing plugin](https://github.com/burzum/cakephp-imagine-plugin) if you want to process and storage images.
+
+Make sure you add this plugin to your required section of your composer.json if you want to use image processing.

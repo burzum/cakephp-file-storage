@@ -99,7 +99,7 @@ See [this page](Included-Event-Listeners.md) for the event listeners that are in
 Why is it done like this?
 -------------------------
 
-Every developer might want to store the file at a different point or apply other operations on the file before or after it is store. Based on different circumstances you might want to save an associated file even before you created the record its going to get attached to, in other scenarios like in this documentation you might want to do it after.
+Every developer might want to store the file at a different point or apply other operations on the file before or after it is stored. Based on different circumstances you might want to save an associated file even before you created the record its going to get attached to, in other scenarios like in this documentation you might want to do it after.
 
 The ``$key`` is also a key aspect of it: Different adapters might expect a different key. A key for the Local adapter of Gaufrette is usually a path and a file name under which the data gets stored. That's also the reason why you use `file_get_contents()` instead of simply passing the tmp path as it is.
 

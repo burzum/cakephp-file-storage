@@ -2,6 +2,25 @@
 
 List of changes done to the plugin versions
 
+## 0.5.0
+
+* Feature: Implementing a method to the ImageStorage model that allows it to get all versions of an image.
+* Feature: Implementing a feature to "replace" one file with another via a callback in FileStorage::afterSave() that checks if an old file id was passed. This is interesting when you want to replace an image with another for example an avatar after uploading it.
+* Feature: Implementing a method to the UploadValidatorBehavior that allows you to validate the size of an image.
+* Feature: Implementing a callback implementation to the FileStorage model that allows the implementation of "model" (the field in the DB table) specific validation callbacks.
+* Fix: Updating Specific-Adapter-Configurations with the correct composer package name for the new AWS SDK
+* Fix: Fixing a missing return in the magic `__get()` in the ImageStorage model. This could cause issues in rare cases.
+* Updating the Installation instructions, trying to make it more clear that certain storage backends require additional configuration like S3, Dropbox, Opencloud...
+
+## 0.4.2
+
+* Fix: Fixing a typo in one of the recommended packages in composer.json
+
+## 0.4.1
+
+* Fix: Updating the package name in composer.json
+* Misc: Adding the installer name to composer.json
+
 ## 0.4.0
 
 * Change: Removed deprecated ImageStorage::createVersions()
@@ -16,8 +35,8 @@ List of changes done to the plugin versions
 
 * Updating the Gaufrette Vendor lib
 * Updating readme.md
-* Coding standard fixes
-* Fixes https://github.com/burzum/FileStorage/issues/35
+* Fix: Coding standard fixes.
+* Fix: https://github.com/burzum/FileStorage/issues/35
 * Fix: 2.4 and php5 compatibility, fixed strict errors for model callbacks
 
 ## 0.3.2

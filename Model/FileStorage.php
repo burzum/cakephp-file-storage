@@ -73,6 +73,14 @@ class FileStorage extends FileStorageAppModel {
 	);
 
 /**
+ * List of dynamically added validation rules in beforeValidate() that are going
+ * to be unset in afterValidate().
+ *
+ * @var array
+ */
+	protected $_temporaryValidationRules = array();
+
+/**
  * Renews the FileUpload behavior with a new configuration
  *
  * @param array $options
@@ -81,6 +89,41 @@ class FileStorage extends FileStorageAppModel {
 	public function configureUploadValidation($options) {
 		$this->Behaviors->unload('FileStorage.UploadValidator');
 		$this->Behaviors->load('FileStorage.UploadValidator', $options);
+	}
+
+/**
+ * beforeValidate callback
+ *
+ * @param array $options
+ * @return boolean
+ */
+	public function beforeValidate($options = array()) {
+		if (!parent::beforeValidate($options)) {
+			return false;
+		}
+		if (isset($this->data[$this->alias]['model'])) {
+			$method = 'validate' . Inflector::camelize($this->data[$this->alias]['model']);
+			if (method_exists($this, $method) || $this->Behaviors->hasMethod($method)) {
+				$this->{$method}($options);
+			}
+		}
+		return true;
+	}
+
+/**
+ * afterValidate callback
+ *
+ * @return void
+ */
+	public function afterValidate() {
+		parent::afterValidate();
+		if (!empty($this->_temporaryValidationRules)) {
+			foreach ($this->_temporaryValidationRules as $field => $rules) {
+				foreach ($rules as $rule) {
+					unset($this->validate[$field][$rule]);
+				}
+			}
+		}
 	}
 
 /**
@@ -133,6 +176,10 @@ class FileStorage extends FileStorageAppModel {
 			'record' => $this->data,
 			'storage' => $this->getStorageAdapter($this->data[$this->alias]['adapter'])));
 		$this->getEventManager()->dispatch($Event);
+
+		$this->deleteOldFileOnSave();
+
+		return true;
 	}
 
 /**
@@ -176,6 +223,8 @@ class FileStorage extends FileStorageAppModel {
 			'record' => $this->record,
 			'storage' => $this->getStorageAdapter($this->record[$this->alias]['adapter'])));
 		$this->getEventManager()->dispatch($Event);
+
+		return true;
 	}
 
 /**
@@ -256,4 +305,21 @@ class FileStorage extends FileStorageAppModel {
 		return StorageManager::adapter($adapterName, $renewObject);
 	}
 
+/**
+ * Deletes an old file to replace it with the new one if an old id was passed.
+ *
+ * Thought to be called in Model::afterSave() but can be used from any other
+ * place as well like Model::beforeSave() as long as the field data is present.
+ *
+ * The old id has to be the UUID of the file_storage record that should be deleted.
+ *
+ * @param string $oldIdField Name of the field in the data that holds the old id
+ * @return boolean Returns true if the old record was deleted
+ */
+	public function deleteOldFileOnSave($oldIdField = 'old_file_id') {
+		if (!empty($this->data[$this->alias][$oldIdField]) && $this->data[$this->alias]['model']) {
+			return $this->delete($this->data[$this->alias][$oldIdField]);
+		}
+		return false;
+	}
 }
