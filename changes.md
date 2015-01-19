@@ -11,6 +11,7 @@ List of changes done to the plugin versions
 * Fix: Updating Specific-Adapter-Configurations with the correct composer package name for the new AWS SDK
 * Fix: Fixing a missing return in the magic `__get()` in the ImageStorage model. This could cause issues in rare cases.
 * Updating the Installation instructions, trying to make it more clear that certain storage backends require additional configuration like S3, Dropbox, Opencloud...
+* Misc: Updated documentation
 
 ## 0.4.2
 
