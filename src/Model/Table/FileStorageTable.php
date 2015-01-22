@@ -5,9 +5,8 @@ use Cake\ORM\Table;
 use Cake\ORM\Entity;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\Utility\Folder;
-use Cake\Utility\File;
-use Cake\Utility\String;
+use Cake\Filesystem\Folder;
+use Cake\Filesystem\File;
 use Burzum\FileStorage\Lib\StorageManager;
 
 /**

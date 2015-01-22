@@ -2,6 +2,7 @@
 namespace Burzum\FileStorage\Lib;
 
 use Cake\Core\Configure;
+use Cake\Filesystem\File;
 
 /**
  * Utility methods for which I could not find a better place
