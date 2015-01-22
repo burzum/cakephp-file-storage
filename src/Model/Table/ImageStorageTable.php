@@ -31,13 +31,13 @@ class ImageStorageTable extends FileStorageTable {
 	public function initialize(array $config) {
 		parent::initialize($config);
 		$this->addBehavior('Burzum/Imagine.Imagine');
-		$this->addBehavior('Burzum/FileStorage.UploadValidator', array(
-			'localFile' => false,
-			'validate' => true,
-			'allowedExtensions' => array(
-				'jpg', 'jpeg', 'png', 'gif'
-			)
-		));
+//		$this->addBehavior('Burzum/FileStorage.UploadValidator', array(
+//			'localFile' => false,
+//			'validate' => true,
+//			'allowedExtensions' => array(
+//				'jpg', 'jpeg', 'png', 'gif'
+//			)
+//		));
 	}
 
 /**

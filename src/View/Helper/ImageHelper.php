@@ -55,9 +55,9 @@ class ImageHelper extends Helper {
 		}
 
 		if (!empty($version)) {
-			$hash = Configure::read('Media.imageHashes.' . $image['model'] . '.' . $version);
+			$hash = Configure::read('FileStorage.imageHashes.' . $image['model'] . '.' . $version);
 			if (empty($hash)) {
-				throw new \InvalidArgumentException(sprintf('No valid version key (Model: `%s` Key: `%s`) passed!', @$image['model'], $version));
+				throw new \InvalidArgumentException(sprintf('No valid version key (Identifier: `%s` Key: `%s`) passed!', @$image['model'], $version));
 			}
 		} else {
 			$hash = null;

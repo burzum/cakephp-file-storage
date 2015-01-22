@@ -77,7 +77,8 @@ class FileStorageTable extends Table {
  * @return void
  */
 	public function initialize(array $config) {
-		$this->addBehavior('Burzum/FileStorage.UploadValidator');
+		parent::initialize($config);
+		//$this->addBehavior('Burzum/FileStorage.UploadValidator');
 		$this->displayField('filename');
 		$this->table('file_storage');
 	}

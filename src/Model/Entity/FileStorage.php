@@ -35,6 +35,7 @@ class FileStorage extends Entity {
 		'adapter' => true,
 		'created' => true,
 		'modified' => true,
+		'file' => true,
 	];
 
 }
