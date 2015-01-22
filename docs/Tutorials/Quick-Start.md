@@ -29,24 +29,20 @@ There is a good amount of code to be added to prepare everything. In theory you 
 
 ```php
 use Aws\S3;
-App::uses('S3StorageListener', 'FileStorage.Event');
-App::uses('FileStorageUtils', 'FileStorage.Lib/Utility');
-App::uses('StorageManager', 'FileStorage.Lib');
-App::uses('ImageProcessingListener', 'FileStorage.Event');
-App::uses('CakeEventManager', 'Event');
-App::uses('ClassRegistry', 'Utility');
+use Cake\Event\EventManager;
+use Burzum\FileStorage\Lib\FileStorageUtils;
 
 // Attach the S3 Listener to the global CakeEventManager
 $listener = new S3StorageListener();
-CakeEventManager::instance()->attach($listener);
+EventManager::instance()->attach($listener);
 
 // Attach the Image Processing Listener to the global CakeEventManager
 $listener = new ImageProcessingListener();
-CakeEventManager::instance()->attach($listener);
+EventManager::instance()->attach($listener);
 
-Configure::write('Media', array(
-	// Configure the `basePath` for the Local adapter, not needed when not using it
-	'basePath' => APP . 'FileStorage' . DS,
+Configure::write('FileStorage', array(
+	// Configure the `basePath` for the Local adapter, not needed when *not* using it
+	'basePath' => ROOT . 'file_storage' . DS,
 	// Configure image versions on a per model base
 	'imageSizes' => array(
 		'ProductImage' => array(
@@ -74,7 +70,7 @@ Configure::write('Media', array(
 ));
 
 // This is very important! The hashes are needed to calculate the image versions!
-TableRegistry::get('Burzum/FileStorage.ImageStorage')->generateHashes();
+FileStorageUtils::generateHashes();
 
 // Optional, lets use the AwsS3 adapter here instead of local here
 $S3Client = \Aws\S3\S3Client::factory(array(

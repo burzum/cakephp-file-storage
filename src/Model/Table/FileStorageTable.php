@@ -26,13 +26,6 @@ class FileStorageTable extends Table {
 	public $name = 'FileStorage';
 
 /**
- * Table name
- *
- * @var string
- */
-	public $useTable = 'file_storage';
-
-/**
  * The record that was deleted
  *
  * This gets set in the beforeDelete() callback so that the data is available
@@ -41,34 +34,6 @@ class FileStorageTable extends Table {
  * @var array
  */
 	public $record = array();
-
-/**
- * Validation rules
- *
- * @var array
- */
-	public $validate = array(
-		'adapter' => array(
-			'notEmpty' => array(
-				'rule' => array('notEmpty')
-			)
-		),
-		'path' => array(
-			'notEmpty' => array(
-				'rule' => array('notEmpty')
-			)
-		),
-		'foreign_key' => array(
-			'notEmpty' => array(
-				'rule' => array('notEmpty')
-			)
-		),
-		'model' => array(
-			'notEmpty' => array(
-				'rule' => array('notEmpty')
-			)
-		)
-	);
 
 /**
  * Initialize
