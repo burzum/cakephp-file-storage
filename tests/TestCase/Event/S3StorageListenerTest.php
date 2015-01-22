@@ -30,7 +30,9 @@ class S3StorageListenerTest extends FileStorageTestCase {
  * @return void
  */
 	public function setUp() {
-		$this->Model = new FileStorageTable();
+		parent::setUp();
+		$this->Table = TableRegistry::get('Burzum/FileStorage.FileStorage');
+		debug($this->Table->find('all'));
 		//$this->Listener = $this->getMock('TestS3StorageListener');
 		$this->Listener = new TestS3StorageListener();
 	}
@@ -42,7 +44,7 @@ class S3StorageListenerTest extends FileStorageTestCase {
  */
 	public function tearDown() {
 		parent::tearDown();
-		unset($this->Listener, $this->Model);
+		unset($this->Listener, $this->Table);
 		TableRegistry::clear();
 	}
 
@@ -52,8 +54,7 @@ class S3StorageListenerTest extends FileStorageTestCase {
  * @return void
  */
 	public function testBuildPath() {
-		$this->Model->data = array(
-			'FileStorage' => array(
+		$entity = $this->Table->newEntity(array(
 				'model' => 'Document',
 				'adapter' => 'Test',
 				'filename' => 'test.png',
@@ -68,16 +69,16 @@ class S3StorageListenerTest extends FileStorageTestCase {
 				1 => 'my-cool-bucket'
 			)
 		);
-/*
+
 		$this->Listener->expects($this->any())
 			->method('getAdapterConfig')
 			->with('Test')
 			->will($this->returnValue($adapterConfig));
-*/
+
 		$result = $this->Listener->buildPath(new Event(
 			'FileStorage.afterSave',
-			$this->Model
-		));
+			$this->Table
+		), $entity);
 
 		$expected = array(
 			'filename' => '144c4170676011e3949a0800200c9a66.png',
@@ -90,7 +91,7 @@ class S3StorageListenerTest extends FileStorageTestCase {
 
 		$result = $this->Listener->buildPath(new Event(
 			'FileStorage.afterSave',
-			$this->Model
+			$this->Table
 		));
 
 		$expected = array(

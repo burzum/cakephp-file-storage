@@ -158,7 +158,7 @@ class FileStorageTable extends Table {
  * @param array $options
  * @return boolean
  */
-	public function beforeDelete(Event $event, Entity $entity) {
+	public function beforeDelete(Cake\Event\Event $event, Cake\ORM\Entity $entity) {
 		if (!parent::beforeDelete($event, $entity)) {
 			return false;
 		}
@@ -180,9 +180,12 @@ class FileStorageTable extends Table {
 /**
  * afterDelete callback
  *
- * @return mixed
+ * @param \Cake\Event\Event $event
+ * @param \Burzum\FileStorage\Model\Table\Entity $entity
+ * @param array $options
+ * @return boolean
  */
-	public function afterDelete(Event $event, Entity $entity, $options) {
+	public function afterDelete(Cake\Event\Event $event, Cake\ORM\Entity $entity, $options) {
 		try {
 			$Storage = $this->getStorageAdapter($entity['adapter']);
 			$Storage->delete($entity['path']);

@@ -92,7 +92,7 @@ class ImageStorageTable extends FileStorageTable {
  * @param array $options
  * @return boolean
  */
-	public function beforeDelete(Event $event, Entity $entity) {
+	public function beforeDelete(Cake\Event\Event $event, Cake\ORM\Entity $entity) {
 		if (!parent::beforeDelete($event, $entity)) {
 			return false;
 		}
@@ -115,14 +115,18 @@ class ImageStorageTable extends FileStorageTable {
  *
  * Note that we do not call the parent::afterDelete(), we just want to trigger the ImageStorage.afterDelete event but not the FileStorage.afterDelete at the same time!
  *
+ * @param \Cake\Event\Event $event
+ * @param \Burzum\FileStorage\Model\Table\Entity $entity
+ * @param array $options
  * @return void
  */
-	public function afterDelete(Event $event, Entity $entity, $options) {
+	public function afterDelete(Cake\Event\Event $event, Cake\ORM\Entity $entity, $options) {
 		$Event = new Event('ImageStorage.afterDelete', $this, array(
 			'record' => $entity,
 			'storage' => $this->getStorageAdapter($entity['adapter'])
 		));
 		$this->getEventManager()->dispatch($Event);
+		return true;
 	}
 
 /**

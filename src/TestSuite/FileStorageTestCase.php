@@ -4,7 +4,7 @@ namespace Burzum\FileStorage\TestSuite;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use Cake\Utility\Folder;
+use Cake\Filesystem\Folder;
 use Burzum\FileStorage\Lib\StorageManager;
 
 /**

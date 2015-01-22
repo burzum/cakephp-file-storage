@@ -30,7 +30,7 @@ class FileStorageTest extends FileStorageTestCase {
  */
 	public function setUp() {
 		parent::setUp();
-		$this->FileStorage = new FileStorageTable();
+		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
 	}
 
 /**

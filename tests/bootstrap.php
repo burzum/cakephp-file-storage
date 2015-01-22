@@ -11,6 +11,7 @@ $findRoot = function ($root) {
 	} while ($root !== $lastRoot);
 	throw new Exception('Cannot find the root of the application, unable to run tests');
 };
+
 $root = $findRoot(__FILE__);
 unset($findRoot);
 chdir($root);
@@ -19,8 +20,12 @@ if (file_exists($root . '/config/bootstrap.php')) {
 	//return;
 }
 require $root . '/vendor/cakephp/cakephp/tests/bootstrap.php';
-$loader->addNamespace('Cake\Test', './vendor/cakephp/cakephp/tests');
-$loader->addNamespace('Burzum\Imagine', './plugins/Burzum/Imagine/src');
+$loader = require $root . '/vendor/autoload.php';
+
+$loader->setPsr4('Cake\\', './vendor/cakephp/cakephp/src');
+$loader->setPsr4('Cake\Test\\', './vendor/cakephp/cakephp/tests');
+$loader->setPsr4('Burzum\Imagine\\', './plugins/Burzum/Imagine/src');
+
 Plugin::load('Burzum/FileStorage', [
 	'path' => dirname(dirname(__FILE__)) . DS,
 	'autoload' => true,
