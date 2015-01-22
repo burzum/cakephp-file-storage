@@ -10,7 +10,7 @@ use Burzum\FileStorage\Lib\FileStorageUtils;
  * ImageStorageTable
  *
  * @author Florian Krämer
- * @copyright 2012 - 2014 Florian Krämer
+ * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
  */
 class ImageStorageTable extends FileStorageTable {
@@ -31,13 +31,13 @@ class ImageStorageTable extends FileStorageTable {
 	public function initialize(array $config) {
 		parent::initialize($config);
 		$this->addBehavior('Burzum/Imagine.Imagine');
-		$this->addBehavior('Burzum/FileStorage.UploadValidator', array(
-			'localFile' => false,
-			'validate' => true,
-			'allowedExtensions' => array(
-				'jpg', 'jpeg', 'png', 'gif'
-			)
-		));
+//		$this->addBehavior('Burzum/FileStorage.UploadValidator', array(
+//			'localFile' => false,
+//			'validate' => true,
+//			'allowedExtensions' => array(
+//				'jpg', 'jpeg', 'png', 'gif'
+//			)
+//		));
 	}
 
 /**
@@ -48,7 +48,7 @@ class ImageStorageTable extends FileStorageTable {
  * @param array $options
  * @return boolean true on success
  */
-	public function beforeSave(Event $event, Entity $entity, $options) {
+	public function beforeSave(\Cake\Event\Event $event,  \Cake\ORM\Entity $entity, $options) {
 		if (!parent::beforeSave($event, $entity, $options)) {
 			return false;
 		}
@@ -72,7 +72,7 @@ class ImageStorageTable extends FileStorageTable {
  * @param array $options
  * @return boolean
  */
-	public function afterSave(Event $event, Entity $entity, $options) {
+	public function afterSave(\Cake\Event\Event $event,  \Cake\ORM\Entity $entity, $options) {
 		if ($entity->isNew) {
 			$Event = new Event('ImageStorage.afterSave', $this, array(
 				'created' => $event->data['entity']->isNew,
@@ -92,8 +92,8 @@ class ImageStorageTable extends FileStorageTable {
  * @param array $options
  * @return boolean
  */
-	public function beforeDelete(Event $event, Entity $entity, ArrayObject $options) {
-		if (!parent::beforeDelete($event, $entity, $options)) {
+	public function beforeDelete(\Cake\Event\Event $event, \Cake\ORM\Entity $entity) {
+		if (!parent::beforeDelete($event, $entity)) {
 			return false;
 		}
 
@@ -115,49 +115,18 @@ class ImageStorageTable extends FileStorageTable {
  *
  * Note that we do not call the parent::afterDelete(), we just want to trigger the ImageStorage.afterDelete event but not the FileStorage.afterDelete at the same time!
  *
+ * @param \Cake\Event\Event $event
+ * @param \Burzum\FileStorage\Model\Table\Entity $entity
+ * @param array $options
  * @return void
  */
-	public function afterDelete(Event $event, Entity $entity, $options) {
+	public function afterDelete(\Cake\Event\Event $event, \Cake\ORM\Entity $entity, $options) {
 		$Event = new Event('ImageStorage.afterDelete', $this, array(
 			'record' => $entity,
 			'storage' => $this->getStorageAdapter($entity['adapter'])
 		));
 		$this->getEventManager()->dispatch($Event);
-	}
-
-/**
- * Serializes and then hashes an array of operations that are applied to an image
- *
- * @deprecated Don't use this anymore but FileStorageUtils::hashOperations() instead.
- * @param array $operations
- * @return array
- */
-	public function hashOperations($operations) {
-		return FileStorageUtils::hashOperations($operations);
-	}
-
-/**
- * Generate hashes
- *
- * @deprecated Don't use this anymore but FileStorageUtils::generateHashes() instead.
- * @param string
- * @return void
- */
-	public function generateHashes($configPath = 'FileStorage') {
-		return FileStorageUtils::generateHashes($configPath);
-	}
-
-/**
- * Recursive ksort() implementation
- *
- * @deprecated Don't use this anymore but FileStorageUtils::ksortRecursive() instead.
- * @param array $array
- * @param integer
- * @return void
- * @link https://gist.github.com/601849
- */
-	public function ksortRecursive(&$array, $sortFlags = SORT_REGULAR) {
-		return FileStorageUtils::ksortRecursive($array, $sortFlags);
+		return true;
 	}
 
 /**

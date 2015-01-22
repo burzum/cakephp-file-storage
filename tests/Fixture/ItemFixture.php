@@ -3,7 +3,7 @@
  * Item Fixture
  *
  * @author Florian Krämer
- * @copyright 2012 - 2014 Florian Krämer
+ * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
  */
 class ItemFixture extends CakeTestFixture {

@@ -5,17 +5,15 @@ use Cake\ORM\Table;
 use Cake\ORM\Entity;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\Utility\Folder;
-use Cake\Utility\File;
-use Cake\Utility\String;
+use Cake\Filesystem\Folder;
+use Cake\Filesystem\File;
 use Burzum\FileStorage\Lib\StorageManager;
-use Burzum\FileStorage\Lib\FileStorageUtils;
 
 /**
  * FileStorageTable
  *
  * @author Florian Krämer
- * @copyright 2012 - 2014 Florian Krämer
+ * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
  */
 class FileStorageTable extends Table {
@@ -28,13 +26,6 @@ class FileStorageTable extends Table {
 	public $name = 'FileStorage';
 
 /**
- * Table name
- *
- * @var string
- */
-	public $useTable = 'file_storage';
-
-/**
  * The record that was deleted
  *
  * This gets set in the beforeDelete() callback so that the data is available
@@ -45,41 +36,14 @@ class FileStorageTable extends Table {
 	public $record = array();
 
 /**
- * Validation rules
- *
- * @var array
- */
-	public $validate = array(
-		'adapter' => array(
-			'notEmpty' => array(
-				'rule' => array('notEmpty')
-			)
-		),
-		'path' => array(
-			'notEmpty' => array(
-				'rule' => array('notEmpty')
-			)
-		),
-		'foreign_key' => array(
-			'notEmpty' => array(
-				'rule' => array('notEmpty')
-			)
-		),
-		'model' => array(
-			'notEmpty' => array(
-				'rule' => array('notEmpty')
-			)
-		)
-	);
-
-/**
  * Initialize
  *
  * @param array $config
  * @return void
  */
 	public function initialize(array $config) {
-		//$this->addBehavior('FileStorage.UploadValidator');
+		parent::initialize($config);
+		//$this->addBehavior('Burzum/FileStorage.UploadValidator');
 		$this->displayField('filename');
 		$this->table('file_storage');
 	}
@@ -91,8 +55,8 @@ class FileStorageTable extends Table {
  * @return void
  */
 	public function configureUploadValidation($options) {
-		$this->Behaviors->unload('FileStorage.UploadValidator');
-		$this->Behaviors->load('FileStorage.UploadValidator', $options);
+		$this->removeBehavior('Burzum/FileStorage.UploadValidator');
+		$this->addBehavior('Burzum/FileStorage.UploadValidator', $options);
 	}
 
 /**
@@ -159,8 +123,8 @@ class FileStorageTable extends Table {
  * @param array $options
  * @return boolean
  */
-	public function beforeDelete(Event $event, Entity $entity, ArrayObject $options) {
-		if (!parent::beforeDelete($event, $entity, $options)) {
+	public function beforeDelete(\Cake\Event\Event $event, \Cake\ORM\Entity $entity) {
+		if (!parent::beforeDelete($event, $entity)) {
 			return false;
 		}
 
@@ -181,9 +145,12 @@ class FileStorageTable extends Table {
 /**
  * afterDelete callback
  *
- * @return mixed
+ * @param \Cake\Event\Event $event
+ * @param \Burzum\FileStorage\Model\Table\Entity $entity
+ * @param array $options
+ * @return boolean
  */
-	public function afterDelete(Event $event, Entity $entity, $options) {
+	public function afterDelete(\Cake\Event\Event $event, \Cake\ORM\Entity $entity, $options) {
 		try {
 			$Storage = $this->getStorageAdapter($entity['adapter']);
 			$Storage->delete($entity['path']);

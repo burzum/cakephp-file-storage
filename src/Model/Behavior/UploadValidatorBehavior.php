@@ -1,4 +1,5 @@
 <?php
+
 namespace Burzum\FileStorage\Model\Behavior;
 
 use Burzum\FileStorage\Lib\FileStorageUtils;
@@ -18,7 +19,7 @@ use Cake\Utility\Hash;
  * This behavior will validate uploaded files, nothing more, it won't take care of storage.
  *
  * @author Florian Krämer
- * @copyright 2012 - 2014 Florian Krämer
+ * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
  */
 class UploadValidatorBehavior extends Behavior {
@@ -68,7 +69,7 @@ class UploadValidatorBehavior extends Behavior {
 /**
  * Before validation callback
  *
- * Check if the file is really an uploaded file and run custom checks for file 
+ * Check if the file is really an uploaded file and run custom checks for file
  * extensions and / or mime type if configured to do so.
  *
  * @param array $options
@@ -76,9 +77,6 @@ class UploadValidatorBehavior extends Behavior {
  */
 	//public function beforeValidate($options = array()) {
 	public function beforeValidate(Event $event, Entity $entity, $array) {
-		//debug($event);
-		//debug($entity);
-		//die();
 		extract($this->_config);
 		if ($validate === true && isset($this->_table->event[$this->_table->alias()][$fileField]) && is_array($this->_table->event[$this->_table->alias()][$fileField])) {
 
@@ -204,28 +202,5 @@ class UploadValidatorBehavior extends Behavior {
  */
 	public function uploadError() {
 		return $this->uploadError;
-	}
-
-/**
- * Returns an array that matches the structure of a regular upload for a local file
- *
- * @param $file
- * @param string File with path
- * @return array Array that matches the structure of a regular upload
- */
-	public function uploadArray($file, $filename = null) {
-		$File = new File($file);
-
-		if (empty($fileName)) {
-			$filename = basename($file);
-		}
-
-		return [
-			'name' => $filename,
-			'tmp_name' => $file,
-			'error' => 0,
-			'type' => $File->mime(),
-			'size' => $File->size()
-		];
 	}
 }

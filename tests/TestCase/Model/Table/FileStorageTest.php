@@ -9,7 +9,7 @@ use Burzum\FileStorage\Model\Table\FileStorageTable;
  * File Storage Test
  *
  * @author Florian Krämer
- * @copyright 2012 - 2014 Florian Krämer
+ * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
  */
 class FileStorageTest extends FileStorageTestCase {
@@ -30,7 +30,7 @@ class FileStorageTest extends FileStorageTestCase {
  */
 	public function setUp() {
 		parent::setUp();
-		$this->FileStorage = new FileStorageTable();
+		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
 	}
 
 /**

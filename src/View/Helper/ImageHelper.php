@@ -10,7 +10,7 @@ use Cake\View\Helper;
  * ImageHelper
  *
  * @author Florian Krämer
- * @copyright 2012 - 2014 Florian Krämer
+ * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
  */
 class ImageHelper extends Helper {
@@ -55,9 +55,9 @@ class ImageHelper extends Helper {
 		}
 
 		if (!empty($version)) {
-			$hash = Configure::read('Media.imageHashes.' . $image['model'] . '.' . $version);
+			$hash = Configure::read('FileStorage.imageHashes.' . $image['model'] . '.' . $version);
 			if (empty($hash)) {
-				throw new \InvalidArgumentException(__d('file_storage', 'No valid version key (%s %s) passed!', @$image['model'], $version));
+				throw new \InvalidArgumentException(sprintf('No valid version key (Identifier: `%s` Key: `%s`) passed!', @$image['model'], $version));
 			}
 		} else {
 			$hash = null;
