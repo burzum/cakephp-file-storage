@@ -5,6 +5,10 @@ use Cake\ORM\Entity;
 
 /**
  * FileStorage Entity.
+ *
+ * @author Florian Krämer
+ * @copyright 2012 - 2015 Florian Krämer
+ * @license MIT
  */
 class FileStorage extends Entity {
 

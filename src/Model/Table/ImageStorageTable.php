@@ -92,7 +92,7 @@ class ImageStorageTable extends FileStorageTable {
  * @param array $options
  * @return boolean
  */
-	public function beforeDelete(Cake\Event\Event $event, Cake\ORM\Entity $entity) {
+	public function beforeDelete(\Cake\Event\Event $event, \Cake\ORM\Entity $entity) {
 		if (!parent::beforeDelete($event, $entity)) {
 			return false;
 		}
@@ -120,48 +120,13 @@ class ImageStorageTable extends FileStorageTable {
  * @param array $options
  * @return void
  */
-	public function afterDelete(Cake\Event\Event $event, Cake\ORM\Entity $entity, $options) {
+	public function afterDelete(\Cake\Event\Event $event, \Cake\ORM\Entity $entity, $options) {
 		$Event = new Event('ImageStorage.afterDelete', $this, array(
 			'record' => $entity,
 			'storage' => $this->getStorageAdapter($entity['adapter'])
 		));
 		$this->getEventManager()->dispatch($Event);
 		return true;
-	}
-
-/**
- * Serializes and then hashes an array of operations that are applied to an image
- *
- * @deprecated Don't use this anymore but FileStorageUtils::hashOperations() instead.
- * @param array $operations
- * @return array
- */
-	public function hashOperations($operations) {
-		return FileStorageUtils::hashOperations($operations);
-	}
-
-/**
- * Generate hashes
- *
- * @deprecated Don't use this anymore but FileStorageUtils::generateHashes() instead.
- * @param string
- * @return void
- */
-	public function generateHashes($configPath = 'FileStorage') {
-		return FileStorageUtils::generateHashes($configPath);
-	}
-
-/**
- * Recursive ksort() implementation
- *
- * @deprecated Don't use this anymore but FileStorageUtils::ksortRecursive() instead.
- * @param array $array
- * @param integer
- * @return void
- * @link https://gist.github.com/601849
- */
-	public function ksortRecursive(&$array, $sortFlags = SORT_REGULAR) {
-		return FileStorageUtils::ksortRecursive($array, $sortFlags);
 	}
 
 /**

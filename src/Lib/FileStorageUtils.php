@@ -127,7 +127,7 @@ class FileStorageUtils {
 	public static function generateHashes($configPath = 'FileStorage') {
 		$imageSizes = Configure::read($configPath . '.imageSizes');
 		if (is_null($imageSizes)) {
-			throw new \RuntimeException(__d('file_storage', 'Image processing configuration in %s is missing!', $configPath . '.imageSizes'));
+			throw new \RuntimeException(sprintf('Image processing configuration in %s is missing!', $configPath . '.imageSizes'));
 		}
 		self::ksortRecursive($imageSizes);
 		foreach ($imageSizes as $model => $version) {
@@ -154,5 +154,28 @@ class FileStorageUtils {
 			self::ksortRecursive($arr, $sortFlags);
 		}
 		return true;
+	}
+
+/**
+ * Returns an array that matches the structure of a regular upload for a local file
+ *
+ * @param $file
+ * @param string File with path
+ * @return array Array that matches the structure of a regular upload
+ */
+	public function uploadArray($file, $filename = null) {
+		$File = new File($file);
+
+		if (empty($fileName)) {
+			$filename = basename($file);
+		}
+
+		return [
+			'name' => $filename,
+			'tmp_name' => $file,
+			'error' => 0,
+			'type' => $File->mime(),
+			'size' => $File->size()
+		];
 	}
 }

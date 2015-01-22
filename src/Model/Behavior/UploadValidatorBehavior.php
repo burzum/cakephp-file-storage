@@ -77,9 +77,6 @@ class UploadValidatorBehavior extends Behavior {
  */
 	//public function beforeValidate($options = array()) {
 	public function beforeValidate(Event $event, Entity $entity, $array) {
-		//debug($event);
-		//debug($entity);
-		//die();
 		extract($this->_config);
 		if ($validate === true && isset($this->_table->event[$this->_table->alias()][$fileField]) && is_array($this->_table->event[$this->_table->alias()][$fileField])) {
 
@@ -205,28 +202,5 @@ class UploadValidatorBehavior extends Behavior {
  */
 	public function uploadError() {
 		return $this->uploadError;
-	}
-
-/**
- * Returns an array that matches the structure of a regular upload for a local file
- *
- * @param $file
- * @param string File with path
- * @return array Array that matches the structure of a regular upload
- */
-	public function uploadArray($file, $filename = null) {
-		$File = new File($file);
-
-		if (empty($fileName)) {
-			$filename = basename($file);
-		}
-
-		return [
-			'name' => $filename,
-			'tmp_name' => $file,
-			'error' => 0,
-			'type' => $File->mime(),
-			'size' => $File->size()
-		];
 	}
 }

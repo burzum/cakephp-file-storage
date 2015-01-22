@@ -3,6 +3,7 @@ namespace Burzum\FileStorage\Test\TestCase\View\Helper;
 
 use Burzum\FileStorage\TestSuite\FileStorageTestCase;
 use Burzum\FileStorage\View\Helper\ImageHelper;
+use Burzum\FileStorage\Lib\FileStorageUtils;
 use Cake\View\View;
 use Cake\View\Helper\HtmlHelper;
 use Cake\Network\Request;
