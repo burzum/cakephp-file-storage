@@ -11,7 +11,7 @@ use Burzum\FileStorage\Model\Table\ImageStorageTable;
  * Image Storage Test
  *
  * @author Florian Krämer
- * @copyright 2012 - 2014 Florian Krämer
+ * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
  */
 class ImageStorageTest extends FileStorageTestCase {

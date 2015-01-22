@@ -17,7 +17,7 @@ class TestImageProcessingListener extends ImageProcessingListener {
  * LocalImageProcessingListener Test
  *
  * @author Florian Krämer
- * @copyright 2012 - 2014 Florian Krämer
+ * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
  *
  * @property ImageProcessingListener $Listener

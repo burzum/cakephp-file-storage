@@ -11,7 +11,7 @@ use Burzum\FileStorage\Lib\StorageManager;
  * FileStorageTestCase
  *
  * @author Florian Krämer
- * @copyright 2012 - 2014 Florian Krämer
+ * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
  */
 class FileStorageTestCase extends TestCase {

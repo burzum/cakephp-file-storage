@@ -19,7 +19,7 @@ use Cake\Utility\Hash;
  * This behavior will validate uploaded files, nothing more, it won't take care of storage.
  *
  * @author Florian Krämer
- * @copyright 2012 - 2014 Florian Krämer
+ * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
  */
 class UploadValidatorBehavior extends Behavior {
