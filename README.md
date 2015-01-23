@@ -3,6 +3,8 @@ FileStorage Plugin for CakePHP 2.x and 3.x
 
 **The 3.0 branch is still in development!** You can help updating the code (it's not that hard) or make a donation if you want to speed things up. The work done on this plugin is done voluntary by me in my *free* time. So please respect that I'm not in a hurry to get it updated ASAP.
 
+There are still tests to be done and probably many issues but it's saving files again now. Validation of file storage records is incomplete. The validator is done but you'll have to validate your entities manually for now. I would be happy if somebody would try to use the plugin and report issues.
+
 ---
 
 The **File Storage** plugin is giving you the possibility to store files in virtually any kind of storage backend. This plugin is wrapping the [Gaufrette](https://github.com/KnpLabs/Gaufrette) library in a CakePHP fashion and provides a simple way to use the storage adapters through the [StorageManager](Lib/StorageManager.php) class.
