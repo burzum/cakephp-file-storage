@@ -15,13 +15,13 @@ class StorageManager {
  *
  * @var array
  */
-	protected $_adapterConfig = array(
-		'Local' => array(
-			'adapterOptions' => array(TMP, true),
+	protected $_adapterConfig = [
+		'Local' => [
+			'adapterOptions' => [TMP, true],
 			'adapterClass' => '\Gaufrette\Adapter\Local',
 			'class' => '\Gaufrette\Filesystem'
-		)
-	);
+		]
+	];
 
 /**
  * Sets the default or active adapter that is used
@@ -104,7 +104,7 @@ class StorageManager {
 
 		if (isset($_this->_adapterConfig[$name])) {
 			if ($_this->_activeAdapter == $name) {
-				throw new RuntimeException(__d('file_storage', 'You can not flush the active adapter %s', $name));
+				throw new \RuntimeException(__d('file_storage', 'You can not flush the active adapter %s', $name));
 			}
 			unset($_this->_adapterConfig[$name]);
 			return true;
@@ -133,7 +133,7 @@ class StorageManager {
 			if (!empty($_this->_adapterConfig[$adapterName])) {
 				$adapter = $_this->_adapterConfig[$adapterName];
 			} else {
-				throw new RuntimeException(__d('file_storage', 'Invalid Storage Adapter %s', $adapterName));
+				throw new \RuntimeException(__d('file_storage', 'Invalid Storage Adapter %s', $adapterName));
 			}
 
 			if (!empty($_this->_adapterConfig[$adapterName]['object']) && $renewObject === false) {
@@ -148,6 +148,9 @@ class StorageManager {
 
 		$class = $adapter['adapterClass'];
 		$Reflection = new \ReflectionClass($class);
+		if (!is_array($adapter['adapterOptions'])) {
+			throw new \InvalidArgumentException(sprintf('%s: The adapter options must be an array!', $adapterName));
+		}
 		$adapterObject = $Reflection->newInstanceArgs($adapter['adapterOptions']);
 		$engineObject = new $adapter['class']($adapterObject);
 		if ($isConfigured) {

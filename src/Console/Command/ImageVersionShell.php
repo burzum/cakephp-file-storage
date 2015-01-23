@@ -60,7 +60,7 @@ class ImageVersionShell extends Shell {
 
 		if ($this->command == 'generate' || $this->command == 'remove') {
 			if (isset($this->args[1]) && isset($this->args[2])) {
-				$operations = Configure::read('Media.imageSizes.' . $this->args[1] . '.' . $this->args[2]);
+				$operations = Configure::read('FileStorage.imageSizes.' . $this->args[1] . '.' . $this->args[2]);
 
 				if (empty($operations)) {
 					$this->out(__d('file_storage', 'Invalid table or version.'));

@@ -1,6 +1,7 @@
 <?php
 namespace Burzum\FileStorage\Test\TestCase\Lib\Utility;
 
+use Cake\Core\Configure;
 use Burzum\FileStorage\TestSuite\FileStorageTestCase;
 use Burzum\FileStorage\Lib\FileStorageUtils;
 
@@ -46,5 +47,53 @@ class FileStorageUtilsTest extends FileStorageTestCase {
 			$result = FileStorageUtils::normalizePath('\nice\path\test');
 			$this->assertEquals($result, '/nice/path/test');
 		}
+	}
+
+	public function testHashOperations() {
+		$result = FileStorageUtils::hashOperations(array(
+			'mode' => 'inbound',
+			'width' => 80,
+			'height' => 80
+		));
+		$this->assertEquals($result, '8c70933e');
+	}
+
+	public function testGenerateHashes() {
+		Configure::write('FileStorage.imageSizes', array(
+			'Test' => array(
+				't50' => array(
+					'thumbnail' => array(
+						'mode' => 'outbound',
+						'width' => 50, 'height' => 50)),
+				't150' => array(
+					'thumbnail' => array(
+						'mode' => 'outbound',
+						'width' => 150, 'height' => 150
+					)
+				)
+			),
+			'UserAvatar' => [
+				'small' => array(
+					'thumbnail' => array(
+						'mode' => 'inbound',
+						'width' => 80,
+						'height' => 80
+					)
+				)
+			]
+		));
+
+		$expected = [
+			'Test' => [
+				't150' => 'c3f33c2a',
+				't50' => '4c34aa2e'
+			],
+			'UserAvatar' => [
+				'small' => '19e760eb'
+			]
+		];
+		FileStorageUtils::generateHashes();
+		$result = Configure::read('FileStorage.imageHashes');
+		$this->assertEquals($result, $expected);
 	}
 }

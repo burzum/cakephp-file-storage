@@ -41,8 +41,6 @@ $listener = new ImageProcessingListener();
 EventManager::instance()->attach($listener);
 
 Configure::write('FileStorage', array(
-	// Configure the `basePath` for the Local adapter, not needed when *not* using it
-	'basePath' => ROOT . 'file_storage' . DS,
 	// Configure image versions on a per model base
 	'imageSizes' => array(
 		'ProductImage' => array(

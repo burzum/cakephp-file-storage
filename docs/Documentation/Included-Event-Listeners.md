@@ -29,7 +29,7 @@ Versioned images will look like that
 basePath/images/xx/xx/xx/<uuid>/<uuid>.<hash>.<extension>
 ```
 
- * For the Local adapter basePath is the value from Configure::read('Media.basePath').
+ * For the Local adapter basePath is the value configured for this adapter, by default the `TMP` constant.
  * For AmazonS3 the basePath will be the bucket and Amazon S3 URL prefix.
 
 xx stands for a semi random alphanumerical value calculated based on the given file name if the Local adapter was used.

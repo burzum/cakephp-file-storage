@@ -171,7 +171,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 				$this->log($e->getMessage(), 'file_storage');
 				return false;
 			}
-			$operations = Configure::read('Media.imageSizes.' . $record['model']);
+			$operations = Configure::read('FileStorage.imageSizes.' . $record['model']);
 			if (!empty($operations)) {
 				$Event->data['operations'] = $operations;
 				$this->_removeVersions($Event);
@@ -216,7 +216,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 					'callbacks' => false
 				));
 
-				$operations = Configure::read('Media.imageSizes.' . $record['model']);
+				$operations = Configure::read('FileStorage.imageSizes.' . $record['model']);
 				if (!empty($operations)) {
 					$this->_createVersions($Model, $record, $operations);
 				}

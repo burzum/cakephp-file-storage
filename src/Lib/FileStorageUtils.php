@@ -166,11 +166,9 @@ class FileStorageUtils {
  */
 	public function uploadArray($file, $filename = null) {
 		$File = new File($file);
-
 		if (empty($fileName)) {
 			$filename = basename($file);
 		}
-
 		return [
 			'name' => $filename,
 			'tmp_name' => $file,

@@ -44,7 +44,16 @@ class FileStorageTestCase extends TestCase {
 						'width' => 150, 'height' => 150
 					)
 				)
-			)
+			),
+			'UserAvatar' => [
+				'small' => array(
+					'thumbnail' => array(
+						'mode' => 'inbound',
+						'width' => 80,
+						'height' => 80
+					)
+				)
+			]
 		));
 
 		FileStorageUtils::generateHashes();
