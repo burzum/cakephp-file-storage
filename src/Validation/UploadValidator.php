@@ -6,16 +6,98 @@ use Cake\Validation\Validator;
 
 class UploadValidator extends Validator {
 
+/**
+ * Upload error message after validation.
+ *
+ * @var string
+ */
 	protected $_uploadError = '';
+
+/**
+ * Upload error message after validation.
+ *
+ * @var string
+ */
 	protected $_mimeType = '';
+
+/**
+ * Upload extension after validation.
+ *
+ * @var string
+ */
 	protected $_extension = '';
+
+/**
+ * Upload file size after validation.
+ *
+ * @var string
+ */
 	protected $_filesize = 0;
 
+/**
+ * Upload error message.
+ *
+ * @var string
+ */
+	public function __construct() {
+		$this->provider('UploadValidator', $this);
+	}
+
+/**
+ * Checks if the file was uploaded via HTTP POST.
+ *
+ * Note that calling this function before move_uploaded_file() is not necessary,
+ * as it does the exact same checks already. It provides no extra security.
+ * Only when you're trying to use an uploaded file for something other than
+ * moving it to a new location.
+ *
+ * @link http://php.net/manual/en/function.is-uploaded-file.php
+ * @param array $value
+ * @return boolean Returns TRUE if the file named by filename was uploaded via HTTP POST.
+ */
+	public function isUploadedFile($value) {
+		return is_uploaded_file($value['tmp_name']);
+	}
+
+/**
+ * Validates that a set field / property is a valid upload array.
+ *
+ * @param mixed $value
+ * @return boolean
+ */
+	public function isUploadArray($value) {
+		if (!is_array($value)) {
+			return false;
+		}
+		$requiredKeys = ['filesize', 'name', 'tmp_name', 'size', 'error'];
+		$keys = array_keys($value);
+		foreach ($keys as $key) {
+			if (!in_array($key, $requiredKeys)) {
+				return false;
+			}
+		}
+		return;
+	}
+
+/**
+ * Validates the filesize.
+ *
+ * @param array $value.
+ * @param array $extensions.
+ * @return boolean
+ */
 	public function filesize($value, $maxSize) {
 		$this->_filesize = $value['size'];
 		return ($value['size'] > $maxSize);
 	}
 
+/**
+ * Validates extensions.
+ *
+ * @param array $value.
+ * @param array $extensions.
+ * @return boolean
+ */
 	public function extension($value, $extensions) {
 		if (is_string($extensions)) {
 			$extensions = [$extensions];
@@ -30,6 +112,13 @@ class UploadValidator extends Validator {
 		return true;
 	}
 
+/**
+ * Validates mime types.
+ *
+ * @param array $value.
+ * @param array $mimeTypes.
+ * @return boolean
+ */
 	public function mimeType($value, $mimeTypes) {
 		if (is_string($mimeTypes)) {
 			$mimeTypes = [$mimeTypes];
