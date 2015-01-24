@@ -31,13 +31,13 @@ class ImageStorageTable extends FileStorageTable {
 	public function initialize(array $config) {
 		parent::initialize($config);
 		$this->addBehavior('Burzum/Imagine.Imagine');
-//		$this->addBehavior('Burzum/FileStorage.UploadValidator', array(
-//			'localFile' => false,
-//			'validate' => true,
-//			'allowedExtensions' => array(
-//				'jpg', 'jpeg', 'png', 'gif'
-//			)
-//		));
+		$this->addBehavior('Burzum/FileStorage.UploadValidator', array(
+			'localFile' => false,
+			'validate' => true,
+			'allowedExtensions' => array(
+				'jpg', 'jpeg', 'png', 'gif'
+			)
+		));
 	}
 
 /**
@@ -74,12 +74,12 @@ class ImageStorageTable extends FileStorageTable {
  */
 	public function afterSave(\Cake\Event\Event $event,  \Cake\ORM\Entity $entity, $options) {
 		if ($entity->isNew) {
-			$Event = new Event('ImageStorage.afterSave', $this, array(
+			$imageEvent = new Event('ImageStorage.afterSave', $this, array(
 				'created' => $event->data['entity']->isNew,
 				'storage' => $this->getStorageAdapter($entity['adapter']),
 				'record' => $entity
 			));
-			$this->getEventManager()->dispatch($Event);
+			$this->getEventManager()->dispatch($imageEvent);
 		}
 		return true;
 	}
@@ -97,13 +97,13 @@ class ImageStorageTable extends FileStorageTable {
 			return false;
 		}
 
-		$Event = new Event('ImageStorage.beforeDelete', $this, array(
+		$imageEvent = new Event('ImageStorage.beforeDelete', $this, array(
 			'record' => $this->record,
 			'storage' => $this->getStorageAdapter($this->record[$this->alias]['adapter'])
 		));
-		$this->getEventManager()->dispatch($Event);
+		$this->getEventManager()->dispatch($imageEvent);
 
-		if ($Event->isStopped()) {
+		if ($imageEvent->isStopped()) {
 			return false;
 		}
 
@@ -121,11 +121,11 @@ class ImageStorageTable extends FileStorageTable {
  * @return void
  */
 	public function afterDelete(\Cake\Event\Event $event, \Cake\ORM\Entity $entity, $options) {
-		$Event = new Event('ImageStorage.afterDelete', $this, array(
+		$imageEvent = new Event('ImageStorage.afterDelete', $this, array(
 			'record' => $entity,
 			'storage' => $this->getStorageAdapter($entity['adapter'])
 		));
-		$this->getEventManager()->dispatch($Event);
+		$this->getEventManager()->dispatch($imageEvent);
 		return true;
 	}
 

@@ -62,12 +62,20 @@ class UploadValidatorBehavior extends Behavior {
 		}
 	}
 
+/**
+ * Configures upload related validation rules for a validator.
+ *
+ * @param string $validatorName Config name of a validator.
+ * @param array $config Config options.
+ * @return void
+ */
 	public function configureUploadValidation($validatorName = 'default', $config = []) {
 		$uploadValidator = new \Burzum\FileStorage\Validation\UploadValidator();
 		$validator = $this->_table->validator($validatorName);
 		$validator->provider('UploadValidator', $uploadValidator);
 
-		$config = $this->_config =+ $config;
+		$config = $this->_config += $config;
+		$this->removeUploadValidationRules($validatorName);
 
 		if (!empty($config['validateImageSize'])) {
 			$validator->add($config['fileField'], 'imageSize', [
@@ -86,7 +94,7 @@ class UploadValidatorBehavior extends Behavior {
 					'filesize',
 					$config['validateFilesize']
 				],
-				'message' => __d('file_storage', 'The file is to big %d!', $validator->getFilesize())
+				'message' => __d('file_storage', 'The file is to big %d!', $uploadValidator->getFilesize())
 			]);
 		}
 		if ($config['validateUploadErrors'] === true) {
@@ -96,7 +104,7 @@ class UploadValidatorBehavior extends Behavior {
 					'uploadErrors',
 					['allowNoFileError' => $config['allowNoFileError']]
 				],
-				'message' => __d('file_storage', 'The mime-type %s is not allowed!', $validator->getMimeType())
+				'message' => __d('file_storage', 'The mime-type %s is not allowed!', $uploadValidator->getMimeType())
 			]);
 		}
 		if ($config['validateUploadArray'] === true) {
@@ -115,7 +123,7 @@ class UploadValidatorBehavior extends Behavior {
 					'mimeType',
 					$config['allowedMime']
 				],
-				'message' => __d('file_storage', 'The mime-type %s is not allowed!', $validator->getMimeType())
+				'message' => __d('file_storage', 'The mime-type %s is not allowed!', $uploadValidator->getMimeType())
 			]);
 		}
 		if (!empty($config['allowedExtensions'])) {
@@ -125,7 +133,7 @@ class UploadValidatorBehavior extends Behavior {
 					'extension',
 					$config['allowedExtensions']
 				],
-				'message' => __d('file_storage', 'The extension %s is not allowed.', $validator->getExtension())
+				'message' => __d('file_storage', 'The extension %s is not allowed.', $uploadValidator->getExtension())
 			]);
 		};
 		if ($config['localFile'] === true) {
@@ -137,8 +145,24 @@ class UploadValidatorBehavior extends Behavior {
 				'message' => __d('file_storage', 'Invalid file.')
 			]);
 		}
-		if (is_array($config['imageSize'])) {
+	}
 
+	public function removeUploadValidationRules($validatorName = 'default', $fieldName = null) {
+		if (empty($fieldName)) {
+			$fieldName = $this->_config['fileField'];
+		}
+		$validator = $this->_table->validator($validatorName);
+		$rules = [
+			'localFile',
+			'extension',
+			'mimeType',
+			'uploadArray',
+			'uploadErrors',
+			'filesize',
+			'imageSize'
+		];
+		foreach ($rules as $rule) {
+			$validator->remove($fieldName, $rule);
 		}
 	}
 }

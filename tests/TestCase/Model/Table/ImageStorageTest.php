@@ -32,7 +32,7 @@ class ImageStorageTest extends FileStorageTestCase {
  */
 	public function setUp() {
 		parent::setUp();
-		$this->Image = new ImageStorageTable();
+		$this->Image = TableRegistry::get('Burzum/FileStorage.ImageStorage');
 	}
 
 /**
@@ -138,7 +138,7 @@ class ImageStorageTest extends FileStorageTestCase {
  * @return void
  */
 	public function testValidateImazeSize() {
-		$this->Image->Behaviors->unload('FileStorage.UploadValidator');
+		//$this->Image->Behaviors->unload('FileStorage.UploadValidator');
 
 		$this->Image->validate = array(
 			'file' => array(

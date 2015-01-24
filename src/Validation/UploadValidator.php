@@ -153,6 +153,9 @@ class UploadValidator extends Validator {
 	}
 
 	public function imageSize($value, $options) {
+		if (!isset($options['height']) && !isset($options['width'])) {
+			throw new \InvalidArgumentException(__d('file_storage', 'Invalid image size validation parameters!'));
+		}
 		list($width, $height, $type, $attr) = getimagesize($value['tmp_name']);
 		if (isset($options['height'])) {
 			$validHeight = $this->_validateSize($height, $options['height'][1], $options['height'][2]);
