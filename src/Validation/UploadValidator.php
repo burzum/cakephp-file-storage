@@ -3,6 +3,7 @@ namespace Burzum\FileStorage\Validation;
 
 use Cake\Filesystem\File;
 use Cake\Validation\Validator;
+use Cake\I18n\Number;
 
 class UploadValidator extends Validator {
 
@@ -133,6 +134,15 @@ class UploadValidator extends Validator {
 		return true;
 	}
 
+/**
+ * Validates a size based on a given string operator.
+ *
+ * @integer $value1
+ * @string $operator
+ * @integer $value2
+ * @return boolean
+ * @throws \InvalidArgumentException
+ */
 	protected function _validateSize($value1, $operator, $value2) {
 		if ($operator === '>=') {
 			return ($value1 >= $value2);
@@ -152,6 +162,13 @@ class UploadValidator extends Validator {
 		throw new \InvalidArgumentException(sprintf('Invalid operator %s!', $operator));
 	}
 
+/**
+ * Validates the image size.
+ *
+ * @param array $value
+ * @param array $options
+ * @return boolean
+ */
 	public function imageSize($value, $options) {
 		if (!isset($options['height']) && !isset($options['width'])) {
 			throw new \InvalidArgumentException(__d('file_storage', 'Invalid image size validation parameters!'));
@@ -175,6 +192,14 @@ class UploadValidator extends Validator {
 		throw new \InvalidArgumentException('The 2nd argument is missing one or more configuration keyes.');
 	}
 
+/**
+ * Validates the image width.
+ *
+ * @param array $value
+ * @param string $operator
+ * @param integer $width
+ * @return boolean
+ */
 	public function imageWidth($value, $operator, $width) {
 		return $this->imageSize($value, [
 			'width' => [
@@ -184,6 +209,14 @@ class UploadValidator extends Validator {
 		]);
 	}
 
+/**
+ * Validates the image width.
+ *
+ * @param array $value
+ * @param string $operator
+ * @param integer $width
+ * @return boolean
+ */
 	public function imageHeight($value, $operator, $height) {
 		return $this->imageSize($value, [
 			'height' => [
@@ -215,7 +248,7 @@ class UploadValidator extends Validator {
 					return true;
 				break;
 				case UPLOAD_ERR_INI_SIZE:
-					$this->_uploadError = __d('file_storage', 'The uploaded file exceeds limit of %s.', CakeNumber::toReadableSize(ini_get('upload_max_filesize')));
+					$this->_uploadError = __d('file_storage', 'The uploaded file exceeds limit of %s.', Number::toReadableSize(ini_get('upload_max_filesize')));
 				break;
 				case UPLOAD_ERR_FORM_SIZE:
 					$this->_uploadError = __d('file_storage', 'The uploaded file is to big, please choose a smaller file or try to compress it.');

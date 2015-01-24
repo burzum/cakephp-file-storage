@@ -7,9 +7,11 @@ There are still tests to be done and probably many issues but it's saving files 
 
 ---
 
-The **File Storage** plugin is giving you the possibility to store files in virtually any kind of storage backend. This plugin is wrapping the [Gaufrette](https://github.com/KnpLabs/Gaufrette) library in a CakePHP fashion and provides a simple way to use the storage adapters through the [StorageManager](Lib/StorageManager.php) class.
+The **File Storage** plugin is giving you the possibility to upload and store files in virtually any kind of storage backend. This plugin is wrapping the [Gaufrette](https://github.com/KnpLabs/Gaufrette) library in a CakePHP fashion and provides a simple way to use the storage adapters through the [StorageManager](Lib/StorageManager.php) class.
 
 Storage adapters are an unified interface that allow you to store file data to your local file system, in memory, in a database or into a zip file and remote systems. There is a database table keeping track of what you stored where. You can always write your own adapter or extend and overload existing ones.
+
+**Supported Adapters**
 
  * Apc
  * Amazon S3
@@ -30,9 +32,9 @@ Storage adapters are an unified interface that allow you to store file data to y
 Requirements
 ------------
 
- * CakePHP 2.0+
- * PHP 5.3+
- * Gaufrette Library (included as git submodule or composer dependency)
+ * PHP 5.4+
+ * CakePHP 3.0
+ * Gaufrette Library (included as composer dependency)
 
 Optional but required for image processing:
 
@@ -64,8 +66,3 @@ Copyright 2012 - 2015, Florian Krämer
 
 Licensed under The MIT License
 Redistributions of files must retain the above copyright notice.
-
-Credits
--------
-
-Thanks to Larry Masters and the [CakeDC](http://cakedc.com) for the chance to work with a great team and Jitka Koukalová for her excellent advice in programming related questions she gave me some years ago. You guys and girls made me a better programmer!

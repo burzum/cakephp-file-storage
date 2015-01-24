@@ -6,6 +6,7 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Filesystem\Folder;
 use Cake\Filesystem\File;
+use Cake\Core\Plugin;
 use Burzum\FileStorage\Lib\StorageManager;
 use Burzum\FileStorage\Lib\FileStorageUtils;
 
@@ -27,7 +28,7 @@ class FileStorageTestCase extends TestCase {
 		parent::setUp();
 
 		$this->testPath = TMP . 'file-storage-test' . DS;
-		Configure::write('FileStorage.basePath', $this->testPath);
+		$this->fileFixtures = Plugin::path('Burzum/FileStorage') . 'tests' . DS . 'Fixture' . DS . 'File' . DS;
 
 		if (!is_dir($this->testPath)) {
 			$Folder = new Folder($this->testPath, true);
@@ -60,7 +61,7 @@ class FileStorageTestCase extends TestCase {
 		FileStorageUtils::generateHashes();
 
 		StorageManager::config('Local', array(
-			'adapterOptions' => array($this->testPath, true),
+			'adapterOptions' => [$this->testPath, true],
 			'adapterClass' => '\Gaufrette\Adapter\Local',
 			'class' => '\Gaufrette\Filesystem'
 		));
