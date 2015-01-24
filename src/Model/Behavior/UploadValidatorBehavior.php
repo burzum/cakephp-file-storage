@@ -1,8 +1,6 @@
 <?php
-
 namespace Burzum\FileStorage\Model\Behavior;
 
-use Burzum\FileStorage\Lib\FileStorageUtils;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
@@ -14,9 +12,15 @@ use Cake\Utility\Number;
 use Cake\Utility\Hash;
 
 /**
- * Upload Validation Behavior
+ * Upload Validation Behavior.
  *
- * This behavior will validate uploaded files, nothing more, it won't take care of storage.
+ * This behavior will validate uploaded files, nothing more, it won't take care
+ * of storage.
+ *
+ * The behavior is mostly a backward compatibility tool for the 2.x version of
+ * the FileStorage plugin and a convenient behavior for setting file upload
+ * validation up. You're not forced to use it but I think you need to type a
+ * little less code by using it.
  *
  * @author Florian Krämer
  * @copyright 2012 - 2015 Florian Krämer
@@ -32,20 +36,16 @@ class UploadValidatorBehavior extends Behavior {
 	protected $_defaultConfig = array(
 		'fileField' => 'file',
 		'validate' => true,
+		'validator' => 'default',
+		'validateUploadErrors' => true,
+		'validateUploadArray' => false,
+		'validateFilesize' => false,
+		'validateImageSize' => [],
 		'allowNoFileError' => true,
-		'allowedMime' => null,
-		'allowedExtensions' => null,
+		'allowedMime' => [],
+		'allowedExtensions' => [],
 		'localFile' => false
 	);
-
-/**
- * Error message
- *
- * If something fails this is populated with an error message that can be passed to the view
- *
- * @var string
- */
-	public $uploadError = null;
 
 /**
  * Constructor
@@ -57,150 +57,88 @@ class UploadValidatorBehavior extends Behavior {
 		$this->_defaultConfig = Hash::merge($this->_defaultConfig, (array)Configure::read('FileStorage.Behavior'));
 		parent::__construct($table, $config);
 		$this->_table = $table;
-
-		$eventManager = null;
-		if (!empty($config['eventManager'])) {
-			$eventManager = $config['eventManager'];
+		if ($this->_config['validate'] === true) {
+			$this->configureUploadValidation($this->_config['validator']);
 		}
-		$this->_eventManager = $eventManager ?: new EventManager();
-		$this->_eventManager->attach($this->_table);
 	}
 
-/**
- * Before validation callback
- *
- * Check if the file is really an uploaded file and run custom checks for file
- * extensions and / or mime type if configured to do so.
- *
- * @param array $options
- * @return boolean True on success
- */
-	//public function beforeValidate($options = array()) {
-	public function beforeValidate(Event $event, Entity $entity, $array) {
-		extract($this->_config);
-		if ($validate === true && isset($this->_table->event[$this->_table->alias()][$fileField]) && is_array($this->_table->event[$this->_table->alias()][$fileField])) {
+	public function configureUploadValidation($validatorName = 'default', $config = []) {
+		$uploadValidator = new \Burzum\FileStorage\Validation\UploadValidator();
+		$validator = $this->_table->validator($validatorName);
+		$validator->provider('UploadValidator', $uploadValidator);
 
-			if ($this->_table->validateUploadError($this->_table->event[$this->_table->alias()][$fileField]['error']) === false) {
-				$this->_table->validationErrors[$fileField] = array($this->uploadError);
-				return false;
-			}
+		$config = $this->_config =+ $config;
 
-			if (!empty($this->_table->event[$this->_table->alias()][$fileField])) {
-				if (empty($localFile) && !is_uploaded_file($this->_table->event[$this->_table->alias()][$fileField]['tmp_name'])) {
-					$this->uploadError = __d('file_storage', 'The uploaded file is no valid upload.');
-					$this->_table->invalidate($fileField, $this->uploadError);
-					return false;
-				}
-			}
-
-			if (is_array($allowedMime)) {
-				if (!$this->validateAllowedMimeTypes($Model, $allowedMime)) {
-					return false;
-				}
-			}
-
-			if (is_array($allowedExtensions)) {
-				if (!$this->validateUploadExtension($Model, $allowedExtensions)) {
-					return false;
-				}
-			}
+		if (!empty($config['validateImageSize'])) {
+			$validator->add($config['fileField'], 'imageSize', [
+				'provider' => 'UploadValidator',
+				'rule' => [
+					'imageSize',
+					$config['validateImageSize']
+				],
+				'message' => __d('file_storage', 'The image dimensions are to big!')
+			]);
 		}
-		return true;
-	}
-
-/**
- * Validates the extension
- *
- * @param $validExtensions
- * @return boolean True if the extension is allowed
- */
-	public function validateUploadExtension($validExtensions) {
-		extract($this->_config);
-		$extension = pathinfo($this->_table->data[$this->_table->alias()][$fileField]['name'], PATHINFO_EXTENSION);
-
-		if (!in_array(strtolower($extension), $validExtensions)) {
-			$this->uploadError = __d('file_storage', 'You are not allowed to upload files of this type.');
-			$this->_table->invalidate($fileField, $this->uploadError);
-			return false;
+		if (is_int($config['validateFilesize'])) {
+			$validator->add($config['fileField'], 'filesize', [
+				'provider' => 'UploadValidator',
+				'rule' => [
+					'filesize',
+					$config['validateFilesize']
+				],
+				'message' => __d('file_storage', 'The file is to big %d!', $validator->getFilesize())
+			]);
 		}
-		return true;
-	}
-
-/**
- * Validates if the mime type of an uploaded file is allowed
- *
- * @param array Array of allowed mime types
- * @return boolean
- */
-	public function validateAllowedMimeTypes($mimeTypes = array()) {
-		extract($this->_config);
-		if (!empty($mimeTypes)) {
-			$allowedMime = $mimeTypes;
+		if ($config['validateUploadErrors'] === true) {
+			$validator->add($config['fileField'], 'uploadErrors', [
+				'provider' => 'UploadValidator',
+				'rule' => [
+					'uploadErrors',
+					['allowNoFileError' => $config['allowNoFileError']]
+				],
+				'message' => __d('file_storage', 'The mime-type %s is not allowed!', $validator->getMimeType())
+			]);
 		}
-
-		$File = new File($this->_table->data[$this->_table->alias()][$fileField]['tmp_name']);
-		$mimeType = $File->mime();
-
-		if (!in_array($mimeType, $allowedMime)) {
-			$this->uploadError = __d('file_storage', 'You are not allowed to upload files of this type.');
-			$this->_table->invalidate($fileField, $this->uploadError);
-			return false;
+		if ($config['validateUploadArray'] === true) {
+			$validator->add($config['fileField'], 'uploadArray', [
+				'provider' => 'UploadValidator',
+				'rule' => [
+					'isUploadArray'
+				],
+				'message' => __d('file_storage', 'Invalid upload!')
+			]);
 		}
-		return true;
-	}
-
-/**
- * Valdates the error value that comes with the file input file
- *
- * @param integer Error value from the form input [file_field][error]
- * @return boolean True on success, if false the error message is set to the models field and also set in $this->uploadError
- */
-	public function validateUploadError($error = null) {
-		if (!is_null($error)) {
-			switch ($error) {
-				case UPLOAD_ERR_OK:
-					return true;
-				break;
-				case UPLOAD_ERR_INI_SIZE:
-					$this->uploadError = __d('file_storage', 'The uploaded file exceeds limit of %s.', CakeNumber::toReadableSize(ini_get('upload_max_filesize')));
-				break;
-				case UPLOAD_ERR_FORM_SIZE:
-					$this->uploadError = __d('file_storage', 'The uploaded file is to big, please choose a smaller file or try to compress it.');
-				break;
-				case UPLOAD_ERR_PARTIAL:
-					$this->uploadError = __d('file_storage', 'The uploaded file was only partially uploaded.');
-				break;
-				case UPLOAD_ERR_NO_FILE:
-					if ($this->_config['allowNoFileError'] === false) {
-						$this->uploadError = __d('file_storage', 'No file was uploaded.');
-						return false;
-					}
-					return true;
-				break;
-				case UPLOAD_ERR_NO_TMP_DIR:
-					$this->uploadError = __d('file_storage', 'The remote server has no temporary folder for file uploads. Please contact the site admin.');
-				break;
-				case UPLOAD_ERR_CANT_WRITE:
-					$this->uploadError = __d('file_storage', 'Failed to write file to disk. Please contact the site admin.');
-				break;
-				case UPLOAD_ERR_EXTENSION:
-					$this->uploadError = __d('file_storage', 'File upload stopped by extension. Please contact the site admin.');
-				break;
-				default:
-					$this->uploadError = __d('file_storage', 'Unknown File Error. Please contact the site admin.');
-				break;
-			}
-			return false;
+		if (!empty($config['allowedMime'])) {
+			$validator->add($config['fileField'], 'mimeType', [
+				'provider' => 'UploadValidator',
+				'rule' => [
+					'mimeType',
+					$config['allowedMime']
+				],
+				'message' => __d('file_storage', 'The mime-type %s is not allowed!', $validator->getMimeType())
+			]);
 		}
-		return true;
-	}
+		if (!empty($config['allowedExtensions'])) {
+			$validator->add($config['fileField'], 'extension', [
+				'provider' => 'UploadValidator',
+				'rule' => [
+					'extension',
+					$config['allowedExtensions']
+				],
+				'message' => __d('file_storage', 'The extension %s is not allowed.', $validator->getExtension())
+			]);
+		};
+		if ($config['localFile'] === true) {
+			$validator->add($config['fileField'], 'localFile', [
+				'provider' => 'UploadValidator',
+				'rule' => [
+					'isUploadedFile'
+				],
+				'message' => __d('file_storage', 'Invalid file.')
+			]);
+		}
+		if (is_array($config['imageSize'])) {
 
-/**
- * Returns the latest error message
- *
- * @return string
- */
-	public function uploadError() {
-		return $this->uploadError;
+		}
 	}
 }

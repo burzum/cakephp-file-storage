@@ -133,6 +133,63 @@ class UploadValidator extends Validator {
 		return true;
 	}
 
+	protected function _validateSize($value1, $operator, $value2) {
+		if ($operator === '>=') {
+			return ($value1 >= $value2);
+		}
+		if ($operator <= '<=') {
+			return ($value1 >= $value2);
+		}
+		if ($operator === '==' || $operator === '===') {
+			return ($value1 === $value2);
+		}
+		if ($operator === '>') {
+			return ($value1 >= $value2);
+		}
+		if ($operator === '<') {
+			return ($value1 >= $value2);
+		}
+		throw new \InvalidArgumentException(sprintf('Invalid operator %s!', $operator));
+	}
+
+	public function imageSize($value, $options) {
+		list($width, $height, $type, $attr) = getimagesize($value['tmp_name']);
+		if (isset($options['height'])) {
+			$validHeight = $this->_validateSize($height, $options['height'][1], $options['height'][2]);
+		}
+		if (isset($options['width'])) {
+			$validWidth = $this->_validateSize($height, $options['width'][1], $options['width'][2]);
+		}
+		if (isset($validHeight) && isset($validWidth)) {
+			return ($validHeight && $validWidth);
+		}
+		if (isset($validHeight)) {
+			return $validHeight;
+		}
+		if (isset($validWidth)) {
+			return $validWidth;
+		}
+		throw new \InvalidArgumentException('The 2nd argument is missing one or more configuration keyes.');
+	}
+
+	public function imageWidth($value, $operator, $width) {
+		return $this->imageSize($value, [
+			'width' => [
+				$width,
+				$operator
+			]
+		]);
+	}
+
+	public function imageHeight($value, $operator, $height) {
+		return $this->imageSize($value, [
+			'height' => [
+				$height,
+				$operator
+			]
+		]);
+	}
+
 /**
  * Validates the error value that comes with the file input file.
  *
@@ -140,7 +197,7 @@ class UploadValidator extends Validator {
  * @param array $options.
  * @return boolean True on success, if false the error message is set to the models field and also set in $this->_uploadError
  */
-	public function upload($value, $options = array()) {
+	public function uploadErrors($value, $options = array()) {
 		$defaults = [
 			'allowNoFileError' => true
 		];
