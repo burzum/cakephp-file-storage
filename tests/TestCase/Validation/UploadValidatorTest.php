@@ -5,6 +5,7 @@ use Burzum\FileStorage\TestSuite\FileStorageTestCase;
 use Burzum\FileStorage\Validation\UploadValidator;
 use Cake\Core\Plugin;
 use Cake\ORM\TableRegistry;
+use Cake\Event\Event;
 
 /**
  * Upload Validator Test
@@ -31,13 +32,12 @@ class UploadValidatorTest extends FileStorageTestCase {
 		parent::setUp();
 		$this->Validator = new UploadValidator();
 		$this->fileUpload = [
-			'error' => 0,
+			'error' => UPLOAD_ERR_OK,
 			'size' => filesize($this->fileFixtures . 'titus.jpg'),
 			'type' => 'image/jpeg',
 			'name' => 'tituts.jpg',
 			'tmp_name' => $this->fileFixtures . 'titus.jpg'
 		];
-
 	}
 
 /**
@@ -48,6 +48,15 @@ class UploadValidatorTest extends FileStorageTestCase {
 	public function tearDown() {
 		parent::tearDown();
 		unset($this->Validator);
+	}
+
+/**
+ * testMimeType
+ *
+ * @return void
+ */
+	public function testFilesize() {
+		$this->assertFalse($this->Validator->mimeType($this->fileUpload, ['image/gif']));
 	}
 
 /**
@@ -84,7 +93,8 @@ class UploadValidatorTest extends FileStorageTestCase {
 		$this->assertFalse($this->Validator->uploadErrors(['error' => UPLOAD_ERR_INI_SIZE]));
 		$this->assertFalse($this->Validator->uploadErrors(['error' => UPLOAD_ERR_FORM_SIZE]));
 		$this->assertFalse($this->Validator->uploadErrors(['error' => UPLOAD_ERR_PARTIAL]));
-		$this->assertFalse($this->Validator->uploadErrors(['error' => UPLOAD_ERR_NO_FILE]));
+		$this->assertFalse($this->Validator->uploadErrors(['error' => UPLOAD_ERR_NO_FILE], ['allowNoFileError' => false]));
+		$this->assertTrue($this->Validator->uploadErrors(['error' => UPLOAD_ERR_NO_FILE], ['allowNoFileError' => true]));
 		$this->assertFalse($this->Validator->uploadErrors(['error' => UPLOAD_ERR_NO_TMP_DIR]));
 		$this->assertFalse($this->Validator->uploadErrors(['error' => UPLOAD_ERR_CANT_WRITE]));
 		$this->assertFalse($this->Validator->uploadErrors(['error' => UPLOAD_ERR_EXTENSION]));
@@ -110,6 +120,18 @@ class UploadValidatorTest extends FileStorageTestCase {
 		$this->assertTrue($this->Validator->imageHeight($this->fileUpload, '>', 100));
 		$this->assertTrue($this->Validator->imageHeight($this->fileUpload, '<', 2000));
 		$this->assertTrue($this->Validator->imageHeight($this->fileUpload, '==', 512));
+	}
+
+/**
+ * testIsUploadArray
+ *
+ * @return void
+ */
+	public function testIsUploadArray() {
+		$upload = $this->fileUpload;
+		$this->assertTrue($this->Validator->isUploadArray($upload));
+		unset($upload['error']);
+		$this->assertFalse($this->Validator->isUploadArray($upload));
 	}
 
 }

@@ -1,6 +1,8 @@
 <?php
 namespace Burzum\FileStorage\Event;
 
+use Cake\Event\Event;
+
 /**
  * S3StorageListener
  *

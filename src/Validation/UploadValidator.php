@@ -33,7 +33,7 @@ class UploadValidator extends Validator {
  *
  * @var string
  */
-	protected $_filesize = 0;
+	protected $_fileSize = 0;
 
 /**
  * Upload error message.
@@ -70,14 +70,14 @@ class UploadValidator extends Validator {
 		if (!is_array($value)) {
 			return false;
 		}
-		$requiredKeys = ['filesize', 'name', 'tmp_name', 'size', 'error'];
+		$requiredKeys = ['name', 'type', 'tmp_name', 'error', 'size'];
 		$keys = array_keys($value);
-		foreach ($keys as $key) {
-			if (!in_array($key, $requiredKeys)) {
+		foreach ($requiredKeys as $key) {
+			if (!in_array($key, $keys)) {
 				return false;
 			}
 		}
-		return;
+		return true;
 	}
 
 /**
@@ -87,9 +87,9 @@ class UploadValidator extends Validator {
  * @param array $extensions.
  * @return boolean
  */
-	public function filesize($value, $maxSize) {
-		$this->_filesize = $value['size'];
-		return ($value['size'] > $maxSize);
+	public function fileSize($value, $size, $operator = '>') {
+		$this->_fileSize = $value['size'];
+		return $this->_validateSize($value['size'], $operator, $size);
 	}
 
 /**

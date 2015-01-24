@@ -5,7 +5,6 @@ use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Burzum\FileStorage\TestSuite\FileStorageTestCase;
 use Burzum\FileStorage\Event\S3StorageListener;
-use Burzum\FileStorage\Model\Table\FileStorageTable;
 
 class TestS3StorageListener extends S3StorageListener {
 	public function buildPath($table, $entity) {
@@ -33,7 +32,6 @@ class S3StorageListenerTest extends FileStorageTestCase {
 		parent::setUp();
 		$this->Table = TableRegistry::get('Burzum/FileStorage.FileStorage');
 		$this->Listener = $this->getMock('\Burzum\FileStorage\Test\TestCase\Event\TestS3StorageListener');
-		//$this->Listener = new TestS3StorageListener();
 	}
 
 /**

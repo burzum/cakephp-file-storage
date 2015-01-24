@@ -146,7 +146,9 @@ class ImageStorageTest extends FileStorageTestCase {
 					'rule' => array(
 						'validateImageSize', array(
 							'height' => array('>=', 1000),
-							'width' => array('<=', 1000))),
+							'width' => array('<=', 1000)
+						)
+					),
 					'message' => 'Invalid image size'
 				)
 			)
