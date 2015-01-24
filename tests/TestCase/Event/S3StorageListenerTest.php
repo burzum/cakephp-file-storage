@@ -32,9 +32,8 @@ class S3StorageListenerTest extends FileStorageTestCase {
 	public function setUp() {
 		parent::setUp();
 		$this->Table = TableRegistry::get('Burzum/FileStorage.FileStorage');
-		debug($this->Table->find('all'));
-		//$this->Listener = $this->getMock('TestS3StorageListener');
-		$this->Listener = new TestS3StorageListener();
+		$this->Listener = $this->getMock('\Burzum\FileStorage\Test\TestCase\Event\TestS3StorageListener');
+		//$this->Listener = new TestS3StorageListener();
 	}
 
 /**

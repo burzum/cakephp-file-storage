@@ -20,6 +20,15 @@ use Burzum\FileStorage\Lib\FileStorageUtils;
 class FileStorageTestCase extends TestCase {
 
 /**
+ * Fixtures
+ *
+ * @var array
+ */
+	public $fixtures = array(
+		'plugin.Burzum\FileStorage.FileStorage'
+	);
+
+/**
  * Setup test folders and files
  *
  * @return void

@@ -31,3 +31,8 @@ Plugin::load('Burzum/FileStorage', [
 	'autoload' => true,
 	'bootstrap' => true
 ]);
+Plugin::load('Burzum/Imagine', [
+	'path' => dirname(dirname(__FILE__)) . DS,
+	'autoload' => true,
+	'bootstrap' => true
+]);
