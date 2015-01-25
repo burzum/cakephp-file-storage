@@ -57,4 +57,44 @@ class AbstractStorageEventListenerTest extends FileStorageTestCase {
 		$result = $this->Listener->stripDashes('some-string-with-dashes');
 		$this->assertEquals($result, 'somestringwithdashes');
 	}
+
+/**
+ * testGetAdapter
+ *
+ * @return void
+ */
+	public function testGetAdapter() {
+		$result = $this->Listener->getAdapter('Local');
+		$this->assertTrue(is_a($result, '\Gaufrette\Filesystem'));
+	}
+
+/**
+ * testGetAdapterConfig
+ *
+ * @return void
+ */
+	public function testGetAdapterConfig() {
+		$result = $this->Listener->getAdapterConfig('Local');
+		$this->assertTrue(is_array($result) && !empty($result));
+	}
+
+/**
+ * testGetAdapterClassName
+ *
+ * @return void
+ */
+	public function testGetAdapterClassName() {
+		$result = $this->Listener->getAdapterClassName('Local');
+		$this->assertEquals($result, '\Gaufrette\Adapter\Local');
+	}
+
+/**
+ * testGetAdapterClassName
+ *
+ * @return void
+ */
+	public function testCreateTmpFile() {
+		$result = $this->Listener->createTmpFile();
+		$this->assertTrue(is_string($result));
+	}
 }

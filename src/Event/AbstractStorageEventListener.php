@@ -6,6 +6,7 @@ use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\ORM\Table;
 use Cake\ORM\Entity;
+use Cake\Utility\String;
 use Burzum\FileStorage\Lib\StorageManager;
 use Burzum\FileStorage\Lib\FileStorageUtils;
 

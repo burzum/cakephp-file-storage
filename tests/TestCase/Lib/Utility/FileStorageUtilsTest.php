@@ -49,6 +49,70 @@ class FileStorageUtilsTest extends FileStorageTestCase {
 		}
 	}
 
+	public function testNormalizeGlobalFilesArray() {
+		$data = array(
+			'name' => array
+			(
+				0 => 'foo.txt',
+				1 => 'bar.txt'
+			),
+			'type' => Array
+			(
+				0 => 'text/plain',
+				1 => 'text/plain'
+			),
+			'tmp_name' => Array
+			(
+				0 => '/tmp/phpYzdqkD',
+				1 => '/tmp/phpeEwEWG'
+			),
+			'error' => Array
+			(
+				0 => 0,
+				1 => 0
+			),
+			'size' => Array
+			(
+				0 => 123,
+				1 => 456
+			)
+		);
+		$expected = [
+			'name' => [
+				0 => [
+					0 => 'foo.txt',
+					1 => 'bar.txt'
+				]
+			],
+			'type' => [
+				0 => [
+					0 => 'text/plain',
+					1 => 'text/plain'
+				]
+			],
+			'tmp_name' => [
+				0 => [
+					0 => '/tmp/phpYzdqkD',
+					1 => '/tmp/phpeEwEWG'
+				]
+			],
+			'error' => [
+				0 => [
+					0 => 0,
+					1 => 0
+				]
+			],
+			'size' => [
+				0 => [
+					0 => 123,
+					1 => 456
+				]
+			]
+		];
+		$result = FileStorageUtils::normalizeGlobalFilesArray($data);
+		$this->assertEquals($result, $expected);
+	}
+
 	public function testHashOperations() {
 		$result = FileStorageUtils::hashOperations(array(
 			'mode' => 'inbound',
@@ -96,4 +160,22 @@ class FileStorageUtilsTest extends FileStorageTestCase {
 		$result = Configure::read('FileStorage.imageHashes');
 		$this->assertEquals($result, $expected);
 	}
+
+/**
+ * testUploadArray
+ *
+ * @return void
+ */
+	public function testUploadArray() {
+		$expected = [
+			'name' => 'titus.jpg',
+			'tmp_name' => $this->fileFixtures . 'titus.jpg',
+			'error' => 0,
+			'type' => 'image/jpeg',
+			'size' => 332643
+		];
+		$result = FileStorageUtils::uploadArray($this->fileFixtures . 'titus.jpg');
+		$this->assertEquals($result, $expected);
+	}
+
 }

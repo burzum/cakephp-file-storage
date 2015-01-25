@@ -24,13 +24,6 @@ class StorageManager {
 	];
 
 /**
- * Sets the default or active adapter that is used
- *
- * @var string
- */
-	protected $_activeAdapter = 'Local';
-
-/**
  * Return a singleton instance of the StorageManager.
  *
  * @return ClassRegistry instance
@@ -44,21 +37,17 @@ class StorageManager {
 	}
 
 /**
- * Sets or gets the active storage adapter
+ * Gets the configuration array for an adapter.
  *
  * @param string $adapter
  * @param array $options
  * @return mixed
  */
-	public static function config($adapter = null, $options = array()) {
+	public static function config($adapter, $options = array()) {
 		$_this = StorageManager::getInstance();
 
 		if (!empty($adapter) && !empty($options)) {
 			return $_this->_adapterConfig[$adapter] = $options;
-		}
-
-		if (empty($adapter)) {
-			return $_this->_adapterConfig[$_this->_activeAdapter];
 		}
 
 		if (isset($_this->_adapterConfig[$adapter])) {
@@ -69,43 +58,16 @@ class StorageManager {
 	}
 
 /**
- * Sets or gets the active storage adapter
+ * Flush all or a single adapter from the config.
  *
- * @param string
- * @return mixed
- */
-	public static function activeAdapter($name = null) {
-		$_this = StorageManager::getInstance();
-
-		if (empty($name)) {
-			return $_this->_activeAdapter;
-		}
-
-		if (isset($_this->_adapterConfig[$name])) {
-			return $_this->_activeAdapter = $name;
-		}
-		return false;
-	}
-
-/**
- * Flush all or a single adapter from the config
- *
- * @param string $name Config name, if none all adapters are flushed
+ * @param string $name Config name, if none all adapters are flushed.
  * @throws RuntimeException
  * @return boolean True on success
  */
 	public static function flush($name = null) {
 		$_this = StorageManager::getInstance();
 
-		if (empty($name)) {
-			$_this->_adapterConfig = array();
-			$_this->_activeAdapter = '';
-		}
-
 		if (isset($_this->_adapterConfig[$name])) {
-			if ($_this->_activeAdapter == $name) {
-				throw new \RuntimeException(__d('file_storage', 'You can not flush the active adapter %s', $name));
-			}
 			unset($_this->_adapterConfig[$name]);
 			return true;
 		}
@@ -121,12 +83,8 @@ class StorageManager {
  * @throws RuntimeException
  * @return Gaufrette object as configured by first argument
  */
-	public static function adapter($adapterName = null, $renewObject = false) {
+	public static function adapter($adapterName, $renewObject = false) {
 		$_this = StorageManager::getInstance();
-
-		if (empty($adapterName)) {
-			$adapterName = $_this->_activeAdapter;
-		}
 
 		$isConfigured = true;
 		if (is_string($adapterName)) {

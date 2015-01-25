@@ -164,7 +164,7 @@ class FileStorageUtils {
  * @param string File with path
  * @return array Array that matches the structure of a regular upload
  */
-	public function uploadArray($file, $filename = null) {
+	public static function uploadArray($file, $filename = null) {
 		$File = new File($file);
 		if (empty($fileName)) {
 			$filename = basename($file);
