@@ -3,6 +3,7 @@ namespace Burzum\FileStorage\Validation;
 
 use Cake\Filesystem\File;
 use Cake\Validation\Validator;
+use Cake\Validation\Validation;
 use Cake\I18n\Number;
 
 class UploadValidator extends Validator {
@@ -135,34 +136,6 @@ class UploadValidator extends Validator {
 	}
 
 /**
- * Validates a size based on a given string operator.
- *
- * @integer $value1
- * @string $operator
- * @integer $value2
- * @return boolean
- * @throws \InvalidArgumentException
- */
-	protected function _validateSize($value1, $operator, $value2) {
-		if ($operator === '>=') {
-			return ($value1 >= $value2);
-		}
-		if ($operator <= '<=') {
-			return ($value1 >= $value2);
-		}
-		if ($operator === '==' || $operator === '===') {
-			return ($value1 === $value2);
-		}
-		if ($operator === '>') {
-			return ($value1 >= $value2);
-		}
-		if ($operator === '<') {
-			return ($value1 >= $value2);
-		}
-		throw new \InvalidArgumentException(sprintf('Invalid operator %s!', $operator));
-	}
-
-/**
  * Validates the image size.
  *
  * @param array $value
@@ -175,10 +148,10 @@ class UploadValidator extends Validator {
 		}
 		list($width, $height, $type, $attr) = getimagesize($value['tmp_name']);
 		if (isset($options['height'])) {
-			$validHeight = $this->_validateSize($height, $options['height'][1], $options['height'][2]);
+			$validHeight = Validation::comparison($height, $options['height'][1], $options['height'][0]);
 		}
 		if (isset($options['width'])) {
-			$validWidth = $this->_validateSize($height, $options['width'][1], $options['width'][2]);
+			$validWidth = Validation::comparison($width, $options['width'][1], $options['width'][0]);
 		}
 		if (isset($validHeight) && isset($validWidth)) {
 			return ($validHeight && $validWidth);
@@ -214,7 +187,7 @@ class UploadValidator extends Validator {
  *
  * @param array $value
  * @param string $operator
- * @param integer $width
+ * @param integer $height
  * @return boolean
  */
 	public function imageHeight($value, $operator, $height) {

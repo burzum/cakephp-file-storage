@@ -14,9 +14,7 @@ use Cake\ORM\Table;
  */
 
 /**
- * TheVoid class
- *
- * @package       Cake.Test.Case.Model
+ * VoidUploadModel
  */
 class VoidUploadModel extends Table {
 
@@ -47,14 +45,12 @@ class VoidUploadModel extends Table {
 }
 
 /**
- * UploadValidatorBehaviorTest class
- *
- * @package       Cake.Test.Case.Model.Behavior
+ * UploadValidatorBehaviorTest
  */
 class UploadValidatorBehaviorTest extends FileStorageTestCase {
 
 /**
- * Holds the instance of the model
+ * Holds the instance of the table
  *
  * @var mixed
  */
@@ -65,7 +61,7 @@ class UploadValidatorBehaviorTest extends FileStorageTestCase {
  *
  * @var array
  */
-	public $fixtures = array();
+	public $fixtures = [];
 
 /**
  * startTest
@@ -73,10 +69,11 @@ class UploadValidatorBehaviorTest extends FileStorageTestCase {
  * @return void
  */
 	public function setUp() {
-		$this->Model = new VoidUploadModel();
-		$this->Model->addBehavior('Burzum/FileStorage.UploadValidator', array(
-			'localFile' => true));
-		$this->FileUpload = $this->Model->Behaviors->UploadValidator;
+		$this->Table = new VoidUploadModel();
+		$this->Table->addBehavior('Burzum/FileStorage.UploadValidator', [
+			'localFile' => true
+		]);
+		$this->FileUpload = $this->Model->behaviors()->UploadValidator;
 		$this->testFilePath = CakePlugin::path('FileStorage') . 'Test' . DS . 'Fixture' . DS . 'File' . DS;
 	}
 
@@ -89,4 +86,23 @@ class UploadValidatorBehaviorTest extends FileStorageTestCase {
 		unset($this->Model);
 		TableRegistry::clear();
 	}
+
+/**
+ * configureUploadValidation
+ *
+ * @return void
+ */
+	public function testConfigureUploadValidation() {
+		$this->Table->configureUploadValidation();
+	}
+
+/**
+ * testRemoveUploadValidationRules
+ *
+ * @return void
+ */
+	public function testRemoveUploadValidationRules() {
+		$this->Table->removeUploadValidationRules();
+	}
+
 }

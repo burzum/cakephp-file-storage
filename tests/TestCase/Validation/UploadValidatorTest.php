@@ -117,9 +117,9 @@ class UploadValidatorTest extends FileStorageTestCase {
  * @return void
  */
 	public function testImageWidth() {
-		$this->assertTrue($this->Validator->imageHeight($this->fileUpload, '>', 100));
-		$this->assertTrue($this->Validator->imageHeight($this->fileUpload, '<', 2000));
-		$this->assertTrue($this->Validator->imageHeight($this->fileUpload, '==', 512));
+		$this->assertTrue($this->Validator->imageWidth($this->fileUpload, '>', 100));
+		$this->assertTrue($this->Validator->imageWidth($this->fileUpload, '<', 2000));
+		$this->assertTrue($this->Validator->imageWidth($this->fileUpload, '==', 512));
 	}
 
 /**
