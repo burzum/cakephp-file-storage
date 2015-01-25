@@ -97,7 +97,8 @@ class FileStorageTable extends Table {
 /**
  * afterSave callback
  *
- * @param boolean $created
+ * @param Event $event
+ * @param  Entity $entity
  * @param array $options
  * @return void
  */
