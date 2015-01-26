@@ -85,7 +85,7 @@ class AbstractStorageEventListenerTest extends FileStorageTestCase {
  */
 	public function testGetAdapterClassName() {
 		$result = $this->Listener->getAdapterClassName('Local');
-		$this->assertEquals($result, '\Gaufrette\Adapter\Local');
+		$this->assertFalse($result);
 	}
 
 /**

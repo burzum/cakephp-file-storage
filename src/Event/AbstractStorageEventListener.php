@@ -208,7 +208,10 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 	}
 
 /**
- * Gets the adapter class name from the adapter configuration key.
+ * Gets the adapter class name from the adapter configuration key and checks if
+ * it is in the list of supported adapters for the listener.
+ *
+ * You must define a list of supported classes via AbstractStorageEventListener::$_adapterClasses.
  *
  * @param string $configName Name of the adapter configuration.
  * @return boolean|string String, the adapter class name or false if it was not found.
