@@ -1,5 +1,6 @@
 <?php
 App::uses('CakeEventListener', 'Event');
+App::uses('String', 'Utility');
 
 /**
  * @author Florian Krämer
