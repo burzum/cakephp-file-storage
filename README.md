@@ -1,12 +1,6 @@
 FileStorage Plugin for CakePHP 2.x and 3.x
 ==========================================
 
-**The 3.0 branch is still in development!** You can help updating the code (it's not that hard) or make a donation if you want to speed things up. The work done on this plugin is done voluntary by me in my *free* time. So please respect that I'm not in a hurry to get it updated ASAP.
-
-There are still some tests to be done and probably some issues but it's saving files again so far and seems to work. I would be happy if somebody would try to use the plugin and report issues.
-
----
-
 The **File Storage** plugin is giving you the possibility to upload and store files in virtually any kind of storage backend. This plugin is wrapping the [Gaufrette](https://github.com/KnpLabs/Gaufrette) library in a CakePHP fashion and provides a simple way to use the storage adapters through the [StorageManager](Lib/StorageManager.php) class.
 
 Storage adapters are an unified interface that allow you to store file data to your local file system, in memory, in a database or into a zip file and remote systems. There is a database table keeping track of what you stored where. You can always write your own adapter or extend and overload existing ones.
