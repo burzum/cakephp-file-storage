@@ -107,7 +107,7 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 	abstract public function implementedEvents();
 
 /**
- * Builds the filename of under which the data gets saved in the storage adapter
+ * Builds the filename of under which the data gets saved in the storage adapter.
  *
  * @param Table $table
  * @param Entity $entity
@@ -128,7 +128,7 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 	}
 
 /**
- * Builds the path under which the data gets stored in the storage adapter
+ * Builds the path under which the data gets stored in the storage adapter.
  *
  * @param Table $table
  * @param Entity $entity
@@ -150,7 +150,7 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 
 /**
  * Check if the event is of a type or subject object of type model we want to
- * process with this listener
+ * process with this listener.
  *
  * @throws \InvalidArgumentException
  * @param Event $event
@@ -320,5 +320,5 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 		}
 		return $path;
 	}
-}
 
+}

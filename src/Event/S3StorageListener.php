@@ -43,9 +43,8 @@ class S3StorageListener extends AbstractStorageEventListener {
 	public function afterDelete(Event $Event) {
 		if ($this->_checkEvent($Event)) {
 			$Model = $Event->subject();
-			$record = $Event->data['record'][$Model->alias];
+			$record = $Event->data['record'][$Model->alias()];
 			$path = $this->_buildPath($Event);
-
 			try {
 				$Storage = $this->getAdapter($record['adapter']);
 				if (!$Storage->has($path['combined'])) {
@@ -86,39 +85,41 @@ class S3StorageListener extends AbstractStorageEventListener {
 		}
 	}
 
+	public function buildPath($table, $entity) {
+		return $this->_buildPath($table, $entity);
+	}
+
 /**
   * _buildPath
   *
   * @param Event $Event
   * @return array
   */
-	protected function _buildPath(Event $Event) {
-		$Model = $Event->subject();
-		$record = $Model->data[$Model->alias];
-		$adapterConfig = $this->getAdapterconfig($record['adapter']);
-		$id = $record[$Model->primaryKey];
+	protected function _buildPath($table, $entity) {
+		$adapterConfig = $this->getAdapterconfig($entity['adapter']);
+		$id = $entity[$table->primaryKey()];
 
-		$path = $this->fsPath('files' . DS . $record['model'], $id);
+		$path = $this->fsPath('files' . DS . $entity['model'], $id);
 		$path = '/' . str_replace('\\', '/', $path);
 
-		if ($this->options['preserveFilename'] === false) {
-			$filename = $Model->stripUuid($id);
-			if ($this->options['preserveExtension'] === true && !empty($record['extension'])) {
-				$filename .= '.' . $record['extension'];
+		if ($this->_config['preserveFilename'] === false) {
+			$filename = $this->stripDashes($id);
+			if ($this->_config['preserveExtension'] === true && !empty($entity['extension'])) {
+				$filename .= '.' . $entity['extension'];
 			}
 		} else {
-			$filename = $record['filename'];
+			$filename = $entity['filename'];
 		}
 
 		$combined = $path . $filename;
 		$url = 'https://' . $adapterConfig['adapterOptions'][1] . '.s3.amazonaws.com' . $combined;
 
-		return array(
+		return [
 			'filename' => $filename,
 			'path' => $path,
 			'combined' => $path . $filename,
 			'url' => $url
-		);
+		];
 	}
 
 }

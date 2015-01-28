@@ -6,12 +6,6 @@ use Cake\ORM\TableRegistry;
 use Burzum\FileStorage\TestSuite\FileStorageTestCase;
 use Burzum\FileStorage\Event\S3StorageListener;
 
-class TestS3StorageListener extends S3StorageListener {
-	public function buildPath($table, $entity) {
-		return $this->_buildPath($table, $entity);
-	}
-}
-
 /**
  * LocalImageProcessingListener Test
  *
@@ -31,7 +25,9 @@ class S3StorageListenerTest extends FileStorageTestCase {
 	public function setUp() {
 		parent::setUp();
 		$this->Table = TableRegistry::get('Burzum/FileStorage.FileStorage');
-		$this->Listener = $this->getMock('\Burzum\FileStorage\Test\TestCase\Event\TestS3StorageListener');
+		$this->Listener = $this->getMockBuilder('\Burzum\FileStorage\Event\S3StorageListener')
+			->setMethods(['getAdapterConfig'])
+			->getMock();
 	}
 
 /**
@@ -72,10 +68,7 @@ class S3StorageListenerTest extends FileStorageTestCase {
 			->with('Test')
 			->will($this->returnValue($adapterConfig));
 
-		$result = $this->Listener->buildPath(new Event(
-			'FileStorage.afterSave',
-			$this->Table
-		), $entity);
+		$result = $this->Listener->buildPath($this->Table, $entity);
 
 		$expected = array(
 			'filename' => '144c4170676011e3949a0800200c9a66.png',
@@ -86,10 +79,7 @@ class S3StorageListenerTest extends FileStorageTestCase {
 
 		$this->assertEquals($result, $expected);
 
-		$result = $this->Listener->buildPath(new Event(
-			'FileStorage.afterSave',
-			$this->Table
-		));
+		$result = $this->Listener->buildPath($this->Table, $entity);
 
 		$expected = array(
 			'filename' => '144c4170676011e3949a0800200c9a66.png',
