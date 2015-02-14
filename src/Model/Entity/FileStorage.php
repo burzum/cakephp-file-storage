@@ -2,7 +2,6 @@
 namespace Burzum\FileStorage\Model\Entity;
 
 use Cake\ORM\Entity;
-use Cake\ORM\EntityValidatorTrait;
 
 /**
  * FileStorage Entity.
@@ -12,8 +11,6 @@ use Cake\ORM\EntityValidatorTrait;
  * @license MIT
  */
 class FileStorage extends Entity {
-
-	use EntityValidatorTrait;
 
 /**
  * Fields that can be mass assigned using newEntity() or patchEntity().
