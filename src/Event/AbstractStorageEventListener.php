@@ -6,7 +6,8 @@ use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\ORM\Table;
 use Cake\ORM\Entity;
-use Cake\Utility\String;
+use Cake\Utility\Text;
+use Cake\Filesystem\Folder;
 use Burzum\FileStorage\Lib\StorageManager;
 use Burzum\FileStorage\Lib\FileStorageUtils;
 
@@ -270,7 +271,7 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
  */
 	protected function _tmpFile($Storage, $path, $tmpFolder = null) {
 		try {
-			$tmpFile = $this->createTemporaryFile($tmpFolder);
+			$tmpFile = $this->createTmpFile($tmpFolder);
 			file_put_contents($tmpFile, $Storage->read($path));
 			return $tmpFile;
 		} catch (Exception $e) {
@@ -293,14 +294,12 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
  */
 	public function createTmpFile($folder = null, $checkAndCreatePath = true) {
 		if (is_null($folder)) {
-			$path = TMP;
-		} else {
-			$path = TMP . $folder . DS;
+			$folder = TMP;
 		}
-		if ($checkAndCreatePath === true && !is_dir($path)) {
-			new Folder($path, true);
+		if ($checkAndCreatePath === true && !is_dir($folder)) {
+			new Folder($folder, true);
 		}
-		return $path . String::uuid();
+		return $folder . Text::uuid();
 	}
 
 /**

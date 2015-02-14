@@ -4,6 +4,7 @@ namespace Burzum\FileStorage\Event;
 use Cake\Event\Event;
 use Cake\Core\Configure;
 use Burzum\FileStorage\Lib\StorageManager;
+use Burzum\FileStorage\Lib\FileStorageUtils;
 
 /**
  * @author Florian Krämer
@@ -65,13 +66,13 @@ class ImageProcessingListener extends AbstractStorageEventListener {
  * @throws Exception
  * @return void
  */
-	protected function _createVersions(Model $table, $record, $operations) {
+	protected function _createVersions(\Cake\ORM\Table $table, $record, $operations) {
 		$Storage = StorageManager::adapter($record['adapter']);
 		$path = $this->_buildPath($record, true);
 		$tmpFile = $this->_tmpFile($Storage, $path, TMP . 'image-processing');
 
 		foreach ($operations as $version => $imageOperations) {
-			$hash = $table->hashOperations($imageOperations);
+			$hash = FileStorageUtils::hashOperations($imageOperations);
 			$string = $this->_buildPath($record, true, $hash);
 
 			if ($this->adapterClass === 'AmazonS3' || $this->adapterClass === 'AwsS3' ) {
