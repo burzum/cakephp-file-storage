@@ -73,7 +73,7 @@ class ImageStorageTable extends FileStorageTable {
  * @return boolean
  */
 	public function afterSave(\Cake\Event\Event $event,  \Cake\ORM\Entity $entity, $options) {
-		if ($entity->isNew) {
+		if ($entity->isNew()) {
 			$imageEvent = new Event('ImageStorage.afterSave', $this, array(
 				'created' => $event->data['entity']->isNew,
 				'storage' => $this->getStorageAdapter($entity['adapter']),

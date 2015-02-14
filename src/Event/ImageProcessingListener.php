@@ -2,6 +2,7 @@
 namespace Burzum\FileStorage\Event;
 
 use Cake\Event\Event;
+use Cake\Core\Configure;
 use Burzum\FileStorage\Lib\StorageManager;
 
 /**
@@ -28,7 +29,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
  *
  * @var string
  */
-	public $storageTableClass = '\FileStorage\Model\Table\ImageStorageTable';
+	public $storageTableClass = '\Burzum\FileStorage\Model\Table\ImageStorageTable';
 
 /**
  * Constructor
@@ -58,19 +59,19 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 /**
  * Creates the different versions of images that are configured
  *
- * @param Model $Model
+ * @param Model $table
  * @param array $record
  * @param array $operations
  * @throws Exception
  * @return void
  */
-	protected function _createVersions(Model $Model, $record, $operations) {
+	protected function _createVersions(Model $table, $record, $operations) {
 		$Storage = StorageManager::adapter($record['adapter']);
 		$path = $this->_buildPath($record, true);
 		$tmpFile = $this->_tmpFile($Storage, $path, TMP . 'image-processing');
 
 		foreach ($operations as $version => $imageOperations) {
-			$hash = $Model->hashOperations($imageOperations);
+			$hash = $table->hashOperations($imageOperations);
 			$string = $this->_buildPath($record, true, $hash);
 
 			if ($this->adapterClass === 'AmazonS3' || $this->adapterClass === 'AwsS3' ) {
@@ -82,7 +83,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 			}
 
 			try {
-				$image = $Model->processImage($tmpFile, null, array('format' => $record['extension']), $imageOperations);
+				$image = $table->processImage($tmpFile, null, array('format' => $record['extension']), $imageOperations);
 				$result = $Storage->write($string, $image->get($record['extension']), true);
 			} catch (Exception $e) {
 				$this->log($e->getMessage(), 'file_storage');
@@ -102,9 +103,9 @@ class ImageProcessingListener extends AbstractStorageEventListener {
  */
 	public function createVersions(Event $Event) {
 		if ($this->_checkEvent($Event)) {
-			$Model = $Event->subject();
-			$record = $Event->data['record'][$Model->alias];
-			$this->_createVersions($Model, $record, $Event->data['operations']);
+			$table = $Event->subject();
+			$record = $Event->data['record'][$table->alias()];
+			$this->_createVersions($table, $record, $Event->data['operations']);
 			$Event->stopPropagation();
 		}
 	}
@@ -126,11 +127,11 @@ class ImageProcessingListener extends AbstractStorageEventListener {
  */
 	protected function _removeVersions(Event $Event) {
 		if ($this->_checkEvent($Event)) {
-			$Model = $Event->subject();
+			$table = $Event->subject();
 			$Storage = $Event->data['storage'];
-			$record = $Event->data['record'][$Model->alias];
+			$record = $Event->data['record'][$table->alias()];
 			foreach ($Event->data['operations'] as $version => $operations) {
-				$hash = $Model->hashOperations($operations);
+				$hash = $table->hashOperations($operations);
 				$string = $this->_buildPath($record, true, $hash);
 				if ($this->adapterClass === 'AmazonS3' || $this->adapterClass === 'AwsS3' ) {
 					$string = str_replace('\\', '/', $string);
@@ -155,8 +156,8 @@ class ImageProcessingListener extends AbstractStorageEventListener {
  */
 	public function afterDelete(Event $Event) {
 		if ($this->_checkEvent($Event)) {
-			$Model = $Event->subject();
-			$record = $Event->data['record'][$Model->alias];
+			$table = $Event->subject();
+			$record = $Event->data['record'][$table->alias()];
 			$string = $this->_buildPath($record, true, null);
 			if ($this->adapterClass === 'AmazonS3' || $this->adapterClass === 'AwsS3' ) {
 				$string = str_replace('\\', '/', $string);
@@ -188,16 +189,15 @@ class ImageProcessingListener extends AbstractStorageEventListener {
  */
 	public function afterSave(Event $Event) {
 		if ($this->_checkEvent($Event)) {
-			$Model = $Event->subject();
-			$Storage = StorageManager::adapter($Model->data[$Model->alias]['adapter']);
-			$record = $Model->data[$Model->alias];
+			$table = $Event->subject();
+			$record = $Event->data['record'];
+			$Storage = StorageManager::adapter($record->adapter);
 
 			try {
-				$id = $record[$Model->primaryKey];
-				$filename = $Model->stripUuid($id);
+				$id = $record->{$table->primaryKey()};
+				$filename = $this->stripDashes($id);
 				$file = $record['file'];
 				$record['path'] = $this->fsPath('images' . DS . $record['model'], $id);
-
 				if ($this->_config['preserveFilename'] === true) {
 					$path = $record['path'] . $record['filename'];
 				} else {
@@ -211,17 +211,17 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 
 				$result = $Storage->write($path, file_get_contents($file['tmp_name']), true);
 
-				$data = $Model->save(array($Model->alias => $record), array(
+				$data = $table->save($record, array(
 					'validate' => false,
 					'callbacks' => false
 				));
 
 				$operations = Configure::read('FileStorage.imageSizes.' . $record['model']);
 				if (!empty($operations)) {
-					$this->_createVersions($Model, $record, $operations);
+					$this->_createVersions($table, $record, $operations);
 				}
 
-				$Model->data = $data;
+				$table->data = $data;
 			} catch (Exception $e) {
 				$this->log($e->getMessage(), 'file_storage');
 			}
