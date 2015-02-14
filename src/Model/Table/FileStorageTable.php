@@ -75,13 +75,11 @@ class FileStorageTable extends Table {
 			$event->data['entity']['extension'] = pathinfo($event->data['entity']['file']['name'], PATHINFO_EXTENSION);
 			$event->data['entity']['filename'] = $event->data['entity']['file']['name'];
 		}
-		if (empty($event->data['entity']['table'])) {
-			$event->data['entity']['table'] = $this->table();
-			$event->data['entity']['model'] = $this->table(); // Backward compatibility
+		if (empty($event->data['entity']['model'])) {
+			$event->data['entity']['model'] = $this->table();
 		}
 		if (empty($event->data['entity']['adapter'])) {
-			$event->data['entity']['adapter'] = 'Local'; // Backward compatibility
-			$event->data['entity']['adapter_config'] = 'Local';
+			$event->data['entity']['adapter'] = 'Local';
 		}
 		$Event = new Event('FileStorage.beforeSave', $this, array(
 			'record' => $entity,

@@ -192,7 +192,6 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 			$table = $Event->subject();
 			$record = $Event->data['record'];
 			$Storage = StorageManager::adapter($record->adapter);
-
 			try {
 				$id = $record->{$table->primaryKey()};
 				$filename = $this->stripDashes($id);

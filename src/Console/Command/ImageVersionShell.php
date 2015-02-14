@@ -109,7 +109,6 @@ class ImageVersionShell extends Shell {
 		}
 
 		$this->totaleImageCount = $this->Table->find('count', array(
-			'recursive' => -1,
 			'contain' => array(),
 			'conditions' => array(
 				$this->Table->alias() . '.model' => $model,
@@ -122,7 +121,6 @@ class ImageVersionShell extends Shell {
 
 			$processed = 0;
 			$options = array(
-				'recursive' => -1,
 				'contain' => array(),
 				'conditions' => array(
 					$this->Table->alias() . '.model' => $model,
