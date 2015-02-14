@@ -38,7 +38,7 @@
 	"suggest": {
 		"burzum/cakephp-imagine-plugin": "Required if you want to use the image processing feature of FileStorage"
 	},
-	"extra": {
-		"installer-name": "Burzum/UserTools"
+	"scripts": {
+		"post-autoload-dump": "Cake\\Composer\\Installer\\PluginInstaller::postAutoloadDump"
 	}
 }
