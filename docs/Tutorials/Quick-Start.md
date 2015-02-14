@@ -34,11 +34,11 @@ use Burzum\FileStorage\Lib\FileStorageUtils;
 
 // Attach the S3 Listener to the global CakeEventManager
 $listener = new S3StorageListener();
-EventManager::instance()->attach($listener);
+EventManager::instance()->on($listener);
 
 // Attach the Image Processing Listener to the global CakeEventManager
 $listener = new ImageProcessingListener();
-EventManager::instance()->attach($listener);
+EventManager::instance()->on($listener);
 
 Configure::write('FileStorage', array(
 	// Configure image versions on a per model base

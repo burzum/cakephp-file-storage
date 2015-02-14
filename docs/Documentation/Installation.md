@@ -29,11 +29,11 @@ App::uses('FileStorageListener', 'FileStorage.Event');
 spl_autoload_register(__NAMESPACE__ .'\FileStorageUtils::gaufretteLoader');
 
 $listener = new LocalFileStorageListener();
-CakeEventManager::instance()->attach($listener);
+CakeEventManager::instance()->on($listener);
 
 // For automated image processing you'll have to attach this listener as well
 $listener = new ImageProcessingListener();
-CakeEventManager::instance()->attach($listener);
+CakeEventManager::instance()->on($listener);
 ```
 
 Adapter Specific Configuration
