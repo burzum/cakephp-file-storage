@@ -124,7 +124,7 @@ class FileStorageTable extends Table {
  */
 	public function beforeDelete(\Cake\Event\Event $event, \Cake\ORM\Entity $entity) {
 		$this->record = $this->find()
-			->contain()
+			->contain([])
 			->where([
 				$this->alias() . '.' . $this->primaryKey() => $entity->{$this->primaryKey()}
 			])

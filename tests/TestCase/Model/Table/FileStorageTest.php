@@ -1,9 +1,9 @@
 <?php
 namespace Burzum\FileStorage\Test\TestCase\Model\Table;
 
+use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Burzum\FileStorage\TestSuite\FileStorageTestCase;
-use Burzum\FileStorage\Model\Table\FileStorageTable;
 
 /**
  * File Storage Test
@@ -49,8 +49,11 @@ class FileStorageTest extends FileStorageTestCase {
  *
  * @return void
  */
-	public function testObject() {
-		$this->assertTrue(is_a($this->FileStorage, 'Burzum\FileStorage\Model\Table\FileStorageTable'));
+	public function testBeforeDelete() {
+		$entity = $this->FileStorage->get('file-storage-1');
+		$event = new Event('Model.beforeDelete', $this->FileStorage);
+		$this->FileStorage->beforeDelete($event, $entity);
+		$this->assertEquals($this->FileStorage->record, $entity);
 	}
 
 }
