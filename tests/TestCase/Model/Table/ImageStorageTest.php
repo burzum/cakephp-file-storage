@@ -31,8 +31,8 @@ class ImageStorageTest extends FileStorageTestCase {
  * @return void
  */
 	public function setUp() {
-		parent::setUp();
-		$this->Image = TableRegistry::get('Burzum/FileStorage.ImageStorage');
+//		parent::setUp();
+//		$this->Image = TableRegistry::get('Burzum/FileStorage.ImageStorage');
 	}
 
 /**
@@ -41,9 +41,9 @@ class ImageStorageTest extends FileStorageTestCase {
  * @return void
  */
 	public function tearDown() {
-		parent::tearDown();
-		unset($this->Image);
-		TableRegistry::clear();
+//		parent::tearDown();
+//		unset($this->Image);
+//		TableRegistry::clear();
 	}
 
 /**

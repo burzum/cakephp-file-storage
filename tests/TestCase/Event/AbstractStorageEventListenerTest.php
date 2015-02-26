@@ -97,4 +97,39 @@ class AbstractStorageEventListenerTest extends FileStorageTestCase {
 		$result = $this->Listener->createTmpFile();
 		$this->assertTrue(is_string($result));
 	}
+
+/**
+ * testBuildFileName
+ *
+ * @return void
+ */
+	public function testBuildFileName() {
+		$table = TableRegistry::get('Burzum/FileStorage.FileStorage');
+		$entity = $table->get('file-storage-1');
+
+		$result = $this->Listener->buildFilename($table, $entity);
+		$this->assertEquals($result, 'filestorage1.png');
+
+		$this->Listener->config(['preserveExtension' => false]);
+		$result = $this->Listener->buildFilename($table, $entity);
+		$this->assertEquals($result, 'filestorage1');
+
+		$this->Listener->config(['preserveFilename' => true]);
+		$result = $this->Listener->buildFilename($table, $entity);
+		$this->assertEquals($result, 'cake.icon.png');
+	}
+
+/**
+ * testBuildFileName
+ *
+ * @return void
+ */
+	public function testBuildPath() {
+		$table = TableRegistry::get('Burzum/FileStorage.FileStorage');
+		$entity = $table->get('file-storage-1');
+
+		$result = $this->Listener->buildPath($table, $entity);
+		$this->assertEquals($result, '00\14\90\filestorage1\\');
+	}
+
 }

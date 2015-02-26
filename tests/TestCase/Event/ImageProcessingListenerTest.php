@@ -70,5 +70,4 @@ class ImageProcessingListenerTest extends FileStorageTestCase {
 		), true, '5gh2hf');
 		$this->assertEquals($result, '/xx/xx/xx/uuid/foobar.5gh2hf.jpg');
 	}
-
 }

@@ -45,7 +45,7 @@ class FileStorageTest extends FileStorageTestCase {
 	}
 
 /**
- * testObject
+ * testBeforeDelete
  *
  * @return void
  */
@@ -56,4 +56,23 @@ class FileStorageTest extends FileStorageTestCase {
 		$this->assertEquals($this->FileStorage->record, $entity);
 	}
 
+/**
+ * testBeforeDelete
+ *
+ * @return void
+ */
+	public function testGetStorageAdapter() {
+		$result = $this->FileStorage->getStorageAdapter('Local');
+		$this->assertTrue(is_a($result, '\Gaufrette\Filesystem'));
+	}
+
+/**
+ * testGetEventManager
+ *
+ * @return void
+ */
+	public function testGetEventManager() {
+		$result = $this->FileStorage->getEventManager();
+		$this->assertTrue(is_a($result, '\Cake\Event\EventManager'));
+	}
 }
