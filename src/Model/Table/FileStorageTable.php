@@ -123,16 +123,12 @@ class FileStorageTable extends Table {
  * @return boolean
  */
 	public function beforeDelete(\Cake\Event\Event $event, \Cake\ORM\Entity $entity) {
-		if (!parent::beforeDelete($event, $entity)) {
-			return false;
-		}
-
-		$this->record = $this->find('first', array(
-			'contain' => array(),
-			'conditions' => array(
-				$this->alias() . '.' . $this->primaryKey() => $this->id
-			)
-		));
+		$this->record = $this->find()
+			->contain()
+			->where([
+				$this->alias() . '.' . $this->primaryKey() => $entity->{$this->primaryKey()}
+			])
+			->first();
 
 		if (empty($this->record)) {
 			return false;
