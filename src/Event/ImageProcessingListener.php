@@ -132,7 +132,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 			$Storage = $Event->data['storage'];
 			$record = $Event->data['record'][$table->alias()];
 			foreach ($Event->data['operations'] as $version => $operations) {
-				$hash = $table->hashOperations($operations);
+				$hash = FileStorageUtils::hashOperations($operations);
 				$string = $this->_buildPath($record, true, $hash);
 				if ($this->adapterClass === 'AmazonS3' || $this->adapterClass === 'AwsS3' ) {
 					$string = str_replace('\\', '/', $string);
