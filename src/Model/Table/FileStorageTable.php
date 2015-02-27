@@ -101,14 +101,14 @@ class FileStorageTable extends Table {
  * @return void
  */
 	public function afterSave(Event $event, Entity $entity, $options) {
-		if ($event->data['entity']->isNew) {
+		if ($event->data['entity']->isNew()) {
 			$event->data['entity'][$this->primaryKey] = $this->getLastInsertId();
 		}
-		$Event = new Event('FileStorage.afterSave', $this, array(
-			'created' => $event->data['entity']->isNew,
+		$Event = new Event('FileStorage.afterSave', $this, [
+			'created' => $event->data['entity']->isNew(),
 			'record' => $entity,
 			'storage' => $this->getStorageAdapter($event->data['entity']['adapter'])
-		));
+		]);
 		$this->getEventManager()->dispatch($Event);
 		$this->deleteOldFileOnSave($entity);
 		return true;
@@ -186,7 +186,7 @@ class FileStorageTable extends Table {
  */
 	public function deleteOldFileOnSave(Entity $entity, $oldIdField = 'old_file_id') {
 		if (!empty($entity[$oldIdField]) && $entity['model']) {
-			return $this->delete($entity[$oldIdField]);
+			return $this->delete($entity);
 		}
 		return false;
 	}

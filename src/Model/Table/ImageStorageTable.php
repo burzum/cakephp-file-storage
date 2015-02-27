@@ -4,7 +4,6 @@ namespace Burzum\FileStorage\Model\Table;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Utility\Folder;
-use Burzum\FileStorage\Lib\FileStorageUtils;
 
 /**
  * ImageStorageTable
@@ -74,11 +73,10 @@ class ImageStorageTable extends FileStorageTable {
  */
 	public function afterSave(\Cake\Event\Event $event,  \Cake\ORM\Entity $entity, $options) {
 		if ($entity->isNew()) {
-			$imageEvent = new Event('ImageStorage.afterSave', $this, array(
-				'created' => $event->data['entity']->isNew,
+			$imageEvent = new Event('ImageStorage.afterSave', $this, [
 				'storage' => $this->getStorageAdapter($entity['adapter']),
 				'record' => $entity
-			));
+			]);
 			$this->getEventManager()->dispatch($imageEvent);
 		}
 		return true;
@@ -88,8 +86,7 @@ class ImageStorageTable extends FileStorageTable {
  * Get a copy of the actual record before we delete it to have it present in afterDelete
  *
  * @param \Cake\Event\Event $event
- * @param \Burzum\FileStorage\Model\Table\Entity $entity
- * @param array $options
+ * @param \Cake\ORM\Entity $entity
  * @return boolean
  */
 	public function beforeDelete(\Cake\Event\Event $event, \Cake\ORM\Entity $entity) {
@@ -97,10 +94,10 @@ class ImageStorageTable extends FileStorageTable {
 			return false;
 		}
 
-		$imageEvent = new Event('ImageStorage.beforeDelete', $this, array(
+		$imageEvent = new Event('ImageStorage.beforeDelete', $this, [
 			'record' => $this->record,
 			'storage' => $this->getStorageAdapter($this->record[$this->alias]['adapter'])
-		));
+		]);
 		$this->getEventManager()->dispatch($imageEvent);
 
 		if ($imageEvent->isStopped()) {
@@ -116,15 +113,15 @@ class ImageStorageTable extends FileStorageTable {
  * Note that we do not call the parent::afterDelete(), we just want to trigger the ImageStorage.afterDelete event but not the FileStorage.afterDelete at the same time!
  *
  * @param \Cake\Event\Event $event
- * @param \Burzum\FileStorage\Model\Table\Entity $entity
+ * @param \Cake\ORM\Entity $entity
  * @param array $options
  * @return void
  */
 	public function afterDelete(\Cake\Event\Event $event, \Cake\ORM\Entity $entity, $options) {
-		$imageEvent = new Event('ImageStorage.afterDelete', $this, array(
+		$imageEvent = new Event('ImageStorage.afterDelete', $this, [
 			'record' => $entity,
 			'storage' => $this->getStorageAdapter($entity['adapter'])
-		));
+		]);
 		$this->getEventManager()->dispatch($imageEvent);
 		return true;
 	}
