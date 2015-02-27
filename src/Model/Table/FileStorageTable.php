@@ -44,6 +44,7 @@ class FileStorageTable extends Table {
 	public function initialize(array $config) {
 		parent::initialize($config);
 		//$this->addBehavior('Burzum/FileStorage.UploadValidator');
+		$this->addBehavior('Timestamp');
 		$this->displayField('filename');
 		$this->table('file_storage');
 	}
