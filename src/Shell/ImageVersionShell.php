@@ -100,6 +100,27 @@ class ImageVersionShell extends Shell
 					],
 				],
 			],
+			'regenerate' => [
+				'help' => __d('file_storage', '<model> Generates all image versions.'),
+				'parser' => [
+					'arguments' => [
+						'model' => [
+							'help' => __d('file_storage', 'Value of the model property of the images to generate'),
+							'required' => true,
+						],
+					],
+					'options' => [
+						'storageTable' => [
+							'short' => 's',
+							'help' => __d('file_storage', 'The storage table for image processing you want to use.'),
+						],
+						'limit' => [
+							'short' => 'l',
+							'help' => __d('file_storage', 'Limits the amount of records to be processed in one batch'),
+						],
+					],
+				],
+			],
 		]);
 		return $parser;
 	}
@@ -130,6 +151,30 @@ class ImageVersionShell extends Shell
 				$this->_stop();
 			}
 			$this->limit = $this->params['limit'];
+		}
+	}
+
+	/**
+	 * Generate all image versions.
+	 *
+	 * @param string $model
+	 */
+	public function regenerate($model)
+	{
+		$operations = Configure::read('FileStorage.imageSizes.' . $this->args[0]);
+
+		if (empty($operations)) {
+			$this->out(__d('file_storage', 'Invalid table or version.'));
+			$this->_stop();
+		}
+
+		foreach ($operations as $operation) {
+			try {
+				$this->_loop($this->command, $this->args[0], array($operation));
+			} catch (\Exception $e) {
+				$this->out($e->getMessage());
+				$this->_stop();
+			}
 		}
 	}
 
@@ -188,22 +233,22 @@ class ImageVersionShell extends Shell
 	 */
 	protected function _loop($action, $model, $operations = array())
 	{
-		if (!in_array($action, array('generate', 'remove'))) {
+		if (!in_array($action, array('generate', 'remove', 'regenerate'))) {
 			$this->_stop();
 		}
 
-		$this->totaleImageCount = $this->Table
+		$this->totalImageCount = $this->Table
 			->find()
 			->where(['model' => $model])
 			->andWhere(['extension IN' => ['jpg', 'png']])
 			->count();
 
-		if ($this->totaleImageCount == 0) {
+		if ($this->totalImageCount == 0) {
 			$this->out(__d('file_storage', 'No Images for model {0} found', $model));
 			$this->_stop();
 		}
 
-		$this->out(__d('file_storage', '{0} image file(s) will be processed' . "\n", $this->totaleImageCount));
+		$this->out(__d('file_storage', '{0} image file(s) will be processed' . "\n", $this->totalImageCount));
 
 		$offset = 0;
 		$limit = $this->limit;
@@ -228,7 +273,7 @@ class ImageVersionShell extends Shell
 							'storage' => $Storage,
 							'operations' => $operations);
 
-						if ($action == 'generate') {
+						if ($action == 'generate' || $action == 'regenerate') {
 							$Event = new Event('ImageVersion.createVersion', $this->Table, $payload);
 							EventManager::instance()->dispatch($Event);
 						}
