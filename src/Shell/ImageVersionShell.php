@@ -217,7 +217,7 @@ class ImageVersionShell extends Shell
         }
 
         try {
-            $this->_loop('generate', $model, array($version => $operations));
+            $this->_loop('remove', $model, array($version => $operations));
         } catch (\Exception $e) {
             $this->out($e->getMessage());
             $this->_stop();
@@ -273,7 +273,7 @@ class ImageVersionShell extends Shell
                             'storage' => $Storage,
                             'operations' => $operations);
 
-                        if ($action == 'generate' || $action = 'regenerate') {
+                        if ($action == 'generate' || $action == 'regenerate') {
                             $Event = new Event('ImageVersion.createVersion', $this->Table, $payload);
                             EventManager::instance()->dispatch($Event);
                         }
