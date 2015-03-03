@@ -1,8 +1,13 @@
 <?php
 namespace Burzum\FileStorage\Shell;
 
+use Cake\Core\Configure;
 use Cake\Console\Shell;
+use Cake\Event\Event;
+use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
+use Burzum\FileStorage\Lib\StorageManager;
+use Burzum\FileStorage\Model\Table\ImageStorageTable;
 
 /**
  * ImageShell
@@ -14,14 +19,8 @@ use Cake\ORM\TableRegistry;
 class ImageVersionShell extends Shell {
 
 /**
- * Models
- *
- * @var array
- */
-	public $uses = array();
-
-/**
  * Storage Table Object
+ * @var \Cake\ORM\Table
  */
 	public $Table = null;
 
@@ -33,21 +32,113 @@ class ImageVersionShell extends Shell {
 	public $limit = 10;
 
 /**
- * Program entry point
- *
- * @return void
+ * @inheritDoc
  */
-	public function main() {
-		$storageModel = 'FileStorage.ImageStorage';
-		if (isset($this->params['storageModel'])) {
-			$storageModel = $this->params['storageModel'];
+	public function getOptionParser() {
+		$parser = parent::getOptionParser();
+		$parser->description([
+			__d('file_storage', 'Shell command for generating and removing image versions.')
+		]);
+		$parser->addOption('storageTable', [
+			'short' => 's',
+			'help' => __d('file_storage', 'The storage table for image processing you want to use.')
+		]);
+		$parser->addOption('limit', [
+			'short' => 'l',
+			'help' => __d('file_storage', 'Limits the amount of records to be processed in one batch')
+		]);
+		$parser->addSubcommands([
+			'generate' => [
+				'help' => __d('file_storage', '<model> <version> Generate a new image version'),
+				'parser' => [
+					'arguments' => [
+						'model' => [
+							'help' => __d('file_storage', 'Value of the model property of the images to generate'),
+							'required' => true,
+						],
+						'version' => [
+							'help' => __d('file_storage', 'Image version to generate'),
+							'required' => true,
+						],
+					],
+					'options' => [
+						'storageTable' => [
+							'short' => 's',
+							'help' => __d('file_storage', 'The storage table for image processing you want to use.'),
+						],
+						'limit' => [
+							'short' => 'l',
+							'help' => __d('file_storage', 'Limits the amount of records to be processed in one batch'),
+						],
+					],
+				],
+			],
+			'remove' => [
+				'help' => __d('file_storage', '<model> <version> Remove an new image version'),
+				'parser' => [
+					'arguments' => [
+						'model' => [
+							'help' => __d('file_storage', 'Value of the model property of the images to remove'),
+							'required' => true,
+						],
+						'version' => [
+							'help' => __d('file_storage', 'Image version to remove'),
+							'required' => true,
+						],
+					],
+					'options' => [
+						'storageTable' => [
+							'short' => 's',
+							'help' => __d('file_storage', 'The storage table for image processing you want to use.'),
+						],
+						'limit' => [
+							'short' => 'l',
+							'help' => __d('file_storage', 'Limits the amount of records to be processed in one batch'),
+						],
+					],
+				],
+			],
+			'regenerate' => [
+				'help' => __d('file_storage', '<model> Generates all image versions.'),
+				'parser' => [
+					'arguments' => [
+						'model' => [
+							'help' => __d('file_storage', 'Value of the model property of the images to generate'),
+							'required' => true,
+						],
+					],
+					'options' => [
+						'storageTable' => [
+							'short' => 's',
+							'help' => __d('file_storage', 'The storage table for image processing you want to use.'),
+						],
+						'limit' => [
+							'short' => 'l',
+							'help' => __d('file_storage', 'Limits the amount of records to be processed in one batch'),
+						],
+					],
+				],
+			],
+		]);
+		return $parser;
+	}
+
+/**
+ * @inheritDoc
+ */
+	public function initialize() {
+		parent::initialize();
+
+		$storageTable = 'Burzum/FileStorage.ImageStorage';
+		if (isset($this->params['storageTable'])) {
+			$storageTable = $this->params['storageTable'];
 		}
 
-		$this->Model = TableRegistry::get($storageModel);
+		$this->Table = TableRegistry::get($storageTable);
 
-		if (!$this->Model instanceOf \Burzum\FileStorage\Model\Table\ImageStorage) {
-			$this->out(__d('file_storage', 'Invalid Storage Table: %s', $storageModel));
-			$this->out(__d('file_storage', 'The table must be an instance of FileStorage\Model\Table\ImageStorage or extend it!'));
+		if (!$this->Table instanceOf ImageStorageTable) {
+			$this->out(__d('file_storage', 'Invalid Storage Table: {0}', $storageTable));
+			$this->out(__d('file_storage', 'The table must be an instance of Burzum\FileStorage\Model\Table\ImageStorageTable or extend it!'));
 			$this->_stop();
 		}
 
@@ -58,116 +149,138 @@ class ImageVersionShell extends Shell {
 			}
 			$this->limit = $this->params['limit'];
 		}
+	}
 
-		if ($this->command == 'generate' || $this->command == 'remove') {
-			if (isset($this->args[1]) && isset($this->args[2])) {
-				$operations = Configure::read('FileStorage.imageSizes.' . $this->args[1] . '.' . $this->args[2]);
+/**
+ * Generate all image versions.
+ *
+ * @param string $model
+ */
+	public function regenerate() {
+		$operations = Configure::read('FileStorage.imageSizes.' . $this->args[0]);
 
-				if (empty($operations)) {
-					$this->out(__d('file_storage', 'Invalid table or version.'));
-					$this->_stop();
-				}
+		if (empty($operations)) {
+			$this->out(__d('file_storage', 'Invalid table or version.'));
+			$this->_stop();
+		}
 
-				try {
-					$this->_loop($this->command, $this->args[1], array($this->args[2] => $operations));
-				} catch (Exception $e) {
-					$this->out($e->getMessage());
-					$this->_stop();
-				}
-
-			} else {
-				$this->out(__d('file_storage', 'Please use: generate <model> <version>'));
+		foreach ($operations as $operation) {
+			try {
+				$this->_loop($this->command, $this->args[0], array($operation));
+			} catch (\Exception $e) {
+				$this->out($e->getMessage());
 				$this->_stop();
 			}
 		}
 	}
 
 /**
- * getOptionParser
+ * Generate a given image version.
  *
- * @return Parser
+ * @param string $model
+ * @param string $version
  */
-	public function getOptionParser() {
-		$parser = parent::getOptionParser();
-		$parser->addSubcommand('generate', array(
-			'help' => '<model> <version> Generate a new image version',
-			'boolean' => true));
-		$parser->addSubcommand('remove', array(
-			'help' => '<model> <version> Remove an image version',
-			'boolean' => true));
-		$parser->addOption('storageModel', array(
-			'short' => 's',
-			'help' => __('The storage model for image processing you want to use.')));
-		$parser->addOption('limit', array(
-			'short' => 'l',
-			'help' => __('Limits the amount of records to be processed in one batch')));
-		return $parser;
-	}
+	public function generate($model, $version) {
+		$operations = Configure::read('FileStorage.imageSizes.' . $model . '.' . $version);
 
-	protected function _loop($action, $model, $operations = array()) {
-		if (!in_array($action, array('generate', 'remove'))) {
+		if (empty($operations)) {
+			$this->out(__d('file_storage', 'Invalid table or version.'));
 			$this->_stop();
 		}
 
-		$this->totaleImageCount = $this->Table->find('count', array(
-			'contain' => array(),
-			'conditions' => array(
-				$this->Table->alias() . '.model' => $model,
-				$this->Table->alias() . '.extension' => array('jpg', 'png')
-			)
-		));
-
-		if ($this->totaleImageCount > 0) {
-			$this->out(__d('file_storage', '%d image files will be processed' . "\n", $this->totaleImageCount));
-
-			$processed = 0;
-			$options = array(
-				'contain' => array(),
-				'conditions' => array(
-					$this->Table->alias() . '.model' => $model,
-					$this->Table->alias() . '.extension' => array('jpg', 'png')
-				)
-			);
-
-			$offset = 0;
-			$limit = $this->limit;
-
-			do {
-				$options['limit'] = $limit;
-				$options['offset'] = $offset;
-				$images = $this->Table->find('all', $options);
-
-				if (!empty($images)) {
-					foreach ($images as $image) {
-						$Storage = StorageManager::adapter($image[$this->Table->alias()]['adapter']);
-						if ($Storage === false) {
-							$this->out(__d('file_storage', 'Cant load adapter config %s for record %s', $image[$this->Table->alias()]['adapter'], $image[$this->Table->alias()][$this->Table->primaryKey]));
-						} else {
-							$payload = array(
-								'record' => $image,
-								'storage' => $Storage,
-								'operations' => $operations);
-
-							if ($action == 'generate') {
-								$Event = new Event('ImageVersion.createVersion', $this->Model, $payload);
-								EventManager::instance()->dispatch($Event);
-							}
-
-							if ($action == 'remove') {
-								$Event = new Event('ImageVersion.removeVersion', $this->Model, $payload);
-								EventManager::instance()->dispatch($Event);
-							}
-
-							$this->out(__('%s processed', $image[$this->Table->alias()]['id']));
-						}
-					}
-				}
-
-				$offset += $limit;
-			} while (!empty($images));
-		} else {
-			$this->out(__d('file_storage', 'No Images for model %s found', $model));
+		try {
+			$this->_loop('generate', $model, array($version => $operations));
+		} catch (\Exception $e) {
+			$this->out($e->getMessage());
+			$this->_stop();
 		}
 	}
 
+/**
+ * Remove a given image version.
+ *
+ * @param string $model
+ * @param string $version
+ */
+	public function remove($model, $version) {
+		$operations = Configure::read('FileStorage.imageSizes.' . $model . '.' . $version);
+
+		if (empty($operations)) {
+			$this->out(__d('file_storage', 'Invalid table or version.'));
+			$this->_stop();
+		}
+
+		try {
+			$this->_loop('remove', $model, array($version => $operations));
+		} catch (\Exception $e) {
+			$this->out($e->getMessage());
+			$this->_stop();
+		}
+	}
+
+/**
+ * Loops through image records and performs requested operation on them.
+ *
+ * @param $action
+ * @param $model
+ * @param array $operations
+ */
+	protected function _loop($action, $model, $operations = array()) {
+		if (!in_array($action, array('generate', 'remove', 'regenerate'))) {
+			$this->_stop();
+		}
+
+		$this->totalImageCount = $this->Table
+			->find()
+			->where(['model' => $model])
+			->andWhere(['extension IN' => ['jpg', 'png']])
+			->count();
+
+		if ($this->totalImageCount == 0) {
+			$this->out(__d('file_storage', 'No Images for model {0} found', $model));
+			$this->_stop();
+		}
+
+		$this->out(__d('file_storage', '{0} image file(s) will be processed' . "\n", $this->totalImageCount));
+
+		$offset = 0;
+		$limit = $this->limit;
+
+		do {
+			$images = $this->Table
+				->find()
+				->where(['model' => $model])
+				->andWhere(['extension IN' => ['jpg', 'png']])
+				->limit($limit)
+				->offset($offset)
+				->all();
+
+			if (!empty($images)) {
+				foreach ($images as $image) {
+					$Storage = StorageManager::adapter($image->adapter);
+					if ($Storage === false) {
+						$this->out(__d('file_storage', 'Cant load adapter config {0} for record {1}', $image->adapter, $image->id));
+					} else {
+						$payload = array(
+							'record' => $image,
+							'storage' => $Storage,
+							'operations' => $operations);
+
+						if ($action == 'generate' || $action == 'regenerate') {
+							$Event = new Event('ImageVersion.createVersion', $this->Table, $payload);
+							EventManager::instance()->dispatch($Event);
+						}
+
+						if ($action == 'remove') {
+							$Event = new Event('ImageVersion.removeVersion', $this->Table, $payload);
+							EventManager::instance()->dispatch($Event);
+						}
+
+						$this->out(__('{0} processed', $image->id));
+					}
+				}
+			}
+			$offset += $limit;
+		} while ($images->count() > 0);
+	}
 }
