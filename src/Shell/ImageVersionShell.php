@@ -1,6 +1,7 @@
 <?php
-namespace Burzum\FileStorage\Console\Command;
+namespace Burzum\FileStorage\Shell;
 
+use Cake\Console\Shell;
 use Cake\ORM\TableRegistry;
 
 /**
