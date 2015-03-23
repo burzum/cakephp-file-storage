@@ -16,6 +16,11 @@ class ImageProcessingListener extends Object implements CakeEventListener {
  */
 	public $adapterClass = null;
 
+/**
+ * Options
+ *
+ * @var array
+ */
 	public $options = array();
 
 /**
@@ -26,7 +31,8 @@ class ImageProcessingListener extends Object implements CakeEventListener {
  */
 	public function __construct($options = array()) {
 		$defaults = array(
-			'preserveFilename' => false
+			'preserveFilename' => false,
+			'imageOptions' => array()
 		);
 		$this->options = array_merge($defaults, $options);
 	}
@@ -74,7 +80,7 @@ class ImageProcessingListener extends Object implements CakeEventListener {
 
 			try {
 				$image = $Model->processImage($tmpFile, null, array('format' => $record['extension']), $imageOperations);
-				$result = $Storage->write($string, $image->get($record['extension']), true);
+				$result = $Storage->write($string, $image->get($record['extension'], $this->options['imageOptions']), true);
 			} catch (Exception $e) {
 				$this->log($e->getMessage(), 'file_storage');
 				unlink($tmpFile);
