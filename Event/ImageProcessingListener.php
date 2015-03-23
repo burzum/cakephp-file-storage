@@ -26,7 +26,8 @@ class ImageProcessingListener extends Object implements CakeEventListener {
  */
 	public function __construct($options = array()) {
 		$defaults = array(
-			'preserveFilename' => false
+			'preserveFilename' => false,
+			'imageOptions' => array()
 		);
 		$this->options = array_merge($defaults, $options);
 	}
@@ -73,9 +74,8 @@ class ImageProcessingListener extends Object implements CakeEventListener {
 			}
 
 			try {
-				$options = (array)Configure::read('Media.options');
 				$image = $Model->processImage($tmpFile, null, array('format' => $record['extension']), $imageOperations);
-				$result = $Storage->write($string, $image->get($record['extension'], $options), true);
+				$result = $Storage->write($string, $image->get($record['extension'], $this->options['imageOptions']), true);
 			} catch (Exception $e) {
 				$this->log($e->getMessage(), 'file_storage');
 				unlink($tmpFile);
