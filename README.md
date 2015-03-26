@@ -51,7 +51,7 @@ To contribute to this plugin please follow a few basic rules.
 
 * Pull requests must be send to the ```develop``` branch.
 * Contributions must follow the [PSR2-**R** coding standard recommendation](https://github.com/php-fig-rectified/fig-rectified-standards).
-* [Unit tests](http://book.cakephp.org/2.0/en/development/testing.html) are required.
+* [Unit tests](http://book.cakephp.org/3.0/en/development/testing.html) are required.
 
 License
 -------
