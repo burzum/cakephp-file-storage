@@ -67,6 +67,6 @@ class LocalFileStorageListenerTest extends FileStorageTestCase {
 	public function testBuildPath() {
 		$entity = $this->FileStorage->get('file-storage-1');
 		$result = $this->Listener->buildPath($this->FileStorage, $entity);
-		$this->assertEquals($result, 'files\00\14\90\filestorage1\\');
+		$this->assertEquals($result, 'files' . DS . '00' . DS . '14' . DS . '90' . DS . 'filestorage1' . DS);
 	}
 }
