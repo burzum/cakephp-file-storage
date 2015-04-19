@@ -1,19 +1,21 @@
 Database Setup
 ==============
 
-You need to setup the plugin database using either the [CakePHPs built in schema shell](http://book.cakephp.org/2.0/en/console-and-shells/schema-management-and-migrations.html)
+You need to setup the plugin database using [the official migrations plugin for CakePHP](https://github.com/cakephp/migrations).
 
-	cake schema create --plugin FileStorage
+```
+cake migrations migrate -p Burzum/FileStorage
+```
 
-or the [CakeDC Migrations plugin](http://github.com/CakeDC/migrations).
-
-	cake Migrations.migration run all --plugin FileStorage
+If you're coming from the CakePHP 2.0 version of the plugin, the support for the CakeDC Migrations plugin has been dropped in favor of the official migrations plugin.
 
 Integer type IDs vs UUIDs
 -------------------------
 
 If you want to use integers instead of [UUIDs](http://en.wikipedia.org/wiki/Universally_unique_identifier) put this into your ```bootstrap.php``` *before* you're running the migrations:
 
-	Configure::write('FileStorage.schema.useIntegers', true);
+```php
+Configure::write('FileStorage.schema.useIntegers', true);
+```
 
 This config option is **not** available for the regular CakePHP schema that comes with the plugin. It seems to be impossible to override the type on the fly. If you can figure out how to do it a pull request is welcome.

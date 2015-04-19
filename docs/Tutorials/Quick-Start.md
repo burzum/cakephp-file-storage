@@ -1,23 +1,14 @@
 Quick-Start
 ===========
 
+Add this to your composer.json. Imagine is optional but you'll need it if you want to process images.
+
 ```js
 {
-	"config": {
-		"vendor-dir": "app/Vendor/",
-		"preferred-install": "source"
-	},
 	"require": {
-		"burzum/cakephp-imagine-plugin": "dev-master",
-		"cakedc/migrations": "dev-master",
-		"knplabs/gaufrette": "dev-master",
-		"imagine/imagine": "dev-master"
-	},
-	"extra": {
-		"installer-paths": {
-			"app/Plugin/FileStorage": ["burzum/FileStorage"],
-			"app/Plugin/Imagine": ["burzum/cakephp-imagine-plugin"]
-		}
+		"burzum/cakephp-file-storage": "dev-3.0",
+		"burzum/cakephp-imagine-plugin": "dev-3.0",
+		"cakephp/migrations": "dev-master"
 	}
 }
 ```
@@ -25,7 +16,7 @@ Quick-Start
 app/Config/file_storage.php
 ---------------------------
 
-There is a good amount of code to be added to prepare everything. In theory you can put all of this in bootstrap as well but to keep things clean it is high recommended to put all of this in a separate file.
+There is a good amount of code to be added to prepare everything. In theory you can put all of this in bootstrap as well but to keep things clean it is recommended to put all of this in a separate file.
 
 ```php
 use Aws\S3;
@@ -70,7 +61,7 @@ Configure::write('FileStorage', array(
 // This is very important! The hashes are needed to calculate the image versions!
 FileStorageUtils::generateHashes();
 
-// Optional, lets use the AwsS3 adapter here instead of local here
+// Optional, lets use the AwsS3 adapter here instead of local
 $S3Client = \Aws\S3\S3Client::factory(array(
 	'key' => 'YOUR-KEY',
 	'secret' => 'YOUR-SECRET'
@@ -102,34 +93,49 @@ Theoretical model setup
 -----------------------
 
 ```php
-class Product extends AppModel {
-	public $hasMany = array(
-		'Image' => array(
-			'className' => 'ProductImage',
-		),
-		'Document' => array(
+namespace App\Model\Table;
+
+use Cake\ORM\Table;
+
+class Products extends Table {
+	public function initialize() {
+		parent::initialize();
+		$this->hasMany('Images', [
+			'className' => 'ProductImages',
+			'foreignKey' => 'foreign_key',
+			'conditions' => [
+				'Documents.model' => 'ProductImage'
+			]
+		]);
+		$this->hasMany('Documents', [
 			'className' => 'FileStorage.FileStorage',
-		),
-	);
+			'foreignKey' => 'foreign_key',
+			'conditions' => [
+				'Documents.model' => 'ProductDocument'
+			]
+		]);
+	}
 }
 ```
 
 ```php
-App::uses('ImageStorage', 'FileStorage.Model');
-class ProductImage extends ImageStorage {
-	public $actsAs = array(
-		'FileStorage.UploadValidator' => array(
-			'allowedExtensions' => array(
-				'jpg',
-				'png'
-			),
-		),
-	);
-	public function upload($productId, $data) {
-		$data[$this->alias]['adapter'] = 'Local';
-		$data[$this->alias]['model'] = $this->name;
-		$data[$this->alias]['foreign_key'] = $productId;
-		$this->create();
+namespace App\Model\Table;
+
+use Burzum\FileStorage\Model\Table\ImageStorageTable;
+
+class ProductImagesTable extends ImageStorageTable {
+	public function uploadImage($productId, $data) {
+		$data['adapter'] = 'Local';
+		$data['model'] = 'ProductImage',
+		$data['foreign_key'] = $productId;
+		$entity = $this->newEntity($data);
+		return $this->save($data);
+	}
+	public function uploadDocument($productId, $data) {
+		$data['adapter'] = 'Local';
+		$data['model'] = 'ProductDocument',
+		$data['foreign_key'] = $productId;
+		$entity = $this->newEntity($data);
 		return $this->save($data);
 	}
 }
@@ -139,10 +145,11 @@ Products Controller
 -------------------
 
 ```php
-class ProductsController extends AppModel {
+class ProductsController extends ApController {
+	// Upload an image
 	public function upload($productId = null) {
 		if (!$this->request->is('get')) {
-			if ($this->Product->Image->upload($productId, $this->request->data)) {
+			if ($this->Products->Images->upload($productId, $this->request->data)) {
 				$this->Session->set(__('Upload successful!');
 			}
 		}
@@ -154,7 +161,7 @@ Products View
 -------------
 
 ```php
-echo $this->Form->create('ProductImage', array(
+echo $this->Form->create($productImage, array(
 	'type' => 'file'
 ));
 echo $this->Form->file('file');

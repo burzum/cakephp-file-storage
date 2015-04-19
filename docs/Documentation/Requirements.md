@@ -3,7 +3,7 @@ Requirements
 
  * CakePHP 3.0+
  * PHP 5.4.19+
- * Gaufrette Library (included as git submodule or composer dependency)
+ * Gaufrette Library (included as composer dependency)
 
 Optional but required for image processing:
 
