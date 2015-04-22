@@ -51,9 +51,10 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 		return array(
 			'ImageVersion.createVersion' => 'createVersions',
 			'ImageVersion.removeVersion' => 'removeVersions',
+			'ImageVersion.getVersions' => 'imagePath',
 			'ImageStorage.afterSave' => 'afterSave',
 			'ImageStorage.afterDelete' => 'afterDelete',
-			'FileStorage.ImageHelper.imagePath' => 'imagePath',
+			'FileStorage.ImageHelper.imagePath' => 'imagePath' // Deprecated
 		);
 	}
 

@@ -177,4 +177,42 @@ class ImageStorageTable extends FileStorageTable {
 		return true;
 	}
 
+/**
+ * Gets a list of image versions for a given record.
+ *
+ * Use this method to get a list of ALL versions when needed or to cache all the
+ * versions somewhere. This method will return all configured versions for an
+ * image. For example you could store them serialized along with the file data
+ * by adding a "versions" field to the DB table and extend this model.
+ *
+ * Just in case you're wondering about the event name in the method code: It's
+ * called FileStorage.ImageHelper.imagePath there because the event is the same
+ * as in the helper. No need to introduce yet another event, the existing event
+ * already fulfills the purpose. I might rename this event in the 3.0 version of
+ * the plugin to a more generic one.
+ *
+ * @param array $record An ImageStorage database record
+ * @param array $options. Options for the version.
+ * @return array A list of versions for this image file. Key is the version, value is the path or URL to that image.
+ */
+	public function getImageVersions($record, $options = []) {
+		$versions = [];
+		$versionData = (array)Configure::read('FileStorage.imageSizes.' . $record['model']);
+		$versionData['original'] = isset($options['originalVersion']) ? $options['originalVersion'] : 'original';
+		foreach ($versionData as $version => $data) {
+			$hash = Configure::read('FileStorage.imageHashes.' . $record['model'] . '.' . $version);
+			$Event = new Event('ImageVersion.getVersions', $this, [
+					'hash' => $hash,
+					'image' => $record,
+					'version' => $version,
+					'options' => []
+				]
+			);
+			$this->getEventManager()->dispatch($Event);
+			if ($Event->isStopped()) {
+				$versions[$version] = str_replace('\\', '/', $Event->data['path']);
+			}
+		}
+		return $versions;
+	}
 }
