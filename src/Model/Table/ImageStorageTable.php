@@ -96,7 +96,7 @@ class ImageStorageTable extends FileStorageTable {
 
 		$imageEvent = new Event('ImageStorage.beforeDelete', $this, [
 			'record' => $this->record,
-			'storage' => $this->getStorageAdapter($this->record[$this->alias]['adapter'])
+			'storage' => $this->getStorageAdapter($this->record['adapter'])
 		]);
 		$this->getEventManager()->dispatch($imageEvent);
 
