@@ -17,12 +17,13 @@ This section is going to show how to store a file using the Storage Manager dire
 For example you have a Report model and want to save a pdf to it, you would then create an association like:
 
 ```php
-public $hasOne = array(
-	'PdfFile' => array(
-		'className' => 'FileStorage.FileStorage',
-		'foreignKey' => 'foreign_key'
-	)
-);
+public function initialize(array $config)
+{
+        $this->hasOne('PdfFiles', [
+            'className' => 'FileStorage.PdfFiles',
+            'foreignKey' => 'foreign_key'
+        ]);
+}
 ```
 
 In your add.ctp or edit.ctp views you would add something like:
