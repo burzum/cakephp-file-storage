@@ -16,7 +16,7 @@
 		"php": ">=5.4.19",
 		"cakephp/cakephp": "~3.0",
 		"cakephp/plugin-installer": "*",
-		"cakephp/migrations": "dev-master",
+		"cakephp/migrations": "1.1.0",
 		"knplabs/gaufrette": "*"
 	},
 	"require-dev": {
