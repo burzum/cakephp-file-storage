@@ -11,7 +11,7 @@ use Burzum\FileStorage\Lib\FileStorageUtils;
 
 /**
  * @author Florian Krämer
- * @copy 2013 - 2014 Florian Krämer
+ * @copy 2013 - 2015 Florian Krämer
  * @license MIT
  */
 class ImageProcessingListener extends AbstractStorageEventListener {
@@ -42,7 +42,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
  * @return ImageProcessingListener
  */
 	public function __construct(array $config = []) {
-		$this->config('rotateImage', []);
+		$this->config('autoRotate', []);
 		$this->config($config);
 		$this->_imageProcessor = new ImageProcessor();
 	}
@@ -229,7 +229,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
  */
 	public function beforeSave(Event $Event) {
 		if ($this->_checkEvent($Event)) {
-			if (in_array($Event->data['record']['model'], $this->config('autoRotate'))) {
+			if (in_array($Event->data['record']['model'], (array)$this->config('autoRotate'))) {
 				$imageFile = $Event->data['record']['file']['tmp_name'];
 				$format = FileStorageUtils::fileExtension($Event->data['record']['file']['name']);
 				$this->_autoRotate($imageFile, $format);
