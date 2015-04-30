@@ -149,7 +149,7 @@ class ProductsController extends ApController {
 	// Upload an image
 	public function upload($productId = null) {
 		if (!$this->request->is('get')) {
-			if ($this->Products->Images->upload($productId, $this->request->data)) {
+			if ($this->Products->ProductImages->upload($productId, $this->request->data)) {
 				$this->Session->set(__('Upload successful!');
 			}
 		}
