@@ -18,12 +18,11 @@ CakePHP Bootstrap
 Add the following part to your applications ```config/bootstrap.php```.
 
 ```php
-App::uses('CakeEventManager', 'Event');
-App::uses('FileStorageUtils', 'FileStorage.Lib/Utility');
-App::uses('StorageManager', 'FileStorage.Lib');
-App::uses('LocalImageProcessingListener', 'FileStorage.Event');
-App::uses('LocalFileStorageListener', 'FileStorage.Event');
-App::uses('FileStorageListener', 'FileStorage.Event');
+use Cake\Event\CakeEventManager;
+use Burzum\FileStorage\Lib\FileStorageUtils;
+use Burzum\FileStorage\Lib\StorageManager;
+use Burzum\FileStorage\Event\ImageProcessingListener;
+use Burzum\FileStorage\Event\LocalFileStorageListener;
 
 // Only required if you're *NOT* using composer or another autoloader!
 spl_autoload_register(__NAMESPACE__ .'\FileStorageUtils::gaufretteLoader');
@@ -41,7 +40,7 @@ Adapter Specific Configuration
 
 Depending on the storage backend of your choice, for example Amazon S3 or Dropbox, you'll very likely need additional vendor libs and extended adapter configuration.
 
-Please see the (Specific Adapter Configuration)[Specific-Adapter-Configurations.md] page of the documentation for more information about then. It is also worth checking the Gaufrette documentation for additonal adapters.
+Please see the [Specific Adapter Configuration](Specific-Adapter-Configurations.md) page of the documentation for more information about then. It is also worth checking the Gaufrette documentation for additonal adapters.
 
 Running Tests
 =============
@@ -49,7 +48,7 @@ Running Tests
 The plugin tests are set up in a way that you can run them without putting the plugin into a CakePHP3 application. All you need to do is to go into the FileStorage folder and run these commands:
 
 ```
-cd <file-storage-plugin-folde>
+cd <file-storage-plugin-folder>
 composer install
 phpunit
 ```
