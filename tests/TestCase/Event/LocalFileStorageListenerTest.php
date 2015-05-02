@@ -89,4 +89,23 @@ class LocalFileStorageListenerTest extends FileStorageTestCase {
 		$this->Listener->afterDelete($event);
 		$this->assertFalse(is_dir($path));
 	}
+
+/**
+ * testAfterSave
+ *
+ * @return void
+ */
+	public function testAfterSave() {
+		$entity = $this->FileStorage->get('file-storage-1');
+		$entity->isNew(true);
+		$entity->file = [
+			'tmp_name' => $this->fileFixtures . 'titus.jpg',
+		];
+		$event = new Event('FileStorage.afterDelete',  $this->FileStorage, [
+			'record' => $entity,
+		]);
+		$this->Listener->afterSave($event);
+		$entity = $this->FileStorage->get('file-storage-1');
+		$this->assertEquals($entity->path, 'files' . DS . '00' . DS . '14' . DS . '90' . DS . 'filestorage1' . DS);
+	}
 }
