@@ -1,6 +1,7 @@
 <?php
 namespace Burzum\FileStorage\Test\TestCase\Event;
 
+use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Burzum\FileStorage\TestSuite\FileStorageTestCase;
 use Burzum\FileStorage\Event\LocalFileStorageListener;
@@ -68,5 +69,21 @@ class LocalFileStorageListenerTest extends FileStorageTestCase {
 		$entity = $this->FileStorage->get('file-storage-1');
 		$result = $this->Listener->buildPath($this->FileStorage, $entity);
 		$this->assertEquals($result, 'files' . DS . '00' . DS . '14' . DS . '90' . DS . 'filestorage1' . DS);
+	}
+
+/**
+ * testAfterDelete
+ *
+ * @return void
+ */
+	public function testAfterDelete() {
+		$path = $this->testPath . 'test-after-delete-folder';
+		$event = new Event('FileStorage.afterDelete',  $this->FileStorage, [
+			'record' => $path,
+			'adapter' => 'Local'
+		]);
+		mkdir($path);
+		$this->Listener->afterDelete($event);
+		$this->assertTrue(!dir($path));
 	}
 }

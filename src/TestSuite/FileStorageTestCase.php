@@ -43,6 +43,7 @@ class FileStorageTestCase extends TestCase {
 			$Folder = new Folder($this->testPath, true);
 		}
 
+		Configure::write('FileStorage.basePath', $this->testPath);
 		Configure::write('FileStorage.imageSizes', array(
 			'Test' => array(
 				't50' => array(
