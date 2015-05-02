@@ -9,7 +9,9 @@ The **File Storage** plugin is giving you the possibility to upload and store fi
 
 Storage adapters are an unified interface that allow you to store file data to your local file system, in memory, in a database or into a zip file and remote systems. There is a database table keeping track of what you stored where. You can always write your own adapter or extend and overload existing ones.
 
-**Supported Adapters**
+**If you're upgrading from CakePHP 2.x please read [the migration guide](docs/Documentation/Migrating-from-CakePHP-2.md).**
+
+**List of supported Adapters**
 
  * Apc
  * Amazon S3
@@ -36,7 +38,7 @@ Requirements
 
 Optional but required for image processing:
 
- * The [Imagine Image processing plugin](https://github.com/burzum/cakephp-imagine-plugin) if you want to process and storage images.
+ * The [Imagine Image processing plugin](https://github.com/burzum/cakephp-imagine-plugin) if you want to process and storag images.
 
 Documentation
 -------------
@@ -46,7 +48,7 @@ For documentation, as well as tutorials, see the [docs](docs/Home.md) directory 
 Support
 -------
 
-For bugs and feature requests, please use the [issues](https://github.com/burzum/FileStorage/issues) section of this repository.
+For bugs and feature requests, please use the [issues](https://github.com/burzum/cakephp-file-storage/issues) section of this repository.
 
 Contributing
 ------------

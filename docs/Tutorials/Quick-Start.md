@@ -129,14 +129,14 @@ class ProductImagesTable extends ImageStorageTable {
 		$data['model'] = 'ProductImage',
 		$data['foreign_key'] = $productId;
 		$entity = $this->newEntity($data);
-		return $this->save($data);
+		return $this->save($entity);
 	}
 	public function uploadDocument($productId, $data) {
 		$data['adapter'] = 'Local';
 		$data['model'] = 'ProductDocument',
 		$data['foreign_key'] = $productId;
 		$entity = $this->newEntity($data);
-		return $this->save($data);
+		return $this->save($entity);
 	}
 }
 ```
@@ -149,7 +149,7 @@ class ProductsController extends ApController {
 	// Upload an image
 	public function upload($productId = null) {
 		if (!$this->request->is('get')) {
-			if ($this->Products->Images->upload($productId, $this->request->data)) {
+			if ($this->Products->ProductImages->upload($productId, $this->request->data)) {
 				$this->Session->set(__('Upload successful!');
 			}
 		}

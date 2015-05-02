@@ -7,7 +7,7 @@ use Cake\Event\Event;
  * S3StorageListener
  *
  * @author Florian Krämer
- * @copy 2013 - 2014 Florian Krämer
+ * @copy 2013 - 2015 Florian Krämer
  * @license MIT
  */
 class S3StorageListener extends AbstractStorageEventListener {

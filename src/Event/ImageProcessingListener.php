@@ -1,14 +1,17 @@
 <?php
 namespace Burzum\FileStorage\Event;
 
+use Burzum\Imagine\Lib\ImageProcessor;
+use Burzum\Imagine\Lib\ImagineUtility;
 use Cake\Event\Event;
 use Cake\Core\Configure;
+use Cake\ORM\Table;
 use Burzum\FileStorage\Lib\StorageManager;
 use Burzum\FileStorage\Lib\FileStorageUtils;
 
 /**
  * @author Florian Krämer
- * @copy 2013 - 2014 Florian Krämer
+ * @copy 2013 - 2015 Florian Krämer
  * @license MIT
  */
 class ImageProcessingListener extends AbstractStorageEventListener {
@@ -39,7 +42,9 @@ class ImageProcessingListener extends AbstractStorageEventListener {
  * @return ImageProcessingListener
  */
 	public function __construct(array $config = []) {
+		$this->config('autoRotate', []);
 		$this->config($config);
+		$this->_imageProcessor = new ImageProcessor();
 	}
 
 /**
@@ -52,10 +57,44 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 			'ImageVersion.createVersion' => 'createVersions',
 			'ImageVersion.removeVersion' => 'removeVersions',
 			'ImageVersion.getVersions' => 'imagePath',
+			'ImageStorage.beforeSave' => 'beforeSave',
 			'ImageStorage.afterSave' => 'afterSave',
 			'ImageStorage.afterDelete' => 'afterDelete',
 			'FileStorage.ImageHelper.imagePath' => 'imagePath' // Deprecated
 		);
+	}
+
+/**
+ * Auto rotates the image if an orientation in the exif data is found that is not 0.
+ *
+ * @param string $imageFile Path to the image file.
+ * @param string $format Format of the image to save. Workaround for imagines save(). :(
+ * @return boolean
+ */
+	protected function _autoRotate($imageFile, $format) {
+		$orientation = ImagineUtility::getImageOrientation($imageFile);
+		if ($orientation === false) {
+			return false;
+		}
+		if ($orientation === 0) {
+			return true;
+		}
+		switch ($orientation) {
+			case 180:
+				$degree = -180;
+				break;
+			case -90:
+				$degree = 90;
+				break;
+			case 90:
+				$degree = -90;
+				break;
+		}
+		$processor = new ImageProcessor();
+		$image = $processor->open($imageFile);
+		$processor->rotate($image, ['degree' => $degree]);
+		$image->save($imageFile, ['format' => $format]);
+		return true;
 	}
 
 /**
@@ -67,7 +106,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
  * @throws Exception
  * @return void
  */
-	protected function _createVersions(\Cake\ORM\Table $table, $entity, $operations) {
+	protected function _createVersions(Table $table, $entity, $operations) {
 		$Storage = StorageManager::adapter($entity['adapter']);
 		$path = $this->_buildPath($entity, true);
 		$tmpFile = $this->_tmpFile($Storage, $path, TMP . 'image-processing');
@@ -179,6 +218,22 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 				$this->_removeVersions($Event);
 			}
 			return true;
+		}
+	}
+
+/**
+ * beforeSave
+ *
+ * @param Event $Event
+ * @return void
+ */
+	public function beforeSave(Event $Event) {
+		if ($this->_checkEvent($Event)) {
+			if (in_array($Event->data['record']['model'], (array)$this->config('autoRotate'))) {
+				$imageFile = $Event->data['record']['file']['tmp_name'];
+				$format = FileStorageUtils::fileExtension($Event->data['record']['file']['name']);
+				$this->_autoRotate($imageFile, $format);
+			}
 		}
 	}
 
