@@ -1,8 +1,9 @@
 <?php
 namespace Burzum\FileStorage\Event;
 
+use Cake\Core\Configure;
 use Cake\Event\Event;
-use Cake\Utility\Folder;
+use Cake\Filesystem\Folder;
 use Burzum\FileStorage\Lib\StorageManager;
 
 /**

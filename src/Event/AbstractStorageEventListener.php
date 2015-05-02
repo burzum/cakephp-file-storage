@@ -1,6 +1,7 @@
 <?php
 namespace Burzum\FileStorage\Event;
 
+use Cake\Core\Configure;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
