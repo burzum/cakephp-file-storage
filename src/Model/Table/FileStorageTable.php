@@ -102,9 +102,6 @@ class FileStorageTable extends Table {
  * @return void
  */
 	public function afterSave(Event $event, Entity $entity, $options) {
-		if ($event->data['entity']->isNew()) {
-			$event->data['entity'][$this->primaryKey] = $this->getLastInsertId();
-		}
 		$Event = new Event('FileStorage.afterSave', $this, [
 			'created' => $event->data['entity']->isNew(),
 			'record' => $entity,
@@ -156,7 +153,7 @@ class FileStorageTable extends Table {
 		}
 
 		$Event = new Event('FileStorage.afterDelete', $this, array(
-			'record' => $this->record,
+			'record' => $event->data['record'],
 			'storage' => $this->getStorageAdapter($entity['adapter'])));
 		$this->getEventManager()->dispatch($Event);
 

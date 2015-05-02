@@ -160,7 +160,7 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
  */
 	protected function _checkEvent(Event $event) {
 		if (!in_array($this->storageTableClass, array('\Burzum\FileStorage\Model\Table\FileStorageTable', '\Burzum\FileStorage\Model\Table\ImageStorageTable'))) {
-			throw new \InvalidArgumentException(__d('file_storage', 'Invalid storage table `%s`! Table must be FileStorage or ImageStorage or extend one of both!', $this->storageTableClass));
+			throw new \InvalidArgumentException(sprintf('Invalid storage table `%s`! Table must be FileStorage or ImageStorage or extend one of both!', $this->storageTableClass));
 		}
 		return (
 			$this->_checkTable($event)

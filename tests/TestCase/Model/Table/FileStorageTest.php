@@ -2,6 +2,7 @@
 namespace Burzum\FileStorage\Test\TestCase\Model\Table;
 
 use Cake\Event\Event;
+use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
 use Burzum\FileStorage\TestSuite\FileStorageTestCase;
 
@@ -74,5 +75,21 @@ class FileStorageTest extends FileStorageTestCase {
 	public function testGetEventManager() {
 		$result = $this->FileStorage->getEventManager();
 		$this->assertTrue(is_a($result, '\Cake\Event\EventManager'));
+	}
+
+/**
+ * testAfterDelete
+ *
+ * @return void
+ */
+	public function testAfterDelete() {
+		$entity = $this->FileStorage->get('file-storage-1');
+		$entity->adapter = 'Local';
+		$event = new Event('FileStorage.afterDelete',  $this->FileStorage, [
+			'record' => $entity,
+			'adapter' => 'Local'
+		]);
+		$result = $this->FileStorage->afterDelete($event, $entity, []);
+		$this->assertTrue($result);
 	}
 }
