@@ -134,4 +134,38 @@ class ImageStorageTest extends FileStorageTestCase {
 		$folderResult = $Folder->read();
 		$this->assertEquals(count($folderResult[1]), 3);
 	}
+
+/**
+ * testGetImageVersions
+ *
+ * @return void
+ */
+	public function testGetImageVersions() {
+		Configure::write('FileStorage.imageSizes', [
+			'Item' => [
+				't100' => [
+					'thumbnail' => [
+						'width' => 300,
+						'height' => 300
+					]
+				],
+				'crop50' => [
+					'centercrop' => [
+						'width' => 300,
+						'height' => 300
+					]
+				]
+			]
+		]);
+		\Burzum\FileStorage\Lib\FileStorageUtils::generateHashes();
+		$entity = $this->Image->get('file-storage-2');
+		$entity->path = 'images' . DS . '30' . DS . '20' . DS . '10' . DS;
+		$result = $this->Image->getImageVersions($entity);
+		$expected = [
+			't100' => '/images/30/20/10/filestorage2.ead9ceef.jpg',
+			'crop50' => '/images/30/20/10/filestorage2.9aade7aa.jpg',
+			'original' => '/images/30/20/10/filestorage2.jpg'
+		];
+		$this->assertEquals($result, $expected);
+	}
 }

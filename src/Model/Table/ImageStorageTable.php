@@ -191,19 +191,19 @@ class ImageStorageTable extends FileStorageTable {
  * already fulfills the purpose. I might rename this event in the 3.0 version of
  * the plugin to a more generic one.
  *
- * @param array $record An ImageStorage database record
+ * @param array $entity An ImageStorage database record
  * @param array $options. Options for the version.
  * @return array A list of versions for this image file. Key is the version, value is the path or URL to that image.
  */
-	public function getImageVersions($record, $options = []) {
+	public function getImageVersions($entity, $options = []) {
 		$versions = [];
-		$versionData = (array)Configure::read('FileStorage.imageSizes.' . $record['model']);
+		$versionData = (array)Configure::read('FileStorage.imageSizes.' . $entity['model']);
 		$versionData['original'] = isset($options['originalVersion']) ? $options['originalVersion'] : 'original';
 		foreach ($versionData as $version => $data) {
-			$hash = Configure::read('FileStorage.imageHashes.' . $record['model'] . '.' . $version);
+			$hash = Configure::read('FileStorage.imageHashes.' . $entity['model'] . '.' . $version);
 			$Event = new Event('ImageVersion.getVersions', $this, [
 					'hash' => $hash,
-					'image' => $record,
+					'image' => $entity,
 					'version' => $version,
 					'options' => []
 				]
