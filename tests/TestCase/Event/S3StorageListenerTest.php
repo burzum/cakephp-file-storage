@@ -112,6 +112,6 @@ class S3StorageListenerTest extends FileStorageTestCase {
 		]);
 		$this->Listener->afterSave($event);
 		$entity = $this->Table->get('file-storage-1');
-		$this->assertEquals($entity->path, 'files' . DS . '00' . DS . '14' . DS . '90' . DS . 'filestorage1' . DS);
+		$this->assertEquals($entity->path, '/files/Item/05/55/18/filestorage1/');
 	}
 }

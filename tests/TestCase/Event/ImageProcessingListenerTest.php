@@ -47,6 +47,25 @@ class ImageProcessingListenerTest extends FileStorageTestCase {
 	}
 
 /**
+ * testImplementedEvents
+ *
+ * @return void
+ */
+	public function testImplementedEvents() {
+		$expected = [
+			'ImageVersion.createVersion' => 'createVersions',
+			'ImageVersion.removeVersion' => 'removeVersions',
+			'ImageVersion.getVersions' => 'imagePath',
+			'ImageStorage.beforeSave' => 'beforeSave',
+			'ImageStorage.afterSave' => 'afterSave',
+			'ImageStorage.afterDelete' => 'afterDelete',
+			'FileStorage.ImageHelper.imagePath' => 'imagePath' // Deprecated
+		];
+		$result = $this->Listener->implementedEvents();
+		$this->assertEquals($result, $expected);
+	}
+
+/**
  * testBuildPath
  *
  * @return void
