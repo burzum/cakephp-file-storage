@@ -112,6 +112,9 @@ class S3StorageListenerTest extends FileStorageTestCase {
 		]);
 		$this->Listener->afterSave($event);
 		$entity = $this->Table->get('file-storage-1');
-		$this->assertEquals($entity->path, '/files/Item/05/55/18/filestorage1/');
+		// The middle part seems to be always different on different systems
+		// because it's semi random. So we'll just test the start and end.
+		$this->assertEquals(substr($entity->path, 0, 12), '/files/Item/');
+		$this->assertEquals(substr($entity->path, 20, strlen($entity->path)), '/filestorage1/');
 	}
 }
