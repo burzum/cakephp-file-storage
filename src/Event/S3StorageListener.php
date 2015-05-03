@@ -2,6 +2,8 @@
 namespace Burzum\FileStorage\Event;
 
 use Cake\Event\Event;
+use Cake\ORM\Table;
+use Cake\ORM\Entity;
 
 /**
  * S3StorageListener
@@ -42,8 +44,8 @@ class S3StorageListener extends AbstractStorageEventListener {
  */
 	public function afterDelete(Event $Event) {
 		if ($this->_checkEvent($Event)) {
-			$Model = $Event->subject();
-			$record = $Event->data['record'][$Model->alias()];
+			$table = $Event->subject();
+			$record = $Event->data['record'][$table->alias()];
 			$path = $this->_buildPath($Event);
 			try {
 				$Storage = $this->getAdapter($record['adapter']);
@@ -67,15 +69,15 @@ class S3StorageListener extends AbstractStorageEventListener {
  */
 	public function afterSave(Event $Event) {
 		if ($this->_checkEvent($Event)) {
-			$Model = $Event->subject();
-			$record = $Model->data[$Model->alias];
+			$table = $Event->subject();
+			$record = $Event->data['record'];
 			$Storage = $this->getAdapter($record['adapter']);
 
 			try {
-				$path = $this->_buildPath($Event);
+				$path = $this->_buildPath($Event->subject(), $Event->data['record']);
 				$record['path'] = $path['path'];
 				$result = $Storage->write($path['combined'], file_get_contents($record['file']['tmp_name']), true);
-				$Model->save(array($Model->alias => $record), array(
+				$table->save($record, array(
 					'validate' => false,
 					'callbacks' => false)
 				);
@@ -85,17 +87,14 @@ class S3StorageListener extends AbstractStorageEventListener {
 		}
 	}
 
-	public function buildPath($table, $entity) {
-		return $this->_buildPath($table, $entity);
-	}
-
 /**
-  * _buildPath
-  *
-  * @param Event $Event
-  * @return array
-  */
-	protected function _buildPath($table, $entity) {
+ * Builds the storage path for this adapter.
+ *
+ * @param \Cake\ORM\Table $table
+ * @param \Cake\ORM\Entity $entity
+ * @return array
+ */
+	public function buildPath($table, $entity) {
 		$adapterConfig = $this->getAdapterconfig($entity['adapter']);
 		$id = $entity[$table->primaryKey()];
 
@@ -121,5 +120,4 @@ class S3StorageListener extends AbstractStorageEventListener {
 			'url' => $url
 		];
 	}
-
 }

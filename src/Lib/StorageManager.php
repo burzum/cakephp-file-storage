@@ -91,7 +91,7 @@ class StorageManager {
 			if (!empty($_this->_adapterConfig[$adapterName])) {
 				$adapter = $_this->_adapterConfig[$adapterName];
 			} else {
-				throw new \RuntimeException(__d('file_storage', 'Invalid Storage Adapter %s', $adapterName));
+				throw new \RuntimeException(sprintf('Invalid Storage Adapter %s!', $adapterName));
 			}
 
 			if (!empty($_this->_adapterConfig[$adapterName]['object']) && $renewObject === false) {

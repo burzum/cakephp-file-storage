@@ -26,7 +26,7 @@ class S3StorageListenerTest extends FileStorageTestCase {
 		parent::setUp();
 		$this->Table = TableRegistry::get('Burzum/FileStorage.FileStorage');
 		$this->Listener = $this->getMockBuilder('\Burzum\FileStorage\Event\S3StorageListener')
-			->setMethods(['getAdapterConfig'])
+			->setMethods(['getAdapterConfig', '_checkEvent'])
 			->getMock();
 	}
 
@@ -91,4 +91,27 @@ class S3StorageListenerTest extends FileStorageTestCase {
 		$this->assertEquals($result, $expected);
 	}
 
+/**
+ * testAfterSave
+ *
+ * @return void
+ */
+	public function testAfterSave() {
+		$this->Listener->expects($this->any())
+			->method('_checkEvent')
+			->will($this->returnValue(true));
+
+		$entity = $this->Table->get('file-storage-1');
+		$entity->isNew(true);
+		$entity->adapter = 'Local';
+		$entity->file = [
+			'tmp_name' => $this->fileFixtures . 'titus.jpg',
+		];
+		$event = new Event('FileStorage.afterDelete',  $this->Table, [
+			'record' => $entity,
+		]);
+		$this->Listener->afterSave($event);
+		$entity = $this->Table->get('file-storage-1');
+		$this->assertEquals($entity->path, 'files' . DS . '00' . DS . '14' . DS . '90' . DS . 'filestorage1' . DS);
+	}
 }
