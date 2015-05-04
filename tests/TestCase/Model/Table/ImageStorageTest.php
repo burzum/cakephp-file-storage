@@ -168,4 +168,34 @@ class ImageStorageTest extends FileStorageTestCase {
 		];
 		$this->assertEquals($result, $expected);
 	}
+
+/**
+ * testValidateImageSize
+ *
+ * @expectedException \InvalidArgumentException
+ * @return void
+ */
+	public function testValidateImageSizeInvalidArgumentException() {
+		$file = $this->fileFixtures . 'titus.jpg';
+		$this->Image->validateImageSize($file);
+	}
+
+/**
+ * testValidateImageSize
+ *
+ * @return void
+ */
+	public function testValidateImageSize() {
+		$file = $this->fileFixtures . 'titus.jpg';
+		$result = $this->Image->validateImageSize($file, ['height' => ['>', 100]]);
+		$this->assertTrue($result);
+		$result = $this->Image->validateImageSize($file, ['height' => ['<', 100]]);
+		$this->assertFalse($result);
+
+		$file = [
+			'tmp_name' => $file
+		];
+		$result = $this->Image->validateImageSize($file, ['height' => ['<', 100]]);
+		$this->assertFalse($result);
+	}
 }

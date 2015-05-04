@@ -4,6 +4,7 @@ namespace Burzum\FileStorage\Model\Table;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Utility\Folder;
+use Cake\Validation\Validation;
 
 /**
  * ImageStorageTable
@@ -139,9 +140,9 @@ class ImageStorageTable extends FileStorageTable {
  * @see Validation::comparison()
  * @throws \InvalidArgumentException
  */
-	public function validateImageSize($check, $options) {
+	public function validateImageSize($check, array $options = []) {
 		if (!isset($options['height']) && !isset($options['width'])) {
-			throw new \InvalidArgumentException(__d('file_storage', 'Invalid image size validation parameters'));
+			throw new \InvalidArgumentException('Missing image size validation options! You must provide a hight and / or width.');
 		}
 
 		if (is_string($check)) {
