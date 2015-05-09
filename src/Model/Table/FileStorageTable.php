@@ -184,7 +184,15 @@ class FileStorageTable extends Table {
  */
 	public function deleteOldFileOnSave(Entity $entity, $oldIdField = 'old_file_id') {
 		if (!empty($entity[$oldIdField]) && $entity['model']) {
-			return $this->delete($entity);
+			$oldEntity = $this->find()
+				->contain([])
+				->where(
+					[$this->alias() . '.' . $this->primaryKey() => $entity[$oldIdField], 'model' => $entity['model']])
+				->first();
+			
+			if (!empty($oldEntity)) {
+				return $this->delete($oldEntity);
+			}
 		}
 		return false;
 	}
