@@ -79,6 +79,7 @@ class ImageStorageTable extends FileStorageTable {
 				'record' => $entity
 			]);
 			$this->getEventManager()->dispatch($imageEvent);
+			$this->deleteOldFileOnSave($entity);
 		}
 		return true;
 	}
