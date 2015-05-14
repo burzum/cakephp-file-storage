@@ -198,4 +198,59 @@ class ImageStorageTest extends FileStorageTestCase {
 		$result = $this->Image->validateImageSize($file, ['height' => ['<', 100]]);
 		$this->assertFalse($result);
 	}
+	
+/**
+ * testDeleteOldFileOnSave
+ *
+ * @return void
+ */
+	public function testDeleteOldFileOnSave() {
+		$entity = $this->Image->newEntity([
+			'foreign_key' => 'test-1',
+			'model' => 'Test',
+			'file' => [
+				'name' => 'titus.jpg',
+				'size' => 332643,
+				'tmp_name' => Plugin::path('Burzum/FileStorage') . DS . 'tests' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg',
+				'error' => 0
+			]
+		]);
+
+		$this->Image->save($entity);
+		$result = $this->Image->find()
+			->where([
+				'id' => $entity->id
+			])
+			->first();
+
+		$this->assertTrue(!empty($result) && is_a($result, '\Cake\ORM\Entity'));
+		$this->assertTrue(file_exists($this->testPath . $result['path']));
+		
+		$oldImageFile = $this->testPath . $result['path']; 
+		$secondEntity = $this->Image->newEntity([
+			'foreign_key' => 'test-1',
+			'model' => 'Test',
+			'file' => [
+				'name' => 'titus.jpg',
+				'size' => 332643,
+				'tmp_name' => Plugin::path('Burzum/FileStorage') . DS . 'tests' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg',
+				'error' => 0
+			],
+			'old_file_id' => $entity->id
+		]);
+
+		$this->Image->save($secondEntity);
+		$result = $this->Image->find()
+			->where([
+				'id' => $secondEntity->id
+			])
+			->first();
+		
+		$this->assertTrue(!empty($result) && is_a($result, '\Cake\ORM\Entity'));
+		$this->assertTrue(file_exists($this->testPath . $result['path']));
+		
+		$Folder = new Folder($oldImageFile);
+		$folderResult = $Folder->read(); 
+		$this->assertEquals(count($folderResult[1]), 0);
+	}
 }
