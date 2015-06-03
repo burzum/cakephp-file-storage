@@ -91,6 +91,8 @@ class ImageStorage extends FileStorage {
 				'storage' => $this->getStorageAdapter($this->data[$this->alias]['adapter']),
 				'record' => $this->data));
 			$this->getEventManager()->dispatch($Event);
+
+			$this->deleteOldFileOnSave();
 		}
 		return true;
 	}
