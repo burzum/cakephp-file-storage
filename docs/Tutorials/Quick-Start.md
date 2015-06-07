@@ -100,19 +100,14 @@ use Cake\ORM\Table;
 class Products extends Table {
 	public function initialize() {
 		parent::initialize();
-		$this->hasMany('Images', [
-			'className' => 'ProductImages',
-			'foreignKey' => 'foreign_key',
-			'conditions' => [
-				'Documents.model' => 'ProductImage'
-			]
+		$this->hasMany('ProductImages', [
+			'className' => 'ProductImages',                        
+                        'propertyName' => 'productImages',
+			'foreignKey' => 'foreign_key'
 		]);
 		$this->hasMany('Documents', [
 			'className' => 'FileStorage.FileStorage',
-			'foreignKey' => 'foreign_key',
-			'conditions' => [
-				'Documents.model' => 'ProductDocument'
-			]
+			'foreignKey' => 'foreign_key'
 		]);
 	}
 }
@@ -148,19 +143,31 @@ Products Controller
 class ProductsController extends ApController {
 	// Upload an image
 	public function upload($productId = null) {
-		if (!$this->request->is('get')) {
-			if ($this->Products->ProductImages->upload($productId, $this->request->data)) {
-				$this->Session->set(__('Upload successful!');
-			}
-		}
+
+            $this->loadModel("ProductImages");
+
+            $productImage = $this->ProductImages->newEntity($this->request->data);
+
+            if (!$productId) {
+                throw new NotFoundException(__('Product Not Found'));
+            }
+            if (!$this->request->is('get')) {
+                if ($this->Products->ProductImages->uploadImage($productId, $this->request->data)) {
+                    $this->Flash->success(__('An image has been added to your product.'));
+                    return $this->redirect(['controller' => 'Products', 'action' => 'view', $product->id]);
+                }
+            }
+            $this->set('productImage', $productImage);
 	}
 }
 ```
 
-Products View
+Products Upload View
 -------------
 
 ```php
+// found in src/Template/Products/upload.php
+
 echo $this->Form->create($productImage, array(
 	'type' => 'file'
 ));
@@ -168,4 +175,13 @@ echo $this->Form->file('file');
 echo $this->Form->error('file');
 echo $this->Form->submit(__('Upload'));
 echo $this->Form->end();
+```
+
+Products Image View
+-------------
+
+```php
+// found in src/Template/Products/view.php
+
+<?=  $this->Image->display($product->productImages[0],'medium',['width'=>'200px','height'=>'200px']); ?> 
 ```
