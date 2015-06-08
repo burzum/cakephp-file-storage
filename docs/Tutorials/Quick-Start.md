@@ -158,7 +158,9 @@ Products Controller
 -------------------
 
 ```php
-class ProductsController extends ApController {
+namespace App\Controller;
+
+class ProductsController extends AppController {
 	// Upload an image
 	public function upload($productId = null) {
 		if (!$this->request->is('get')) {
@@ -172,6 +174,8 @@ class ProductsController extends ApController {
 
 Products Upload View
 --------------------
+
+View for the controller action above.
 
 ```php
 echo $this->Form->create($productImage, array(
