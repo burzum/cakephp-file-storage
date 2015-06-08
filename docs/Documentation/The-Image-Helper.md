@@ -8,7 +8,7 @@ namespace App\View;
 class AppView extends View {
 	public function initialize() {
 		parent::initialize();
-		$this->loadHelper('Burzum/UserTools.Image');
+		$this->loadHelper('Burzum/FileStorage.Image');
 	}
 }
 ```
