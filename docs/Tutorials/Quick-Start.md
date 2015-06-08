@@ -89,6 +89,19 @@ Now include the file_storage.php setup in your ```app/Config/bootstrap.php```
 include('file_storage.php');
 ```
 
+Load the Helper
+---------------
+
+```php
+namespace App\View;
+class AppView extends View {
+	public function initialize() {
+		parent::initialize();
+		$this->loadHelper('Burzum/UserTools.Image');
+	}
+}
+```
+
 Theoretical model setup
 -----------------------
 
@@ -104,7 +117,7 @@ class Products extends Table {
 			'className' => 'ProductImages',
 			'foreignKey' => 'foreign_key',
 			'conditions' => [
-				'Documents.model' => 'ProductImage'
+				'Images.model' => 'ProductImage'
 			]
 		]);
 		$this->hasMany('Documents', [
@@ -157,8 +170,8 @@ class ProductsController extends ApController {
 }
 ```
 
-Products View
--------------
+Products Upload View
+--------------------
 
 ```php
 echo $this->Form->create($productImage, array(
