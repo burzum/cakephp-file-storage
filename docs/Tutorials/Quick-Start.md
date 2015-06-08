@@ -80,6 +80,12 @@ StorageManager::config('S3Image', array(
 );
 ```
 
+**It is highly recommended to read the following sections to understand how this works.**
+
+* [Included Event Listeners](../Documentation/Included-Event-Listeners.md)
+* [Image Storage and Versioning](../Documentation/Image-Storage-And-Versioning.md)
+* [Specific Adapter Configurations](../Documentation/Specific-Adapter-Configurations.md)
+
 app/Config/bootstrap.php
 ------------------------
 
@@ -186,3 +192,8 @@ echo $this->Form->error('file');
 echo $this->Form->submit(__('Upload'));
 echo $this->Form->end();
 ```
+
+Displaying the Images
+---------------------
+
+[Read about the Image helper](../Documentation/The-Image-Helper.md)
