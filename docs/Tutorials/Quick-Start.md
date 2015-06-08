@@ -165,7 +165,7 @@ class ProductsController extends AppController {
 	public function upload($productId = null) {
 		if (!$this->request->is('get')) {
 			if ($this->Products->ProductImages->upload($productId, $this->request->data)) {
-				$this->Session->set(__('Upload successful!');
+				$this->Flash->set(__('Upload successful!');
 			}
 		}
 	}
