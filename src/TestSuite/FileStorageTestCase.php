@@ -7,8 +7,11 @@ use Cake\TestSuite\TestCase;
 use Cake\Filesystem\Folder;
 use Cake\Filesystem\File;
 use Cake\Core\Plugin;
+use Cake\Event\EventManager;
 use Burzum\FileStorage\Lib\StorageManager;
 use Burzum\FileStorage\Lib\FileStorageUtils;
+use Burzum\FileStorage\Event\ImageProcessingListener;
+use Burzum\FileStorage\Event\LocalFileStorageListener;
 
 /**
  * FileStorageTestCase
@@ -35,6 +38,12 @@ class FileStorageTestCase extends TestCase {
  */
 	public function setUp() {
 		parent::setUp();
+
+		$listener = new ImageProcessingListener();
+		EventManager::instance()->on($listener);
+
+		$listener = new LocalFileStorageListener();
+		EventManager::instance()->on($listener);
 
 		$this->testPath = TMP . 'file-storage-test' . DS;
 		$this->fileFixtures = Plugin::path('Burzum/FileStorage') . 'tests' . DS . 'Fixture' . DS . 'File' . DS;
