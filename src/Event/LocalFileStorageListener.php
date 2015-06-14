@@ -57,7 +57,9 @@ class LocalFileStorageListener extends AbstractStorageEventListener {
  */
 	public function afterDelete(Event $event) {
 		if ($this->_checkEvent($event)) {
-			$path = Configure::read('FileStorage.basePath') . $event->data['record']['path'];
+			$entity = $event->data['record'];
+			$storageConfig = StorageManager::config($entity['adapter']);
+			$path = $storageConfig['adapterOptions'][0] . $event->data['record']['path'];
 			if (is_dir($path)) {
 				$Folder = new Folder($path);
 				return $Folder->delete();
