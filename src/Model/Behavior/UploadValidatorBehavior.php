@@ -94,7 +94,7 @@ class UploadValidatorBehavior extends Behavior {
 					'filesize',
 					$config['validateFilesize']
 				],
-				'message' => __d('file_storage', 'The file is to big %d!', $uploadValidator->getFilesize())
+				'message' => __d('file_storage', 'The file is to big {0}!', $uploadValidator->getFilesize())
 			]);
 		}
 		if ($config['validateUploadErrors'] === true) {
@@ -104,7 +104,7 @@ class UploadValidatorBehavior extends Behavior {
 					'uploadErrors',
 					['allowNoFileError' => $config['allowNoFileError']]
 				],
-				'message' => __d('file_storage', 'The mime-type %s is not allowed!', $uploadValidator->getMimeType())
+				'message' => __d('file_storage', 'The mime-type {0} is not allowed!', $uploadValidator->getMimeType())
 			]);
 		}
 		if ($config['validateUploadArray'] === true) {
@@ -123,7 +123,7 @@ class UploadValidatorBehavior extends Behavior {
 					'mimeType',
 					$config['allowedMime']
 				],
-				'message' => __d('file_storage', 'The mime-type %s is not allowed!', $uploadValidator->getMimeType())
+				'message' => __d('file_storage', 'The mime-type {0} is not allowed!', $uploadValidator->getMimeType())
 			]);
 		}
 		if (!empty($config['allowedExtensions'])) {
@@ -133,7 +133,7 @@ class UploadValidatorBehavior extends Behavior {
 					'extension',
 					$config['allowedExtensions']
 				],
-				'message' => __d('file_storage', 'The extension %s is not allowed.', $uploadValidator->getExtension())
+				'message' => __d('file_storage', 'The extension {0} is not allowed.', $uploadValidator->getExtension())
 			]);
 		};
 		if ($config['localFile'] === true) {
