@@ -18,7 +18,7 @@ StorageManager::config('Local', [
 ]);
 ```
 
-You should create another folder *outside* your `src` folder and symlink it if you need it to be present somewhere in webroot. For example use this as the base path for your local files. The following code is an *example*:
+You should create another folder *outside* your `src` folder and [symlink](https://en.wikipedia.org/wiki/Symbolic_link) it if you need it to be present somewhere in webroot. For example use this as the base path for your local files. The following code is an *example*:
 
 ```php
 'adapterOptions' => [ROOT . 'file_storage', true],
