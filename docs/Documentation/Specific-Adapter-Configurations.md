@@ -8,7 +8,7 @@ But you should not blindly copy and paste that code, get an understanding of the
 
 By default the StorageManager already comes with a pre-configured adapter instance for the local file system adapter.
 
-The first array element of the `adapterOptions` config key is `TMP` because the tmp folder and the logs folder should be the only writeable place in a *proper* configured application.
+The first array element of the `adapterOptions` config key is `TMP` because the tmp folder and the logs folder should be the only writeable place in a *proper* configured application. The reason for that is simply to make it work out of the box without issues. **You definitely want to change that path for your application.**
  
 ```php
 StorageManager::config('Local', [
@@ -18,7 +18,7 @@ StorageManager::config('Local', [
 ]);
 ```
 
-You should create another folder *outside* your `src` folder and symlink it if you need it to be present somewhere in webroot. For example use
+You should create another folder *outside* your `src` folder and symlink it if you need it to be present somewhere in webroot. For example use this as the base path for your local files. The following code is an *example*:
 
 ```php
 'adapterOptions' => [ROOT . 'file_storage', true],
