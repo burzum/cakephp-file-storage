@@ -4,6 +4,38 @@ Gaufrette does not come with a lot detail about what exactly some adapters expec
 
 But you should not blindly copy and paste that code, get an understanding of the storage service you want to use before!
 
+## Local Filesystem
+
+By default the StorageManager already comes with a pre-configured adapter instance for the local file system adapter.
+
+The first array element of the `adapterOptions` config key is `TMP` because the tmp folder and the logs folder should be the only writeable place in a *proper* configured application.
+ 
+```php
+StorageManager::config('Local', [
+	'adapterOptions' => [TMP, true],
+	'adapterClass' => '\Gaufrette\Adapter\Local',
+	'class' => '\Gaufrette\Filesystem'
+]);
+```
+
+You should create another folder *outside* your `src` folder and symlink it if you need it to be present somewhere in webroot. For example use
+
+```php
+'adapterOptions' => [ROOT . 'file_storage', true],
+```
+
+Symlink Linux Example:
+
+```
+ ln -s /home/myuser/projects/my-app/webroot/img/uploads /home/myuser/projects/my-app/file_storage
+```
+
+Symlink Windows Example:
+
+```
+mklink /D "C:\webstack\htdocs\my-app\webroot\img\uploads" "C:\webstack\htdocs\my-app\file_storage"
+```
+
 ## AmazonS3 - AwsS3 Adapter
 
 Get the SDK from here https://github.com/aws/aws-sdk-php or get it via composer ```aws/aws-sdk-php```. If you're not using composer you'll have to add it to your own autoloader or load it manually.
