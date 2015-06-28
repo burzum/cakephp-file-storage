@@ -1,10 +1,11 @@
 <?php
-namespace Burzum\FileStorage\Event;
+namespace Burzum\FileStorage\Storage\Listener;
 
+use Burzum\FileStorage\Lib\StorageManager;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Filesystem\Folder;
-use Burzum\FileStorage\Lib\StorageManager;
+use Burzum\FileStorage\Storage\Listener\AbstractListener;
 
 /**
  * Local FileStorage Event Listener for the CakePHP FileStorage plugin
@@ -13,7 +14,7 @@ use Burzum\FileStorage\Lib\StorageManager;
  * @author Tomenko Yegeny
  * @license MIT
  */
-class LocalListener extends AbstractStorageEventListener {
+class LocalListener extends AbstractListener {
 
 /**
  * List of adapter classes the event listener can work with
@@ -29,15 +30,9 @@ class LocalListener extends AbstractStorageEventListener {
 		'\Gaufrette\Adapter\Local'
 	);
 
-/**
- * Constructor
- *
- * @param array $config
- * @return LocalFileStorageListener
- */
-	public function __construct(array $config = []) {
-		$this->_defaultConfig['legacyPath'] = true;
-		parent::__construct($config);
+	public function initialize() {
+		parent::initialize();
+		$this->pathBuilder('Local', ['legacyPath' => true]);;
 	}
 
 /**
@@ -49,17 +44,15 @@ class LocalListener extends AbstractStorageEventListener {
 		return [
 			'FileStorage.afterSave' => [
 				'callable' => 'afterSave',
-				'priority' => 50,
 			],
 			'FileStorage.afterDelete' => [
 				'callable' => 'afterDelete',
-				'priority' => 50
 			]
 		];
 	}
 
 /**
- * afterDelete
+ * File removal is handled AFTER the database record was deleted.
  *
  * No need to use an adapter here, just delete the whole folder using cakes Folder class
  *
@@ -69,31 +62,32 @@ class LocalListener extends AbstractStorageEventListener {
 	public function afterDelete(Event $event) {
 		if ($this->_checkEvent($event)) {
 			$entity = $event->data['record'];
-			$storageConfig = StorageManager::config($entity['adapter']);
-			$path = $storageConfig['adapterOptions'][0] . $event->data['record']['path'];
-			if (is_dir($path)) {
-				$Folder = new Folder($path);
-				return $Folder->delete();
+			$path = $this->pathBuilder()->fullPath($entity);
+			if (StorageManager::adapter($entity->adapter)->delete($path)) {
+				return true;
 			}
 			return false;
 		}
 	}
 
 /**
- * Builds the path under which the data gets stored in the storage adapter
+ * Builds the path under which the data gets stored in the storage adapter.
  *
  * @param Table $table
  * @param Entity $entity
  * @return string
  */
-	public function buildPath($table, $entity) {
-		$path = parent::buildPath($table, $entity);
-		// Backward compatibility
-		if ($this->_config['legacyPath'] === true) {
-			return 'files' . DS . $path;
-		}
-		return $path;
-	}
+//	public function buildPath($table, $entity) {
+//		$path = parent::buildPath($table, $entity);
+//		// Backward compatibility
+//		if ($this->_config['legacyPath'] === true) {
+//			return 'files' . DS . $path;
+//		}
+//		if (is_string($this->_config['legacyPath'])) {
+//			return $this->_config['legacyPath'] . DS . $path;
+//		}
+//		return $path;
+//	}
 
 /**
  * afterSave
@@ -107,8 +101,8 @@ class LocalListener extends AbstractStorageEventListener {
 			$entity = $event->data['record'];
 			$Storage = StorageManager::adapter($entity['adapter']);
 			try {
-				$filename = $this->buildFileName($table, $entity);
-				$entity['path'] = $this->buildPath($table, $entity);
+				$filename = $this->pathBuilder->filename($entity);
+				$entity['path'] = $this->pathBuilder->path($entity);
 				$Storage->write($entity['path'] . $filename, file_get_contents($entity['file']['tmp_name']), true);
 				$table->save($entity, array(
 					'validate' => false,

@@ -1,5 +1,5 @@
 <?php
-namespace Burzum\FileStorage\Event;
+namespace Burzum\FileStorage\Storage\Listener;
 
 use Cake\Core\Configure;
 use Cake\Core\InstanceConfigTrait;
@@ -9,11 +9,9 @@ use Cake\ORM\Table;
 use Cake\ORM\Entity;
 use Cake\Utility\Text;
 use Cake\Filesystem\Folder;
-use Burzum\FileStorage\Lib\StorageManager;
-use Burzum\FileStorage\Lib\FileStorageUtils;
 
 /**
- * AbstractStorageEventListener
+ * AbstractListener
  *
  * Filters events and entities to decide if they should be processed or not by
  * a specific adapter.
@@ -41,6 +39,13 @@ abstract class AbstractListener implements EventListenerInterface {
  * @param null|string
  */
 	public $adapterClass = null;
+
+/**
+ * The class used to generate path and file names.
+ *
+ * @param string
+ */
+	protected $_pathBuilder = null;
 
 /**
  * Name of the storage table class name the event listener requires the table
@@ -92,6 +97,13 @@ abstract class AbstractListener implements EventListenerInterface {
 		$this->initialize();
 	}
 
+/**
+ * Helper method to bypass the need to override the constructor.
+ *
+ * Called last inside __construct()
+ *
+ * @return void
+ */
 	public function initialize() {}
 
 /**
@@ -254,7 +266,14 @@ abstract class AbstractListener implements EventListenerInterface {
 		return $folder . Text::uuid();
 	}
 
-	public function pathBuilder($class = null) {
+/**
+ * Path builder.
+ *
+ * @param string Class name of a path builder.
+ * @param array Options for the path builder.
+ * @return \Burzum\FileStorage\Storage\PathBuilder\BasePathBuilder
+ */
+	public function pathBuilder($class = null, array $options = []) {
 		if (empty($class)) {
 			if (empty($this->_pathBuilder)) {
 				throw new \RuntimeException(sprintf('No path builder loaded!'));
@@ -263,18 +282,19 @@ abstract class AbstractListener implements EventListenerInterface {
 		}
 		$classname = '\Burzum\FileStorage\Storage\PathBuilder\\' . $class . 'Builder';
 		if (class_exists($classname)) {
-			$this->_pathBuilder = new $class();
+			$this->_pathBuilder = new $classname();
 			return $this->_pathBuilder;
 		}
 		$classname = '\App\Storage\PathBuilder\\' . $class . 'Builder';
 		if (class_exists($classname)) {
-			$this->_pathBuilder = new $class();
+			$this->_pathBuilder = new $classname();
 			return $this->_pathBuilder;
 		}
-		if (class_exists($class)) {
-			$this->_pathBuilder = new $class();
+		$classname = $class;
+		if (class_exists($classname)) {
+			$this->_pathBuilder = new $classname();
 			return $this->_pathBuilder;
 		}
-		throw new \RuntimeException(sprintf('Could not find path builder %s!', $class));
+		throw new \RuntimeException(sprintf('Could not find path builder %s!', $classname));
 	}
 }
