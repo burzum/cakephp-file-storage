@@ -1,6 +1,7 @@
 <?php
 namespace Burzum\FileStorage\Model\Table;
 
+use Cake\Log\LogTrait;
 use Cake\ORM\Table;
 use Cake\ORM\Entity;
 use Cake\Event\Event;
@@ -17,6 +18,8 @@ use Burzum\FileStorage\Lib\StorageManager;
  * @license MIT
  */
 class FileStorageTable extends Table {
+
+	use LogTrait;
 
 /**
  * Name
@@ -139,11 +142,11 @@ class FileStorageTable extends Table {
  * afterDelete callback
  *
  * @param \Cake\Event\Event $event
- * @param \Burzum\FileStorage\Model\Table\Entity $entity
+ * @param \Cake\ORM\Entity $entity
  * @param array $options
  * @return boolean
  */
-	public function afterDelete(\Cake\Event\Event $event, \Cake\ORM\Entity $entity, $options) {
+	public function afterDelete(\Cake\Event\Event $event, Entity $entity, $options) {
 		try {
 			$Storage = $this->getStorageAdapter($entity['adapter']);
 			$Storage->delete($entity['path']);
@@ -200,7 +203,7 @@ class FileStorageTable extends Table {
 /**
  * Returns an EventManager instance
  *
- * @return \Cake\Event\EventManager;
+ * @return \Cake\Event\EventManager
  */
 	public function getEventManager() {
 		return EventManager::instance();

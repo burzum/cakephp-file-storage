@@ -24,6 +24,13 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 	public $adapterClass = null;
 
 /**
+ * ImageProcessor instance
+ *
+ * @var ImageProcessor
+ */
+	public $_imageProcessor = null;
+
+/**
  * Name of the storage table class name the event listener requires the table
  * instances to extend.
  *
@@ -39,7 +46,6 @@ class ImageProcessingListener extends AbstractStorageEventListener {
  * Constructor
  *
  * @param array $config
- * @return ImageProcessingListener
  */
 	public function __construct(array $config = []) {
 		$this->config('autoRotate', []);
@@ -100,13 +106,14 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 /**
  * Creates the different versions of images that are configured
  *
- * @param Model $table
- * @param array $record
+ * @param \Cake\ORM\Table $table
+ * @param array $entity
  * @param array $operations
- * @throws Exception
- * @return void
+ * @throws \Burzum\FileStorage\Event\Exception
+ * @throws \Exception
+ * @return boolean
  */
-	protected function _createVersions(Table $table, $entity, $operations) {
+	protected function _createVersions(Table $table, $entity, array $operations) {
 		$Storage = StorageManager::adapter($entity['adapter']);
 		$path = $this->_buildPath($entity, true);
 		$tmpFile = $this->_tmpFile($Storage, $path, TMP . 'image-processing');
@@ -126,7 +133,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 			try {
 				$image = $table->processImage($tmpFile, null, array('format' => $entity['extension']), $imageOperations);
 				$result = $Storage->write($string, $image->get($entity['extension']), true);
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				$this->log($e->getMessage(), 'file_storage');
 				unlink($tmpFile);
 				throw $e;
@@ -168,7 +175,6 @@ class ImageProcessingListener extends AbstractStorageEventListener {
  */
 	protected function _removeVersions(Event $Event) {
 		if ($this->_checkEvent($Event)) {
-			$table = $Event->subject();
 			$Storage = $Event->data['storage'];
 			$record = $Event->data['record'];
 			foreach ($Event->data['operations'] as $version => $operations) {
@@ -181,7 +187,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 					if ($Storage->has($string)) {
 						$Storage->delete($string);
 					}
-				} catch (Exception $e) {
+				} catch (\Exception $e) {
 					$this->log($e->getMessage(), 'file_storage');
 				}
 			}
@@ -264,7 +270,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 					$record['path'] = str_replace('\\', '/', $record['path']);
 				}
 
-				$result = $Storage->write($path, file_get_contents($file['tmp_name']), true);
+				$Storage->write($path, file_get_contents($file['tmp_name']), true);
 
 				$data = $table->save($record, array(
 					'validate' => false,
@@ -277,7 +283,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 				}
 
 				$table->data = $data;
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				$this->log($e->getMessage(), 'file_storage');
 			}
 		}

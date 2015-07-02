@@ -39,7 +39,7 @@ class S3StorageListener extends AbstractStorageEventListener {
 /**
  * afterDelete
  *
- * @param Event $Event
+ * @param \Cake\Event\Event $Event
  * @return void
  */
 	public function afterDelete(Event $Event) {
@@ -53,7 +53,7 @@ class S3StorageListener extends AbstractStorageEventListener {
 					return false;
 				}
 				$Storage->delete($path['combined']);
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				$this->log($e->getMessage(), 'file_storage');
 				return false;
 			}

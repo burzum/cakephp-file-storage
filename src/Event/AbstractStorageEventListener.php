@@ -300,7 +300,7 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 		if ($checkAndCreatePath === true && !is_dir($folder)) {
 			new Folder($folder, true);
 		}
-		return $folder . Text::uuid();
+		return $folder . DS . Text::uuid();
 	}
 
 /**
