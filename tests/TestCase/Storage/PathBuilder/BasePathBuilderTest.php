@@ -1,7 +1,7 @@
 <?php
 namespace Burzum\FileStorage\Test\TestCase\Storage\PathBuilder;
 
-use Burzum\FileStorage\Storage\PathBuilder\LocalPathBuilder;
+use Burzum\FileStorage\Storage\PathBuilder\BasePathBuilder;
 use Cake\Core\InstanceConfigTrait;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -37,7 +37,7 @@ class BasePathBuilderTest extends TestCase {
 	}
 
 	public function testPathbuilding() {
-		$builder = new LocalPathBuilder();
+		$builder = new BasePathBuilder();
 
 		$result = $builder->filename($this->entity);
 		$this->assertEquals($result, 'filestorage1.png');
@@ -68,7 +68,7 @@ class BasePathBuilderTest extends TestCase {
  */
 	public function testEnsureSlash() {
 		$string = 'foo/bar';
-		$builder = new LocalPathBuilder();
+		$builder = new BasePathBuilder();
 		$result = $builder->ensureSlash($string, 'both');
 		$this->assertEquals($result, DS . $string . DS);
 
@@ -83,7 +83,7 @@ class BasePathBuilderTest extends TestCase {
  */
 	public function testEnsureSlashInvalidArgumentException() {
 		$string = 'foo/bar';
-		$builder = new LocalPathBuilder();
+		$builder = new BasePathBuilder();
 		$builder->ensureSlash($string, 'INVALID!');
 	}
 }
