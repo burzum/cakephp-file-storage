@@ -34,8 +34,10 @@ class LocalPathBuilderTest extends TestCase {
 
 	public function testWebPath() {
 		//debug($this->entity->toArray());
-		$builder = new LocalPathBuilder($this->entity);
+		$builder = new LocalPathBuilder();
 		$result = $builder->url($this->entity);
+		debug($result);
+		$result = $builder->fullPath($this->entity);
 		debug($result);
 		$result = $builder->fullPath($this->entity);
 		debug($result);

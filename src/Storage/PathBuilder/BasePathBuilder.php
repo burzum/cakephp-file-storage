@@ -14,13 +14,6 @@ class BasePathBuilder {
 	use InstanceConfigTrait;
 
 /**
- * Entity instance.
- *
- * @var \Cake\ORM\Entity;
- */
-	protected $_entity;
-
-/**
  * Default settings
  *
  * @var array
@@ -36,8 +29,7 @@ class BasePathBuilder {
 		'modelFolder' => false
 	);
 
-	public function __construct(Entity $entity, array $config = []) {
-		$this->_entity = $entity;
+	public function __construct(array $config = []) {
 		$this->config($config);
 	}
 
@@ -86,7 +78,7 @@ class BasePathBuilder {
 		if ($this->_config['preserveFilename'] === true) {
 			return $entity['filename'];
 		}
-		$filename = $this->_entity['id'];
+		$filename = $entity['id'];
 		if ($this->_config['stripUuid'] ===  true) {
 			$filename = $this->stripDashes($filename);
 		}
@@ -122,6 +114,14 @@ class BasePathBuilder {
 		return str_replace('\\', '/', $url);
 	}
 
+/**
+ * Proxy to FileStorageUtils::randomPath.
+ *
+ * Makes it possible to overload this functionality.
+ *
+ * @param string $string
+ * @return string
+ */
 	public function randomPath($string) {
 		return FileStorageUtils::randomPath($string);
 	}
