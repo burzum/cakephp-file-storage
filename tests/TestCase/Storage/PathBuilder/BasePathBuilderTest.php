@@ -6,7 +6,7 @@ use Cake\Core\InstanceConfigTrait;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
-class LocalPathBuilderTest extends TestCase {
+class BasePathBuilderTest extends TestCase {
 
 /**
  * Fixtures
