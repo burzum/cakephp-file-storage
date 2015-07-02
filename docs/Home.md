@@ -19,6 +19,7 @@ Documentation
 * [The Image Helper](Documentation/The-Image-Helper.md)
 * [Specific Adapter Configurations](Documentation/Specific-Adapter-Configurations.md)
 * [Included Event Listeners](Documentation/Included-Event-Listeners.md)
+* [Path Builders](Documentation/Path-Builders.md)
 
 Tutorials
 ---------

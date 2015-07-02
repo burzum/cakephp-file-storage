@@ -21,25 +21,69 @@ class LocalPathBuilderTest extends TestCase {
 		parent::setUp();
 		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
 		$this->entity = $this->FileStorage->newEntity([
-			'id' => 'be4e23a0-142f-11e5-b60b-1697f925ec7b',
-			'foreign_key' => 'c1a6ed2a-142f-11e5-b60b-1697f925ec7b',
-			'model' => 'Photos',
-			'filesize' => 252576,
-			'filename' => 'somefancyphoto.jpg',
+			'id' => 'file-storage-1',
+			'user_id' => 'user-1',
+			'foreign_key' => 'item-1',
+			'model' => 'Item',
+			'filename' => 'cake.icon.png',
+			'filesize' => '',
+			'mime_type' => 'image/png',
 			'extension' => 'png',
-			'mime_type' => 'image/jpeg'
+			'hash' => '',
+			'path' => '',
+			'adapter' => 'Local',
 		]);
 		$this->entity->accessible('id', true);
 	}
 
-	public function testWebPath() {
-		//debug($this->entity->toArray());
+	public function testPathbuilding() {
 		$builder = new LocalPathBuilder();
-		$result = $builder->url($this->entity);
-		debug($result);
+
+		$result = $builder->filename($this->entity);
+		$this->assertEquals($result, 'filestorage1.png');
+
+		$result = $builder->path($this->entity);
+		$this->assertEquals($result, '00' . DS . '14' . DS . '90' . DS . 'filestorage1' . DS);
+
 		$result = $builder->fullPath($this->entity);
-		debug($result);
-		$result = $builder->fullPath($this->entity);
-		debug($result);
+		$this->assertEquals($result, '00' . DS . '14' . DS . '90' . DS . 'filestorage1' . DS . 'filestorage1.png');
+
+		$builder->config('pathPrefix', 'files');
+		$result = $builder->path($this->entity);
+		$this->assertEquals($result, 'files' . DS . '00' . DS . '14' . DS . '90' . DS . 'filestorage1' . DS);
+
+		$builder->config('pathPrefix', 'files');
+		$result = $builder->filename($this->entity);
+		$this->assertEquals($result, 'filestorage1.png');
+
+		$builder->config('preserveFilename', true);
+		$result = $builder->filename($this->entity);
+		$this->assertEquals($result, 'cake.icon.png');
+	}
+
+/**
+ * testEnsureSlash
+ *
+ * @return void
+ */
+	public function testEnsureSlash() {
+		$string = 'foo/bar';
+		$builder = new LocalPathBuilder();
+		$result = $builder->ensureSlash($string, 'both');
+		$this->assertEquals($result, DS . $string . DS);
+
+		$result = $builder->ensureSlash(DS . $string . DS, 'both');
+		$this->assertEquals($result, DS . $string . DS);
+	}
+
+/**
+ * testEnsureSlashInvalidArgumentException
+ *
+ * @expectedException \InvalidArgumentException
+ */
+	public function testEnsureSlashInvalidArgumentException() {
+		$string = 'foo/bar';
+		$builder = new LocalPathBuilder();
+		$builder->ensureSlash($string, 'INVALID!');
 	}
 }

@@ -14,18 +14,17 @@ class BasePathBuilder {
 	use InstanceConfigTrait;
 
 /**
- * Default settings
+ * Default settings.
  *
  * @var array
  */
 	protected $_defaultConfig = array(
-		'models' => false,
 		'stripUuid' => true,
+		'pathPrefix' => '',
 		'preserveFilename' => false,
 		'preserveExtension' => true,
 		'uuidFolder' => true,
 		'randomPath' => true,
-		'tableFolder' => false,
 		'modelFolder' => false
 	);
 
@@ -52,16 +51,17 @@ class BasePathBuilder {
  */
 	public function path($entity, array $options = []) {
 		$path = '';
-		if ($this->_config['tableFolder'] && is_string($this->_config['tableFolder'])) {
-			$path .= $this->_config['tableFolder'] . DS;
+		if ($this->_config['pathPrefix'] && is_string($this->_config['pathPrefix'])) {
+			$path .= $this->_config['pathPrefix'] . DS;
 		}
 		if ($this->_config['modelFolder'] === true) {
 			$path .= $entity->model;
 		}
 		if ($this->_config['randomPath'] === true) {
-			$path .= FileStorageUtils::randomPath($entity->id);
+			$path .= $this->randomPath($entity->id);
 		}
-		if ($this->_config['uuidFolder'] === true) {
+		// uuidFolder for backward compatibility
+		if ($this->_config['uuidFolder'] === true || $this->_config['idFolder'] === true) {
 			$path .= $this->stripDashes($entity->id) . DS;
 		}
 		return $path;
@@ -126,4 +126,32 @@ class BasePathBuilder {
 		return FileStorageUtils::randomPath($string);
 	}
 
+/**
+ * Ensures that a path has a leading and/or trailing (back-) slash.
+ *
+ * @param string $string
+ * @param string $position Can be `before`, `after` or `both`
+ * @param string $ds Directory separator should be / or \
+ * @throws \InvalidArgumentException
+ * @return string
+ */
+	public function ensureSlash($string, $position, $ds = null) {
+		if (!in_array($position, ['before', 'after', 'both'])) {
+			throw new \InvalidArgumentException(sprintf('Invalid position `%s`!', $position));
+		}
+		if (is_null($ds)) {
+			$ds = DIRECTORY_SEPARATOR;
+		}
+		if ($position === 'before' || $position === 'both') {
+			if (strpos($string, $ds) !== 0) {
+				$string = $ds . $string;
+			}
+		}
+		if ($position === 'after' || $position === 'both') {
+			if (substr($string, -1, 1) !== $ds ) {
+				$string = $string . $ds;
+			}
+		}
+		return $string;
+	}
 }
