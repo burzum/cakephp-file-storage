@@ -20,8 +20,11 @@ There is a good amount of code to be added to prepare everything. In theory you 
 
 ```php
 use Aws\S3;
-use Cake\Event\EventManager;
+use Burzum\FileStorage\Event\S3StorageListener;
 use Burzum\FileStorage\Lib\FileStorageUtils;
+use Burzum\FileStorage\Lib\StorageManager;
+use Cake\Core\Configure;
+use Cake\Event\EventManager;
 
 // Attach the S3 Listener to the global CakeEventManager
 $listener = new S3StorageListener();
