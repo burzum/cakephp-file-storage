@@ -26,11 +26,11 @@ use Burzum\FileStorage\Lib\StorageManager;
 use Cake\Core\Configure;
 use Cake\Event\EventManager;
 
-// Attach the S3 Listener to the global CakeEventManager
+// Attach the S3 Listener to the global EventManager
 $listener = new S3StorageListener();
 EventManager::instance()->on($listener);
 
-// Attach the Image Processing Listener to the global CakeEventManager
+// Attach the Image Processing Listener to the global EventManager
 $listener = new ImageProcessingListener();
 EventManager::instance()->on($listener);
 
