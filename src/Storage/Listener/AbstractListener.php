@@ -6,6 +6,7 @@
  */
 namespace Burzum\FileStorage\Storage\Listener;
 
+use Burzum\FileStorage\Lib\StorageManager;
 use Cake\Core\Configure;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Event\Event;

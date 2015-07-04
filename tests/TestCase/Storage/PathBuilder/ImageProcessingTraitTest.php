@@ -11,6 +11,10 @@ use Cake\TestSuite\TestCase;
 
 class TraitTestClass extends AbstractListener {
 	use ImageProcessingTrait;
+	public function __construct(array $config = []) {
+		parent::__construct($config);
+		$this->_loadImageProcessingFromConfig();
+	}
 	public function implementedEvents() {
 		return [];
 	}
@@ -82,5 +86,20 @@ class ImageProcessingTraitTest extends FileStorageTestCase {
 
 		$result = $builder->removeImageVersions($entity, ['crop50']);
 		debug($result);
+	}
+
+/**
+ * getAllVersionsKeysForModel
+ *
+ * @return void
+ */
+	public function testGetAllVersionsKeysForModel() {
+		$builder = new TraitTestClass();
+		$result = $builder->getAllVersionsKeysForModel('Item');
+		$expected = [
+			0 => 't100',
+			1 => 'crop50'
+		];
+		$this->assertEquals($result, $expected);
 	}
 }
