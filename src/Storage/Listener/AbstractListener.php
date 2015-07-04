@@ -275,11 +275,14 @@ abstract class AbstractListener implements EventListenerInterface {
 /**
  * Path builder.
  *
- * @param string Class name of a path builder.
- * @param array Options for the path builder.
+ * @param string $class Class name of a path builder.
+ * @param array $config for the path builder.
  * @return \Burzum\FileStorage\Storage\PathBuilder\BasePathBuilder
  */
-	public function pathBuilder($class = null, array $options = []) {
+	public function pathBuilder($class = null, array $config = []) {
+		if (!empty($this->_pathBuilder)) {
+			return $this->_pathBuilder;
+		}
 		if (empty($class)) {
 			if (empty($this->_pathBuilder)) {
 				throw new \RuntimeException(sprintf('No path builder loaded!'));
@@ -288,17 +291,17 @@ abstract class AbstractListener implements EventListenerInterface {
 		}
 		$classname = '\Burzum\FileStorage\Storage\PathBuilder\\' . $class . 'Builder';
 		if (class_exists($classname)) {
-			$this->_pathBuilder = new $classname();
+			$this->_pathBuilder = new $classname($config);
 			return $this->_pathBuilder;
 		}
 		$classname = '\App\Storage\PathBuilder\\' . $class . 'Builder';
 		if (class_exists($classname)) {
-			$this->_pathBuilder = new $classname();
+			$this->_pathBuilder = new $classname($config);
 			return $this->_pathBuilder;
 		}
 		$classname = $class;
 		if (class_exists($classname)) {
-			$this->_pathBuilder = new $classname();
+			$this->_pathBuilder = new $classname($config);
 			return $this->_pathBuilder;
 		}
 		throw new \RuntimeException(sprintf('Could not find path builder %s!', $classname));

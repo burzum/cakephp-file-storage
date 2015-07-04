@@ -62,6 +62,7 @@ trait ImageProcessingTrait {
 /**
  * Creates the image versions of an entity.
  *
+ * @todo finish me
  * @param \Cake\ORM\Entity $entity
  * @return array
  */
@@ -70,6 +71,7 @@ trait ImageProcessingTrait {
 			throw new \RuntimeException(sprintf('No image version config found for `%s`!', $entity->model));
 		}
 		$result = [];
+		$storage = $this->getAdapter($entity->adapter);
 		foreach ($this->_imageVersions[$entity->model] as $version => $config) {
 			$output = $this->createTmpFile();
 			$hash = $this->getImageVersionHash($entity->model, $version);
@@ -80,13 +82,17 @@ trait ImageProcessingTrait {
 				'hash' => $this->_imageVersionHashes[$entity->model][$version],
 			];
 			try {
-				$this->imageProcessor()->open($entity->file['tmp_name']);
-				$this->imageProcessor()->batchProcess($output, $config);
-				$this->getAdapter($entity->adapter)->write($path, file_get_contents($output));
+				$tmpFile = $this->_tmpFile($storage,  $this->pathBuilder()->fullPath($entity));
+				$this->imageProcessor()->open($tmpFile);
+				$this->imageProcessor()->batchProcess($output, $config, ['format' => $entity->extension]);
+				$storage->write($path, file_get_contents($output));
+				unlink($tmpFile);
 			} catch (\Exception $e) {
 				$result[$version] = [
 					'status' => 'error',
 					'error' => $e->getMessage(),
+					'line' => $e->getLine(),
+					'file' => $e->getFile()
 				];
 			}
 		}

@@ -94,7 +94,6 @@ class FileStorageTestCase extends TestCase {
 	public function tearDown() {
 		parent::tearDown();
 		$Folder = new Folder(TMP . 'file-storage-test');
-		$Folder->delete();
+		//$Folder->delete();
 	}
-
 }

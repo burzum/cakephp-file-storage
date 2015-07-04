@@ -5,9 +5,10 @@ use Burzum\FileStorage\TestSuite\FileStorageTestCase;
 use Burzum\FileStorage\Storage\Listener\AbstractListener;
 use Burzum\FileStorage\Storage\Listener\ImageProcessingTrait;
 use Cake\Core\InstanceConfigTrait;
-use \Cake\Core\Configure;
+use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Filesystem\Folder;
 
 class TraitTestClass extends AbstractListener {
 	use ImageProcessingTrait;
@@ -53,8 +54,8 @@ class ImageProcessingTraitTest extends FileStorageTestCase {
 			'Item' => [
 				't100' => [
 					'thumbnail' => [
-						'width' => 300,
-						'height' => 300
+						'width' => 200,
+						'height' => 200
 					]
 				],
 				'crop50' => [
@@ -64,28 +65,31 @@ class ImageProcessingTraitTest extends FileStorageTestCase {
 				]
 			]
 		]);
+
+		$this->Listener = $this->getMockBuilder('TraitTestClass')
+			->setMethods([
+				'getAdapter'
+			])
+			->getMock();
 	}
 
 /**
  * testCreateImageVersions
  *
+ * @todo finish me
  * @return void
  */
 	public function testCreateImageVersions() {
-		$entity = $this->FileStorage->get('file-storage-1');
-		$entity->isNew(true);
-		$entity->file = [
-			'tmp_name' => $this->fileFixtures . 'titus.jpg',
-		];
+		$entity = $this->FileStorage->get('file-storage-3');
+		$listener = new TraitTestClass();
+		$path = $listener->pathBuilder('LocalPath', ['preserveFilename' => true])->path($entity);
 
-		$builder = new TraitTestClass();
-		$builder->pathBuilder('LocalPath');
-		$builder->imageProcessor();
-		$result = $builder->createImageVersions($entity);
+		new Folder($this->testPath . $path, true);
+		copy($this->fileFixtures . 'titus.jpg', $this->testPath . $path . 'titus.jpg');
+
+		$listener->imageProcessor();
+		$result = $listener->createImageVersions($entity);
 		//debug($result);
-
-		$result = $builder->removeImageVersions($entity, ['crop50']);
-		debug($result);
 	}
 
 /**
@@ -101,5 +105,20 @@ class ImageProcessingTraitTest extends FileStorageTestCase {
 			1 => 'crop50'
 		];
 		$this->assertEquals($result, $expected);
+	}
+
+/**
+ * testRemoveImageVersions
+ *
+ * @return void
+ */
+	public function testRemoveImageVersions() {
+//		$this->Listener->expects($this->at(0))
+//			->method('getAdapter')
+//			->with(['Local'])
+//			->will($this->returnValue(true));
+//
+//		$result = $this->Listener->removeImageVersions($this->entity, ['t100', 'crop50']);
+//		debug($result);
 	}
 }

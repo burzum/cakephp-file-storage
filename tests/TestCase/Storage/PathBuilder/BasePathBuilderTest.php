@@ -65,6 +65,21 @@ class BasePathBuilderTest extends TestCase {
 		$builder->config('pathSuffix', 'files');
 		$result = $builder->path($this->entity);
 		$this->assertEquals($result, '00' . DS . '14' . DS . '90' . DS . 'filestorage1' . DS . 'files' . DS);
+
+		$result = $builder->url($this->entity);
+		$expected = '00/14/90/filestorage1/files/filestorage1.png';
+		$this->assertEquals($result, $expected);
+	}
+
+/**
+ * testRandomPath
+ *
+ * @return void
+ */
+	public function testRandomPath() {
+		$builder = new BasePathBuilder();
+		$result = $builder->randomPath('test');
+		$this->assertInternalType('string', $result);
 	}
 
 /**
@@ -113,5 +128,16 @@ class BasePathBuilderTest extends TestCase {
 			'extension' => ''
 		];
 		$this->assertEquals($result, $expected);
+	}
+
+/**
+ * testStripDashes
+ *
+ * @return void
+ */
+	public function testStripDashes() {
+		$builder = new BasePathBuilder();
+		$result = $builder->stripDashes('with-dashes-!');
+		$this->assertEquals($result, 'withdashes!');
 	}
 }
