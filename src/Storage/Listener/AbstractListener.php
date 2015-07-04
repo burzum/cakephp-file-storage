@@ -1,4 +1,9 @@
 <?php
+/**
+ * @author Florian Krämer
+ * @copyright 2012 - 2015 Florian Krämer
+ * @license MIT
+ */
 namespace Burzum\FileStorage\Storage\Listener;
 
 use Cake\Core\Configure;

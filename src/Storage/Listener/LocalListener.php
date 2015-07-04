@@ -1,11 +1,15 @@
 <?php
+/**
+ * @author Florian Krämer
+ * @copyright 2012 - 2015 Florian Krämer
+ * @license MIT
+ */
 namespace Burzum\FileStorage\Storage\Listener;
 
 use Burzum\FileStorage\Lib\StorageManager;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Filesystem\Folder;
-use Burzum\FileStorage\Storage\Listener\AbstractListener;
 
 /**
  * Local FileStorage Event Listener for the CakePHP FileStorage plugin
@@ -69,25 +73,6 @@ class LocalListener extends AbstractListener {
 			return false;
 		}
 	}
-
-/**
- * Builds the path under which the data gets stored in the storage adapter.
- *
- * @param Table $table
- * @param Entity $entity
- * @return string
- */
-//	public function buildPath($table, $entity) {
-//		$path = parent::buildPath($table, $entity);
-//		// Backward compatibility
-//		if ($this->_config['legacyPath'] === true) {
-//			return 'files' . DS . $path;
-//		}
-//		if (is_string($this->_config['legacyPath'])) {
-//			return $this->_config['legacyPath'] . DS . $path;
-//		}
-//		return $path;
-//	}
 
 /**
  * afterSave

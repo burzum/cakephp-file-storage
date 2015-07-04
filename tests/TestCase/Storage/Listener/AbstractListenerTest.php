@@ -24,6 +24,11 @@ class AbstractListenerTest extends TestCase {
 		'plugin.Burzum\FileStorage.FileStorage'
 	);
 
+/**
+ * testPathBuilder
+ *
+ * @return void
+ */
 	public function testPathBuilder() {
 		$Listener = new TestAbstractListener();
 		$result = $Listener->pathBuilder('LocalPath');

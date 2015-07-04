@@ -63,7 +63,7 @@ class ImageProcessingTraitTest extends FileStorageTestCase {
 	}
 
 /**
- * testEnsureSlash
+ * testCreateImageVersions
  *
  * @return void
  */
@@ -75,8 +75,12 @@ class ImageProcessingTraitTest extends FileStorageTestCase {
 		];
 
 		$builder = new TraitTestClass();
+		$builder->pathBuilder('LocalPath');
 		$builder->imageProcessor();
 		$result = $builder->createImageVersions($entity);
+		//debug($result);
+
+		$result = $builder->removeImageVersions($entity, ['crop50']);
 		debug($result);
 	}
 }

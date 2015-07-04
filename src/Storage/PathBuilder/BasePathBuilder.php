@@ -1,4 +1,9 @@
 <?php
+/**
+ * @author Florian Krämer
+ * @copyright 2012 - 2015 Florian Krämer
+ * @license MIT
+ */
 namespace Burzum\FileStorage\Storage\PathBuilder;
 
 use Cake\Core\InstanceConfigTrait;
@@ -145,7 +150,7 @@ class BasePathBuilder {
  * @return string
  */
 	public function fullPath(Entity $entity, array $options = []) {
-		return $this->path($entity) . $this->filename($entity);
+		return $this->path($entity, $options) . $this->filename($entity, $options);
 	}
 
 /**
