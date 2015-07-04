@@ -120,13 +120,17 @@ class FileStorageUtils {
 	}
 
 /**
- * Generate hashes
+ * Generates the hashes for the different image version configurations.
  *
- * @param string
- * @return void
+ * @param string|array $configPath
+ * @return array
  */
 	public static function generateHashes($configPath = 'FileStorage') {
-		$imageSizes = Configure::read($configPath . '.imageSizes');
+		if (is_array($configPath)) {
+			$imageSizes = $configPath;
+		} else {
+			$imageSizes = Configure::read($configPath . '.imageSizes');
+		}
 		if (is_null($imageSizes)) {
 			throw new \RuntimeException(sprintf('Image processing configuration in %s is missing!', $configPath . '.imageSizes'));
 		}
@@ -136,6 +140,7 @@ class FileStorageUtils {
 				Configure::write($configPath . '.imageHashes.' . $model . '.' . $name, self::hashOperations($operations));
 			}
 		}
+		return Configure::read($configPath . '.imageHashes');
 	}
 
 /**

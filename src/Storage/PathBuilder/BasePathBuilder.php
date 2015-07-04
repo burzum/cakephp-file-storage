@@ -21,6 +21,9 @@ class BasePathBuilder {
 	protected $_defaultConfig = array(
 		'stripUuid' => true,
 		'pathPrefix' => '',
+		'pathSuffix' => '',
+		'filePrefix' => '',
+		'fileSuffix' => '',
 		'preserveFilename' => false,
 		'preserveExtension' => true,
 		'uuidFolder' => true,
@@ -28,6 +31,11 @@ class BasePathBuilder {
 		'modelFolder' => false
 	);
 
+/**
+ * Constructor
+ *
+ * @param array $config Configuration options.
+ */
 	public function __construct(array $config = []) {
 		$this->config($config);
 	}
@@ -49,10 +57,11 @@ class BasePathBuilder {
  * @param Entity $entity
  * @return string
  */
-	public function path($entity, array $options = []) {
+	public function path(Entity $entity, array $options = []) {
+		$config = array_merge($this->config(), $options);
 		$path = '';
-		if ($this->_config['pathPrefix'] && is_string($this->_config['pathPrefix'])) {
-			$path .= $this->_config['pathPrefix'] . DS;
+		if (!empty($config['pathPrefix']) && is_string($config['pathPrefix'])) {
+			$path = $config['pathPrefix'] . DS . $path;
 		}
 		if ($this->_config['modelFolder'] === true) {
 			$path .= $entity->model;
@@ -64,7 +73,31 @@ class BasePathBuilder {
 		if ($this->_config['uuidFolder'] === true || $this->_config['idFolder'] === true) {
 			$path .= $this->stripDashes($entity->id) . DS;
 		}
-		return $path;
+		if (!empty($this->_config['pathSuffix']) && is_string($this->_config['pathSuffix'])) {
+			$path = $path . $this->_config['pathSuffix'] . DS;
+		}
+		return $this->ensureSlash($path, 'after');
+	}
+
+/**
+ * Splits the filename in name and extension.
+ *
+ * @param string $filename Filename to split in name and extension.
+ * @param boolean $keepDot Keeps the dot in front of the extension.
+ * @return array
+ */
+	public function splitFilename($filename, $keepDot = false) {
+		$position = strrpos($filename, '.');
+		if ($position === false) {
+			$extension = '';
+		} else {
+			$extension = substr($filename, $position, strlen($filename));
+			$filename = substr($filename, 0, $position);
+			if ($keepDot === false) {
+				$extension = substr($extension, 1);
+			}
+		}
+		return compact('filename', 'extension');
 	}
 
 /**
@@ -74,16 +107,32 @@ class BasePathBuilder {
  * @param array $options
  * @return string
  */
-	public function filename($entity, array $options = []) {
-		if ($this->_config['preserveFilename'] === true) {
-			return $entity['filename'];
+	public function filename(Entity $entity, array $options = []) {
+		$config = array_merge($this->config(), $options);
+		if ($config['preserveFilename'] === true) {
+			$filename = $entity['filename'];
+			if (!empty($config['filePrefix'])) {
+				$filename = $config['filePrefix'] . $entity['filename'];
+			}
+			if (!empty($config['fileSuffix'])) {
+				$split = $this->splitFilename($filename, true);
+				$filename = $split['filename'] . $config['fileSuffix'] . $split['extension'];
+			}
+			return $filename;
 		}
-		$filename = $entity['id'];
-		if ($this->_config['stripUuid'] ===  true) {
+
+		$filename = $entity->id;
+		if ($config['stripUuid'] ===  true) {
 			$filename = $this->stripDashes($filename);
 		}
-		if ($this->_config['preserveExtension'] === true) {
+		if ($config['preserveExtension'] === true) {
+			if (!empty($config['fileSuffix'])) {
+				$filename = $filename . $config['fileSuffix'];
+			}
 			$filename = $filename . '.' . $entity['extension'];
+		}
+		if (!empty($config['filePrefix'])) {
+			$filename = $config['filePrefix'] . $filename;
 		}
 		return $filename;
 	}
@@ -95,7 +144,7 @@ class BasePathBuilder {
  * @param array $options
  * @return string
  */
-	public function fullPath($entity, array $options = []) {
+	public function fullPath(Entity $entity, array $options = []) {
 		return $this->path($entity) . $this->filename($entity);
 	}
 
@@ -109,7 +158,7 @@ class BasePathBuilder {
  * @param array $options
  * @return string
  */
-	public function url($entity, array $options = []) {
+	public function url(Entity $entity, array $options = []) {
 		$url = $this->path($entity) . $this->filename($entity);
 		return str_replace('\\', '/', $url);
 	}
@@ -140,7 +189,7 @@ class BasePathBuilder {
 			throw new \InvalidArgumentException(sprintf('Invalid position `%s`!', $position));
 		}
 		if (is_null($ds)) {
-			$ds = DIRECTORY_SEPARATOR;
+			$ds = DS;
 		}
 		if ($position === 'before' || $position === 'both') {
 			if (strpos($string, $ds) !== 0) {

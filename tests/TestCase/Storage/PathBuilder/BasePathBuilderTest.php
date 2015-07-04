@@ -38,6 +38,7 @@ class BasePathBuilderTest extends TestCase {
 
 	public function testPathbuilding() {
 		$builder = new BasePathBuilder();
+		$config = $builder->config();
 
 		$result = $builder->filename($this->entity);
 		$this->assertEquals($result, 'filestorage1.png');
@@ -59,6 +60,11 @@ class BasePathBuilderTest extends TestCase {
 		$builder->config('preserveFilename', true);
 		$result = $builder->filename($this->entity);
 		$this->assertEquals($result, 'cake.icon.png');
+
+		$builder->config($config);
+		$builder->config('pathSuffix', 'files');
+		$result = $builder->path($this->entity);
+		$this->assertEquals($result, '00' . DS . '14' . DS . '90' . DS . 'filestorage1' . DS . 'files' . DS);
 	}
 
 /**
@@ -85,5 +91,27 @@ class BasePathBuilderTest extends TestCase {
 		$string = 'foo/bar';
 		$builder = new BasePathBuilder();
 		$builder->ensureSlash($string, 'INVALID!');
+	}
+
+/**
+ * testSplitFilename
+ *
+ * @return void
+ */
+	public function testSplitFilename() {
+		$builder = new BasePathBuilder();
+		$result = $builder->splitFilename('some.fancy.name.jpg');
+		$expected = [
+			'filename' => 'some.fancy.name',
+			'extension' => 'jpg'
+		];
+		$this->assertEquals($result, $expected);
+
+		$result = $builder->splitFilename('no-extension');
+		$expected = [
+			'filename' => 'no-extension',
+			'extension' => ''
+		];
+		$this->assertEquals($result, $expected);
 	}
 }
