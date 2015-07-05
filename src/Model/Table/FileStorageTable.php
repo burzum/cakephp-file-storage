@@ -66,6 +66,8 @@ class FileStorageTable extends Table {
 /**
  * beforeSave callback
  *
+ * @param \Cake\Event\Event $event
+ * @param \Cake\ORM\Entity $entity
  * @param array $options
  * @return boolean true on success
  */
@@ -150,7 +152,7 @@ class FileStorageTable extends Table {
 		try {
 			$Storage = $this->getStorageAdapter($entity['adapter']);
 			$Storage->delete($entity['path']);
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			$this->log($e->getMessage(), 'file_storage');
 			return false;
 		}
@@ -158,6 +160,7 @@ class FileStorageTable extends Table {
 		$Event = new Event('FileStorage.afterDelete', $this, array(
 			'record' => $event->data['record'],
 			'storage' => $this->getStorageAdapter($entity['adapter'])));
+
 		$this->getEventManager()->dispatch($Event);
 
 		return true;

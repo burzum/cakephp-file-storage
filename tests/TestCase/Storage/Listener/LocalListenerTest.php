@@ -53,6 +53,10 @@ class LocalListenerTest extends FileStorageTestCase {
 			->method('getAdapter')
 			->will($this->returnValue($this->adapterMock));
 
+		$this->adapterMock->expects($this->at(0))
+			->method('write')
+			->will($this->returnValue(true));
+
 		$this->listener->afterSave($event);
 	}
 

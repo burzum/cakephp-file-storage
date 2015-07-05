@@ -68,7 +68,7 @@ class ImageStorageTable extends FileStorageTable {
  * Does not call the parent to avoid that the regular file storage event listener saves the image already
  *
  * @param \Cake\Event\Event $event
- * @param \Burzum\FileStorage\Model\Table\Entity $entity
+ * @param \Cake\ORM\Entity $entity
  * @param array $options
  * @return boolean
  */

@@ -16,6 +16,9 @@ class TraitTestClass extends AbstractListener {
 		parent::__construct($config);
 		$this->_loadImageProcessingFromConfig();
 	}
+	public function checkImageVersions($identifier, array $versions) {
+		return $this->_checkImageVersions($identifier, $versions);
+	}
 	public function implementedEvents() {
 		return [];
 	}
@@ -87,7 +90,7 @@ class ImageProcessingTraitTest extends FileStorageTestCase {
 		copy($this->fileFixtures . 'titus.jpg', $this->testPath . $path . 'titus.jpg');
 
 		$listener->imageProcessor();
-		$result = $listener->createImageVersions($entity);
+		$result = $listener->createImageVersions($entity, ['t100', 'crop50']);
 		$expected = [
 			't100' => [
 				'status' => 'success',
@@ -103,6 +106,38 @@ class ImageProcessingTraitTest extends FileStorageTestCase {
 		$this->assertEquals($result, $expected);
 		$this->assertFileExists($this->testPath . '48' . DS . '75' . DS . '05' . DS . 'filestorage3' . DS . 'titus.20876bcd.jpg');
 		$this->assertFileExists($this->testPath . '48' . DS . '75' . DS . '05' . DS . 'filestorage3' . DS . 'titus.41e51a3f.jpg');
+
+		$result = $listener->removeImageVersions($entity, ['t100']);
+		$expected = [
+			't100' => [
+				'status' => 'success',
+				'hash' => '20876bcd',
+				'path' => '48\75\05\filestorage3\titus.20876bcd.jpg'
+			]
+		];
+		$this->assertEquals($result, $expected);
+		$this->assertFileNotExists($this->testPath . '48' . DS . '75' . DS . '05' . DS . 'filestorage3' . DS . 'titus.20876bcd.jpg');
+		$this->assertFileExists($this->testPath . '48' . DS . '75' . DS . '05' . DS . 'filestorage3' . DS . 'titus.41e51a3f.jpg');
+	}
+
+/**
+ * testCheckImageVersionsRuntimeExceptionIdentifier
+ *
+ * @expectedException \RuntimeException
+ */
+	public function testCheckImageVersionsRuntimeExceptionIdentifier() {
+		$listener = new TraitTestClass();
+		$listener->checkImageVersions('does not exist', []);
+	}
+
+/**
+ * testCheckImageVersionsRuntimeExceptionVersion
+ *
+ * @expectedException \RuntimeException
+ */
+	public function testCheckImageVersionsRuntimeExceptionVersion() {
+		$listener = new TraitTestClass();
+		$listener->checkImageVersions('Item', ['does not exist!']);
 	}
 
 /**
@@ -111,27 +146,12 @@ class ImageProcessingTraitTest extends FileStorageTestCase {
  * @return void
  */
 	public function testGetAllVersionsKeysForModel() {
-		$builder = new TraitTestClass();
-		$result = $builder->getAllVersionsKeysForModel('Item');
+		$listener = new TraitTestClass();
+		$result = $listener->getAllVersionsKeysForModel('Item');
 		$expected = [
 			0 => 't100',
 			1 => 'crop50'
 		];
 		$this->assertEquals($result, $expected);
-	}
-
-/**
- * testRemoveImageVersions
- *
- * @return void
- */
-	public function testRemoveImageVersions() {
-//		$this->Listener->expects($this->at(0))
-//			->method('getAdapter')
-//			->with(['Local'])
-//			->will($this->returnValue(true));
-//
-//		$result = $this->Listener->removeImageVersions($this->entity, ['t100', 'crop50']);
-//		debug($result);
 	}
 }
