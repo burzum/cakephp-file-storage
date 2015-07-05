@@ -40,7 +40,7 @@ class S3StorageListener extends AbstractStorageEventListener {
  * afterDelete
  *
  * @param \Cake\Event\Event $Event
- * @return void
+ * @return boolean|null
  */
 	public function afterDelete(Event $Event) {
 		if ($this->_checkEvent($Event)) {
