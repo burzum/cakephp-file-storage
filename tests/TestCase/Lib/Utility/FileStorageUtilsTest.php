@@ -22,6 +22,9 @@ class FileStorageUtilsTest extends FileStorageTestCase {
 	public function testRandomPath() {
 		$result = FileStorageUtils::randomPath('someteststring');
 		$this->assertEquals($result, '38' . DS . '88' . DS . '98' . DS);
+
+		$result = FileStorageUtils::randomPath('file-storage-3');
+		$this->assertEquals($result, '48' . DS . '75' . DS . '05' . DS);
 	}
 
 /**

@@ -37,6 +37,7 @@ class FileStorageUtils {
  *
  * Works up to 5 level deep
  *
+ * @link https://www.box.com/blog/crc32-checksums-the-good-the-bad-and-the-ugly/
  * @throws InvalidArgumentException
  * @param mixed $string
  * @param integer $level 1 to 5
