@@ -24,6 +24,8 @@ trait ImageProcessingTrait {
 
 /**
  * Loads the image processing configuration into the class.
+ *
+ * @return void
  */
 	protected function _loadImageProcessingFromConfig() {
 		$this->_imageVersions = (array)Configure::read('FileStorage.imageSizes');
@@ -54,24 +56,47 @@ trait ImageProcessingTrait {
  */
 	public function getImageVersionHash($model, $version) {
 		if (empty($this->_imageVersionHashes[$model][$version])) {
-			throw new \RuntimeException(sprintf('Version "%s" for model "%s" does not exist!', $model, $version));
+			throw new \RuntimeException(sprintf('Version "%s" for identifier "%s" does not exist!', $model, $version));
 		}
 		return $this->_imageVersionHashes[$model][$version];
+	}
+
+/**
+ * Check that the image versions exist before doing something with them.
+ *
+ * @throws \RuntimeException
+ * @param string $identifier
+ * @param array $versions
+ * @return void
+ */
+	protected function _checkImageVersions($identifier, array $versions) {
+		if (!isset($this->_imageVersions[$identifier])) {
+			throw new \RuntimeException(sprintf('No image version config found for identifier "%s"!', $identifier));
+		}
+		foreach ($versions as $version) {
+			if (!isset($this->_imageVersions[$identifier][$version])) {
+				throw new \RuntimeException(sprintf('Invalid version "%s" for identifier "%s"!', $identifier, $version));
+			}
+		}
 	}
 
 /**
  * Creates the image versions of an entity.
  *
  * @param \Cake\ORM\Entity $entity
+ * @param array $versions $options
+ * @param array $options
  * @return array
  */
-	public function createImageVersions(Entity $entity) {
-		if (!isset($this->_imageVersions[$entity->model])) {
-			throw new \RuntimeException(sprintf('No image version config found for `%s`!', $entity->model));
-		}
+	public function createImageVersions(Entity $entity, array $versions, array $options = []) {
+		$this->_checkImageVersions($entity->model, $versions);
+
 		$result = [];
 		$storage = $this->getAdapter($entity->adapter);
 		foreach ($this->_imageVersions[$entity->model] as $version => $config) {
+			if (!in_array($version, $versions)) {
+				continue;
+			}
 			$hash = $this->getImageVersionHash($entity->model, $version);
 			$path = $this->pathBuilder()->fullPath($entity, ['fileSuffix' => '.' . $hash]);
 			$result[$version] = [
@@ -99,37 +124,17 @@ trait ImageProcessingTrait {
 	}
 
 /**
- * Gets all image version config keys for a specific identifier.
- *
- * @param string $identifier
- * @throws \RuntimeException
- * @return array
- */
-	public function getAllVersionsKeysForModel($identifier) {
-		if (!isset($this->_imageVersions[$identifier])) {
-			throw new \RuntimeException(sprintf('No image config present for identifier "%s"!', $identifier));
-		}
-		return array_keys($this->_imageVersions[$identifier]);
-	}
-
-/**
- * Convenience method to delete ALL versions for an entity.
- *
- * @param \Cake\ORM\Entity
- * @return array
- */
-	public function removeAllImageVersions(Entity $entity) {
-		return $this->removeAllImageVersions($entity, $this->getAllVersionsKeysForModel($entity->model));
-	}
-
-/**
  * Removes image versions of an entity.
  *
  * @param \Cake\ORM\Entity $entity
  * @param array List of image version to remove for that entity.
+ * @param array $versions
+ * @param array $options
  * @return array
  */
-	public function removeImageVersions(Entity $entity, array $versions) {
+	public function removeImageVersions(Entity $entity, array $versions, array $options = []) {
+		$this->_checkImageVersions($entity->model, $versions);
+
 		$result = [];
 		foreach ($versions as $version) {
 			$hash = $this->getImageVersionHash($entity->model, $version);
@@ -147,5 +152,47 @@ trait ImageProcessingTrait {
 			}
 		}
 		return $result;
+	}
+
+/**
+ * Gets all image version config keys for a specific identifier.
+ *
+ * @param string $identifier
+ * @throws \RuntimeException
+ * @return array
+ */
+	public function getAllVersionsKeysForModel($identifier) {
+		if (!isset($this->_imageVersions[$identifier])) {
+			throw new \RuntimeException(sprintf('No image config present for identifier "%s"!', $identifier));
+		}
+		return array_keys($this->_imageVersions[$identifier]);
+	}
+
+/**
+ * Convenience method to create ALL versions for an entity.
+ *
+ * @param \Cake\ORM\Entity
+ * @return array
+ */
+	public function createAllImageVersions(Entity $entity, array $options = []) {
+		return $this->createImageVersions(
+			$entity,
+			$this->getAllVersionsKeysForModel($entity->model),
+			$options
+		);
+	}
+
+/**
+ * Convenience method to delete ALL versions for an entity.
+ *
+ * @param \Cake\ORM\Entity
+ * @return array
+ */
+	public function removeAllImageVersions(Entity $entity, array $options = []) {
+		return $this->removeImageVersions(
+			$entity,
+			$this->getAllVersionsKeysForModel($entity->model),
+			$options
+		);
 	}
 }
