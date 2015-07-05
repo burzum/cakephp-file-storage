@@ -58,8 +58,8 @@ class BasePathBuilder {
 /**
  * Builds the path under which the data gets stored in the storage adapter.
  *
- * @param Table $table
  * @param Entity $entity
+ * @param array $options
  * @return string
  */
 	public function path(Entity $entity, array $options = []) {

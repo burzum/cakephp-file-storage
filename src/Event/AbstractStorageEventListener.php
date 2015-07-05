@@ -5,6 +5,7 @@ use Cake\Core\Configure;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
+use Cake\Log\LogTrait;
 use Cake\ORM\Table;
 use Cake\ORM\Entity;
 use Cake\Utility\Text;
@@ -34,6 +35,7 @@ use Burzum\FileStorage\Lib\FileStorageUtils;
 abstract class AbstractStorageEventListener implements EventListenerInterface {
 
 	use InstanceConfigTrait;
+	use LogTrait;
 
 /**
  * The adapter class

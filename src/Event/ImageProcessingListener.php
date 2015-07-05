@@ -132,7 +132,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 
 			try {
 				$image = $table->processImage($tmpFile, null, array('format' => $entity['extension']), $imageOperations);
-				$result = $Storage->write($string, $image->get($entity['extension']), true);
+				$Storage->write($string, $image->get($entity['extension']), true);
 			} catch (\Exception $e) {
 				$this->log($e->getMessage(), 'file_storage');
 				unlink($tmpFile);
@@ -214,7 +214,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 					return false;
 				}
 				$Storage->delete($string);
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				$this->log($e->getMessage(), 'file_storage');
 				return false;
 			}
