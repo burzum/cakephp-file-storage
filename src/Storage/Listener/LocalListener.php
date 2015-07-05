@@ -6,7 +6,6 @@
  */
 namespace Burzum\FileStorage\Storage\Listener;
 
-use Burzum\FileStorage\Lib\StorageManager;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Filesystem\Folder;
@@ -21,7 +20,7 @@ use Cake\Filesystem\Folder;
 class LocalListener extends AbstractListener {
 
 /**
- * List of adapter classes the event listener can work with
+ * List of adapter classes the event listener can work with.
  *
  * It is used in FileStorageEventListenerBase::getAdapterClassName to get the
  * class, to detect if an event passed to this listener should be processed or
@@ -30,9 +29,18 @@ class LocalListener extends AbstractListener {
  *
  * @var array
  */
-	public $_adapterClasses = array(
+	public $_adapterClasses = [
 		'\Gaufrette\Adapter\Local'
-	);
+	];
+
+/**
+ * Initialize callback
+ *
+ * @return void
+ */
+	public function Initialize() {
+		$this->pathBuilder('LocalPath');
+	}
 
 /**
  * Implemented Events
@@ -55,14 +63,14 @@ class LocalListener extends AbstractListener {
  *
  * No need to use an adapter here, just delete the whole folder using cakes Folder class
  *
- * @param Event $event
+ * @param \Cake\Event\Event $event
  * @return void
  */
 	public function afterDelete(Event $event) {
 		if ($this->_checkEvent($event)) {
 			$entity = $event->data['record'];
 			$path = $this->pathBuilder()->fullPath($entity);
-			if (StorageManager::adapter($entity->adapter)->delete($path)) {
+			if ($this->getAdapter($entity->adapter)->delete($path)) {
 				$event->result = true;
 			}
 			$event->result = false;
@@ -70,19 +78,19 @@ class LocalListener extends AbstractListener {
 	}
 
 /**
- * afterSave
+ * Save the file to the storage backend after the record was created.
  *
- * @param Event $event
+ * @param \Cake\Event\Event $event
  * @return void
  */
 	public function afterSave(Event $event) {
 		if ($this->_checkEvent($event) && $event->data['record']->isNew()) {
 			$table = $event->subject();
 			$entity = $event->data['record'];
-			$Storage = StorageManager::adapter($entity['adapter']);
+			$Storage = $this->getAdapter($entity['adapter']);
 			try {
-				$filename = $this->pathBuilder->filename($entity);
-				$entity['path'] = $this->pathBuilder->path($entity);
+				$filename = $this->pathBuilder()->filename($entity);
+				$entity['path'] = $this->pathBuilder()->path($entity);
 				$Storage->write($entity['path'] . $filename, file_get_contents($entity['file']['tmp_name']), true);
 				$table->save($entity, array(
 					'validate' => false,

@@ -37,6 +37,7 @@ class FileStorageUtils {
  *
  * Works up to 5 level deep
  *
+ * @deprecated Use the randomPath() method from the BasePathBuilder instead.
  * @link https://www.box.com/blog/crc32-checksums-the-good-the-bad-and-the-ugly/
  * @throws InvalidArgumentException
  * @param mixed $string

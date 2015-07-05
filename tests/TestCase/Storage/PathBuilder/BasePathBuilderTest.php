@@ -78,8 +78,11 @@ class BasePathBuilderTest extends TestCase {
  */
 	public function testRandomPath() {
 		$builder = new BasePathBuilder();
-		$result = $builder->randomPath('test');
-		$this->assertInternalType('string', $result);
+		$result = $builder->randomPath('test', 5, 'sha1');
+		$this->assertEquals($result, '4a\8f\e5\cc\b1\\');
+
+		$result = $builder->randomPath('test', 3, 'sha1');
+		$this->assertEquals($result, '4a\8f\e5\\');
 	}
 
 /**

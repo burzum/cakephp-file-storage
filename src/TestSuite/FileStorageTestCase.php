@@ -84,6 +84,9 @@ class FileStorageTestCase extends TestCase {
 			'adapterClass' => '\Gaufrette\Adapter\Local',
 			'class' => '\Gaufrette\Filesystem'
 		));
+
+		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
+		$this->ImageStorage = TableRegistry::get('Burzum/FileStorage.ImageStorage');
 	}
 
 /**
@@ -93,6 +96,7 @@ class FileStorageTestCase extends TestCase {
  */
 	public function tearDown() {
 		parent::tearDown();
+		TableRegistry::clear();
 		$Folder = new Folder(TMP . 'file-storage-test');
 		$Folder->delete();
 	}

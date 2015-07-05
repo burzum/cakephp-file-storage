@@ -8,15 +8,20 @@ use Cake\TestSuite\TestCase;
 
 class S3PathBuilderTest extends TestCase {
 
-	/**
-	 * Fixtures
-	 *
-	 * @var array
-	 */
+/**
+ * Fixtures
+ *
+ * @var array
+ */
 	public $fixtures = array(
 		'plugin.Burzum\FileStorage.FileStorage'
 	);
 
+/**
+ * setUp
+ *
+ * @return void
+ */
 	public function setUp() {
 		parent::setUp();
 		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
@@ -37,6 +42,9 @@ class S3PathBuilderTest extends TestCase {
 	}
 
 /**
+ * testUrl
+ *
+ * @return void
  * @todo finish me
  */
 	public function testUrl() {

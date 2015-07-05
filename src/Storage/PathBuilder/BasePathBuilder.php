@@ -173,11 +173,26 @@ class BasePathBuilder {
  *
  * Makes it possible to overload this functionality.
  *
- * @param string $string
+ * @param string $string Input string
+ * @param int $level Depth of the path to generate.
+ * @param string $method Hash method, crc32 or sha1.
  * @return string
  */
-	public function randomPath($string) {
-		return FileStorageUtils::randomPath($string);
+	public function randomPath($string, $level = 3, $method = 'crc32') {
+		if ($method === 'sha1') {
+			$result = sha1($string);
+			$randomString = '';
+			$counter = 0;
+			for ($i = 1; $i <= $level; $i++) {
+				$counter = $counter + 2;
+				$randomString .= substr($result, $counter, 2) . DS;
+			}
+			return $randomString;
+		}
+		// Keeping this for backward compatibility
+		if ($method === 'crc32') {
+			return FileStorageUtils::randomPath($string);
+		}
 	}
 
 /**
