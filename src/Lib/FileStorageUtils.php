@@ -19,7 +19,7 @@ class FileStorageUtils {
  * @param string $name
  * @param boolean $realFile
  * @link http://php.net/manual/en/function.pathinfo.php
- * @return boolean string or false
+ * @return false|string string or false
  */
 	public static function fileExtension($name, $realFile = false) {
 		if ($realFile) {
@@ -42,7 +42,7 @@ class FileStorageUtils {
  * @throws InvalidArgumentException
  * @param mixed $string
  * @param integer $level 1 to 5
- * @return mixed
+ * @return null|string
  */
 	public static function randomPath($string, $level = 3) {
 		if (!$string) {
@@ -114,7 +114,7 @@ class FileStorageUtils {
  * Serializes and then hashes an array of operations that are applied to an image
  *
  * @param array $operations
- * @return array
+ * @return string
  */
 	public static function hashOperations($operations) {
 		self::ksortRecursive($operations);
@@ -150,7 +150,7 @@ class FileStorageUtils {
  *
  * @param array $array
  * @param integer
- * @return void
+ * @return boolean
  * @link https://gist.github.com/601849
  */
 	public static function ksortRecursive(&$array, $sortFlags = SORT_REGULAR) {

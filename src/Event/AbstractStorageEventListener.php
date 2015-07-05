@@ -1,7 +1,6 @@
 <?php
 namespace Burzum\FileStorage\Event;
 
-use Cake\Core\Configure;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
@@ -122,7 +121,7 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 			return $entity['filename'];
 		}
 		$filename = $entity['id'];
-		if ($this->_config['stripUuid'] ===  true) {
+		if ($this->_config['stripUuid'] === true) {
 			$filename = $this->stripDashes($filename);
 		}
 		if ($this->_config['preserveExtension'] === true) {
@@ -218,7 +217,7 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
  * You must define a list of supported classes via AbstractStorageEventListener::$_adapterClasses.
  *
  * @param string $configName Name of the adapter configuration.
- * @return boolean|string String, the adapter class name or false if it was not found.
+ * @return string|false String, the adapter class name or false if it was not found.
  */
 	public function getAdapterClassName($configName) {
 		$className = $this->_getAdapterClassFromConfig($configName);
@@ -270,7 +269,7 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
  * @param string $path Path / key of the storage adapter file
  * @param string $tmpFolder
  * @throws Exception
- * @return bool|string
+ * @return string
  */
 	protected function _tmpFile($Storage, $path, $tmpFolder = null) {
 		$tmpFile = $this->createTmpFile($tmpFolder);
