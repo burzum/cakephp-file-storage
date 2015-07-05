@@ -76,7 +76,6 @@ class ImageProcessingTraitTest extends FileStorageTestCase {
 /**
  * testCreateImageVersions
  *
- * @todo finish me
  * @return void
  */
 	public function testCreateImageVersions() {
@@ -89,7 +88,21 @@ class ImageProcessingTraitTest extends FileStorageTestCase {
 
 		$listener->imageProcessor();
 		$result = $listener->createImageVersions($entity);
-		//debug($result);
+		$expected = [
+			't100' => [
+				'status' => 'success',
+				'path' => '48' . DS . '75' . DS . '05' . DS . 'filestorage3' . DS . 'titus.20876bcd.jpg',
+				'hash' => '20876bcd'
+			],
+			'crop50' => [
+				'status' => 'success',
+				'path' => '48' . DS . '75' . DS . '05' . DS . 'filestorage3' . DS . 'titus.41e51a3f.jpg',
+				'hash' => '41e51a3f'
+			]
+		];
+		$this->assertEquals($result, $expected);
+		$this->assertFileExists($this->testPath . '48' . DS . '75' . DS . '05' . DS . 'filestorage3' . DS . 'titus.20876bcd.jpg');
+		$this->assertFileExists($this->testPath . '48' . DS . '75' . DS . '05' . DS . 'filestorage3' . DS . 'titus.41e51a3f.jpg');
 	}
 
 /**

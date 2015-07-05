@@ -12,19 +12,18 @@ use Cake\ORM\Entity;
 class S3PathBuilder extends BasePathBuilder {
 
 	public function __construct(array $config = []) {
-		if (empty($config['tableFolder'])) {
-			$config['tableFolder'] = true;
-		}
+		$this->_defaultConfig['https'] = false;
+		$this->_defaultConfig['modelFolder'] = true;
 		parent::__construct($config);
 	}
 
-	protected function _getBucketFromAdapter($adapter) {
+	protected function _getBucket($adapter) {
 		$config = StorageManager::config($adapter);
 		return $config['adapterOptions'][1];
 	}
 
-	protected function _buildCloudBaseUrl($protocol, $bucket, $bucketPrefix = null, $cfDist = null) {
-		$path = $protocol . '://';
+	protected function _buildCloudUrl($bucket, $bucketPrefix = null, $cfDist = null) {
+		$path = $this->config('https') === true ? 'https://' : 'http://';
 		if ($cfDist) {
 			$path .= $cfDist;
 		} else {
@@ -38,11 +37,18 @@ class S3PathBuilder extends BasePathBuilder {
 	}
 
 /**
- * @todo finish me
+ * Builds the URL under which the file is accessible.
+ *
+ * This is for example important for S3 and Dropbox but also the Local adapter
+ * if you symlink a folder to your webroot and allow direct access to a file.
+ *
+ * @param \Cake\ORM\Entity $entity
+ * @param array $options
+ * @return string
  */
 	public function url(Entity $entity, array $options = []) {
-		$bucket = $this->_getBucketFromAdapter($entity->adapter);
-		$pathPrefix = $this->_buildCloudBaseUrl('http', $bucket);
+		$bucket = $this->_getBucket($entity->adapter);
+		$pathPrefix = $this->_buildCloudUrl($bucket);
 		$path = parent::path($entity);
 		$path = str_replace('\\', '/', $path);
 		return $pathPrefix . $path;

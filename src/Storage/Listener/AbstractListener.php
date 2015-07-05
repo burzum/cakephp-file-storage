@@ -128,7 +128,11 @@ abstract class AbstractListener implements EventListenerInterface {
  * @return boolean
  */
 	protected function _checkEvent(Event $event) {
-		if (!in_array($this->storageTableClass, array('\Burzum\FileStorage\Model\Table\FileStorageTable', '\Burzum\FileStorage\Model\Table\ImageStorageTable'))) {
+		$classes = [
+			'\Burzum\FileStorage\Model\Table\FileStorageTable',
+			'\Burzum\FileStorage\Model\Table\ImageStorageTable'
+		];
+		if (!in_array($this->storageTableClass, $classes)) {
 			throw new \InvalidArgumentException(sprintf('Invalid storage table `%s`! Table must be FileStorage or ImageStorage or extend one of both!', $this->storageTableClass));
 		}
 		return (
@@ -304,6 +308,6 @@ abstract class AbstractListener implements EventListenerInterface {
 			$this->_pathBuilder = new $classname($config);
 			return $this->_pathBuilder;
 		}
-		throw new \RuntimeException(sprintf('Could not find path builder %s!', $classname));
+		throw new \RuntimeException(sprintf('Could not find path builder "%s"!', $classname));
 	}
 }

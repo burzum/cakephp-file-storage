@@ -34,11 +34,6 @@ class LocalListener extends AbstractListener {
 		'\Gaufrette\Adapter\Local'
 	);
 
-	public function initialize() {
-		parent::initialize();
-		$this->pathBuilder('Local', ['legacyPath' => true]);;
-	}
-
 /**
  * Implemented Events
  *
@@ -68,9 +63,9 @@ class LocalListener extends AbstractListener {
 			$entity = $event->data['record'];
 			$path = $this->pathBuilder()->fullPath($entity);
 			if (StorageManager::adapter($entity->adapter)->delete($path)) {
-				return true;
+				$event->result = true;
 			}
-			return false;
+			$event->result = false;
 		}
 	}
 
@@ -93,8 +88,10 @@ class LocalListener extends AbstractListener {
 					'validate' => false,
 					'callbacks' => false
 				));
+				$event->result = true;
 			} catch (Exception $e) {
 				$this->log($e->getMessage(), 'file_storage');
+				$event->result = false;
 			}
 		}
 	}

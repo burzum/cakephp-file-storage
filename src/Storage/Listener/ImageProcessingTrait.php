@@ -62,7 +62,6 @@ trait ImageProcessingTrait {
 /**
  * Creates the image versions of an entity.
  *
- * @todo finish me
  * @param \Cake\ORM\Entity $entity
  * @return array
  */
@@ -73,7 +72,6 @@ trait ImageProcessingTrait {
 		$result = [];
 		$storage = $this->getAdapter($entity->adapter);
 		foreach ($this->_imageVersions[$entity->model] as $version => $config) {
-			$output = $this->createTmpFile();
 			$hash = $this->getImageVersionHash($entity->model, $version);
 			$path = $this->pathBuilder()->fullPath($entity, ['fileSuffix' => '.' . $hash]);
 			$result[$version] = [
@@ -82,6 +80,7 @@ trait ImageProcessingTrait {
 				'hash' => $this->_imageVersionHashes[$entity->model][$version],
 			];
 			try {
+				$output = $this->createTmpFile();
 				$tmpFile = $this->_tmpFile($storage,  $this->pathBuilder()->fullPath($entity));
 				$this->imageProcessor()->open($tmpFile);
 				$this->imageProcessor()->batchProcess($output, $config, ['format' => $entity->extension]);
