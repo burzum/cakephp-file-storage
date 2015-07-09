@@ -27,7 +27,7 @@ class LocalListenerTest extends FileStorageTestCase {
 	public function setUp() {
 		parent::setUp();
 		$this->listener = $this->getMockBuilder('Burzum\FileStorage\Storage\Listener\LocalListener')
-			->setMethods(['getAdapter'])
+			->setMethods(['storageAdapter'])
 			->getMock();
 
 		$this->adapterMock = $this->getMock('\Gaufrette\Adapter\Local', [], ['']);
@@ -50,7 +50,7 @@ class LocalListenerTest extends FileStorageTestCase {
 		]);
 
 		$this->listener->expects($this->at(0))
-			->method('getAdapter')
+			->method('storageAdapter')
 			->will($this->returnValue($this->adapterMock));
 
 		$this->adapterMock->expects($this->at(0))

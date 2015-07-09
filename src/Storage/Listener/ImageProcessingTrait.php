@@ -92,7 +92,7 @@ trait ImageProcessingTrait {
 		$this->_checkImageVersions($entity->model, $versions);
 
 		$result = [];
-		$storage = $this->getAdapter($entity->adapter);
+		$storage = $this->storageAdapter($entity->adapter);
 		foreach ($this->_imageVersions[$entity->model] as $version => $config) {
 			if (!in_array($version, $versions)) {
 				continue;
@@ -145,7 +145,7 @@ trait ImageProcessingTrait {
 				'path' => $path
 			];
 			try {
-				$this->getAdapter($entity->adapter)->delete($path);
+				$this->storageAdapter($entity->adapter)->delete($path);
 			} catch (\Exception $e) {
 				$result[$version]['status'] = 'error';
 				$result[$version]['error'] = $e->getMessage();

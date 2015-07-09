@@ -6,7 +6,8 @@
  */
 namespace Burzum\FileStorage\Storage\Listener;
 
-use Burzum\FileStorage\Lib\StorageManager;
+use Burzum\FileStorage\Storage\StorageTrait;
+use Burzum\FileStorage\Storage\StorageUtils;
 use Cake\Core\Configure;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Event\Event;
@@ -14,6 +15,7 @@ use Cake\Event\EventListenerInterface;
 use Cake\Log\LogTrait;
 use Cake\ORM\Table;
 use Cake\ORM\Entity;
+use Cake\Utility\MergeVariablesTrait;
 use Cake\Utility\Text;
 use Cake\Filesystem\Folder;
 
@@ -32,21 +34,25 @@ use Cake\Filesystem\Folder;
  * - filename
  * - path
  *
- * @author Florian Krämer
- * @copyright 2012 - 2015 Florian Krämer
- * @license MIT
  */
 abstract class AbstractListener implements EventListenerInterface {
 
 	use InstanceConfigTrait;
 	use LogTrait;
+	use MergeVariablesTrait;
+	use StorageTrait;
 
 /**
  * The adapter class
  *
  * @param null|string
  */
-	public $adapterClass = null;
+	protected $_adapterClass = null;
+
+/**
+ *
+ */
+	public $pathBuilderClass = null;
 
 /**
  * The class used to generate path and file names.
@@ -77,22 +83,19 @@ abstract class AbstractListener implements EventListenerInterface {
  *
  * @var array
  */
-	protected $_adapterClasses = array();
+	protected $_adapterClasses = [];
 
 /**
  * Default settings
  *
  * @var array
  */
-	protected $_defaultConfig = array(
-		'models' => false,
-		'stripUuid' => true,
-		'preserveFilename' => false,
-		'preserveExtension' => true,
-		'uuidFolder' => true,
-		'randomPath' => true,
-		'tableFolder' => false
-	);
+	protected $_defaultConfig = [
+		'pathBuilder' => '',
+		'pathBuilderOptions' => [],
+		'models' => [],
+		'fileHash' => 'sha1'
+	];
 
 /**
  * Constructor
@@ -177,7 +180,7 @@ abstract class AbstractListener implements EventListenerInterface {
  * @return boolean|string False if the config is not present
  */
 	protected function _getAdapterClassFromConfig($configName) {
-		$config = $this->getAdapterconfig($configName);
+		$config = $this->storageConfig($configName);
 		if (!empty($config['adapterClass'])) {
 			return $config['adapterClass'];
 		}
@@ -197,34 +200,10 @@ abstract class AbstractListener implements EventListenerInterface {
 		$className = $this->_getAdapterClassFromConfig($configName);
 		if (in_array($className, $this->_adapterClasses)) {
 			$position = strripos($className, '\\');
-			$this->adapterClass = substr($className, $position + 1, strlen($className));
-			return $this->adapterClass;
+			$this->_adapterClass = substr($className, $position + 1, strlen($className));
+			return $this->_adapterClass;
 		}
 		return false;
-	}
-
-/**
- * Wrapper around the singleton call to StorageManager::config
- *
- * Makes it easy to mock the adapter in tests.
- *
- * @param string $configName
- * @return array
- */
-	public function getAdapterconfig($configName) {
-		return StorageManager::config($configName);
-	}
-
-/**
- * Wrapper around the singleton call to StorageManager::config
- *
- * Makes it easy to mock the adapter in tests.
- *
- * @param string $configName
- * @return Object
- */
-	public function getAdapter($configName) {
-		return StorageManager::adapter($configName);
 	}
 
 /**
@@ -254,6 +233,23 @@ abstract class AbstractListener implements EventListenerInterface {
 			$this->log($e->getMessage(), 'file_storage');
 			throw $e;
 		}
+	}
+
+/**
+ * Gets the hash of a file.
+ *
+ * You can use this to compare if you got two times the same file uploaded.
+ *
+ * @param string $file Path to the file on your local machine.
+ * @param string $method 'md5' or 'sha1'
+ * @throws \InvalidArgumentException
+ * @link http://php.net/manual/en/function.md5-file.php
+ * @link http://php.net/manual/en/function.sha1-file.php
+ * @link http://php.net/manual/en/function.sha1-file.php#104748
+ * @return string
+ */
+	public function getFileHash($file, $method = 'sha1') {
+		return StorageUtils::getFileHash($file, $method);
 	}
 
 /**

@@ -70,7 +70,7 @@ class LocalListener extends AbstractListener {
 		if ($this->_checkEvent($event)) {
 			$entity = $event->data['record'];
 			$path = $this->pathBuilder()->fullPath($entity);
-			if ($this->getAdapter($entity->adapter)->delete($path)) {
+			if ($this->storageAdapter($entity->adapter)->delete($path)) {
 				$event->result = true;
 			}
 			$event->result = false;
@@ -87,10 +87,15 @@ class LocalListener extends AbstractListener {
 		if ($this->_checkEvent($event) && $event->data['record']->isNew()) {
 			$table = $event->subject();
 			$entity = $event->data['record'];
-			$Storage = $this->getAdapter($entity['adapter']);
+			$Storage = $this->storageAdapter($entity['adapter']);
+
+			if ($this->config('fileHash') !== false) {
+				$entity->hash = $this->getFileHash($entity['file']['tmp_name'], $this->config('fileHash'));
+			}
+			$filename = $this->pathBuilder()->filename($entity);
+			$entity['path'] = $this->pathBuilder()->path($entity);
+
 			try {
-				$filename = $this->pathBuilder()->filename($entity);
-				$entity['path'] = $this->pathBuilder()->path($entity);
 				$Storage->write($entity['path'] . $filename, file_get_contents($entity['file']['tmp_name']), true);
 				$table->save($entity, array(
 					'validate' => false,

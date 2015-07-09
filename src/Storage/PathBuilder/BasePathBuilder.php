@@ -14,7 +14,7 @@ use Burzum\FileStorage\Lib\FileStorageUtils;
  * A path builder is an utility class that generates a path and filename for a
  * file storage entity.
  */
-class BasePathBuilder {
+class BasePathBuilder implements PathBuilderInterface {
 
 	use InstanceConfigTrait;
 

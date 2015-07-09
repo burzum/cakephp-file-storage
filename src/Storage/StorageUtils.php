@@ -1,21 +1,17 @@
 <?php
-/**
- * @author Florian Krämer
- * @copyright 2012 - 2015 Florian Krämer
- * @license MIT
- */
-namespace Burzum\FileStorage\Lib;
+namespace Burzum\FileStorage\Storage;
 
-use Burzum\FileStorage\Storage\StorageUtils;
 use Cake\Core\Configure;
 use Cake\Filesystem\File;
 
 /**
  * Utility methods for which I could not find a better place
  *
- * @deprecated Use \Burzum\FileStorage\Storage\StorageUtil instead.
+ * @author Florian Krämer
+ * @copyright 2012 - 2015 Florian Krämer
+ * @license MIT
  */
-class FileStorageUtils {
+class StorageUtils {
 
 /**
  * Return file extension from a given filename
@@ -26,7 +22,13 @@ class FileStorageUtils {
  * @return false|string string or false
  */
 	public static function fileExtension($name, $realFile = false) {
-		return StorageUtils::fileExtension($name, $realFile);
+		if ($realFile) {
+			$result = pathinfo($name, PATHINFO_EXTENSION);
+			if (empty($result)) {
+				return false;
+			}
+		}
+		return substr(strrchr($name, '.'), 1);
 	}
 
 /**
@@ -43,7 +45,17 @@ class FileStorageUtils {
  * @return null|string
  */
 	public static function randomPath($string, $level = 3) {
-		return StorageUtils::randomPath($string, $level);
+		if (!$string) {
+			throw new \InvalidArgumentException('First argument is not a string!');
+		}
+		$string = crc32($string);
+		$decrement = 0;
+		$path = null;
+		for ($i = 0; $i < $level; $i++) {
+			$decrement = $decrement - 2;
+			$path .= sprintf("%02d" . DS, substr(str_pad('', 2 * $level, '0') . $string, $decrement, 2));
+		}
+		return $path;
 	}
 
 /**
@@ -53,7 +65,11 @@ class FileStorageUtils {
  * @return string Trimmed path
  */
 	public static function trimPath($path) {
-		return StorageUtils::trimPath($path);
+		$len = strlen($path);
+		if ($path[$len - 1] == '\\' || $path[$len - 1] == '/') {
+			$path = substr($path, 0, $len - 1);
+		}
+		return $path;
 	}
 
 /**
@@ -63,7 +79,11 @@ class FileStorageUtils {
  * @return string
  */
 	public static function normalizePath($string) {
-		return StorageUtils::normalizePath($string);
+		if (DS == '\\') {
+			return str_replace('/', '\\', $string);
+		} else {
+			return str_replace('\\', '/', $string);
+		}
 	}
 
 /**
@@ -74,7 +94,20 @@ class FileStorageUtils {
  * @return array Empty array if $_FILE is empty, if not normalize array of Filedata.{n}
  */
 	public static function normalizeGlobalFilesArray($array = null) {
-		return StorageUtils::normalizeGlobalFilesArray($array);
+		if (empty($array)) {
+			$array = $_FILES;
+		}
+		$newfiles = array();
+		if (!empty($array)) {
+			foreach ($array as $fieldname => $fieldvalue) {
+				foreach ($fieldvalue as $paramname => $paramvalue) {
+					foreach ((array)$paramvalue as $index => $value) {
+						$newfiles[$fieldname][$index][$paramname] = $value;
+					}
+				}
+			}
+		}
+		return $newfiles;
 	}
 
 /**
@@ -84,7 +117,8 @@ class FileStorageUtils {
  * @return string
  */
 	public static function hashOperations($operations) {
-		return StorageUtils::hashOperations($operations);
+		self::ksortRecursive($operations);
+		return substr(md5(serialize($operations)), 0, 8);
 	}
 
 /**
@@ -94,7 +128,21 @@ class FileStorageUtils {
  * @return array
  */
 	public static function generateHashes($configPath = 'FileStorage') {
-		return StorageUtils::generateHashes($configPath);
+		if (is_array($configPath)) {
+			$imageSizes = $configPath;
+		} else {
+			$imageSizes = Configure::read($configPath . '.imageSizes');
+		}
+		if (is_null($imageSizes)) {
+			throw new \RuntimeException(sprintf('Image processing configuration in %s is missing!', $configPath . '.imageSizes'));
+		}
+		self::ksortRecursive($imageSizes);
+		foreach ($imageSizes as $model => $version) {
+			foreach ($version as $name => $operations) {
+				Configure::write($configPath . '.imageHashes.' . $model . '.' . $name, self::hashOperations($operations));
+			}
+		}
+		return Configure::read($configPath . '.imageHashes');
 	}
 
 /**
@@ -105,8 +153,15 @@ class FileStorageUtils {
  * @return boolean
  * @link https://gist.github.com/601849
  */
-	public static function ksortRecursive(&$array, $sortFlags) {
-		return StorageUtils::getFileHash($array, $sortFlags);
+	public static function ksortRecursive(&$array, $sortFlags = SORT_REGULAR) {
+		if (!is_array($array)) {
+			return false;
+		}
+		ksort($array, $sortFlags);
+		foreach ($array as &$arr) {
+			self::ksortRecursive($arr, $sortFlags);
+		}
+		return true;
 	}
 
 /**
@@ -117,7 +172,17 @@ class FileStorageUtils {
  * @return array Array that matches the structure of a regular upload
  */
 	public static function uploadArray($file, $filename = null) {
-		return StorageUtils::uploadArray($file, $filename);
+		$File = new File($file);
+		if (empty($fileName)) {
+			$filename = basename($file);
+		}
+		return [
+			'name' => $filename,
+			'tmp_name' => $file,
+			'error' => 0,
+			'type' => $File->mime(),
+			'size' => $File->size()
+		];
 	}
 
 /**
@@ -134,6 +199,12 @@ class FileStorageUtils {
  * @return string
  */
 	public static function getFileHash($file, $method = 'sha1') {
-		return StorageUtils::getFileHash($file, $method);
+		if ($method === 'md5') {
+			return md5_file($file);
+		}
+		if ($method === 'sha1') {
+			return sha1_file($file);
+		}
+		throw new \InvalidArgumentException(sprintf('Invalid hash method "%s" provided!'));
 	}
 }
