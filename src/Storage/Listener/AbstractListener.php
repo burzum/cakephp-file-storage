@@ -8,13 +8,11 @@ namespace Burzum\FileStorage\Storage\Listener;
 
 use Burzum\FileStorage\Storage\StorageTrait;
 use Burzum\FileStorage\Storage\StorageUtils;
-use Cake\Core\Configure;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\Log\LogTrait;
 use Cake\ORM\Table;
-use Cake\ORM\Entity;
 use Cake\Utility\MergeVariablesTrait;
 use Cake\Utility\Text;
 use Cake\Filesystem\Folder;
@@ -194,7 +192,7 @@ abstract class AbstractListener implements EventListenerInterface {
  * You must define a list of supported classes via AbstractStorageEventListener::$_adapterClasses.
  *
  * @param string $configName Name of the adapter configuration.
- * @return boolean|string String, the adapter class name or false if it was not found.
+ * @return string|false String, the adapter class name or false if it was not found.
  */
 	public function getAdapterClassName($configName) {
 		$className = $this->_getAdapterClassFromConfig($configName);
@@ -222,7 +220,7 @@ abstract class AbstractListener implements EventListenerInterface {
  * @param string $path Path / key of the storage adapter file
  * @param string $tmpFolder
  * @throws Exception
- * @return bool|string
+ * @return string
  */
 	protected function _tmpFile($Storage, $path, $tmpFolder = null) {
 		try {

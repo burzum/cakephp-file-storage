@@ -154,7 +154,6 @@ class ImageVersionShell extends Shell {
 /**
  * Generate all image versions.
  *
- * @param string $model
  */
 	public function regenerate() {
 		$operations = Configure::read('FileStorage.imageSizes.' . $this->args[0]);
@@ -221,7 +220,7 @@ class ImageVersionShell extends Shell {
 /**
  * Loops through image records and performs requested operation on them.
  *
- * @param $action
+ * @param string $action
  * @param $model
  * @param array $operations
  */

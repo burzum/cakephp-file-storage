@@ -7,7 +7,6 @@
 namespace Burzum\FileStorage\Lib;
 
 use Burzum\FileStorage\Storage\StorageUtils;
-use Cake\Core\Configure;
 use Cake\Filesystem\File;
 
 /**
@@ -102,7 +101,7 @@ class FileStorageUtils {
  *
  * @param array $array
  * @param integer
- * @return boolean
+ * @return string
  * @link https://gist.github.com/601849
  */
 	public static function ksortRecursive(&$array, $sortFlags) {

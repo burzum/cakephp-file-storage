@@ -3,7 +3,6 @@ namespace Burzum\FileStorage\Model\Table;
 
 use Cake\Core\Configure;
 use Cake\Event\Event;
-use Cake\Utility\Folder;
 use Cake\Validation\Validation;
 
 /**
@@ -48,7 +47,7 @@ class ImageStorageTable extends FileStorageTable {
  * @param array $options
  * @return boolean true on success
  */
-	public function beforeSave(\Cake\Event\Event $event,  \Cake\ORM\Entity $entity, $options) {
+	public function beforeSave(\Cake\Event\Event $event, \Cake\ORM\Entity $entity, $options) {
 		if (!parent::beforeSave($event, $entity, $options)) {
 			return false;
 		}
@@ -72,7 +71,7 @@ class ImageStorageTable extends FileStorageTable {
  * @param array $options
  * @return boolean
  */
-	public function afterSave(\Cake\Event\Event $event,  \Cake\ORM\Entity $entity, $options) {
+	public function afterSave(\Cake\Event\Event $event, \Cake\ORM\Entity $entity, $options) {
 		if ($entity->isNew()) {
 			$imageEvent = new Event('ImageStorage.afterSave', $this, [
 				'storage' => $this->getStorageAdapter($entity['adapter']),
