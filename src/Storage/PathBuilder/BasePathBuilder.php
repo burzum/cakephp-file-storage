@@ -169,7 +169,7 @@ class BasePathBuilder implements PathBuilderInterface {
 	}
 
 /**
- * Proxy to FileStorageUtils::randomPath.
+ * Creates a semi-random path based on a string.
  *
  * Makes it possible to overload this functionality.
  *
@@ -179,7 +179,7 @@ class BasePathBuilder implements PathBuilderInterface {
  * @return string
  */
 	public function randomPath($string, $level = 3, $method = 'sha1') {
-		// Keeping this for backward compatibility
+		// Keeping this for backward compatibility but please stop using crc32()!
 		if ($method === 'crc32') {
 			return StorageUtils::randomPath($string);
 		}

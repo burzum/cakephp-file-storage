@@ -20,6 +20,8 @@ class FileStorageUtilsTest extends FileStorageTestCase {
  * @return void
  */
 	public function testRandomPath() {
+		$this->skipIf(PHP_INT_SIZE === 8);
+
 		$result = FileStorageUtils::randomPath('someteststring');
 		$this->assertEquals($result, '38' . DS . '88' . DS . '98' . DS);
 

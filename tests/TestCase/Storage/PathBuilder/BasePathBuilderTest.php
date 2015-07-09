@@ -79,10 +79,10 @@ class BasePathBuilderTest extends TestCase {
 	public function testRandomPath() {
 		$builder = new BasePathBuilder();
 		$result = $builder->randomPath('test', 5, 'sha1');
-		$this->assertEquals($result, '4a\8f\e5\cc\b1\\');
+		$this->assertEquals($result, '4a' . DS . '8f' . DS . 'e5' . DS . 'cc ' . DS . 'b1' . DS);
 
 		$result = $builder->randomPath('test', 3, 'sha1');
-		$this->assertEquals($result, '4a\8f\e5\\');
+		$this->assertEquals($result, '4a' . DS . '8f' . DS . 'e5' . DS);
 	}
 
 /**
