@@ -1,14 +1,13 @@
 <?php
 namespace Burzum\FileStorage\Test\TestCase\Storage\Listener;
 
-use Burzum\FileStorage\Storage\Listener\LocalListener;
-use Burzum\FileStorage\TestSuite\FileStorageTestCase;
 use Cake\Event\Event;
+use Cake\Core\Plugin;
 use Cake\Core\InstanceConfigTrait;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
-class LocalListenerTest extends FileStorageTestCase {
+class LocalListenerTest extends TestCase {
 
 /**
  * Fixtures
@@ -26,8 +25,11 @@ class LocalListenerTest extends FileStorageTestCase {
  */
 	public function setUp() {
 		parent::setUp();
+		$this->fileFixtures = Plugin::path('Burzum/FileStorage') . 'tests' . DS . 'Fixture' . DS . 'File' . DS;
+
 		$this->listener = $this->getMockBuilder('Burzum\FileStorage\Storage\Listener\LocalListener')
 			->setMethods(['storageAdapter'])
+			->setConstructorArgs([['models' => ['Item']]])
 			->getMock();
 
 		$this->adapterMock = $this->getMock('\Gaufrette\Adapter\Local', [], ['']);
@@ -38,7 +40,6 @@ class LocalListenerTest extends FileStorageTestCase {
 /**
  * testAfterSave
  *
- * @todo finish me
  * @return void
  */
 	public function testAfterSave() {

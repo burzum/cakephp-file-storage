@@ -31,6 +31,8 @@ class FileStorageTestCase extends TestCase {
 		'plugin.Burzum\FileStorage.FileStorage'
 	);
 
+	public $listeners = [];
+
 /**
  * Setup test folders and files
  *
@@ -38,12 +40,7 @@ class FileStorageTestCase extends TestCase {
  */
 	public function setUp() {
 		parent::setUp();
-
-		$listener = new ImageProcessingListener();
-		EventManager::instance()->on($listener);
-
-		$listener = new LocalFileStorageListener();
-		EventManager::instance()->on($listener);
+		$this->_setupListeners();
 
 		$this->testPath = TMP . 'file-storage-test' . DS;
 		$this->fileFixtures = Plugin::path('Burzum/FileStorage') . 'tests' . DS . 'Fixture' . DS . 'File' . DS;
@@ -89,6 +86,13 @@ class FileStorageTestCase extends TestCase {
 		$this->ImageStorage = TableRegistry::get('Burzum/FileStorage.ImageStorage');
 	}
 
+	protected function _setupListeners() {
+		$this->listeners['ImageProcessingListener'] = new ImageProcessingListener();
+		$this->listeners['LocalFileStorageListener'] = new LocalFileStorageListener();
+		EventManager::instance()->on($this->listeners['ImageProcessingListener']);
+		EventManager::instance()->on($this->listeners['LocalFileStorageListener']);
+	}
+
 /**
  * Cleanup test files
  *
@@ -96,8 +100,17 @@ class FileStorageTestCase extends TestCase {
  */
 	public function tearDown() {
 		parent::tearDown();
+
+		$this->_removeListeners();
+
 		TableRegistry::clear();
 		$Folder = new Folder(TMP . 'file-storage-test');
 		$Folder->delete();
+	}
+
+	protected function _removeListeners() {
+		foreach ($this->listeners as $listener) {
+			EventManager::instance()->off($listener);
+		}
 	}
 }
