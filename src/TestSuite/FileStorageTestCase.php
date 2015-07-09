@@ -104,7 +104,7 @@ class FileStorageTestCase extends TestCase {
 		$this->_removeListeners();
 
 		TableRegistry::clear();
-		$Folder = new Folder(TMP . 'file-storage-test');
+		$Folder = new Folder($this->testPath);
 		$Folder->delete();
 	}
 

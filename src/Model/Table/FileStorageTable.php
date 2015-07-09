@@ -209,5 +209,4 @@ class FileStorageTable extends Table {
 	public function getEventManager() {
 		return EventManager::instance();
 	}
-
 }

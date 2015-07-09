@@ -33,6 +33,7 @@ class FileStorage extends Entity {
 		'created' => true,
 		'modified' => true,
 		'file' => true,
+		'old_file_id' => true
 	];
 
 }
