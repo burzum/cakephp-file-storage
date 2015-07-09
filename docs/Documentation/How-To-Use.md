@@ -26,7 +26,7 @@ public function initialize(array $config)
 }
 ```
 
-In your add.ctp or edit.ctp views you would add something like:
+In your `add.ctp` or `edit.ctp` views you would add something like:
 
 ```php
 echo $this->Form->input('Report.title');
@@ -78,7 +78,7 @@ When you create a new listener it is important that you check the model field an
 List of events
 --------------
 
-Events triggered in the ImageStorage model:
+Events triggered in the `ImageStorage` model:
 
  * ImageVersion.createVersion
  * ImageVersion.removeVersion
@@ -87,7 +87,7 @@ Events triggered in the ImageStorage model:
  * ImageStorage.beforeDelete
  * ImageStorage.afterDelete
 
-Events triggered in the FileStorage model:
+Events triggered in the `FileStorage` model:
 
  * FileStorage.beforeSave
  * FileStorage.afterSave
@@ -108,7 +108,3 @@ The ``$key`` is also a key aspect of it: Different adapters might expect a diffe
 It is up to you how you want to generate the key and build your path. You can customize the way paths and file names are build by writing a custom event listener for that.
 
 It is highly recommended to read the Gaufrette documentation for the read() and write() methods of the adapters.
-
-
-
-

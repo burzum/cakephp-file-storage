@@ -1,10 +1,14 @@
-# Specific Addapter Configuration
+Specific Addapter Configuration
+===============================
 
 Gaufrette does not come with a lot detail about what exactly some adapters expect so here is a list to help you with that.
 
 But you should not blindly copy and paste that code, get an understanding of the storage service you want to use before!
 
-## Local Filesystem
+Keep in mind that the instructions here might be outdated as external APIs and SDKs can and probably will change at some time! If this happens please create an issue ticket on Github and include the way to configure the adapter.
+
+Local Filesystem
+----------------
 
 By default the StorageManager already comes with a pre-configured adapter instance for the local file system adapter.
 
@@ -36,7 +40,8 @@ Symlink Windows Example:
 mklink /D "C:\webstack\htdocs\my-app\webroot\img\uploads" "C:\webstack\htdocs\my-app\file_storage"
 ```
 
-## AmazonS3 - AwsS3 Adapter
+AmazonS3 - AwsS3 Adapter
+------------------------
 
 Get the SDK from here https://github.com/aws/aws-sdk-php or get it via composer ```aws/aws-sdk-php```. If you're not using composer you'll have to add it to your own autoloader or load it manually.
 
@@ -60,7 +65,8 @@ StorageManager::config('S3Image', array(
 );
 ```
 
-## AmazonS3 - AmazonS3 Adapter (legacy)
+AmazonS3 - AmazonS3 Adapter (legacy)
+------------------------------------
 
 *This adapter is legacy code, you should use the AwsS3 adapter instead!*
 
@@ -89,7 +95,8 @@ StorageManager::config('S3', array(
 );
 ```
 
-## OpenCloud (Rackspace)
+OpenCloud (Rackspace)
+---------------------
 
 Get the SDK from here http://github.com/rackspace/php-opencloud and add it to your class autoloader
 

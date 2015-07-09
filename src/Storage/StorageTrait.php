@@ -6,6 +6,9 @@
  */
 namespace Burzum\FileStorage\Storage;
 
+/**
+ * Use the StorageTrait for convenient access to the storage adapters in any class.
+ */
 trait StorageTrait {
 
 /**

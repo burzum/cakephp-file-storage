@@ -11,7 +11,13 @@ Storage adapters are an unified interface that allow you to store file data to y
 
 **If you're upgrading from CakePHP 2.x please read [the migration guide](docs/Documentation/Migrating-from-CakePHP-2.md).**
 
-**List of supported Adapters**
+[Please donate if you like it!](https://pledgie.com/campaigns/29682)
+------------------------------
+
+Already thought of how many hours development time saved you already? It would be *awesome* if you don't mind sharing some of your success by donating a small amount!
+
+List of supported Adapters
+--------------------------
 
  * Apc
  * Amazon S3

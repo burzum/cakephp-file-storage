@@ -17,3 +17,24 @@ Each of them will take a `FileStorage` entity as first argument. Based on that e
 The reason for this is to separate or share, just as needed, the path building logic between different storage systems. For example S3 differs in it's first part of the path, it's using a bucket while locally you usually have something like a base path instead of the bucket. 
 
 If you want to change the way your files are saved extend the `BasePathBuilder` class.
+
+BasePathBuilder
+---------------
+
+This is the path builder all other BP's should inherit from. But if you like to write your very own BP you're free to implement it from the ground up but you'll have to use the PathBuilderInterface.
+
+The BasePathBuilder comes with a set of configuration options:
+
+```php
+[
+	'stripUuid' => true,
+	'pathPrefix' => '',
+	'pathSuffix' => '',
+	'filePrefix' => '',
+	'fileSuffix' => '',
+	'preserveFilename' => false,
+	'preserveExtension' => true,
+	'uuidFolder' => true,
+	'randomPath' => 'sha1'
+]
+```
