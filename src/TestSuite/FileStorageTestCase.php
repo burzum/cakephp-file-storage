@@ -9,7 +9,7 @@ use Cake\Filesystem\File;
 use Cake\Core\Plugin;
 use Cake\Event\EventManager;
 use Burzum\FileStorage\Lib\StorageManager;
-use Burzum\FileStorage\Lib\FileStorageUtils;
+use Burzum\FileStorage\Storage\StorageUtils;
 use Burzum\FileStorage\Event\ImageProcessingListener;
 use Burzum\FileStorage\Event\LocalFileStorageListener;
 
@@ -74,7 +74,7 @@ class FileStorageTestCase extends TestCase {
 			]
 		));
 
-		FileStorageUtils::generateHashes();
+		StorageUtils::generateHashes();
 
 		StorageManager::config('Local', array(
 			'adapterOptions' => [$this->testPath, true],

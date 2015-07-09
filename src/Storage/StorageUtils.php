@@ -205,6 +205,6 @@ class StorageUtils {
 		if ($method === 'sha1') {
 			return sha1_file($file);
 		}
-		throw new \InvalidArgumentException(sprintf('Invalid hash method "%s" provided!'));
+		throw new \InvalidArgumentException(sprintf('Invalid hash method "%s" provided!', $method));
 	}
 }

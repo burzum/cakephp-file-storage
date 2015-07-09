@@ -21,24 +21,27 @@ use Cake\Filesystem\Folder;
  * AbstractListener
  *
  * Filters events and entities to decide if they should be processed or not by
- * a specific adapter.
+ * a specific storage adapter.
  *
  * - Filter by table base class name
  * - Filter by the entities model field
  * - Filter by adapter class
  *
- * Provides basic functionality to build
+ * These abstracted features are provided by the class as well:
  *
- * - filename
- * - path
+ * - Provides access to the path builders to build file names and paths.
+ * - Provides access to the storage adapters.
  *
+ * All of this in combination allows you to build event listeners to handle the
+ * storage of files in any place and storage backend very well and in a clean
+ * abstracted way.
  */
 abstract class AbstractListener implements EventListenerInterface {
 
 	use InstanceConfigTrait;
 	use LogTrait;
-	use MergeVariablesTrait;
 	use StorageTrait;
+	use MergeVariablesTrait;
 
 /**
  * The adapter class
@@ -46,11 +49,6 @@ abstract class AbstractListener implements EventListenerInterface {
  * @param null|string
  */
 	protected $_adapterClass = null;
-
-/**
- *
- */
-	public $pathBuilderClass = null;
 
 /**
  * The class used to generate path and file names.
@@ -91,8 +89,9 @@ abstract class AbstractListener implements EventListenerInterface {
 	protected $_defaultConfig = [
 		'pathBuilder' => '',
 		'pathBuilderOptions' => [],
-		'models' => [],
-		'fileHash' => 'sha1'
+		'fileHash' => 'sha1',
+		'fileField' => 'file',
+		'models' => false,
 	];
 
 /**
@@ -102,8 +101,21 @@ abstract class AbstractListener implements EventListenerInterface {
  * @return AbstractListener
  */
 	public function __construct(array $config = []) {
+		$this->_mergeListenerVars();
 		$this->config($config);
-		$this->initialize();
+		$this->initialize($config);
+	}
+
+/**
+ * Merges properties.
+ *
+ * @return void
+ */
+	protected function _mergeListenerVars() {
+		$this->_mergeVars(
+			['_defaultConfig'],
+			['associative' => ['_defaultConfig']]
+		);
 	}
 
 /**
@@ -113,7 +125,7 @@ abstract class AbstractListener implements EventListenerInterface {
  *
  * @return void
  */
-	public function initialize() {}
+	public function initialize($config) {}
 
 /**
  * Implemented Events
@@ -280,15 +292,18 @@ abstract class AbstractListener implements EventListenerInterface {
  * @return \Burzum\FileStorage\Storage\PathBuilder\BasePathBuilder
  */
 	public function pathBuilder($class = null, array $config = []) {
-		if (!empty($this->_pathBuilder)) {
+		if (!empty($this->_pathBuilder) && empty($class)) {
 			return $this->_pathBuilder;
 		}
-		if (empty($class)) {
-			if (empty($this->_pathBuilder)) {
+
+		if (empty($this->_pathBuilder) && empty($class)) {
+			$class = $this->_config['pathBuilder'];
+			$config = $this->_config['pathBuilderOptions'];
+			if (empty($class)) {
 				throw new \RuntimeException(sprintf('No path builder loaded!'));
 			}
-			return $this->_pathBuilder;
 		}
+
 		$classname = '\Burzum\FileStorage\Storage\PathBuilder\\' . $class . 'Builder';
 		if (class_exists($classname)) {
 			$this->_pathBuilder = new $classname($config);
@@ -304,6 +319,7 @@ abstract class AbstractListener implements EventListenerInterface {
 			$this->_pathBuilder = new $classname($config);
 			return $this->_pathBuilder;
 		}
+
 		throw new \RuntimeException(sprintf('Could not find path builder "%s"!', $classname));
 	}
 }

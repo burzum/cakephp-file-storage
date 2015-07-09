@@ -190,10 +190,10 @@ class FileStorageTable extends Table {
 		if (!empty($entity[$oldIdField]) && $entity['model']) {
 			$oldEntity = $this->find()
 				->contain([])
-				->where(
-					[$this->alias() . '.' . $this->primaryKey() => $entity[$oldIdField], 'model' => $entity['model']])
+				->where([
+					$this->alias() . '.' . $this->primaryKey() => $entity[$oldIdField], 'model' => $entity['model']
+				])
 				->first();
-			
 			if (!empty($oldEntity)) {
 				return $this->delete($oldEntity);
 			}

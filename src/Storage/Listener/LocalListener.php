@@ -20,6 +20,15 @@ use Cake\Filesystem\Folder;
 class LocalListener extends AbstractListener {
 
 /**
+ * Default settings
+ *
+ * @var array
+ */
+	protected $_defaultConfig = [
+		'pathBuilder' => 'LocalPath',
+	];
+
+/**
  * List of adapter classes the event listener can work with.
  *
  * It is used in FileStorageEventListenerBase::getAdapterClassName to get the
@@ -32,15 +41,6 @@ class LocalListener extends AbstractListener {
 	public $_adapterClasses = [
 		'\Gaufrette\Adapter\Local'
 	];
-
-/**
- * Initialize callback
- *
- * @return void
- */
-	public function Initialize() {
-		$this->pathBuilder('LocalPath');
-	}
 
 /**
  * Implemented Events
@@ -88,15 +88,23 @@ class LocalListener extends AbstractListener {
 			$table = $event->subject();
 			$entity = $event->data['record'];
 
-			if ($this->config('fileHash') !== false) {
-				$entity->hash = $this->getFileHash($entity['file']['tmp_name'], $this->config('fileHash'));
+			if (!empty($event->data['fileField'])) {
+				$this->config('fileField', $event->data['fileField']);
 			}
+
+			if ($this->config('fileHash') !== false) {
+				$entity->hash = $this->getFileHash(
+					$entity[$this->config('fileField')]['tmp_name'],
+					$this->config('fileHash')
+				);
+			}
+
 			$filename = $this->pathBuilder()->filename($entity);
 			$entity['path'] = $this->pathBuilder()->path($entity);
 
 			try {
 				$Storage = $this->storageAdapter($entity['adapter']);
-				$Storage->write($entity['path'] . $filename, file_get_contents($entity['file']['tmp_name']), true);
+				$Storage->write($entity['path'] . $filename, file_get_contents($entity[$this->config('fileField')]['tmp_name']), true);
 				$table->save($entity, array(
 					'validate' => false,
 					'callbacks' => false
