@@ -32,7 +32,7 @@ class BasePathBuilder implements PathBuilderInterface {
 		'preserveFilename' => false,
 		'preserveExtension' => true,
 		'uuidFolder' => true,
-		'randomPath' => true,
+		'randomPath' => 'sha1',
 		'modelFolder' => false
 	);
 
@@ -73,6 +73,9 @@ class BasePathBuilder implements PathBuilderInterface {
 		}
 		if ($this->_config['randomPath'] === true) {
 			$path .= $this->randomPath($entity->id);
+		}
+		if (is_string($this->_config['randomPath'])) {
+			$path .= $this->randomPath($entity->id, 3, $this->_config['randomPath']);
 		}
 		// uuidFolder for backward compatibility
 		if ($this->_config['uuidFolder'] === true || $this->_config['idFolder'] === true) {
@@ -115,29 +118,58 @@ class BasePathBuilder implements PathBuilderInterface {
 	public function filename(Entity $entity, array $options = []) {
 		$config = array_merge($this->config(), $options);
 		if ($config['preserveFilename'] === true) {
-			$filename = $entity['filename'];
-			if (!empty($config['filePrefix'])) {
-				$filename = $config['filePrefix'] . $entity['filename'];
-			}
-			if (!empty($config['fileSuffix'])) {
-				$split = $this->splitFilename($filename, true);
-				$filename = $split['filename'] . $config['fileSuffix'] . $split['extension'];
-			}
-			return $filename;
+			return $this->_preserveFilename($entity, $config);
 		}
+		return $this->_buildFilename($entity, $config);
+	}
 
+/**
+ * Used to build a completely customized filename.
+ *
+ * The default behavior is to use the UUID from the entities primary key to
+ * generate a filename based of the UUID that gets the dashes stripped and the
+ * extension added if you configured the path builder to preserve it.
+ *
+ * The filePrefix and fileSuffix options are also supported.
+ *
+ * @param \Cake\ORM\Entity $entity
+ * @param array $options
+ * @return string
+ */
+	protected function _buildFilename(Entity $entity, array $options = []) {
 		$filename = $entity->id;
-		if ($config['stripUuid'] ===  true) {
+		if ($options['stripUuid'] ===  true) {
 			$filename = $this->stripDashes($filename);
 		}
-		if ($config['preserveExtension'] === true) {
+		if ($options['preserveExtension'] === true) {
 			if (!empty($config['fileSuffix'])) {
-				$filename = $filename . $config['fileSuffix'];
+				$filename = $filename . $options['fileSuffix'];
 			}
 			$filename = $filename . '.' . $entity['extension'];
 		}
-		if (!empty($config['filePrefix'])) {
-			$filename = $config['filePrefix'] . $filename;
+		if (!empty($options['filePrefix'])) {
+			$filename = $options['filePrefix'] . $filename;
+		}
+		return $filename;
+	}
+
+/**
+ * Keeps the original filename but is able to inject pre- and suffix.
+ *
+ * This can be useful to create versions of files for example.
+ *
+ * @param \Cake\ORM\Entity $entity
+ * @param array $options
+ * @return string
+ */
+	protected function _preserveFilename(Entity $entity, array $options = []) {
+		$filename = $entity['filename'];
+		if (!empty($options['filePrefix'])) {
+			$filename = $options['filePrefix'] . $entity['filename'];
+		}
+		if (!empty($options['fileSuffix'])) {
+			$split = $this->splitFilename($filename, true);
+			$filename = $split['filename'] . $options['fileSuffix'] . $split['extension'];
 		}
 		return $filename;
 	}
