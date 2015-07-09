@@ -8,7 +8,7 @@ tools:
     php_code_coverage: false
     php_loc:
         enabled: true
-        excluded_dirs: [vendor, tests, config, docs]
+        excluded_dirs: [vendor, tests, config, docs, 'src/Lib', 'src/Event']
     php_cpd:
         enabled: true
-        excluded_dirs: [vendor, tests, config, docs]
+        excluded_dirs: [vendor, tests, config, docs, 'src/Lib', 'src/Event']
