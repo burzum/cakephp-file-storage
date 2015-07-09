@@ -1,4 +1,9 @@
 <?php
+/**
+ * @author Florian Krämer
+ * @copyright 2012 - 2015 Florian Krämer
+ * @license MIT
+ */
 namespace Burzum\FileStorage\Test\TestCase\Storage\PathBuilder;
 
 use Burzum\FileStorage\TestSuite\FileStorageTestCase;
@@ -94,30 +99,30 @@ class ImageProcessingTraitTest extends FileStorageTestCase {
 		$expected = [
 			't100' => [
 				'status' => 'success',
-				'path' => '48' . DS . '75' . DS . '05' . DS . 'filestorage3' . DS . 'titus.20876bcd.jpg',
+				'path' => '95' . DS . '61' . DS . '80' . DS . 'filestorage3' . DS . 'titus.20876bcd.jpg',
 				'hash' => '20876bcd'
 			],
 			'crop50' => [
 				'status' => 'success',
-				'path' => '48' . DS . '75' . DS . '05' . DS . 'filestorage3' . DS . 'titus.41e51a3f.jpg',
+				'path' => '95' . DS . '61' . DS . '80' . DS . 'filestorage3' . DS . 'titus.41e51a3f.jpg',
 				'hash' => '41e51a3f'
 			]
 		];
 		$this->assertEquals($result, $expected);
-		$this->assertFileExists($this->testPath . '48' . DS . '75' . DS . '05' . DS . 'filestorage3' . DS . 'titus.20876bcd.jpg');
-		$this->assertFileExists($this->testPath . '48' . DS . '75' . DS . '05' . DS . 'filestorage3' . DS . 'titus.41e51a3f.jpg');
+		$this->assertFileExists($this->testPath . '95' . DS . '61' . DS . '80' . DS . 'filestorage3' . DS . 'titus.20876bcd.jpg');
+		$this->assertFileExists($this->testPath . '95' . DS . '61' . DS . '80' . DS . 'filestorage3' . DS . 'titus.41e51a3f.jpg');
 
 		$result = $listener->removeImageVersions($entity, ['t100']);
 		$expected = [
 			't100' => [
 				'status' => 'success',
 				'hash' => '20876bcd',
-				'path' => '48\75\05\filestorage3\titus.20876bcd.jpg'
+				'path' => '95' . DS . '61' . DS . '80' . DS . 'filestorage3' . DS . 'titus.20876bcd.jpg'
 			]
 		];
 		$this->assertEquals($result, $expected);
-		$this->assertFileNotExists($this->testPath . '48' . DS . '75' . DS . '05' . DS . 'filestorage3' . DS . 'titus.20876bcd.jpg');
-		$this->assertFileExists($this->testPath . '48' . DS . '75' . DS . '05' . DS . 'filestorage3' . DS . 'titus.41e51a3f.jpg');
+		$this->assertFileNotExists($this->testPath . '95' . DS . '61' . DS . '80' . DS . 'filestorage3' . DS . 'titus.20876bcd.jpg');
+		$this->assertFileExists($this->testPath . '95' . DS . '61' . DS . '80' . DS . 'filestorage3' . DS . 'titus.41e51a3f.jpg');
 	}
 
 /**

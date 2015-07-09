@@ -44,14 +44,14 @@ class BasePathBuilderTest extends TestCase {
 		$this->assertEquals($result, 'filestorage1.png');
 
 		$result = $builder->path($this->entity);
-		$this->assertEquals($result, '00' . DS . '14' . DS . '90' . DS . 'filestorage1' . DS);
+		$this->assertEquals($result, '14' . DS . '83' . DS . '23' . DS . 'filestorage1' . DS);
 
 		$result = $builder->fullPath($this->entity);
-		$this->assertEquals($result, '00' . DS . '14' . DS . '90' . DS . 'filestorage1' . DS . 'filestorage1.png');
+		$this->assertEquals($result, '14' . DS . '83' . DS . '23' . DS . 'filestorage1' . DS . 'filestorage1.png');
 
 		$builder->config('pathPrefix', 'files');
 		$result = $builder->path($this->entity);
-		$this->assertEquals($result, 'files' . DS . '00' . DS . '14' . DS . '90' . DS . 'filestorage1' . DS);
+		$this->assertEquals($result, 'files' . DS . '14' . DS . '83' . DS . '23' . DS . 'filestorage1' . DS);
 
 		$builder->config('pathPrefix', 'files');
 		$result = $builder->filename($this->entity);
@@ -64,10 +64,10 @@ class BasePathBuilderTest extends TestCase {
 		$builder->config($config);
 		$builder->config('pathSuffix', 'files');
 		$result = $builder->path($this->entity);
-		$this->assertEquals($result, '00' . DS . '14' . DS . '90' . DS . 'filestorage1' . DS . 'files' . DS);
+		$this->assertEquals($result, '14' . DS . '83' . DS . '23' . DS . 'filestorage1' . DS . 'files' . DS);
 
 		$result = $builder->url($this->entity);
-		$expected = '00/14/90/filestorage1/files/filestorage1.png';
+		$expected = '14/83/23/filestorage1/files/filestorage1.png';
 		$this->assertEquals($result, $expected);
 	}
 

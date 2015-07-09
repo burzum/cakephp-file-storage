@@ -178,7 +178,11 @@ class BasePathBuilder implements PathBuilderInterface {
  * @param string $method Hash method, crc32 or sha1.
  * @return string
  */
-	public function randomPath($string, $level = 3, $method = 'crc32') {
+	public function randomPath($string, $level = 3, $method = 'sha1') {
+		// Keeping this for backward compatibility
+		if ($method === 'crc32') {
+			return StorageUtils::randomPath($string);
+		}
 		if ($method === 'sha1') {
 			$result = sha1($string);
 			$randomString = '';
@@ -188,10 +192,6 @@ class BasePathBuilder implements PathBuilderInterface {
 				$randomString .= substr($result, $counter, 2) . DS;
 			}
 			return $randomString;
-		}
-		// Keeping this for backward compatibility
-		if ($method === 'crc32') {
-			return FileStorageUtils::randomPath($string);
 		}
 	}
 
