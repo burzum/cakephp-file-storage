@@ -6,7 +6,6 @@ use Cake\ORM\Table;
 use Cake\ORM\Entity;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\Filesystem\Folder;
 use Cake\Filesystem\File;
 use Burzum\FileStorage\Lib\StorageManager;
 
@@ -104,7 +103,7 @@ class FileStorageTable extends Table {
  * @param Event $event
  * @param  Entity $entity
  * @param array $options
- * @return void
+ * @return boolean
  */
 	public function afterSave(Event $event, Entity $entity, $options) {
 		$Event = new Event('FileStorage.afterSave', $this, [
@@ -121,8 +120,7 @@ class FileStorageTable extends Table {
  * Get a copy of the actual record before we delete it to have it present in afterDelete
  *
  * @param \Cake\Event\Event $event
- * @param \Burzum\FileStorage\Model\Table\Entity $entity
- * @param array $options
+ * @param Entity $entity
  * @return boolean
  */
 	public function beforeDelete(\Cake\Event\Event $event, \Cake\ORM\Entity $entity) {
