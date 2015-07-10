@@ -6,8 +6,8 @@ use Burzum\Imagine\Lib\ImagineUtility;
 use Cake\Event\Event;
 use Cake\Core\Configure;
 use Cake\ORM\Table;
-use Burzum\FileStorage\Lib\StorageManager;
-use Burzum\FileStorage\Lib\FileStorageUtils;
+use Burzum\FileStorage\Storage\StorageManager;
+use Burzum\FileStorage\Storage\StorageUtils;
 
 /**
  * @author Florian Krämer
@@ -119,7 +119,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 		$tmpFile = $this->_tmpFile($Storage, $path, TMP . 'image-processing');
 
 		foreach ($operations as $version => $imageOperations) {
-			$hash = FileStorageUtils::hashOperations($imageOperations);
+			$hash = StorageUtils::hashOperations($imageOperations);
 			$string = $this->_buildPath($entity, true, $hash);
 
 			if ($this->adapterClass === 'AmazonS3' || $this->adapterClass === 'AwsS3') {
@@ -178,7 +178,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 			$Storage = $Event->data['storage'];
 			$record = $Event->data['record'];
 			foreach ($Event->data['operations'] as $version => $operations) {
-				$hash = FileStorageUtils::hashOperations($operations);
+				$hash = StorageUtils::hashOperations($operations);
 				$string = $this->_buildPath($record, true, $hash);
 				if ($this->adapterClass === 'AmazonS3' || $this->adapterClass === 'AwsS3') {
 					$string = str_replace('\\', '/', $string);
@@ -237,7 +237,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 		if ($this->_checkEvent($Event)) {
 			if (in_array($Event->data['record']['model'], (array)$this->config('autoRotate'))) {
 				$imageFile = $Event->data['record']['file']['tmp_name'];
-				$format = FileStorageUtils::fileExtension($Event->data['record']['file']['name']);
+				$format = StorageUtils::fileExtension($Event->data['record']['file']['name']);
 				$this->_autoRotate($imageFile, $format);
 			}
 		}
@@ -384,7 +384,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
  */
 	protected function _buildCloudFrontDistributionUrl($protocol, $image, $bucket, $bucketPrefix = null, $cfDist = null) {
 		$path = $protocol . '://';
-		if ($cfDist) {
+		if (is_string($cfDist)) {
 			$path .= $cfDist;
 		} else {
 			if ($bucketPrefix) {
