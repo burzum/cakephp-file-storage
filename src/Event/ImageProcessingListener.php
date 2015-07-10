@@ -418,7 +418,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 			if (!empty($hash)) {
 				$path .= '.' . $hash;
 			}
-			if ($extension == true) {
+			if ($extension === true) {
 				$path .= '.' . $record['extension'];
 			}
 		}

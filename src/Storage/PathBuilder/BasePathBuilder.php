@@ -232,7 +232,7 @@ class BasePathBuilder implements PathBuilderInterface {
  *
  * @param string $string
  * @param string $position Can be `before`, `after` or `both`
- * @param string $ds Directory separator should be / or \
+ * @param string $ds Directory separator should be / or \, if not set the DS constant is used.
  * @throws \InvalidArgumentException
  * @return string
  */

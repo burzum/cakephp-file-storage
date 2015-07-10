@@ -9,8 +9,8 @@ use Cake\ORM\Table;
 use Cake\ORM\Entity;
 use Cake\Utility\Text;
 use Cake\Filesystem\Folder;
-use Burzum\FileStorage\Lib\StorageManager;
-use Burzum\FileStorage\Lib\FileStorageUtils;
+use Burzum\FileStorage\Storage\StorageManager;
+use Burzum\FileStorage\Storage\StorageUtils;
 
 /**
  * AbstractStorageEventListener
@@ -142,10 +142,10 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 		if ($this->_config['tableFolder']) {
 			$path .= $table->table() . DS;
 		}
-		if ($this->_config['randomPath'] == true) {
-			$path .= FileStorageUtils::randomPath($entity[$table->primaryKey()]);
+		if ($this->_config['randomPath'] === true) {
+			$path .= StorageUtils::randomPath($entity[$table->primaryKey()]);
 		}
-		if ($this->_config['uuidFolder'] == true) {
+		if ($this->_config['uuidFolder'] === true) {
 			$path .= $this->stripDashes($entity[$table->primaryKey()]) . DS;
 		}
 		return $path;
@@ -310,7 +310,7 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
  */
 	public function fsPath($type, $string, $idFolder = true) {
 		$string = str_replace('-', '', $string);
-		$path = $type . DS . FileStorageUtils::randomPath($string);
+		$path = $type . DS . StorageUtils::randomPath($string);
 		if ($idFolder) {
 			$path .= $string . DS;
 		}

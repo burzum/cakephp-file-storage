@@ -146,7 +146,7 @@ class UploadValidator extends Validator {
 		if (!isset($options['height']) && !isset($options['width'])) {
 			throw new \InvalidArgumentException(__d('file_storage', 'Invalid image size validation parameters!'));
 		}
-		list($width, $height, $type, $attr) = getimagesize($value['tmp_name']);
+		list($width, $height) = getimagesize($value['tmp_name']);
 		if (isset($options['height'])) {
 			$validHeight = Validation::comparison($height, $options['height'][1], $options['height'][0]);
 		}
@@ -219,35 +219,33 @@ class UploadValidator extends Validator {
 			switch ($value['error']) {
 				case UPLOAD_ERR_OK:
 					return true;
-				break;
 				case UPLOAD_ERR_INI_SIZE:
 					$this->_uploadError = __d('file_storage', 'The uploaded file exceeds limit of %s.', Number::toReadableSize(ini_get('upload_max_filesize')));
-				break;
+					return false;
 				case UPLOAD_ERR_FORM_SIZE:
 					$this->_uploadError = __d('file_storage', 'The uploaded file is to big, please choose a smaller file or try to compress it.');
-				break;
+					return false;
 				case UPLOAD_ERR_PARTIAL:
 					$this->_uploadError = __d('file_storage', 'The uploaded file was only partially uploaded.');
-				break;
+					return false;
 				case UPLOAD_ERR_NO_FILE:
 					if ($options['allowNoFileError'] === false) {
 						$this->_uploadError = __d('file_storage', 'No file was uploaded.');
 						return false;
 					}
 					return true;
-				break;
 				case UPLOAD_ERR_NO_TMP_DIR:
 					$this->_uploadError = __d('file_storage', 'The remote server has no temporary folder for file uploads. Please contact the site admin.');
-				break;
+					return false;
 				case UPLOAD_ERR_CANT_WRITE:
 					$this->_uploadError = __d('file_storage', 'Failed to write file to disk. Please contact the site admin.');
-				break;
+					return false;
 				case UPLOAD_ERR_EXTENSION:
 					$this->_uploadError = __d('file_storage', 'File upload stopped by extension. Please contact the site admin.');
-				break;
+					return false;
 				default:
 					$this->_uploadError = __d('file_storage', 'Unknown File Error. Please contact the site admin.');
-				break;
+					return false;
 			}
 			return false;
 		}

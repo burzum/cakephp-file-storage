@@ -98,7 +98,6 @@ abstract class AbstractListener implements EventListenerInterface {
  * Constructor
  *
  * @param array $config
- * @return AbstractListener
  */
 	public function __construct(array $config = []) {
 		$this->_mergeListenerVars();
