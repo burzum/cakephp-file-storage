@@ -142,7 +142,7 @@ class BasePathBuilder implements PathBuilderInterface {
 			$filename = $this->stripDashes($filename);
 		}
 		if ($options['preserveExtension'] === true) {
-			if (!empty($config['fileSuffix'])) {
+			if (!empty($options['fileSuffix'])) {
 				$filename = $filename . $options['fileSuffix'];
 			}
 			$filename = $filename . '.' . $entity['extension'];

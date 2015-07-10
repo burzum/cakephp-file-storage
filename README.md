@@ -1,5 +1,5 @@
-FileStorage Plugin for CakePHP 2.x and 3.x
-==========================================
+FileStorage Plugin for CakePHP
+==============================
 
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.txt) 
 [![Build Status](https://img.shields.io/travis/burzum/cakephp-file-storage/3.0.svg?style=flat-square)](https://travis-ci.org/burzum/cakephp-file-storage) 
@@ -14,7 +14,7 @@ Storage adapters are an unified interface that allow you to store file data to y
 [Please donate if you like it!](https://pledgie.com/campaigns/29682)
 ------------------------------
 
-Already thought of how many hours development time saved you already? It would be *awesome* if you don't mind sharing some of your success by donating a small amount!
+Already thought of how many hours development time this plugin saved you already? It would be *awesome* if you don't mind sharing some of your success by donating a small amount! Thank you.
 
 List of supported Adapters
 --------------------------
