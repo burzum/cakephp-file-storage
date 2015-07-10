@@ -5,10 +5,18 @@ checks:
         remove_php_closing_tag: true
         remove_trailing_whitespace: true
 tools:
-    php_code_coverage: false
+    php_code_coverage: true
     php_loc:
         enabled: true
-        excluded_dirs: [vendor, tests, config, docs, 'src/Lib', 'src/Event']
+        excluded_dirs: [vendor, tests, config, docs, './src/Lib', './src/Event']
     php_cpd:
         enabled: true
-        excluded_dirs: [vendor, tests, config, docs, 'src/Lib', 'src/Event']
+        excluded_dirs: [vendor, tests, config, docs, './src/Lib', './src/Event']
+build:
+    tests:
+        override:
+            -
+                command: 'phpunit --coverage-clover=coverage.xml'
+                coverage:
+                    file: 'coverage.xml'
+                    format: 'php-clover'
