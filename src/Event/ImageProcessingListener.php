@@ -79,6 +79,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
  */
 	protected function _autoRotate($imageFile, $format) {
 		$orientation = ImagineUtility::getImageOrientation($imageFile);
+		$degree = 0;
 		if ($orientation === false) {
 			return false;
 		}

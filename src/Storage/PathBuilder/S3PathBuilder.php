@@ -6,7 +6,7 @@
  */
 namespace Burzum\FileStorage\Storage\PathBuilder;
 
-use Burzum\FileStorage\Lib\StorageManager;
+use Burzum\FileStorage\Storage\StorageManager;
 use Cake\ORM\Entity;
 
 class S3PathBuilder extends BasePathBuilder {
