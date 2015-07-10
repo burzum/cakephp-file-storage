@@ -12,6 +12,17 @@ Installing the plugin via [Composer](https://getcomposer.org/) is very simple, j
 composer require burzum/file-storage:3.0.*@dev
 ```
 
+Database Setup
+--------------
+
+You need to setup the plugin database using [the official migrations plugin for CakePHP](https://github.com/cakephp/migrations).
+
+```
+cake migrations migrate -p Burzum/FileStorage
+```
+
+If you're coming from the CakePHP 2.0 version of the plugin, the support for the CakeDC Migrations plugin has been dropped in favor of [the official migrations plugin](https://github.com/cakephp/migrations).
+
 CakePHP Bootstrap
 -----------------
 
@@ -43,12 +54,12 @@ Depending on the storage backend of your choice, for example Amazon S3 or Dropbo
 Please see the [Specific Adapter Configuration](Specific-Adapter-Configurations.md) page of the documentation for more information about then. It is also worth checking the Gaufrette documentation for additonal adapters.
 
 Running Tests
-=============
+-------------
 
 The plugin tests are set up in a way that you can run them without putting the plugin into a CakePHP3 application. All you need to do is to go into the FileStorage folder and run these commands:
 
 ```
 cd <file-storage-plugin-folder>
-composer install
+composer update
 phpunit
 ```
