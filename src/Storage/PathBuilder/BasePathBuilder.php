@@ -69,7 +69,7 @@ class BasePathBuilder implements PathBuilderInterface {
 			$path = $config['pathPrefix'] . DS . $path;
 		}
 		if ($this->_config['modelFolder'] === true) {
-			$path .= $entity->model;
+			$path .= $entity->model . DS;
 		}
 		if ($this->_config['randomPath'] === true) {
 			$path .= $this->randomPath($entity->id);

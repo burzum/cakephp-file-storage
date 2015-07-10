@@ -17,6 +17,12 @@ use Cake\Filesystem\Folder;
 
 class TraitTestClass extends AbstractListener {
 	use ImageProcessingTrait;
+	public $_defaultConfig = [
+		'pathBuilder' => 'LocalPath',
+		'pathBuilderOptions' => [
+			'preserveFilename' => true
+		]
+	];
 	public function __construct(array $config = []) {
 		parent::__construct($config);
 		$this->_loadImageProcessingFromConfig();
@@ -89,7 +95,7 @@ class ImageProcessingTraitTest extends FileStorageTestCase {
 	public function testCreateImageVersions() {
 		$entity = $this->FileStorage->get('file-storage-3');
 		$listener = new TraitTestClass();
-		$path = $listener->pathBuilder('LocalPath', ['preserveFilename' => true])->path($entity);
+		$path = $listener->pathBuilder()->path($entity);
 
 		new Folder($this->testPath . $path, true);
 		copy($this->fileFixtures . 'titus.jpg', $this->testPath . $path . 'titus.jpg');

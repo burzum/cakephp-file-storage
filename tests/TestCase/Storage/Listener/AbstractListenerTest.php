@@ -30,8 +30,10 @@ class AbstractListenerTest extends TestCase {
  * @return void
  */
 	public function testPathBuilder() {
-		$Listener = new TestAbstractListener();
-		$result = $Listener->pathBuilder('LocalPath');
+		$Listener = new TestAbstractListener([
+			'pathBuilder' => 'LocalPath'
+		]);
+		$result = $Listener->pathBuilder();
 		$this->assertInstanceOf('\Burzum\FileStorage\Storage\PathBuilder\BasePathBuilder', $result);
 	}
 }
