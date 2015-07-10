@@ -234,7 +234,7 @@ abstract class AbstractListener implements EventListenerInterface {
  * @param Adapter $Storage Storage adapter
  * @param string $path Path / key of the storage adapter file
  * @param string $tmpFolder
- * @throws Exception
+ * @throws \Exception
  * @return string
  */
 	protected function _tmpFile($Storage, $path, $tmpFolder = null) {
@@ -242,7 +242,7 @@ abstract class AbstractListener implements EventListenerInterface {
 			$tmpFile = $this->createTmpFile($tmpFolder);
 			file_put_contents($tmpFile, $Storage->read($path));
 			return $tmpFile;
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			$this->log($e->getMessage(), 'file_storage');
 			throw $e;
 		}
@@ -288,12 +288,11 @@ abstract class AbstractListener implements EventListenerInterface {
 	}
 
 /**
- * Path builder.
+ * Gets the configured path builder instance.
  *
- * @param string $class Class name of a path builder.
- * @param array $config for the path builder.
  * @return \Burzum\FileStorage\Storage\PathBuilder\BasePathBuilder
- */
+ * @throws
+	 */
 	public function pathBuilder() {
 		if (!empty($this->_pathBuilder)) {
 			return $this->_pathBuilder;

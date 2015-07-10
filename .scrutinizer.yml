@@ -8,10 +8,12 @@ tools:
     php_code_coverage: true
     php_loc:
         enabled: true
-        excluded_dirs: [vendor, tests, config, docs, './src/Lib', './src/Event']
+        excluded_dirs: [vendor, tests, config, docs]
     php_cpd:
         enabled: true
-        excluded_dirs: [vendor, tests, config, docs, './src/Lib', './src/Event']
+        excluded_dirs: [vendor, tests, config, docs]
+filter:
+    paths: [src/Event/*, src/Lib/*]
 build:
     tests:
         override:
