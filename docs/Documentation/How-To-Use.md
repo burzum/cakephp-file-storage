@@ -9,8 +9,8 @@ The basic idea of this plugin is that files are always handled as separate entit
 
 This plugin resolves that issue by handling each file as a completely separate entity in the application. There is just one table `file_storage` that will keep the reference to all your files, no matter where they're stored.
 
-How to Store an Uploaded File
------------------------------
+Preparing the File Upload
+-------------------------
 
 This section is going to show how to store a file using the Storage Manager directly.
 
@@ -20,8 +20,11 @@ For example you have a Report model and want to save a pdf to it, you would then
 public function initialize(array $config)
 {
         $this->hasOne('PdfFiles', [
-            'className' => 'FileStorage.PdfFiles',
-            'foreignKey' => 'foreign_key'
+            'className' => 'Burzum/FileStorage.PdfFiles',
+            'foreignKey' => 'foreign_key',
+            'conditions' => [
+                'PdfFiles.model' => 'Reports'
+            ]
         ]);
 }
 ```
@@ -29,10 +32,13 @@ public function initialize(array $config)
 In your `add.ctp` or `edit.ctp` views you would add something like:
 
 ```php
-echo $this->Form->input('Report.title');
-echo $this->Form->input('PdfFile.file');
-echo $this->Form->input('Report.description');
+echo $this->Form->input('title');
+echo $this->Form->input('pdf_files.file');
+echo $this->Form->input('description');
 ```
+
+Handling the File Upload
+------------------------
 
 **Now comes the crucial point of the whole implementation**
 
@@ -41,15 +47,16 @@ Because of to many different requirements and personal preferences out there the
 Lets go by this scenario inside the report model, assuming there is an add() method:
 
 ```php
-$entity = $this->newEntity($data);
+$entity = $this->newEntity($postData);
 $saved = $this->save($entity);
 if ($saved) {
 	$key = 'your-file-name';
-	if (StorageManager::adapter('Local')->write($key, file_get_contents($this->data['PdfFile']['file']['tmp_name']))) {
-		$this->data['PdfFile']['foreign_key'] = $saved->id;
-		$this->data['PdfFile']['model'] = 'Report';
-		$this->data['PdfFile']['path'] = $key;
-		$this->data['PdfFile']['adapter'] = 'Local';
+	if (StorageManager::adapter('Local')->write($key, file_get_contents($this->data['pdf_files']['file']['tmp_name']))) {
+		$postData['pdf_files']['foreign_key'] = $saved->id;
+		$postData['pdf_files']['model'] = 'Reports';
+		$postData['pdf_files']['path'] = $key;
+		$postData['pdf_files']['adapter'] = 'Local';
+		$this->PdfDocuments->save($this->PdfDocuments->newEntity($postData));
 	}
 }
 ```
@@ -69,11 +76,11 @@ The **FileStorage** plugin comes with a class that acts just as a listener to so
 
 This class will listen to all the ImageStorage model events and save the uploaded image and then create the versions for that image and storage adapter.
 
-It is important to understand that each storage adapter requires a different handling. You can not threat a local file the same as a file you store in a cloud service. The interface that this plugin and Gaufrette provide is the same but not the internals.
+It is important to understand that nearly each storage adapter requires a little different handling: Most of the time you can't threat a local file the same as a file you store in a cloud service. The interface that this plugin and Gaufrette provide is the same but not the internals. So a path that works for your local file system might not work for your remote storage system because it has other requirements or limitations.
 
-So if you want to store a file using Amazon S3 you would have to store it, create all the versions of that image locally and then upload each of them and then delete the local temp files.
+So if you want to store a file using Amazon S3 you would have to store it, create all the versions of that image locally and then upload each of them and then delete the local temp files. The good news is the plugin can already take care of that.
 
-When you create a new listener it is important that you check the model field and the event subject object if it matches what you expect. Using the event system you could create any kind of storage and upload behavior without inheriting or touching the model code. Just write a listener class and attach it to the global CakeEventManager.
+When you create a new listener it is important that you check the `model` field and the event subject object (usually a table object inheriting \Cake\ORM\Table) if it matches what you expect. Using the event system you could create any kind of storage and upload behavior without inheriting or touching the model code. Just write a listener class and attach it to the global EventManager.
 
 List of events
 --------------
@@ -101,7 +108,7 @@ See [this page](Included-Event-Listeners.md) for the event listeners that are in
 Why is it done like this?
 -------------------------
 
-Every developer might want to store the file at a different point or apply other operations on the file before or after it is store. Based on different circumstances you might want to save an associated file even before you created the record its going to get attached to, in other scenarios like in this documentation you might want to do it after.
+Every developer might want to store the file at a different point or apply other operations on the file before or after it is stored. Based on different circumstances you might want to save an associated file even before you created the record its going to get attached to, in other scenarios like in this documentation you might want to do it after.
 
 The ``$key`` is also a key aspect of it: Different adapters might expect a different key. A key for the Local adapter of Gaufrette is usually a path and a file name under which the data gets stored. That's also the reason why you use `file_get_contents()` instead of simply passing the tmp path as it is.
 

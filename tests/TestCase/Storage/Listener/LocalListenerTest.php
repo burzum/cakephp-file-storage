@@ -3,6 +3,7 @@ namespace Burzum\FileStorage\Test\TestCase\Storage\Listener;
 
 use Cake\Event\Event;
 use Cake\Core\Plugin;
+use Cake\Core\Configure;
 use Cake\Core\InstanceConfigTrait;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -25,6 +26,8 @@ class LocalListenerTest extends TestCase {
  */
 	public function setUp() {
 		parent::setUp();
+
+		Configure::write('FileStorage.imageSizes', []);
 		$this->fileFixtures = Plugin::path('Burzum/FileStorage') . 'tests' . DS . 'Fixture' . DS . 'File' . DS;
 
 		$this->listener = $this->getMockBuilder('Burzum\FileStorage\Storage\Listener\LocalListener')

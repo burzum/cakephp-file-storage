@@ -19,6 +19,8 @@ use Cake\Filesystem\Folder;
  */
 class LocalListener extends AbstractListener {
 
+	use ImageProcessingTrait;
+
 /**
  * Default settings
  *
@@ -26,6 +28,7 @@ class LocalListener extends AbstractListener {
  */
 	protected $_defaultConfig = [
 		'pathBuilder' => 'LocalPath',
+		'imageProcessing' => false,
 	];
 
 /**
@@ -71,6 +74,9 @@ class LocalListener extends AbstractListener {
 			$entity = $event->data['record'];
 			$path = $this->pathBuilder()->fullPath($entity);
 			if ($this->storageAdapter($entity->adapter)->delete($path)) {
+				if ($this->_config['imageProcessing'] === true) {
+					$this->autoProcessImageVersions($entity, 'remove');
+				}
 				$event->result = true;
 			}
 			$event->result = false;
@@ -113,6 +119,10 @@ class LocalListener extends AbstractListener {
 			} catch (Exception $e) {
 				$this->log($e->getMessage(), 'file_storage');
 				$event->result = false;
+			}
+
+			if ($this->_config['imageProcessing'] === true) {
+				$this->autoProcessImageVersions($entity, 'create');
 			}
 		}
 	}

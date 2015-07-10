@@ -9,7 +9,7 @@ namespace Burzum\FileStorage\Storage\Listener;
 use \Cake\Core\Configure;
 use \Cake\ORM\Entity;
 use \Burzum\Imagine\Lib\ImageProcessor;
-use \Burzum\FileStorage\Lib\FileStorageUtils;
+use \Burzum\FileStorage\Storage\StorageUtils;
 
 /**
  * ImageProcessingTrait
@@ -23,13 +23,38 @@ trait ImageProcessingTrait {
 	protected $_imageVersionHashes = [];
 
 /**
+ * Convenience method to auto create ALL and auto remove ALL image versions for
+ * an entity.
+ *
+ * Call this in your listener after you stored or removed a file that has image
+ * versions. If you need more details in your logic around creating or removing
+ * image versions use the other methods from this trait to implement the checks
+ * and behavior you need.
+ *
+ * @param \Cake\ORM\Entity
+ * @param string $action `create` or `remove`
+ * @return array
+ */
+	public function autoProcessImageVersions(Entity $entity, $action) {
+		if (!in_array($action, ['create', 'remove'])) {
+			throw new \InvalidArgumentException();
+		}
+		$this->_loadImageProcessingFromConfig();
+		if (!isset($this->_imageVersions[$entity->model])) {
+			return false;
+		}
+		$method = $action . 'AllImageVersions';
+		return $this->{$method}($entity);
+	}
+
+/**
  * Loads the image processing configuration into the class.
  *
  * @return void
  */
 	protected function _loadImageProcessingFromConfig() {
 		$this->_imageVersions = (array)Configure::read('FileStorage.imageSizes');
-		$this->_imageVersionHashes = FileStorageUtils::generateHashes();
+		$this->_imageVersionHashes = StorageUtils::generateHashes();
 	}
 
 /**
