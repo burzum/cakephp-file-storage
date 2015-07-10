@@ -138,7 +138,7 @@ class BasePathBuilder implements PathBuilderInterface {
  */
 	protected function _buildFilename(Entity $entity, array $options = []) {
 		$filename = $entity->id;
-		if ($options['stripUuid'] ===  true) {
+		if ($options['stripUuid'] === true) {
 			$filename = $this->stripDashes($filename);
 		}
 		if ($options['preserveExtension'] === true) {
@@ -249,7 +249,7 @@ class BasePathBuilder implements PathBuilderInterface {
 			}
 		}
 		if ($position === 'after' || $position === 'both') {
-			if (substr($string, -1, 1) !== $ds ) {
+			if (substr($string, -1, 1) !== $ds) {
 				$string = $string . $ds;
 			}
 		}

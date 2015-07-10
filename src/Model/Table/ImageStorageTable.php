@@ -43,7 +43,7 @@ class ImageStorageTable extends FileStorageTable {
  * beforeSave callback
  *
  * @param \Cake\Event\Event $event
- * @param \Burzum\FileStorage\Model\Table\Entity $entity
+ * @param \Cake\ORM\Entity $entity
  * @param array $options
  * @return boolean true on success
  */
@@ -116,7 +116,7 @@ class ImageStorageTable extends FileStorageTable {
  * @param \Cake\Event\Event $event
  * @param \Cake\ORM\Entity $entity
  * @param array $options
- * @return void
+ * @return boolean
  */
 	public function afterDelete(\Cake\Event\Event $event, \Cake\ORM\Entity $entity, $options) {
 		$imageEvent = new Event('ImageStorage.afterDelete', $this, [
