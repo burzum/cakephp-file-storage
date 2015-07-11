@@ -8,7 +8,7 @@ namespace Burzum\FileStorage\Storage\PathBuilder;
 
 use Cake\Core\InstanceConfigTrait;
 use Cake\ORM\Entity;
-use Burzum\FileStorage\Lib\StorageUtils;
+use Burzum\FileStorage\Storage\StorageUtils;
 
 /**
  * A path builder is an utility class that generates a path and filename for a

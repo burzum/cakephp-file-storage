@@ -3,7 +3,7 @@ namespace Burzum\FileStorage\Event;
 
 use Cake\Event\Event;
 use Cake\Filesystem\Folder;
-use Burzum\FileStorage\Lib\StorageManager;
+use Burzum\FileStorage\Storage\StorageManager;
 
 /**
  * Local FileStorage Event Listener for the CakePHP FileStorage plugin
@@ -93,7 +93,8 @@ class LocalFileStorageListener extends AbstractStorageEventListener {
 			$Storage = StorageManager::adapter($entity['adapter']);
 			try {
 				$filename = $this->buildFileName($table, $entity);
-				$entity['path'] = $this->buildPath($table, $entity);
+				$entity->path = $this->buildPath($table, $entity);
+
 				$Storage->write($entity['path'] . $filename, file_get_contents($entity['file']['tmp_name']), true);
 				$table->save($entity, array(
 					'validate' => false,

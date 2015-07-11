@@ -28,7 +28,7 @@ class LocalListener extends AbstractListener {
  */
 	protected $_defaultConfig = [
 		'pathBuilder' => 'BasePath',
-		'pathBuilderConfig' => [
+		'pathBuilderOptions' => [
 			'modelFolder' => true,
 		],
 		'imageProcessing' => false,

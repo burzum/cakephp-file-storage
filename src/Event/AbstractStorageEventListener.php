@@ -164,7 +164,7 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 		}
 		return (
 			$this->_checkTable($event)
-			&& $this->getAdapterClassName($event->data['record']['adapter'] !== false)
+			&& (bool)$this->getAdapterClassName($event->data['record']['adapter'])
 			&& $this->_modelFilter($event)
 		);
 	}
