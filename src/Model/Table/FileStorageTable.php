@@ -166,7 +166,7 @@ class FileStorageTable extends Table {
  */
 	public function afterDelete(\Cake\Event\Event $event, Entity $entity, $options) {
 		$Event = new Event('FileStorage.afterDelete', $this, [
-			'record' => $event->data['record'],
+			'record' => $entity,
 			'storage' => $this->storageAdapter($entity['adapter'])
 		]);
 		$this->eventManager()->dispatch($Event);

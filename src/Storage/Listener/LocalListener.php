@@ -106,28 +106,28 @@ class LocalListener extends AbstractListener {
 			if (!empty($event->data['fileField'])) {
 				$this->config('fileField', $event->data['fileField']);
 			}
+			$fileField = $this->config('fileField');
 
 			if ($this->config('fileHash') !== false) {
 				$entity->hash = $this->getFileHash(
-					$entity[$this->config('fileField')]['tmp_name'],
+					$entity[$fileField]['tmp_name'],
 					$this->config('fileHash')
 				);
 			}
 
-			$filename = $this->pathBuilder()->filename($entity);
-			$entity['path'] = $this->pathBuilder()->path($entity);
+			$entity['path'] = $this->pathBuilder()->fullPath($entity);
 
 			try {
 				$Storage = $this->storageAdapter($entity['adapter']);
-				$Storage->write($entity['path'] . $filename, file_get_contents($entity[$this->config('fileField')]['tmp_name']), true);
+				$Storage->write($entity['path'], file_get_contents($entity[$fileField]['tmp_name']), true);
 				$table->save($entity, array(
-					'validate' => false,
-					'callbacks' => false
+					'checkRules' => false
 				));
 				$event->result = true;
 			} catch (\Exception $e) {
 				$this->log($e->getMessage());
 				$event->result = false;
+
 			}
 
 			if ($this->_config['imageProcessing'] === true) {
