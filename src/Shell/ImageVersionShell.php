@@ -6,7 +6,7 @@ use Cake\Console\Shell;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
-use Burzum\FileStorage\Lib\StorageManager;
+use Burzum\FileStorage\Storage\StorageManager;
 use Burzum\FileStorage\Model\Table\ImageStorageTable;
 
 /**
@@ -229,13 +229,9 @@ class ImageVersionShell extends Shell {
 			$this->_stop();
 		}
 
-		$this->totalImageCount = $this->Table
-			->find()
-			->where(['model' => $model])
-			->andWhere(['extension IN' => ['jpg', 'png']])
-			->count();
+		$totalImageCount = $this->_getCount($model);
 
-		if ($this->totalImageCount == 0) {
+		if ($totalImageCount === 0) {
 			$this->out(__d('file_storage', 'No Images for model {0} found', $model));
 			$this->_stop();
 		}
@@ -246,14 +242,7 @@ class ImageVersionShell extends Shell {
 		$limit = $this->limit;
 
 		do {
-			$images = $this->Table
-				->find()
-				->where(['model' => $model])
-				->andWhere(['extension IN' => ['jpg', 'png']])
-				->limit($limit)
-				->offset($offset)
-				->all();
-
+			$images = $this->_getRecords($model, $limit, $offset);
 			if (!empty($images)) {
 				foreach ($images as $image) {
 					$Storage = StorageManager::adapter($image->adapter);
@@ -263,7 +252,8 @@ class ImageVersionShell extends Shell {
 						$payload = array(
 							'record' => $image,
 							'storage' => $Storage,
-							'operations' => $operations);
+							'operations' => $operations
+						);
 
 						if ($action == 'generate' || $action == 'regenerate') {
 							$Event = new Event('ImageVersion.createVersion', $this->Table, $payload);
@@ -281,5 +271,30 @@ class ImageVersionShell extends Shell {
 			}
 			$offset += $limit;
 		} while ($images->count() > 0);
+	}
+
+/**
+ * Gets the amount of images for a model in the DB.
+ *
+ * @param string $identifier
+ * @param array $extensions
+ * @return integer
+ */
+	protected function _getCount($identifier, array $extensions = ['jpg', 'png', 'jpeg']) {
+		return $this->Table
+			->find()
+			->where(['model' => $identifier])
+			->andWhere(['extension IN' => $extensions])
+			->count();
+	}
+
+	protected function _getRecords($identifier, $limit, $offset, array $extensions = ['jpg', 'png', 'jpeg']) {
+		return $this->Table
+			->find()
+			->where(['model' => $identifier])
+			->andWhere(['extension IN' => $extensions])
+			->limit($limit)
+			->offset($offset)
+			->all();
 	}
 }
