@@ -54,7 +54,7 @@ class ImageStorageTable extends FileStorageTable {
 		$Event = new Event('ImageStorage.beforeSave', $this, array(
 			'record' => $entity
 		));
-		$this->getEventManager()->dispatch($Event);
+		$this->eventManager()->dispatch($Event);
 		if ($Event->isStopped()) {
 			return false;
 		}
@@ -77,7 +77,7 @@ class ImageStorageTable extends FileStorageTable {
 				'storage' => $this->storageAdapter($entity['adapter']),
 				'record' => $entity
 			]);
-			$this->getEventManager()->dispatch($imageEvent);
+			$this->eventManager()->dispatch($imageEvent);
 			$this->deleteOldFileOnSave($entity);
 		}
 		return true;
@@ -99,7 +99,7 @@ class ImageStorageTable extends FileStorageTable {
 			'record' => $this->record,
 			'storage' => $this->storageAdapter($this->record['adapter'])
 		]);
-		$this->getEventManager()->dispatch($imageEvent);
+		$this->eventManager()->dispatch($imageEvent);
 
 		if ($imageEvent->isStopped()) {
 			return false;
@@ -123,7 +123,7 @@ class ImageStorageTable extends FileStorageTable {
 			'record' => $entity,
 			'storage' => $this->storageAdapter($entity['adapter'])
 		]);
-		$this->getEventManager()->dispatch($imageEvent);
+		$this->eventManager()->dispatch($imageEvent);
 		return true;
 	}
 
@@ -209,7 +209,7 @@ class ImageStorageTable extends FileStorageTable {
 					'options' => []
 				]
 			);
-			$this->getEventManager()->dispatch($Event);
+			$this->eventManager()->dispatch($Event);
 			if ($Event->isStopped()) {
 				$versions[$version] = str_replace('\\', '/', $Event->data['path']);
 			}

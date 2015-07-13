@@ -77,7 +77,7 @@ class FileStorageTable extends Table {
 			'record' => $entity,
 			'storage' => $this->storageAdapter($event->data['entity']['adapter'])
 		));
-		$this->getEventManager()->dispatch($Event);
+		$this->eventManager()->dispatch($Event);
 		if ($Event->isStopped()) {
 			return false;
 		}
@@ -129,7 +129,7 @@ class FileStorageTable extends Table {
 			'record' => $entity,
 			'storage' => $this->storageAdapter($event->data['entity']['adapter'])
 		]);
-		$this->getEventManager()->dispatch($Event);
+		$this->eventManager()->dispatch($Event);
 		$this->deleteOldFileOnSave($entity);
 		return true;
 	}
@@ -169,7 +169,7 @@ class FileStorageTable extends Table {
 			'record' => $event->data['record'],
 			'storage' => $this->storageAdapter($entity['adapter'])
 		]);
-		$this->getEventManager()->dispatch($Event);
+		$this->eventManager()->dispatch($Event);
 		return true;
 	}
 
@@ -197,14 +197,5 @@ class FileStorageTable extends Table {
 			}
 		}
 		return false;
-	}
-
-/**
- * Returns an EventManager instance
- *
- * @return \Cake\Event\EventManager
- */
-	public function getEventManager() {
-		return EventManager::instance();
 	}
 }

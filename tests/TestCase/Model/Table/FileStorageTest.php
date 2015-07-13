@@ -58,16 +58,6 @@ class FileStorageTest extends FileStorageTestCase {
 	}
 
 /**
- * testGetEventManager
- *
- * @return void
- */
-	public function testGetEventManager() {
-		$result = $this->FileStorage->getEventManager();
-		$this->assertTrue(is_a($result, '\Cake\Event\EventManager'));
-	}
-
-/**
  * testAfterDelete
  *
  * @return void
