@@ -58,16 +58,6 @@ class FileStorageTest extends FileStorageTestCase {
 	}
 
 /**
- * testBeforeDelete
- *
- * @return void
- */
-	public function testGetStorageAdapter() {
-		$result = $this->FileStorage->getStorageAdapter('Local');
-		$this->assertTrue(is_a($result, '\Gaufrette\Filesystem'));
-	}
-
-/**
  * testGetEventManager
  *
  * @return void

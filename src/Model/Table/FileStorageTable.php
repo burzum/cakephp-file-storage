@@ -7,7 +7,7 @@ use Cake\ORM\Entity;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Filesystem\File;
-use Burzum\FileStorage\Lib\StorageManager;
+use Burzum\FileStorage\Storage\StorageTrait;
 
 /**
  * FileStorageTable
@@ -19,6 +19,7 @@ use Burzum\FileStorage\Lib\StorageManager;
 class FileStorageTable extends Table {
 
 	use LogTrait;
+	use StorageTrait;
 
 /**
  * Name
@@ -88,7 +89,7 @@ class FileStorageTable extends Table {
 		}
 		$Event = new Event('FileStorage.beforeSave', $this, array(
 			'record' => $entity,
-			'storage' => $this->getStorageAdapter($event->data['entity']['adapter'])
+			'storage' => $this->storageAdapter($event->data['entity']['adapter'])
 		));
 		$this->getEventManager()->dispatch($Event);
 		if ($Event->isStopped()) {
@@ -109,7 +110,7 @@ class FileStorageTable extends Table {
 		$Event = new Event('FileStorage.afterSave', $this, [
 			'created' => $event->data['entity']->isNew(),
 			'record' => $entity,
-			'storage' => $this->getStorageAdapter($event->data['entity']['adapter'])
+			'storage' => $this->storageAdapter($event->data['entity']['adapter'])
 		]);
 		$this->getEventManager()->dispatch($Event);
 		$this->deleteOldFileOnSave($entity);
@@ -148,7 +149,7 @@ class FileStorageTable extends Table {
  */
 	public function afterDelete(\Cake\Event\Event $event, Entity $entity, $options) {
 		try {
-			$Storage = $this->getStorageAdapter($entity['adapter']);
+			$Storage = $this->storageAdapter($entity['adapter']);
 			$Storage->delete($entity['path']);
 		} catch (\Exception $e) {
 			$this->log($e->getMessage());
@@ -157,22 +158,11 @@ class FileStorageTable extends Table {
 
 		$Event = new Event('FileStorage.afterDelete', $this, array(
 			'record' => $event->data['record'],
-			'storage' => $this->getStorageAdapter($entity['adapter'])));
+			'storage' => $this->storageAdapter($entity['adapter'])));
 
 		$this->getEventManager()->dispatch($Event);
 
 		return true;
-	}
-
-/**
- * Get a storage adapter from the StorageManager
- *
- * @param string $adapterName
- * @param boolean $renewObject
- * @return \Gaufrette\Adapter
- */
-	public function getStorageAdapter($adapterName, $renewObject = false) {
-		return StorageManager::adapter($adapterName, $renewObject);
 	}
 
 /**

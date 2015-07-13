@@ -31,8 +31,8 @@ trait StorageTrait {
  * @param string $configName
  * @return array
  */
-	public function storageAdapter($configName) {
-		return StorageManager::adapter($configName);
+	public function storageAdapter($configName, $renewObject = false) {
+		return StorageManager::adapter($configName, $renewObject);
 	}
 
 /**

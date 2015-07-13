@@ -76,13 +76,19 @@ class LocalListener extends AbstractListener {
 		if ($this->_checkEvent($event)) {
 			$entity = $event->data['record'];
 			$path = $this->pathBuilder()->fullPath($entity);
-			if ($this->storageAdapter($entity->adapter)->delete($path)) {
-				if ($this->_config['imageProcessing'] === true) {
-					$this->autoProcessImageVersions($entity, 'remove');
+			try {
+				if ($this->storageAdapter($entity->adapter)->delete($path)) {
+					if ($this->_config['imageProcessing'] === true) {
+						$this->autoProcessImageVersions($entity, 'remove');
+					}
+					$event->result = true;
+					return;
 				}
-				$event->result = true;
+			} catch (\Exception $e) {
+				$this->log($e->getMessage());
 			}
 			$event->result = false;
+			$event->stopPropagation();
 		}
 	}
 
@@ -127,6 +133,8 @@ class LocalListener extends AbstractListener {
 			if ($this->_config['imageProcessing'] === true) {
 				$this->autoProcessImageVersions($entity, 'create');
 			}
+
+			$event->stopPropagation();
 		}
 	}
 }

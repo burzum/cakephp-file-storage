@@ -74,7 +74,7 @@ class ImageStorageTable extends FileStorageTable {
 	public function afterSave(\Cake\Event\Event $event, \Cake\ORM\Entity $entity, $options) {
 		if ($entity->isNew()) {
 			$imageEvent = new Event('ImageStorage.afterSave', $this, [
-				'storage' => $this->getStorageAdapter($entity['adapter']),
+				'storage' => $this->storageAdapter($entity['adapter']),
 				'record' => $entity
 			]);
 			$this->getEventManager()->dispatch($imageEvent);
@@ -97,7 +97,7 @@ class ImageStorageTable extends FileStorageTable {
 
 		$imageEvent = new Event('ImageStorage.beforeDelete', $this, [
 			'record' => $this->record,
-			'storage' => $this->getStorageAdapter($this->record['adapter'])
+			'storage' => $this->storageAdapter($this->record['adapter'])
 		]);
 		$this->getEventManager()->dispatch($imageEvent);
 
@@ -121,7 +121,7 @@ class ImageStorageTable extends FileStorageTable {
 	public function afterDelete(\Cake\Event\Event $event, \Cake\ORM\Entity $entity, $options) {
 		$imageEvent = new Event('ImageStorage.afterDelete', $this, [
 			'record' => $entity,
-			'storage' => $this->getStorageAdapter($entity['adapter'])
+			'storage' => $this->storageAdapter($entity['adapter'])
 		]);
 		$this->getEventManager()->dispatch($imageEvent);
 		return true;

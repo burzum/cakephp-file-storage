@@ -36,6 +36,11 @@ class BasePathBuilderTest extends TestCase {
 		$this->entity->accessible('id', true);
 	}
 
+/**
+ * testPathbuilding
+ *
+ * @return void
+ */
 	public function testPathbuilding() {
 		$builder = new BasePathBuilder();
 		$config = $builder->config();
