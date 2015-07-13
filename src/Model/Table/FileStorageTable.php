@@ -72,21 +72,7 @@ class FileStorageTable extends Table {
  * @return boolean true on success
  */
 	public function beforeSave(Event $event, Entity $entity, $options) {
-		if (!empty($event->data['entity']['file']['tmp_name'])) {
-			$File = new File($event->data['entity']['file']['tmp_name']);
-			$event->data['entity']['filesize'] = $File->size();
-			$event->data['entity']['mime_type'] = $File->mime();
-		}
-		if (!empty($event->data['entity']['file']['name'])) {
-			$event->data['entity']['extension'] = pathinfo($event->data['entity']['file']['name'], PATHINFO_EXTENSION);
-			$event->data['entity']['filename'] = $event->data['entity']['file']['name'];
-		}
-		if (empty($event->data['entity']['model'])) {
-			$event->data['entity']['model'] = $this->table();
-		}
-		if (empty($event->data['entity']['adapter'])) {
-			$event->data['entity']['adapter'] = 'Local';
-		}
+		$this->getFileInfoFromUpload($event->data['entity']);
 		$Event = new Event('FileStorage.beforeSave', $this, array(
 			'record' => $entity,
 			'storage' => $this->storageAdapter($event->data['entity']['adapter'])
@@ -96,6 +82,37 @@ class FileStorageTable extends Table {
 			return false;
 		}
 		return true;
+	}
+
+/**
+ * Gets information about the file that is being uploaded.
+ *
+ * - gets the file size
+ * - gets the mime type
+ * - gets the extension if present
+ * - sets the adapter by default to local if not already set
+ * - sets the model field to the table name if not already set
+ *
+ * @param \Cake\ORM\Entity
+ * @param string $field
+ * @return void
+ */
+	public function getFileInfoFromUpload(&$entity, $field = 'file') {
+		if (!empty($entity[$field]['tmp_name'])) {
+			$File = new File($entity[$field]['tmp_name']);
+			$entity['filesize'] = $File->size();
+			$entity['mime_type'] = $File->mime();
+		}
+		if (!empty($entity[$field]['name'])) {
+			$entity['extension'] = pathinfo($entity[$field]['name'], PATHINFO_EXTENSION);
+			$entity['filename'] = $entity[$field]['name'];
+		}
+		if (empty($entity['model'])) {
+			$entity['model'] = $this->table();
+		}
+		if (empty($entity['adapter'])) {
+			$entity['adapter'] = 'Local';
+		}
 	}
 
 /**
