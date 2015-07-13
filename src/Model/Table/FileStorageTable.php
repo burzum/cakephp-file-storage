@@ -151,7 +151,7 @@ class FileStorageTable extends Table {
 			$Storage = $this->getStorageAdapter($entity['adapter']);
 			$Storage->delete($entity['path']);
 		} catch (\Exception $e) {
-			$this->log($e->getMessage(), 'file_storage');
+			$this->log($e->getMessage());
 			return false;
 		}
 

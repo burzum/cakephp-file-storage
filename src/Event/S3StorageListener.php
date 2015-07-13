@@ -54,7 +54,7 @@ class S3StorageListener extends AbstractStorageEventListener {
 				}
 				$Storage->delete($path['combined']);
 			} catch (\Exception $e) {
-				$this->log($e->getMessage(), 'file_storage');
+				$this->log($e->getMessage());
 				return false;
 			}
 			return true;
@@ -82,7 +82,7 @@ class S3StorageListener extends AbstractStorageEventListener {
 					'callbacks' => false)
 				);
 			} catch (\Exception $e) {
-				$this->log($e->getMessage(), 'file_storage');
+				$this->log($e->getMessage());
 			}
 		}
 	}

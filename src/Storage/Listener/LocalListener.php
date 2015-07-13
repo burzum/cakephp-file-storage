@@ -120,7 +120,7 @@ class LocalListener extends AbstractListener {
 				));
 				$event->result = true;
 			} catch (\Exception $e) {
-				$this->log($e->getMessage(), 'file_storage');
+				$this->log($e->getMessage());
 				$event->result = false;
 			}
 

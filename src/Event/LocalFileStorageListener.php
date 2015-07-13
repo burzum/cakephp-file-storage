@@ -101,7 +101,7 @@ class LocalFileStorageListener extends AbstractStorageEventListener {
 					'callbacks' => false
 				));
 			} catch (\Exception $e) {
-				$this->log($e->getMessage(), 'file_storage');
+				$this->log($e->getMessage());
 			}
 		}
 	}
