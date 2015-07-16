@@ -28,11 +28,11 @@ use Burzum\FileStorage\Event\LocalFileStorageListener;
 spl_autoload_register(__NAMESPACE__ .'\FileStorageUtils::gaufretteLoader');
 
 $listener = new LocalFileStorageListener();
-CakeEventManager::instance()->on($listener);
+EventManager::instance()->on($listener);
 
 // For automated image processing you'll have to attach this listener as well
 $listener = new ImageProcessingListener();
-CakeEventManager::instance()->on($listener);
+EventManager::instance()->on($listener);
 ```
 
 Adapter Specific Configuration
