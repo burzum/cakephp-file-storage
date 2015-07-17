@@ -48,7 +48,10 @@ class LocalListenerTest extends TestCase {
 	public function testAfterSave() {
 		$entity = $this->FileStorage->get('file-storage-3');
 		$entity->isNew(true);
-		$entity->file = ['tmp_name' => $this->fileFixtures . 'titus.jpg'];
+		$entity->file = [
+			'name' => 'titus.jpg',
+			'tmp_name' => $this->fileFixtures . 'titus.jpg'
+		];
 		$event = new Event('FileStorage.afterSave', $this->FileStorage, [
 			'record' => $entity
 		]);

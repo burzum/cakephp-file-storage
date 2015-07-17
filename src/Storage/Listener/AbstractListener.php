@@ -13,6 +13,7 @@ use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\Log\LogTrait;
 use Cake\ORM\Table;
+use Cake\ORM\Entity;
 use Cake\Utility\MergeVariablesTrait;
 use Cake\Utility\Text;
 use Cake\Filesystem\Folder;
@@ -249,7 +250,7 @@ abstract class AbstractListener implements EventListenerInterface {
 	}
 
 /**
- * Gets the hash of a file.
+ * Calculates the hash of a file.
  *
  * You can use this to compare if you got two times the same file uploaded.
  *
@@ -261,8 +262,28 @@ abstract class AbstractListener implements EventListenerInterface {
  * @link http://php.net/manual/en/function.sha1-file.php#104748
  * @return string
  */
-	public function getFileHash($file, $method = 'sha1') {
+	public function calculateFileHash($file, $method = 'sha1') {
 		return StorageUtils::getFileHash($file, $method);
+	}
+
+/**
+ * Gets the hash for a file storage entity that is going to be stored.
+ *
+ * It first checks if hashing is enabled, if it is enabled it uses the the
+ * configured hashMethod to generate the hash and returns that hash.
+ *
+ * @param \Cake\ORM\Entity
+ * @param string $fileField
+ * @return null|string
+ */
+	public function getFileHash(Entity $entity, $fileField) {
+		if ($this->config('fileHash') !== false) {
+			return $this->calculateFileHash(
+				$entity[$fileField]['tmp_name'],
+				$this->config('fileHash')
+			);
+		}
+		return null;
 	}
 
 /**

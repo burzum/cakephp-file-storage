@@ -224,7 +224,7 @@ class ImageVersionShell extends Shell {
  * @param $model
  * @param array $operations
  */
-	protected function _loop($action, $model, $operations = array()) {
+	protected function _loop($action, $model, $operations = []) {
 		if (!in_array($action, array('generate', 'remove', 'regenerate'))) {
 			$this->_stop();
 		}

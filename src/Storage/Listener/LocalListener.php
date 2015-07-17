@@ -6,9 +6,11 @@
  */
 namespace Burzum\FileStorage\Storage\Listener;
 
+use Burzum\FileStorage\Storage\StorageException;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Filesystem\Folder;
+use Psr\Log\LogLevel;
 
 /**
  * Local FileStorage Event Listener for the CakePHP FileStorage plugin
@@ -31,6 +33,7 @@ class LocalListener extends AbstractListener {
 		'pathBuilderOptions' => [
 			'modelFolder' => true,
 		],
+		'fileHash' => false,
 		'imageProcessing' => false,
 	];
 
@@ -55,12 +58,10 @@ class LocalListener extends AbstractListener {
  */
 	public function implementedEvents() {
 		return [
-			'FileStorage.afterSave' => [
-				'callable' => 'afterSave',
-			],
-			'FileStorage.afterDelete' => [
-				'callable' => 'afterDelete',
-			]
+			'FileStorage.afterSave' => 'afterSave',
+			'FileStorage.afterDelete' => 'afterDelete',
+			'ImageVersion.removeVersion' => 'removeImageVersion',
+			'ImageVersion.createVersion' => 'createImageVersion'
 		];
 	}
 
@@ -70,6 +71,7 @@ class LocalListener extends AbstractListener {
  * No need to use an adapter here, just delete the whole folder using cakes Folder class
  *
  * @param \Cake\Event\Event $event
+ * @throws \Burzum\Filestorage\Storage\StorageException
  * @return void
  */
 	public function afterDelete(Event $event) {
@@ -85,7 +87,8 @@ class LocalListener extends AbstractListener {
 					return;
 				}
 			} catch (\Exception $e) {
-				$this->log($e->getMessage());
+				$this->log($e->getMessage(), LOG_ERR, ['scope' => ['storage']]);
+				throw new StorageException($e->getMessage());
 			}
 			$event->result = false;
 			$event->stopPropagation();
@@ -100,34 +103,14 @@ class LocalListener extends AbstractListener {
  */
 	public function afterSave(Event $event) {
 		if ($this->_checkEvent($event) && $event->data['record']->isNew()) {
-			$table = $event->subject();
 			$entity = $event->data['record'];
-
-			if (!empty($event->data['fileField'])) {
-				$this->config('fileField', $event->data['fileField']);
-			}
 			$fileField = $this->config('fileField');
 
-			if ($this->config('fileHash') !== false) {
-				$entity->hash = $this->getFileHash(
-					$entity[$fileField]['tmp_name'],
-					$this->config('fileHash')
-				);
-			}
-
+			$entity['hash'] = $this->getFileHash($entity, $fileField);
 			$entity['path'] = $this->pathBuilder()->fullPath($entity);
 
-			try {
-				$Storage = $this->storageAdapter($entity['adapter']);
-				$Storage->write($entity['path'], file_get_contents($entity[$fileField]['tmp_name']), true);
-				$table->save($entity, array(
-					'checkRules' => false
-				));
-				$event->result = true;
-			} catch (\Exception $e) {
-				$this->log($e->getMessage());
-				$event->result = false;
-
+			if (!$this->_storeFile($event)) {
+				return;
 			}
 
 			if ($this->_config['imageProcessing'] === true) {
@@ -136,5 +119,55 @@ class LocalListener extends AbstractListener {
 
 			$event->stopPropagation();
 		}
+	}
+
+/**
+ * Stores the file in the configured storage backend.
+ *
+ * @param $event \Cake\Event\Event $event
+ * @throws \Burzum\Filestorage\Storage\StorageException
+ * @return boolean
+ */
+	protected function _storeFile(Event $event) {
+		try {
+			$fileField = $this->config('fileField');
+			$entity = $event->data['record'];
+			$Storage = $this->storageAdapter($entity['adapter']);
+			$Storage->write($entity['path'], file_get_contents($entity[$fileField]['tmp_name']), true);
+			$event->result = $event->subject()->save($entity, array(
+				'checkRules' => false
+			));
+			return true;
+		} catch (\Exception $e) {
+			$this->log($e->getMessage(), LogLevel::ERROR, ['scope' => ['storage']]);
+			throw new StorageException($e->getMessage());
+		}
+	}
+
+/**
+ *
+ */
+	public function removeImageVersion(Event $event) {
+		$this->_processImages($event, 'removeImageVersions');
+	}
+
+/**
+ *
+ */
+	public function createImageVersion(Event $event) {
+		$this->_processImages($event, 'createImageVersions');
+	}
+
+/**
+ *
+ */
+	protected function _processImages(Event $event, $method) {
+		if ($this->config('imageProcessing') !== true) {
+			return;
+		}
+		$event->result = $this->{$method}(
+			$event->data['record'],
+			$event->data['operations']
+		);
 	}
 }

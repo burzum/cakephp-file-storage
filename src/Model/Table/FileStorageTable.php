@@ -1,6 +1,7 @@
 <?php
 namespace Burzum\FileStorage\Model\Table;
 
+use Cake\Database\Query;
 use Cake\Log\LogTrait;
 use Cake\ORM\Table;
 use Cake\ORM\Entity;

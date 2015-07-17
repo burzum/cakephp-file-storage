@@ -134,7 +134,7 @@ class StorageUtils {
 			$imageSizes = Configure::read($configPath . '.imageSizes');
 		}
 		if (is_null($imageSizes)) {
-			throw new \RuntimeException(sprintf('Image processing configuration in %s is missing!', $configPath . '.imageSizes'));
+			throw new \RuntimeException(sprintf('Image processing configuration in "%s" is missing!', $configPath . '.imageSizes'));
 		}
 		self::ksortRecursive($imageSizes);
 		foreach ($imageSizes as $model => $version) {
