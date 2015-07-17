@@ -79,7 +79,7 @@ StorageManager::config('S3Image', array(
 		true
 	),
 	'adapterClass' => '\Gaufrette\Adapter\AwsS3',
-	'class' => '\Gaufrette\FileSystem')
+	'class' => '\Gaufrette\Filesystem')
 );
 ```
 
