@@ -69,7 +69,7 @@ The **FileStorage** plugin comes with a class that acts just as a listener to so
 
 This class will listen to all the ImageStorage model events and save the uploaded image and then create the versions for that image and storage adapter.
 
-It is important to understand that each storage adapter requires a different handling. You can not threat a local file the same as a file you store in a cloud service. The interface that this plugin and Gaufrette provide is the same but not the internals.
+It is important to understand that each storage adapter requires a different handling. You can not treat a local file the same as a file you store in a cloud service. The interface that this plugin and Gaufrette provide is the same but not the internals.
 
 So if you want to store a file using Amazon S3 you would have to store it, create all the versions of that image locally and then upload each of them and then delete the local temp files.
 
