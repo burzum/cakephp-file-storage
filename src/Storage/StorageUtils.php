@@ -14,7 +14,7 @@ use Cake\Filesystem\File;
 class StorageUtils {
 
 /**
- * Return file extension from a given filename
+ * Return file extension from a given filename.
  *
  * @param string $name
  * @param boolean $realFile

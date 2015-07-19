@@ -42,7 +42,9 @@ Configure::write('FileStorage', array(
 				'thumbnail' => array(
 					'mode' => 'inbound',
 					'width' => 800,
-					'height' => 800)),
+					'height' => 800
+				)
+			),
 			'medium' => array(
 				'thumbnail' => array(
 					'mode' => 'inbound',

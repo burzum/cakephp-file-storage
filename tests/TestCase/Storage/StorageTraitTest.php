@@ -40,4 +40,14 @@ class BasePathBuilderTest extends TestCase {
 		$result = $this->StorageTrait->storageAdapter('Local');
 		$this->assertTrue(is_a($result, '\Gaufrette\Filesystem'));
 	}
+
+/**
+ * testBeforeDelete
+ *
+ * @return void
+ */
+	public function testGetStorageManagerInstance() {
+		$result = $this->StorageTrait->storageManager();
+		$this->assertTrue(is_a($result, '\Burzum\FileStorage\Storage\StorageManager'));
+	}
 }
