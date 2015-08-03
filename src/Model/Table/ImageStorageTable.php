@@ -49,9 +49,9 @@ class ImageStorageTable extends FileStorageTable {
  * @return boolean true on success
  */
 	public function beforeSave(Event $event, EntityInterface $entity, $options) {
-		if (!parent::beforeSave($event, $entity, $options)) {
-			return false;
-		}
+//		if (!parent::beforeSave($event, $entity, $options)) {
+//			return false;
+//		}
 		$imageEvent = $this->dispatchEvent('ImageStorage.beforeSave', array(
 			'record' => $entity
 		));
@@ -90,9 +90,9 @@ class ImageStorageTable extends FileStorageTable {
  * @return boolean
  */
 	public function beforeDelete(Event $event, EntityInterface $entity) {
-		if (!parent::beforeDelete($event, $entity)) {
-			return false;
-		}
+//		if (!parent::beforeDelete($event, $entity)) {
+//			return false;
+//		}
 
 		$imageEvent = $this->dispatchEvent('ImageStorage.beforeDelete', [
 			'record' => $this->record,
