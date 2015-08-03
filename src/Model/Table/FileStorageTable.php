@@ -10,6 +10,7 @@ use Cake\Log\LogTrait;
 use Cake\ORM\Table;
 use Cake\ORM\Entity;
 
+use Burzum\FileStorage\Storage\PathBuilder\PathBuilderTrait;
 use Burzum\FileStorage\Storage\StorageTrait;
 
 /**
