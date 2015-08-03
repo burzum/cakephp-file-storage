@@ -10,4 +10,13 @@ use Cake\ORM\Entity;
 
 class LocalPathBuilder extends BasePathBuilder {
 
+/**
+ * Constructor
+ *
+ * @param array $config
+ */
+	public function __construct(array $config = array()) {
+		$this->_defaultConfig['modelFolder'] = true;
+		parent::__construct($config);
+	}
 }
