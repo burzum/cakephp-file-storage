@@ -2,12 +2,14 @@
 namespace Burzum\FileStorage\Model\Table;
 
 use Cake\Database\Query;
-use Cake\Log\LogTrait;
-use Cake\ORM\Table;
-use Cake\ORM\Entity;
+use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Filesystem\File;
+use Cake\Log\LogTrait;
+use Cake\ORM\Table;
+use Cake\ORM\Entity;
+
 use Burzum\FileStorage\Storage\StorageTrait;
 
 /**
@@ -68,17 +70,16 @@ class FileStorageTable extends Table {
  * beforeSave callback
  *
  * @param \Cake\Event\Event $event
- * @param \Cake\ORM\Entity $entity
+ * @param \Cake\Datasource\EntityInterface $entity
  * @param array $options
  * @return boolean true on success
  */
-	public function beforeSave(Event $event, Entity $entity, $options) {
+	public function beforeSave(Event $event, EntityInterface $entity, $options) {
 		$this->getFileInfoFromUpload($event->data['entity']);
-		$Event = new Event('FileStorage.beforeSave', $this, array(
+		$Event = $this->dispatchEvent('FileStorage.beforeSave', array(
 			'record' => $entity,
 			'storage' => $this->storageAdapter($event->data['entity']['adapter'])
 		));
-		$this->eventManager()->dispatch($Event);
 		if ($Event->isStopped()) {
 			return false;
 		}
@@ -94,11 +95,11 @@ class FileStorageTable extends Table {
  * - sets the adapter by default to local if not already set
  * - sets the model field to the table name if not already set
  *
- * @param \Cake\ORM\Entity
+ * @param \Cake\Datasource\EntityInterface
  * @param string $field
  * @return void
  */
-	public function getFileInfoFromUpload(&$entity, $field = 'file') {
+	public function getFileInfoFromUpload(EntityInterface &$entity, $field = 'file') {
 		if (!empty($entity[$field]['tmp_name'])) {
 			$File = new File($entity[$field]['tmp_name']);
 			$entity['filesize'] = $File->size();
@@ -119,18 +120,17 @@ class FileStorageTable extends Table {
 /**
  * afterSave callback
  *
- * @param Event $event
- * @param  Entity $entity
+ * @param \Cake\Event\Event $event
+ * @param \Cake\Datasource\EntityInterface $entity
  * @param array $options
  * @return boolean
  */
-	public function afterSave(Event $event, Entity $entity, $options) {
-		$Event = new Event('FileStorage.afterSave', $this, [
+	public function afterSave(Event $event, EntityInterface $entity, $options) {
+		$this->dispatchEvent('FileStorage.afterSave', [
 			'created' => $event->data['entity']->isNew(),
 			'record' => $entity,
 			'storage' => $this->storageAdapter($event->data['entity']['adapter'])
 		]);
-		$this->eventManager()->dispatch($Event);
 		$this->deleteOldFileOnSave($entity);
 		return true;
 	}
@@ -139,10 +139,10 @@ class FileStorageTable extends Table {
  * Get a copy of the actual record before we delete it to have it present in afterDelete
  *
  * @param \Cake\Event\Event $event
- * @param Entity $entity
+ * @param \Cake\Datasource\EntityInterface $entity
  * @return boolean
  */
-	public function beforeDelete(\Cake\Event\Event $event, \Cake\ORM\Entity $entity) {
+	public function beforeDelete(Event $event, EntityInterface $entity) {
 		$this->record = $this->find()
 			->contain([])
 			->where([
@@ -161,16 +161,15 @@ class FileStorageTable extends Table {
  * afterDelete callback
  *
  * @param \Cake\Event\Event $event
- * @param \Cake\ORM\Entity $entity
+ * @param \Cake\Datasource\EntityInterface $entity
  * @param array $options
  * @return boolean
  */
-	public function afterDelete(\Cake\Event\Event $event, Entity $entity, $options) {
-		$Event = new Event('FileStorage.afterDelete', $this, [
+	public function afterDelete(Event $event, EntityInterface $entity, $options) {
+		$this->dispatchEvent('FileStorage.afterDelete', [
 			'record' => $entity,
 			'storage' => $this->storageAdapter($entity['adapter'])
 		]);
-		$this->eventManager()->dispatch($Event);
 		return true;
 	}
 
@@ -182,10 +181,11 @@ class FileStorageTable extends Table {
  *
  * The old id has to be the UUID of the file_storage record that should be deleted.
  *
- * @param string $oldIdField Name of the field in the data that holds the old id
+ * @param \Cake\Datasource\EntityInterface $entity
+ * @param string $oldIdField Name of the field in the data that holds the old id.
  * @return boolean Returns true if the old record was deleted
  */
-	public function deleteOldFileOnSave(Entity $entity, $oldIdField = 'old_file_id') {
+	public function deleteOldFileOnSave(EntityInterface $entity, $oldIdField = 'old_file_id') {
 		if (!empty($entity[$oldIdField]) && $entity['model']) {
 			$oldEntity = $this->find()
 				->contain([])

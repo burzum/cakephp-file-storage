@@ -2,6 +2,7 @@
 namespace Burzum\FileStorage\Model\Table;
 
 use Cake\Core\Configure;
+use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Validation\Validation;
 
@@ -43,18 +44,17 @@ class ImageStorageTable extends FileStorageTable {
  * beforeSave callback
  *
  * @param \Cake\Event\Event $event
- * @param \Cake\ORM\Entity $entity
+ * @param \Cake\Datasource\EntityInterface $entity
  * @param array $options
  * @return boolean true on success
  */
-	public function beforeSave(\Cake\Event\Event $event, \Cake\ORM\Entity $entity, $options) {
+	public function beforeSave(Event $event, EntityInterface $entity, $options) {
 		if (!parent::beforeSave($event, $entity, $options)) {
 			return false;
 		}
-		$Event = new Event('ImageStorage.beforeSave', $this, array(
+		$Event = $this->dispatchEvent('ImageStorage.beforeSave', array(
 			'record' => $entity
 		));
-		$this->eventManager()->dispatch($Event);
 		if ($Event->isStopped()) {
 			return false;
 		}
@@ -67,17 +67,16 @@ class ImageStorageTable extends FileStorageTable {
  * Does not call the parent to avoid that the regular file storage event listener saves the image already
  *
  * @param \Cake\Event\Event $event
- * @param \Cake\ORM\Entity $entity
+ * @param \Cake\Datasource\EntityInterface $entity
  * @param array $options
  * @return boolean
  */
-	public function afterSave(\Cake\Event\Event $event, \Cake\ORM\Entity $entity, $options) {
+	public function afterSave(\Cake\Event\Event $event, EntityInterface $entity, $options) {
 		if ($entity->isNew()) {
-			$imageEvent = new Event('ImageStorage.afterSave', $this, [
+			$this->dispatchEvent('ImageStorage.afterSave', [
 				'storage' => $this->storageAdapter($entity['adapter']),
 				'record' => $entity
 			]);
-			$this->eventManager()->dispatch($imageEvent);
 			$this->deleteOldFileOnSave($entity);
 		}
 		return true;
@@ -87,19 +86,18 @@ class ImageStorageTable extends FileStorageTable {
  * Get a copy of the actual record before we delete it to have it present in afterDelete
  *
  * @param \Cake\Event\Event $event
- * @param \Cake\ORM\Entity $entity
+ * @param \Cake\Datasource\EntityInterface $entity
  * @return boolean
  */
-	public function beforeDelete(\Cake\Event\Event $event, \Cake\ORM\Entity $entity) {
+	public function beforeDelete(\Cake\Event\Event $event, EntityInterface $entity) {
 		if (!parent::beforeDelete($event, $entity)) {
 			return false;
 		}
 
-		$imageEvent = new Event('ImageStorage.beforeDelete', $this, [
+		$imageEvent = $this->dispatchEvent('ImageStorage.beforeDelete', [
 			'record' => $this->record,
 			'storage' => $this->storageAdapter($this->record['adapter'])
 		]);
-		$this->eventManager()->dispatch($imageEvent);
 
 		if ($imageEvent->isStopped()) {
 			return false;
@@ -114,16 +112,15 @@ class ImageStorageTable extends FileStorageTable {
  * Note that we do not call the parent::afterDelete(), we just want to trigger the ImageStorage.afterDelete event but not the FileStorage.afterDelete at the same time!
  *
  * @param \Cake\Event\Event $event
- * @param \Cake\ORM\Entity $entity
+ * @param \Cake\Datasource\EntityInterface $entity
  * @param array $options
  * @return boolean
  */
-	public function afterDelete(\Cake\Event\Event $event, \Cake\ORM\Entity $entity, $options) {
-		$imageEvent = new Event('ImageStorage.afterDelete', $this, [
+	public function afterDelete(\Cake\Event\Event $event, EntityInterface $entity, $options) {
+		$this->dispatchEvent('ImageStorage.afterDelete', [
 			'record' => $entity,
 			'storage' => $this->storageAdapter($entity['adapter'])
 		]);
-		$this->eventManager()->dispatch($imageEvent);
 		return true;
 	}
 
@@ -192,24 +189,23 @@ class ImageStorageTable extends FileStorageTable {
  * already fulfills the purpose. I might rename this event in the 3.0 version of
  * the plugin to a more generic one.
  *
- * @param array $entity An ImageStorage database record
+ * @param \Cake\Datasource\EntityInterface $entity An ImageStorage database record
  * @param array $options. Options for the version.
  * @return array A list of versions for this image file. Key is the version, value is the path or URL to that image.
  */
-	public function getImageVersions($entity, $options = []) {
+	public function getImageVersions(EntityInterface $entity, $options = []) {
 		$versions = [];
 		$versionData = (array)Configure::read('FileStorage.imageSizes.' . $entity['model']);
 		$versionData['original'] = isset($options['originalVersion']) ? $options['originalVersion'] : 'original';
 		foreach ($versionData as $version => $data) {
 			$hash = Configure::read('FileStorage.imageHashes.' . $entity['model'] . '.' . $version);
-			$Event = new Event('ImageVersion.getVersions', $this, [
+			$Event = $this->dispatchEvent('ImageVersion.getVersions', [
 					'hash' => $hash,
 					'image' => $entity,
 					'version' => $version,
 					'options' => []
 				]
 			);
-			$this->eventManager()->dispatch($Event);
 			if ($Event->isStopped()) {
 				$versions[$version] = str_replace('\\', '/', $Event->data['path']);
 			}
