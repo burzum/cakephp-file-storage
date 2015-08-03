@@ -6,8 +6,6 @@
  */
 namespace Burzum\FileStorage\Storage\PathBuilder;
 
-use Cake\ORM\Entity;
-
 class LocalPathBuilder extends BasePathBuilder {
 
 }

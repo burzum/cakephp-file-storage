@@ -7,7 +7,7 @@
 namespace Burzum\FileStorage\Storage\PathBuilder;
 
 use Cake\Core\InstanceConfigTrait;
-use Cake\ORM\Entity;
+use Cake\Datasource\EntityInterface;
 use Burzum\FileStorage\Storage\StorageUtils;
 
 /**
@@ -58,11 +58,11 @@ class BasePathBuilder implements PathBuilderInterface {
 /**
  * Builds the path under which the data gets stored in the storage adapter.
  *
- * @param Entity $entity
+ * @param \Cake\Datasource\EntityInterface $entity
  * @param array $options
  * @return string
  */
-	public function path(Entity $entity, array $options = []) {
+	public function path(EntityInterface $entity, array $options = []) {
 		$config = array_merge($this->config(), $options);
 		$path = '';
 		if (!empty($config['pathPrefix']) && is_string($config['pathPrefix'])) {
@@ -111,11 +111,11 @@ class BasePathBuilder implements PathBuilderInterface {
 /**
  * Builds the filename of under which the data gets saved in the storage adapter.
  *
- * @param \Cake\ORM\Entity $entity
+ * @param \Cake\Datasource\EntityInterface $entity
  * @param array $options
  * @return string
  */
-	public function filename(Entity $entity, array $options = []) {
+	public function filename(EntityInterface $entity, array $options = []) {
 		$config = array_merge($this->config(), $options);
 		if ($config['preserveFilename'] === true) {
 			return $this->_preserveFilename($entity, $config);
@@ -132,11 +132,11 @@ class BasePathBuilder implements PathBuilderInterface {
  *
  * The filePrefix and fileSuffix options are also supported.
  *
- * @param \Cake\ORM\Entity $entity
+ * @param \Cake\Datasource\EntityInterface $entity
  * @param array $options
  * @return string
  */
-	protected function _buildFilename(Entity $entity, array $options = []) {
+	protected function _buildFilename(EntityInterface $entity, array $options = []) {
 		$filename = $entity->id;
 		if ($options['stripUuid'] === true) {
 			$filename = $this->stripDashes($filename);
@@ -158,11 +158,11 @@ class BasePathBuilder implements PathBuilderInterface {
  *
  * This can be useful to create versions of files for example.
  *
- * @param \Cake\ORM\Entity $entity
+ * @param \Cake\Datasource\EntityInterface $entity
  * @param array $options
  * @return string
  */
-	protected function _preserveFilename(Entity $entity, array $options = []) {
+	protected function _preserveFilename(EntityInterface $entity, array $options = []) {
 		$filename = $entity['filename'];
 		if (!empty($options['filePrefix'])) {
 			$filename = $options['filePrefix'] . $entity['filename'];
@@ -177,11 +177,11 @@ class BasePathBuilder implements PathBuilderInterface {
 /**
  * Returns the path + filename.
  *
- * @param \Cake\ORM\Entity $entity
+ * @param \Cake\Datasource\EntityInterface $entity
  * @param array $options
  * @return string
  */
-	public function fullPath(Entity $entity, array $options = []) {
+	public function fullPath(EntityInterface $entity, array $options = []) {
 		return $this->path($entity, $options) . $this->filename($entity, $options);
 	}
 
@@ -191,11 +191,11 @@ class BasePathBuilder implements PathBuilderInterface {
  * This is for example important for S3 and Dropbox but also the Local adapter
  * if you symlink a folder to your webroot and allow direct access to a file.
  *
- * @param \Cake\ORM\Entity $entity
+ * @param \Cake\Datasource\EntityInterface $entity
  * @param array $options
  * @return string
  */
-	public function url(Entity $entity, array $options = []) {
+	public function url(EntityInterface $entity, array $options = []) {
 		$url = $this->path($entity) . $this->filename($entity);
 		return str_replace('\\', '/', $url);
 	}
