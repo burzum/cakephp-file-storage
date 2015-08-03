@@ -39,7 +39,7 @@ class FileStorageTable extends Table {
  *
  * @var array
  */
-	public $record = array();
+	public $record = [];
 
 /**
  * Initialize
@@ -75,12 +75,12 @@ class FileStorageTable extends Table {
  * @return boolean true on success
  */
 	public function beforeSave(Event $event, EntityInterface $entity, $options) {
-		$this->getFileInfoFromUpload($event->data['entity']);
-		$Event = $this->dispatchEvent('FileStorage.beforeSave', array(
+		$this->getFileInfoFromUpload($entity);
+		$storageEvent = $this->dispatchEvent('FileStorage.beforeSave', array(
 			'record' => $entity,
-			'storage' => $this->storageAdapter($event->data['entity']['adapter'])
+			'storage' => $this->storageAdapter($entity->get('adapter'))
 		));
-		if ($Event->isStopped()) {
+		if ($storageEvent->isStopped()) {
 			return false;
 		}
 		return true;
@@ -127,9 +127,9 @@ class FileStorageTable extends Table {
  */
 	public function afterSave(Event $event, EntityInterface $entity, $options) {
 		$this->dispatchEvent('FileStorage.afterSave', [
-			'created' => $event->data['entity']->isNew(),
+			'created' => $entity->isNew(),
 			'record' => $entity,
-			'storage' => $this->storageAdapter($event->data['entity']['adapter'])
+			'storage' => $this->storageAdapter($entity->get('adapter'))
 		]);
 		$this->deleteOldFileOnSave($entity);
 		return true;
@@ -143,10 +143,11 @@ class FileStorageTable extends Table {
  * @return boolean
  */
 	public function beforeDelete(Event $event, EntityInterface $entity) {
+		$primaryKey = $this->primaryKey();
 		$this->record = $this->find()
 			->contain([])
 			->where([
-				$this->alias() . '.' . $this->primaryKey() => $entity->{$this->primaryKey()}
+				$this->aliasField($primaryKey) => $entity->get($primaryKey)
 			])
 			->first();
 
@@ -168,7 +169,7 @@ class FileStorageTable extends Table {
 	public function afterDelete(Event $event, EntityInterface $entity, $options) {
 		$this->dispatchEvent('FileStorage.afterDelete', [
 			'record' => $entity,
-			'storage' => $this->storageAdapter($entity['adapter'])
+			'storage' => $this->storageAdapter($entity->get('adapter'))
 		]);
 		return true;
 	}
@@ -186,11 +187,12 @@ class FileStorageTable extends Table {
  * @return boolean Returns true if the old record was deleted
  */
 	public function deleteOldFileOnSave(EntityInterface $entity, $oldIdField = 'old_file_id') {
-		if (!empty($entity[$oldIdField]) && $entity['model']) {
+		if (!empty($entity->get($oldIdField)) && $entity->get('model')) {
 			$oldEntity = $this->find()
 				->contain([])
 				->where([
-					$this->alias() . '.' . $this->primaryKey() => $entity[$oldIdField], 'model' => $entity['model']
+					$this->aliasField($this->primaryKey()) => $entity->get($oldIdField),
+					'model' => $entity->get('model')
 				])
 				->first();
 			if (!empty($oldEntity)) {
