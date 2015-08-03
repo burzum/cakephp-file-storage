@@ -183,7 +183,7 @@ class FileStorageTable extends Table {
  * @return boolean Returns true if the old record was deleted
  */
 	public function deleteOldFileOnSave(EntityInterface $entity, $oldIdField = 'old_file_id') {
-		if (!empty($entity->get($oldIdField)) && $entity->get('model')) {
+		if ($entity->has($oldIdField) && $entity->has('model')) {
 			$oldEntity = $this->find()
 				->contain([])
 				->where([
