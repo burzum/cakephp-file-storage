@@ -95,25 +95,25 @@ class FileStorageTable extends Table {
  * - sets the adapter by default to local if not already set
  * - sets the model field to the table name if not already set
  *
- * @param \Cake\Datasource\EntityInterface
+ * @param array|\ArrayAccess $upload
  * @param string $field
  * @return void
  */
-	public function getFileInfoFromUpload(EntityInterface &$entity, $field = 'file') {
-		if (!empty($entity[$field]['tmp_name'])) {
-			$File = new File($entity[$field]['tmp_name']);
-			$entity['filesize'] = $File->size();
-			$entity['mime_type'] = $File->mime();
+	public function getFileInfoFromUpload(&$upload, $field = 'file') {
+		if (!empty($upload[$field]['tmp_name'])) {
+			$File = new File($upload[$field]['tmp_name']);
+			$upload['filesize'] = $File->size();
+			$upload['mime_type'] = $File->mime();
 		}
-		if (!empty($entity[$field]['name'])) {
-			$entity['extension'] = pathinfo($entity[$field]['name'], PATHINFO_EXTENSION);
-			$entity['filename'] = $entity[$field]['name'];
+		if (!empty($upload[$field]['name'])) {
+			$upload['extension'] = pathinfo($upload[$field]['name'], PATHINFO_EXTENSION);
+			$upload['filename'] = $upload[$field]['name'];
 		}
-		if (empty($entity['model'])) {
-			$entity['model'] = $this->table();
+		if (empty($upload['model'])) {
+			$upload['model'] = $this->table();
 		}
-		if (empty($entity['adapter'])) {
-			$entity['adapter'] = 'Local';
+		if (empty($upload['adapter'])) {
+			$upload['adapter'] = 'Local';
 		}
 	}
 
