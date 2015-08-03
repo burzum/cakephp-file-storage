@@ -1,6 +1,7 @@
 <?php
 namespace Burzum\FileStorage\Model\Table;
 
+use Burzum\FileStorage\Storage\PathBuilder\PathBuilderTrait;
 use Burzum\FileStorage\Storage\StorageTrait;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
@@ -18,6 +19,7 @@ use Cake\ORM\Table;
 class FileStorageTable extends Table {
 
 	use LogTrait;
+	use PathBuilderTrait;
 	use StorageTrait;
 
 /**
@@ -196,5 +198,29 @@ class FileStorageTable extends Table {
 			}
 		}
 		return false;
+	}
+
+/**
+ * Returns full file path for an entity.
+ *
+ * @param \Cake\Datasource\EntityInterface $entity
+ * @param array $options
+ * @return string
+ */
+	public function fullFilePath(EntityInterface $entity, array $options = []) {
+		$pathBuilder = $this->createPathBuilder($entity['adapter']);
+		return $pathBuilder->fullPath($entity, $options);
+	}
+
+/**
+ * Returns file url for an entity.
+ *
+ * @param \Cake\Datasource\EntityInterface $entity
+ * @param array $options
+ * @return string
+ */
+	public function fileUrl(EntityInterface $entity, array $options = []) {
+		$pathBuilder = $this->createPathBuilder($entity['adapter']);
+		return $pathBuilder->url($entity, $options);
 	}
 }
