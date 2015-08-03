@@ -9,11 +9,11 @@ namespace Burzum\FileStorage\Storage\Listener;
 use Burzum\FileStorage\Storage\StorageTrait;
 use Burzum\FileStorage\Storage\StorageUtils;
 use Cake\Core\InstanceConfigTrait;
+use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\Log\LogTrait;
 use Cake\ORM\Table;
-use Cake\ORM\Entity;
 use Cake\Utility\MergeVariablesTrait;
 use Cake\Utility\Text;
 use Cake\Filesystem\Folder;
@@ -272,11 +272,11 @@ abstract class AbstractListener implements EventListenerInterface {
  * It first checks if hashing is enabled, if it is enabled it uses the the
  * configured hashMethod to generate the hash and returns that hash.
  *
- * @param \Cake\ORM\Entity
+ * @param \Cake\Datasource\EntityInterface
  * @param string $fileField
  * @return null|string
  */
-	public function getFileHash(Entity $entity, $fileField) {
+	public function getFileHash(EntityInterface $entity, $fileField) {
 		if ($this->config('fileHash') !== false) {
 			return $this->calculateFileHash(
 				$entity[$fileField]['tmp_name'],

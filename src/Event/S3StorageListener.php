@@ -2,8 +2,6 @@
 namespace Burzum\FileStorage\Event;
 
 use Cake\Event\Event;
-use Cake\ORM\Table;
-use Cake\ORM\Entity;
 
 /**
  * S3StorageListener
@@ -91,7 +89,7 @@ class S3StorageListener extends AbstractStorageEventListener {
  * Builds the storage path for this adapter.
  *
  * @param \Cake\ORM\Table $table
- * @param \Cake\ORM\Entity $entity
+ * @param \Cake\Datasource\EntityInterface $entity
  * @return array
  */
 	public function buildPath($table, $entity) {

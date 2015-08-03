@@ -1,8 +1,6 @@
 <?php
 namespace Burzum\FileStorage\Model\Entity;
 
-use Cake\ORM\Entity;
-
 /**
  * FileStorage Entity.
  *

@@ -1,14 +1,14 @@
 <?php
 namespace Burzum\FileStorage\Storage;
 
-use \Cake\ORM\Entity;
+use \Cake\Datasource\EntityInterface;
 use \Exception;
 
 class StorageException extends Exception {
 
 	protected $_entity = null;
 
-	public function setEntity(Entity $entity) {
+	public function setEntity(EntityInterface $entity) {
 		$this->_entity = $entity;
 	}
 
