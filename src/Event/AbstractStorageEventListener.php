@@ -2,11 +2,11 @@
 namespace Burzum\FileStorage\Event;
 
 use Cake\Core\InstanceConfigTrait;
+use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\Log\LogTrait;
 use Cake\ORM\Table;
-use Cake\ORM\Entity;
 use Cake\Utility\Text;
 use Cake\Filesystem\Folder;
 use Burzum\FileStorage\Storage\StorageManager;
@@ -133,7 +133,7 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
  * Builds the path under which the data gets stored in the storage adapter.
  *
  * @param Table $table
- * @param Entity $entity
+ * @param EntityInterface $entity
  * @return string
  */
 	public function buildPath($table, $entity) {

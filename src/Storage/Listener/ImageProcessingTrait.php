@@ -6,10 +6,10 @@
  */
 namespace Burzum\FileStorage\Storage\Listener;
 
-use \Cake\Core\Configure;
-use \Cake\ORM\Entity;
-use \Burzum\Imagine\Lib\ImageProcessor;
-use \Burzum\FileStorage\Storage\StorageUtils;
+use Burzum\FileStorage\Storage\StorageUtils;
+use Burzum\Imagine\Lib\ImageProcessor;
+use Cake\Core\Configure;
+use Cake\Datasource\EntityInterface;
 
 /**
  * ImageProcessingTrait
@@ -31,11 +31,11 @@ trait ImageProcessingTrait {
  * image versions use the other methods from this trait to implement the checks
  * and behavior you need.
  *
- * @param \Cake\ORM\Entity
+ * @param \Cake\Datasource\EntityInterface
  * @param string $action `create` or `remove`
  * @return array
  */
-	public function autoProcessImageVersions(Entity $entity, $action) {
+	public function autoProcessImageVersions(EntityInterface $entity, $action) {
 		if (!in_array($action, ['create', 'remove'])) {
 			throw new \InvalidArgumentException();
 		}
@@ -108,12 +108,12 @@ trait ImageProcessingTrait {
 /**
  * Creates the image versions of an entity.
  *
- * @param \Cake\ORM\Entity $entity
+ * @param \Cake\Datasource\EntityInterface $entity
  * @param array $versions $options
  * @param array $options
  * @return array
  */
-	public function createImageVersions(Entity $entity, array $versions, array $options = []) {
+	public function createImageVersions(EntityInterface $entity, array $versions, array $options = []) {
 		$this->_checkImageVersions($entity->model, $versions);
 
 		$result = [];
@@ -151,13 +151,13 @@ trait ImageProcessingTrait {
 /**
  * Removes image versions of an entity.
  *
- * @param \Cake\ORM\Entity $entity
+ * @param \Cake\Datasource\EntityInterface $entity
  * @param array List of image version to remove for that entity.
  * @param array $versions
  * @param array $options
  * @return array
  */
-	public function removeImageVersions(Entity $entity, array $versions, array $options = []) {
+	public function removeImageVersions(EntityInterface $entity, array $versions, array $options = []) {
 		$this->_checkImageVersions($entity->model, $versions);
 
 		$result = [];
@@ -196,10 +196,10 @@ trait ImageProcessingTrait {
 /**
  * Convenience method to create ALL versions for an entity.
  *
- * @param \Cake\ORM\Entity
+ * @param \Cake\Datasource\EntityInterface
  * @return array
  */
-	public function createAllImageVersions(Entity $entity, array $options = []) {
+	public function createAllImageVersions(EntityInterface $entity, array $options = []) {
 		return $this->createImageVersions(
 			$entity,
 			$this->getAllVersionsKeysForModel($entity->model),
@@ -210,10 +210,10 @@ trait ImageProcessingTrait {
 /**
  * Convenience method to delete ALL versions for an entity.
  *
- * @param \Cake\ORM\Entity
+ * @param \Cake\Datasource\EntityInterface
  * @return array
  */
-	public function removeAllImageVersions(Entity $entity, array $options = []) {
+	public function removeAllImageVersions(EntityInterface $entity, array $options = []) {
 		return $this->removeImageVersions(
 			$entity,
 			$this->getAllVersionsKeysForModel($entity->model),

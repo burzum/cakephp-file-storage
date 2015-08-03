@@ -1,16 +1,12 @@
 <?php
 namespace Burzum\FileStorage\Model\Table;
 
-use Cake\Database\Query;
+use Burzum\FileStorage\Storage\StorageTrait;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
-use Cake\Event\EventManager;
 use Cake\Filesystem\File;
 use Cake\Log\LogTrait;
 use Cake\ORM\Table;
-use Cake\ORM\Entity;
-
-use Burzum\FileStorage\Storage\StorageTrait;
 
 /**
  * FileStorageTable
