@@ -52,10 +52,10 @@ class ImageStorageTable extends FileStorageTable {
 		if (!parent::beforeSave($event, $entity, $options)) {
 			return false;
 		}
-		$Event = $this->dispatchEvent('ImageStorage.beforeSave', array(
+		$imageEvent = $this->dispatchEvent('ImageStorage.beforeSave', array(
 			'record' => $entity
 		));
-		if ($Event->isStopped()) {
+		if ($imageEvent->isStopped()) {
 			return false;
 		}
 		return true;
@@ -71,10 +71,10 @@ class ImageStorageTable extends FileStorageTable {
  * @param array $options
  * @return boolean
  */
-	public function afterSave(\Cake\Event\Event $event, EntityInterface $entity, $options) {
+	public function afterSave(Event $event, EntityInterface $entity, $options) {
 		if ($entity->isNew()) {
 			$this->dispatchEvent('ImageStorage.afterSave', [
-				'storage' => $this->storageAdapter($entity['adapter']),
+				'storage' => $this->storageAdapter($entity->get('adapter')),
 				'record' => $entity
 			]);
 			$this->deleteOldFileOnSave($entity);
@@ -89,7 +89,7 @@ class ImageStorageTable extends FileStorageTable {
  * @param \Cake\Datasource\EntityInterface $entity
  * @return boolean
  */
-	public function beforeDelete(\Cake\Event\Event $event, EntityInterface $entity) {
+	public function beforeDelete(Event $event, EntityInterface $entity) {
 		if (!parent::beforeDelete($event, $entity)) {
 			return false;
 		}
@@ -116,10 +116,10 @@ class ImageStorageTable extends FileStorageTable {
  * @param array $options
  * @return boolean
  */
-	public function afterDelete(\Cake\Event\Event $event, EntityInterface $entity, $options) {
+	public function afterDelete(Event $event, EntityInterface $entity, $options) {
 		$this->dispatchEvent('ImageStorage.afterDelete', [
 			'record' => $entity,
-			'storage' => $this->storageAdapter($entity['adapter'])
+			'storage' => $this->storageAdapter($entity->get('adapter'))
 		]);
 		return true;
 	}
@@ -190,24 +190,24 @@ class ImageStorageTable extends FileStorageTable {
  * the plugin to a more generic one.
  *
  * @param \Cake\Datasource\EntityInterface $entity An ImageStorage database record
- * @param array $options. Options for the version.
+ * @param array $options Options for the version.
  * @return array A list of versions for this image file. Key is the version, value is the path or URL to that image.
  */
 	public function getImageVersions(EntityInterface $entity, $options = []) {
 		$versions = [];
-		$versionData = (array)Configure::read('FileStorage.imageSizes.' . $entity['model']);
+		$versionData = (array)Configure::read('FileStorage.imageSizes.' . $entity->get('model'));
 		$versionData['original'] = isset($options['originalVersion']) ? $options['originalVersion'] : 'original';
 		foreach ($versionData as $version => $data) {
-			$hash = Configure::read('FileStorage.imageHashes.' . $entity['model'] . '.' . $version);
-			$Event = $this->dispatchEvent('ImageVersion.getVersions', [
+			$hash = Configure::read('FileStorage.imageHashes.' . $entity->get('model') . '.' . $version);
+			$event = $this->dispatchEvent('ImageVersion.getVersions', [
 					'hash' => $hash,
 					'image' => $entity,
 					'version' => $version,
 					'options' => []
 				]
 			);
-			if ($Event->isStopped()) {
-				$versions[$version] = str_replace('\\', '/', $Event->data['path']);
+			if ($event->isStopped()) {
+				$versions[$version] = str_replace('\\', '/', $event->data['path']);
 			}
 		}
 		return $versions;
