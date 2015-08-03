@@ -35,7 +35,7 @@ trait PathBuilderTrait {
 			throw new RuntimeException(sprintf('Could not find path builder "%s"!', $className));
 		}
 		$pathBuilder = new $className($options);
-		if ($pathBuilder instanceof PathBuilderInterface) {
+		if (!$pathBuilder instanceof PathBuilderInterface) {
 			throw new RuntimeException(sprintf('Path builder class "%s" does not implement the PathBuilderInterface interface!', $className));
 		}
 		return $pathBuilder;
