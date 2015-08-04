@@ -1,19 +1,17 @@
 <?php
 /**
- * @author Florian Krämer
- * @copyright 2012 - 2015 Florian Krämer
+ * @author Florian Krï¿½mer
+ * @copyright 2012 - 2015 Florian Krï¿½mer
  * @license MIT
  */
 namespace Burzum\FileStorage\Storage\Listener;
 
-use Cake\Core\Configure;
 use Cake\Event\Event;
-use Cake\Filesystem\Folder;
 
 /**
  * Local FileStorage Event Listener for the CakePHP FileStorage plugin
  *
- * @author Florian Krämer
+ * @author Florian Krï¿½mer
  * @author Tomenko Yegeny
  * @license MIT
  */
@@ -25,7 +23,7 @@ class LegacyLocalFileStorageListener extends LocalListener {
  * @var array
  */
 	protected $_defaultConfig = [
-		'pathBuilder' => 'BasePath',
+		'pathBuilder' => 'Local',
 		'pathBuilderOptions' => [
 			'pathPrefix' => 'files',
 			'modelFolder' => false,

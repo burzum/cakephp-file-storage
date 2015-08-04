@@ -7,9 +7,7 @@
 namespace Burzum\FileStorage\Storage\Listener;
 
 use Burzum\FileStorage\Storage\StorageException;
-use Cake\Core\Configure;
 use Cake\Event\Event;
-use Cake\Filesystem\Folder;
 use Psr\Log\LogLevel;
 
 /**
@@ -29,7 +27,7 @@ class LocalListener extends AbstractListener {
  * @var array
  */
 	protected $_defaultConfig = [
-		'pathBuilder' => 'BasePath',
+		'pathBuilder' => 'Local',
 		'pathBuilderOptions' => [
 			'modelFolder' => true,
 		],
