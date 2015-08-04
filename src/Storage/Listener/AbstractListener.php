@@ -15,6 +15,7 @@ use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\Filesystem\Folder;
 use Cake\Log\LogTrait;
+use Cake\ORM\Table;
 use Cake\Utility\MergeVariablesTrait;
 use Cake\Utility\Text;
 
@@ -123,7 +124,9 @@ abstract class AbstractListener implements EventListenerInterface {
  */
 	protected function _checkEvent(Event $event) {
 		return (
-			$this->getAdapterClassName($event->data['record']['adapter'])
+			isset($event->data['table'])
+			&& $event->data['table'] instanceof Table
+			&& $this->getAdapterClassName($event->data['record']['adapter'])
 			&& $this->_modelFilter($event)
 		);
 	}
