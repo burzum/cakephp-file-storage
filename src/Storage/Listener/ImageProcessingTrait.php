@@ -130,12 +130,11 @@ trait ImageProcessingTrait {
 				'hash' => $this->_imageVersionHashes[$entity->model][$version],
 			];
 			try {
-				$output = $this->createTmpFile();
 				$tmpFile = $this->_tmpFile($storage, $this->pathBuilder()->fullPath($entity));
-				$this->imageProcessor()->open($tmpFile);
-				$this->imageProcessor()->batchProcess($output, $config, ['format' => $entity->extension]);
-				$storage->write($path, file_get_contents($output));
-				unlink($tmpFile);
+                $table = TableRegistry::get($entity->source());
+				$image = $table->processImage($tmpFile, null, array('format' => $entity['extension']), $config);
+
+				$storage->write($path, $image->get($entity->extension), true);
 			} catch (\Exception $e) {
 				$result[$version] = [
 					'status' => 'error',
