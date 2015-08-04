@@ -6,17 +6,17 @@
  */
 namespace Burzum\FileStorage\Storage\Listener;
 
+use Burzum\FileStorage\Storage\PathBuilder\PathBuilderTrait;
 use Burzum\FileStorage\Storage\StorageTrait;
 use Burzum\FileStorage\Storage\StorageUtils;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
+use Cake\Filesystem\Folder;
 use Cake\Log\LogTrait;
-use Cake\ORM\Table;
 use Cake\Utility\MergeVariablesTrait;
 use Cake\Utility\Text;
-use Cake\Filesystem\Folder;
 
 /**
  * AbstractListener
@@ -41,8 +41,9 @@ abstract class AbstractListener implements EventListenerInterface {
 
 	use InstanceConfigTrait;
 	use LogTrait;
-	use StorageTrait;
 	use MergeVariablesTrait;
+	use PathBuilderTrait;
+	use StorageTrait;
 
 /**
  * The adapter class
@@ -50,13 +51,6 @@ abstract class AbstractListener implements EventListenerInterface {
  * @param null|string
  */
 	protected $_adapterClass = null;
-
-/**
- * The class used to generate path and file names.
- *
- * @param string
- */
-	protected $_pathBuilder = null;
 
 /**
  * Name of the storage table class name the event listener requires the table
@@ -309,46 +303,15 @@ abstract class AbstractListener implements EventListenerInterface {
 	}
 
 /**
- * Gets the configured path builder instance.
- *
- * @return \Burzum\FileStorage\Storage\PathBuilder\BasePathBuilder
- * @throws
-	 */
-	public function pathBuilder() {
-		if (!empty($this->_pathBuilder)) {
-			return $this->_pathBuilder;
-		}
-		throw \RuntimeException(sprintf('No path builder configured! Call _constructPathBuilder() and construct one!'));
-	}
-
-/**
  * Constructs a path builder instance.
  *
  * @param string $class
  * @param array $options
- * @return \Burzum\FileStorage\Storage\PathBuilder\BasePathBuilder
- * @throws \RuntimeException
+ * @return \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
  */
-	public function _constructPathBuilder($class, array $options = []) {
-		$classname = '\Burzum\FileStorage\Storage\PathBuilder\\' . $class . 'Builder';
-		if (class_exists($classname)) {
-			$this->_pathBuilder = new $classname($options);
-			return $this->_pathBuilder;
-		}
-		$classname = '\App\Storage\PathBuilder\\' . $class . 'Builder';
-		if (class_exists($classname)) {
-			$this->_pathBuilder = new $classname($options);
-		}
-		$classname = $class;
-		if (class_exists($classname)) {
-			$this->_pathBuilder = new $classname($options);
-		}
-		if (empty($this->_pathBuilder)) {
-			throw new \RuntimeException(sprintf('Could not find path builder "%s"!', $classname));
-		}
-		if ($this->_pathBuilder instanceof \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface) {
-			return $this->_pathBuilder;
-		}
-		throw new \RuntimeException(sprintf('Path builder class "%s" does not implement the PathBuilderInterface interface!'));
+	protected function _constructPathBuilder($class, array $options = []) {
+		$pathBuilder = $this->createPathBuilder($class, $options);
+
+		return $this->pathBuilder($pathBuilder);
 	}
 }
