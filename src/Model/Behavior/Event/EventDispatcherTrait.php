@@ -25,6 +25,9 @@ trait EventDispatcherTrait {
  */
 	public function dispatchEvent($name, $data = null, $subject = null) {
 		$data['table'] = $this->_table;
+		if ($subject === null) {
+			$subject = $this->_table;
+		}
 		return $this->_dispatchEvent($name, $data, $subject);
 	}
 }

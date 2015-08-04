@@ -28,7 +28,7 @@ class LocalFileStorageListener extends AbstractStorageEventListener {
 		'\Gaufrette\Adapter\Local'
 	);
 
-/**
+	/**
  * Implemented Events
  *
  * @return array
