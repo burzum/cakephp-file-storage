@@ -1,7 +1,7 @@
 <?php
 /**
- * @author Florian Kr�mer
- * @copyright 2012 - 2015 Florian Kr�mer
+ * @author Florian Krämer
+ * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
  */
 namespace Burzum\FileStorage\Storage\Listener;
@@ -11,7 +11,7 @@ use Cake\Event\Event;
 /**
  * Local FileStorage Event Listener for the CakePHP FileStorage plugin
  *
- * @author Florian Kr�mer
+ * @author Florian Krämer
  * @author Tomenko Yegeny
  * @license MIT
  */
