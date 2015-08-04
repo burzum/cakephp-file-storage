@@ -10,6 +10,7 @@ use Burzum\FileStorage\Storage\StorageUtils;
 use Burzum\Imagine\Lib\ImageProcessor;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
+use Cake\ORM\TableRegistry;
 
 /**
  * ImageProcessingTrait
