@@ -58,9 +58,9 @@ class ImageStorageTable extends FileStorageTable {
 //		if (!parent::beforeSave($event, $entity, $options)) {
 //			return false;
 //		}
-		$imageEvent = $this->dispatchEvent('ImageStorage.beforeSave', array(
+		$imageEvent = $this->dispatchEvent('ImageStorage.beforeSave', [
 			'record' => $entity
-		));
+		]);
 		if ($imageEvent->isStopped()) {
 			return false;
 		}
@@ -80,8 +80,8 @@ class ImageStorageTable extends FileStorageTable {
 	public function afterSave(Event $event, EntityInterface $entity, $options) {
 		if ($entity->isNew()) {
 			$this->dispatchEvent('ImageStorage.afterSave', [
-				'storage' => $this->storageAdapter($entity->get('adapter')),
-				'record' => $entity
+				'record' => $entity,
+				'storage' => $this->storageAdapter($entity->get('adapter'))
 			]);
 			$this->deleteOldFileOnSave($entity);
 		}
