@@ -18,7 +18,7 @@ use Cake\Filesystem\Folder;
 class TraitTestClass extends AbstractListener {
 	use ImageProcessingTrait;
 	public $_defaultConfig = [
-		'pathBuilder' => 'LocalPath',
+		'pathBuilder' => 'Local',
 		'pathBuilderOptions' => [
 			'preserveFilename' => true
 		]
