@@ -136,6 +136,7 @@ trait ImageProcessingTrait {
 				$image = $table->processImage($tmpFile, null, array('format' => $entity['extension']), $config);
 
 				$storage->write($path, $image->get($entity->extension), true);
+                unlink($tmpFile);
 			} catch (\Exception $e) {
 				$result[$version] = [
 					'status' => 'error',
