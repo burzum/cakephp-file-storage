@@ -1,6 +1,9 @@
 <?php
 namespace Burzum\FileStorage\Model\Table;
 
+use Burzum\FileStorage\Storage\StorageTrait;
+use Burzum\FileStorage\Storage\PathBuilder\PathBuilderTrait;
+use Cake\Log\LogTrait;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
@@ -15,6 +18,9 @@ use Cake\Validation\Validation;
  */
 class ImageStorageTable extends FileStorageTable {
 
+	use LogTrait;
+	use PathBuilderTrait;
+	use StorageTrait;
 /**
  * Name
  *
