@@ -58,6 +58,8 @@ class LocalListener extends AbstractListener {
 		return [
 			'FileStorage.afterSave' => 'afterSave',
 			'FileStorage.afterDelete' => 'afterDelete',
+			'ImageStorage.afterSave' => 'afterSave',
+			'ImageStorage.afterDelete' => 'afterDelete',
 			'ImageVersion.removeVersion' => 'removeImageVersion',
 			'ImageVersion.createVersion' => 'createImageVersion'
 		];
