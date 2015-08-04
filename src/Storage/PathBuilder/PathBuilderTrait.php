@@ -1,6 +1,7 @@
 <?php
 /**
  * @author Florian Krämer
+ * @author Robert Pustułka
  * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
  */
