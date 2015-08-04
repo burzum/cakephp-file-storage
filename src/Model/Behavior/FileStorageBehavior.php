@@ -1,12 +1,12 @@
 <?php
 namespace Burzum\FileStorage\Model\Behavior;
 
+use Burzum\FileStorage\Model\Behavior\Event\EventDispatcherTrait;
 use Burzum\FileStorage\Storage\StorageTrait;
 use Burzum\FileStorage\Storage\PathBuilder\PathBuilderTrait;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventDispatcherInterface;
-use Cake\Event\EventDispatcherTrait;
 use Cake\Filesystem\File;
 use Cake\Log\LogTrait;
 use Cake\ORM\Behavior;
@@ -111,9 +111,9 @@ class FileStorageBehavior extends Behavior implements EventDispatcherInterface {
  */
 	public function afterSave(Event $event, EntityInterface $entity, $options) {
 		$this->dispatchEvent('FileStorage.afterSave', [
-			'created' => $entity->isNew(),
 			'record' => $entity,
-			'storage' => $this->storageAdapter($entity->get('adapter'))
+			'storage' => $this->storageAdapter($entity->get('adapter')),
+			'created' => $entity->isNew()
 		]);
 		$this->deleteOldFileOnSave($entity);
 		return true;
