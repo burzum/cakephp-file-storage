@@ -53,7 +53,8 @@ class LocalListenerTest extends TestCase {
 			'tmp_name' => $this->fileFixtures . 'titus.jpg'
 		];
 		$event = new Event('FileStorage.afterSave', $this->FileStorage, [
-			'record' => $entity
+			'record' => $entity,
+			'table' => $this->FileStorage
 		]);
 
 		$this->listener->expects($this->at(0))
@@ -64,7 +65,7 @@ class LocalListenerTest extends TestCase {
 			->method('write')
 			->will($this->returnValue(true));
 
-		$this->listener->afterSave($event);
+		$this->listener->afterSave($event, $entity);
 	}
 
 /**

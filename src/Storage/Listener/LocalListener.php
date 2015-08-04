@@ -7,6 +7,7 @@
 namespace Burzum\FileStorage\Storage\Listener;
 
 use Burzum\FileStorage\Storage\StorageException;
+use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Psr\Log\LogLevel;
 
@@ -74,9 +75,8 @@ class LocalListener extends AbstractListener {
  * @throws \Burzum\Filestorage\Storage\StorageException
  * @return void
  */
-	public function afterDelete(Event $event) {
+	public function afterDelete(Event $event, EntityInterface $entity) {
 		if ($this->_checkEvent($event)) {
-			$entity = $event->data['record'];
 			$path = $this->pathBuilder()->fullPath($entity);
 			try {
 				if ($this->storageAdapter($entity->adapter)->delete($path)) {
@@ -101,9 +101,8 @@ class LocalListener extends AbstractListener {
  * @param \Cake\Event\Event $event
  * @return void
  */
-	public function afterSave(Event $event) {
-		if ($this->_checkEvent($event) && $event->data['record']->isNew()) {
-			$entity = $event->data['record'];
+	public function afterSave(Event $event, EntityInterface $entity) {
+		if ($this->_checkEvent($event) && $entity->isNew()) {
 			$fileField = $this->config('fileField');
 
 			$entity['hash'] = $this->getFileHash($entity, $fileField);
@@ -134,7 +133,7 @@ class LocalListener extends AbstractListener {
 			$entity = $event->data['record'];
 			$Storage = $this->storageAdapter($entity['adapter']);
 			$Storage->write($entity['path'], file_get_contents($entity[$fileField]['tmp_name']), true);
-			$event->result = $event->subject()->save($entity, array(
+			$event->result = $event->data['table']->save($entity, array(
 				'checkRules' => false
 			));
 			return true;
