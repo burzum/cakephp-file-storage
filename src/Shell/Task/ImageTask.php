@@ -1,7 +1,7 @@
 <?php
 /**
- * @author Florian Krämer
- * @copyright 2012 - 2015 Florian Krämer
+ * @author Florian KrÃ¤mer
+ * @copyright 2012 - 2015 Florian KrÃ¤mer
  * @license MIT
  */
 namespace Burzum\FileStorage\Shell\Task;
