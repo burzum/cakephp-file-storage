@@ -30,7 +30,7 @@ class FileStorageBehavior extends Behavior implements EventDispatcherInterface {
  *
  * @var array
  */
-    protected $_defaultConfig = [
+	protected $_defaultConfig = [
 		'implementedMethods' => [
 			'getFileInfoFromUpload' => 'getFileInfoFromUpload',
 			'deleteOldFileOnSave' => 'deleteOldFileOnSave',

@@ -31,7 +31,7 @@ class ImageStorageBehavior extends Behavior implements EventDispatcherInterface 
  *
  * @var array
  */
-    protected $_defaultConfig = [
+	protected $_defaultConfig = [
 		'implementedMethods' => [
 			'validateImageSize' => 'validateImageSize',
 			'getImageVersions' => 'getImageVersions'
@@ -48,14 +48,14 @@ class ImageStorageBehavior extends Behavior implements EventDispatcherInterface 
 
 		parent::initialize($config);
 
-        //remove FileStorageBehavior afterSave and afterDelete listeners to keep BC with overwrited callbacks in old tables.
-        $fileStorageBehavior = $this->_table->behaviors()->get('FileStorage');
-        if ($fileStorageBehavior) {
-            $events = ['Model.afterSave', 'Model.afterDelete'];
-            foreach ($events as $event) {
-                $this->_eventManager->off($event, $fileStorageBehavior);
-            }
-        }
+		//remove FileStorageBehavior afterSave and afterDelete listeners to keep BC with overwrited callbacks in old tables.
+		$fileStorageBehavior = $this->_table->behaviors()->get('FileStorage');
+		if ($fileStorageBehavior) {
+			$events = ['Model.afterSave', 'Model.afterDelete'];
+			foreach ($events as $event) {
+				$this->_eventManager->off($event, $fileStorageBehavior);
+			}
+		}
 	}
 
 /**
@@ -69,7 +69,7 @@ class ImageStorageBehavior extends Behavior implements EventDispatcherInterface 
 	public function beforeSave(Event $event, EntityInterface $entity, $options) {
 		$imageEvent = $this->dispatchEvent('ImageStorage.beforeSave', [
 			'record' => $entity
-		], $this->_table);
+		]);
 		if ($imageEvent->isStopped()) {
 			return false;
 		}
@@ -91,7 +91,7 @@ class ImageStorageBehavior extends Behavior implements EventDispatcherInterface 
 			$this->dispatchEvent('ImageStorage.afterSave', [
 				'record' => $entity,
 				'storage' => $this->storageAdapter($entity->get('adapter'))
-			], $this->_table);
+			]);
 			$this->_table->deleteOldFileOnSave($entity);
 		}
 		return true;
@@ -108,7 +108,7 @@ class ImageStorageBehavior extends Behavior implements EventDispatcherInterface 
 		$imageEvent = $this->dispatchEvent('ImageStorage.beforeDelete', [
 			'record' => $this->_table->record,
 			'storage' => $this->storageAdapter($this->_table->record['adapter'])
-		], $this->_table);
+		]);
 
 		if ($imageEvent->isStopped()) {
 			return false;
@@ -131,7 +131,7 @@ class ImageStorageBehavior extends Behavior implements EventDispatcherInterface 
 		$this->dispatchEvent('ImageStorage.afterDelete', [
 			'record' => $entity,
 			'storage' => $this->storageAdapter($entity->get('adapter'))
-		], $this->_table);
+		]);
 		return true;
 	}
 
@@ -211,13 +211,11 @@ class ImageStorageBehavior extends Behavior implements EventDispatcherInterface 
 		foreach ($versionData as $version => $data) {
 			$hash = Configure::read('FileStorage.imageHashes.' . $entity->get('model') . '.' . $version);
 			$event = $this->dispatchEvent('ImageVersion.getVersions', [
-					'hash' => $hash,
-					'image' => $entity,
-					'version' => $version,
-					'options' => []
-				],
-				$this->_table
-			);
+				'hash' => $hash,
+				'image' => $entity,
+				'version' => $version,
+				'options' => []
+			]);
 			if ($event->isStopped()) {
 				$versions[$version] = str_replace('\\', '/', $event->data['path']);
 			}
