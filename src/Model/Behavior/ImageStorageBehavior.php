@@ -46,6 +46,15 @@ class ImageStorageBehavior extends Behavior implements EventDispatcherInterface 
 		$this->_eventManager = $this->_table->eventManager();
 
 		parent::initialize($config);
+
+        //remove FileStorageBehavior afterSave and afterDelete listeners to keep BC with overwrited callbacks in old tables.
+        $fileStorageBehavior = $this->_table->behaviors()->get('FileStorage');
+        if ($fileStorageBehavior) {
+            $events = ['Model.afterSave', 'Model.afterDelete'];
+            foreach ($events as $event) {
+                $this->_eventManager->off($event, $fileStorageBehavior);
+            }
+        }
 	}
 
 /**
