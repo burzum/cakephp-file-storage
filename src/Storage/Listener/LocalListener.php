@@ -72,6 +72,7 @@ class LocalListener extends AbstractListener {
  * No need to use an adapter here, just delete the whole folder using cakes Folder class
  *
  * @param \Cake\Event\Event $event
+ * @param \Cake\Datasource\EntityInterface $entity
  * @throws \Burzum\Filestorage\Storage\StorageException
  * @return void
  */
@@ -99,6 +100,7 @@ class LocalListener extends AbstractListener {
  * Save the file to the storage backend after the record was created.
  *
  * @param \Cake\Event\Event $event
+ * @param \Cake\Datasource\EntityInterface $entity
  * @return void
  */
 	public function afterSave(Event $event, EntityInterface $entity) {
