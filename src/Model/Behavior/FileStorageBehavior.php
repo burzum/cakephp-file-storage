@@ -15,6 +15,7 @@ use Cake\ORM\Behavior;
  * FileStorageTable
  *
  * @author Florian Krämer
+ * @author Robert Pustułka
  * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
  */
@@ -91,10 +92,10 @@ class FileStorageBehavior extends Behavior implements EventDispatcherInterface {
  */
 	public function beforeSave(Event $event, EntityInterface $entity, $options) {
 		$this->getFileInfoFromUpload($entity);
-		$storageEvent = $this->dispatchEvent('FileStorage.beforeSave', array(
+		$storageEvent = $this->dispatchEvent('FileStorage.beforeSave', [
 			'record' => $entity,
 			'storage' => $this->storageAdapter($entity->get('adapter'))
-		));
+		]);
 		if ($storageEvent->isStopped()) {
 			return false;
 		}

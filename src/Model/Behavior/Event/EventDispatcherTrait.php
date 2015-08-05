@@ -3,6 +3,13 @@ namespace Burzum\FileStorage\Model\Behavior\Event;
 
 use Cake\Event\EventDispatcherTrait as CakeEventDispatcherTrait;
 
+/**
+ * EventDispatcherTrait
+ *
+ * @author Robert Pustułka
+ * @copyright 2012 - 2015 Florian Krämer
+ * @license MIT
+ */
 trait EventDispatcherTrait {
 
 	use CakeEventDispatcherTrait {
