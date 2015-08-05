@@ -10,6 +10,7 @@ use Burzum\FileStorage\Storage\StorageUtils;
 use Burzum\Imagine\Lib\ImageProcessor;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
+use Cake\ORM\TableRegistry;
 
 /**
  * ImageProcessingTrait
@@ -135,7 +136,9 @@ trait ImageProcessingTrait {
 				$this->imageProcessor()->open($tmpFile);
 				$this->imageProcessor()->batchProcess($output, $config, ['format' => $entity->extension]);
 				$storage->write($path, file_get_contents($output));
+
 				unlink($tmpFile);
+				unlink($output);
 			} catch (\Exception $e) {
 				$result[$version] = [
 					'status' => 'error',
