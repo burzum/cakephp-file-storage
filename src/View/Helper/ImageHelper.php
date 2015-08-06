@@ -22,7 +22,7 @@ class ImageHelper extends Helper {
 		'Html'
 	);
 
-	/**
+/**
  * Generates an image url based on the image record data and the used Gaufrette adapter to store it
  *
  * @param array $image FileStorage array record or whatever else table that matches this helpers needs without the model, we just want the record fields

@@ -9,31 +9,31 @@ namespace Burzum\FileStorage\Storage\PathBuilder;
  */
 trait PathBuilderTrait {
 
-	/**
-	 * Local PathBuilderInterface instance.
-	 *
-	 * @var \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
-	 */
+/**
+ * Local PathBuilderInterface instance.
+ *
+ * @var \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
+ */
 	protected $_pathBuilder;
 
-	/**
-	 * Builds the path builder for given name and options.
-	 *
-	 * @param string $name
-	 * @param array $options
-	 * @param bool $renewObject
-	 * @return \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
-	 */
+/**
+ * Builds the path builder for given name and options.
+ *
+ * @param string $name
+ * @param array $options
+ * @param bool $renewObject
+ * @return \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
+ */
 	public function createPathBuilder($name, array $options = []) {
 		return PathBuilderFactory::create($name, $options);
 	}
 
-	/**
-	 * Accessor/mutator for local PathBuilderInterface instance.
-	 *
-	 * @param \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface $pathBuilder
-	 * @return \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
-	 */
+/**
+ * Accessor/mutator for local PathBuilderInterface instance.
+ *
+ * @param \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface $pathBuilder
+ * @return \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
+ */
 	public function pathBuilder(PathBuilderInterface $pathBuilder = null) {
 		if ($pathBuilder !== null) {
 			$this->_pathBuilder = $pathBuilder;
