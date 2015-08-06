@@ -7,7 +7,7 @@ use Cake\View\View;
 use Cake\View\Helper\HtmlHelper;
 use Cake\Network\Request;
 use Cake\Core\Configure;
-use Cake\Event\EventManager;
+use Cake\ORM\Entity;
 
 /**
  * S3StorageListener
@@ -57,16 +57,16 @@ class ImageHelperTest extends FileStorageTestCase {
  * @return void
  */
 	public function testImage() {
-		$image = array(
+		$image = new Entity([
 			'id' => 'e479b480-f60b-11e1-a21f-0800200c9a66',
 			'model' => 'Test',
-			'path' => 'test/path/',
+//			'path' => 'test/path/',
 			'extension' => 'jpg',
 			'adapter' => 'Local'
-		);
+		]);
 
 		$result = $this->Image->display($image, 't150');
-		$this->assertEquals($result, '<img src="/test/path/e479b480f60b11e1a21f0800200c9a66.c3f33c2a.jpg" alt=""/>');
+		$this->assertEquals($result, '<img src="/Test/5c/39/33/e479b480f60b11e1a21f0800200c9a66/e479b480f60b11e1a21f0800200c9a66.c3f33c2a.jpg" alt=""/>');
 	}
 
 /**
@@ -76,13 +76,13 @@ class ImageHelperTest extends FileStorageTestCase {
  * @return void
  */
 	public function testImageUrlInvalidArgumentException() {
-		$image = array(
+		$image = new Entity([
 			'id' => 'e479b480-f60b-11e1-a21f-0800200c9a66',
 			'model' => 'Test',
-			'path' => 'test/path/',
+//			'path' => 'test/path/',
 			'extension' => 'jpg',
 			'adapter' => 'Local'
-		);
+		]);
 		$this->Image->imageUrl($image, 'invalid-version!');
 	}
 

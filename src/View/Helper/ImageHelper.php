@@ -1,9 +1,7 @@
 <?php
 namespace Burzum\FileStorage\View\Helper;
 
-use Cake\Event\Event;
-use Cake\Event\EventManager;
-use Cake\Core\Configure;
+use Burzum\FileStorage\Storage\Image\VersionUtils;
 use Cake\View\Helper;
 
 /**
@@ -54,29 +52,7 @@ class ImageHelper extends Helper {
 			return false;
 		}
 
-		if (!empty($version)) {
-			$hash = Configure::read('FileStorage.imageHashes.' . $image['model'] . '.' . $version);
-			if (empty($hash)) {
-				throw new \InvalidArgumentException(sprintf('No valid version key (Identifier: `%s` Key: `%s`) passed!', @$image['model'], $version));
-			}
-		} else {
-			$hash = null;
-		}
-
-		$Event = new Event('FileStorage.ImageHelper.imagePath', $this, [
-				'hash' => $hash,
-				'image' => $image,
-				'version' => $version,
-				'options' => $options
-			]
-		);
-		EventManager::instance()->dispatch($Event);
-
-		if ($Event->isStopped()) {
-			return $this->normalizePath($Event->data['path']);
-		} else {
-			return false;
-		}
+		return VersionUtils::url($image, $version ? : 'original', $options);
 	}
 
 /**

@@ -8,6 +8,7 @@ namespace Burzum\FileStorage\Storage\PathBuilder;
 
 use Cake\Core\InstanceConfigTrait;
 use Cake\Datasource\EntityInterface;
+use Cake\Utility\MergeVariablesTrait;
 use Burzum\FileStorage\Storage\StorageUtils;
 
 /**
@@ -17,6 +18,7 @@ use Burzum\FileStorage\Storage\StorageUtils;
 class BasePathBuilder implements PathBuilderInterface {
 
 	use InstanceConfigTrait;
+	use MergeVariablesTrait;
 
 /**
  * Default settings.
@@ -33,7 +35,8 @@ class BasePathBuilder implements PathBuilderInterface {
 		'preserveExtension' => true,
 		'uuidFolder' => true,
 		'randomPath' => 'sha1',
-		'modelFolder' => false
+		'modelFolder' => false,
+		'urlPrefix' => '',
 	);
 
 /**
@@ -42,6 +45,7 @@ class BasePathBuilder implements PathBuilderInterface {
  * @param array $config Configuration options.
  */
 	public function __construct(array $config = []) {
+		$this->_mergeVars(['_defaultConfig']);
 		$this->config($config);
 	}
 
@@ -196,8 +200,8 @@ class BasePathBuilder implements PathBuilderInterface {
  * @return string
  */
 	public function url(EntityInterface $entity, array $options = []) {
-		$url = $this->path($entity) . $this->filename($entity);
-		return str_replace('\\', '/', $url);
+		$url = $this->path($entity, $options) . $this->filename($entity, $options);
+		return $this->_config['urlPrefix'] . str_replace('\\', '/', $url);
 	}
 
 /**
