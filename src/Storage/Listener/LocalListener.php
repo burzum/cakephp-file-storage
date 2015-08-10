@@ -166,9 +166,10 @@ class LocalListener extends AbstractListener {
 		if ($this->config('imageProcessing') !== true) {
 			return;
 		}
+		$this->_loadImageProcessingFromConfig();
 		$event->result = $this->{$method}(
 			$event->data['record'],
-			$event->data['operations']
+			$event->data['versions']
 		);
 	}
 }
