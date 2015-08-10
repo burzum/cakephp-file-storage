@@ -7,7 +7,6 @@ use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
 use Burzum\FileStorage\Storage\StorageManager;
-use Burzum\FileStorage\Model\Table\ImageStorageTable;
 
 /**
  * ImageShell
@@ -126,8 +125,8 @@ class ImageVersionShell extends Shell {
 /**
  * @inheritDoc
  */
-	public function initialize() {
-		parent::initialize();
+	public function startup() {
+		parent::startup();
 
 		$storageTable = 'Burzum/FileStorage.ImageStorage';
 		if (isset($this->params['storageTable'])) {
@@ -135,12 +134,6 @@ class ImageVersionShell extends Shell {
 		}
 
 		$this->Table = TableRegistry::get($storageTable);
-
-		if (!$this->Table instanceOf ImageStorageTable) {
-			$this->out(__d('file_storage', 'Invalid Storage Table: {0}', $storageTable));
-			$this->out(__d('file_storage', 'The table must be an instance of Burzum\FileStorage\Model\Table\ImageStorageTable or extend it!'));
-			$this->_stop();
-		}
 
 		if (isset($this->params['limit'])) {
 			if (!is_numeric($this->params['limit'])) {
@@ -163,9 +156,9 @@ class ImageVersionShell extends Shell {
 			$this->_stop();
 		}
 
-		foreach ($operations as $operation) {
+		foreach ($operations as $version => $operation) {
 			try {
-				$this->_loop($this->command, $this->args[0], array($operation));
+				$this->_loop($this->command, $this->args[0], array($version));
 			} catch (\Exception $e) {
 				$this->out($e->getMessage());
 				$this->_stop();
@@ -188,7 +181,7 @@ class ImageVersionShell extends Shell {
 		}
 
 		try {
-			$this->_loop('generate', $model, array($version => $operations));
+			$this->_loop('generate', $model, array($version));
 		} catch (\Exception $e) {
 			$this->out($e->getMessage());
 			$this->_stop();
@@ -222,9 +215,9 @@ class ImageVersionShell extends Shell {
  *
  * @param string $action
  * @param $model
- * @param array $operations
+ * @param array $versions
  */
-	protected function _loop($action, $model, $operations = []) {
+	protected function _loop($action, $model, $versions = []) {
 		if (!in_array($action, array('generate', 'remove', 'regenerate'))) {
 			$this->_stop();
 		}
@@ -236,7 +229,7 @@ class ImageVersionShell extends Shell {
 			$this->_stop();
 		}
 
-		$this->out(__d('file_storage', '{0} image file(s) will be processed' . "\n", $this->totalImageCount));
+		$this->out(__d('file_storage', '{0} image file(s) will be processed' . "\n", $totalImageCount));
 
 		$offset = 0;
 		$limit = $this->limit;
@@ -252,7 +245,8 @@ class ImageVersionShell extends Shell {
 						$payload = array(
 							'record' => $image,
 							'storage' => $Storage,
-							'operations' => $operations
+							'versions' => $versions,
+							'table' => $this->Table
 						);
 
 						if ($action == 'generate' || $action == 'regenerate') {
