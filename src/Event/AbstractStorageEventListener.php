@@ -9,6 +9,7 @@ use Cake\Log\LogTrait;
 use Cake\ORM\Table;
 use Cake\Utility\Text;
 use Cake\Filesystem\Folder;
+use Burzum\FileStorage\Storage\PathBuilder\PathBuilderTrait;
 use Burzum\FileStorage\Storage\StorageManager;
 use Burzum\FileStorage\Storage\StorageUtils;
 
@@ -35,6 +36,7 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 
 	use InstanceConfigTrait;
 	use LogTrait;
+	use PathBuilderTrait;
 
 /**
  * The adapter class
@@ -137,16 +139,9 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
  * @return string
  */
 	public function buildPath($table, $entity) {
-		$path = '';
-		if ($this->_config['tableFolder']) {
-			$path .= $table->table() . DS;
-		}
-		if ($this->_config['randomPath'] === true) {
-			$path .= StorageUtils::randomPath($entity[$table->primaryKey()]);
-		}
-		if ($this->_config['uuidFolder'] === true) {
-			$path .= $this->stripDashes($entity[$table->primaryKey()]) . DS;
-		}
+		$pathBuilder = $this->createPathBuilder($entity['adapter']);
+		$path = $pathBuilder->path($entity);
+
 		return $path;
 	}
 

@@ -129,7 +129,7 @@ class AbstractStorageEventListenerTest extends FileStorageTestCase {
 		$entity = $table->get('file-storage-1');
 
 		$result = $this->Listener->buildPath($table, $entity);
-		$this->assertEquals($result, '00' . DS . '14' . DS . '90' . DS . 'filestorage1' . DS);
+		$this->assertEquals($result, 'files' . DS . '00' . DS . '14' . DS . '90' . DS . 'filestorage1' . DS);
 	}
 
 }
