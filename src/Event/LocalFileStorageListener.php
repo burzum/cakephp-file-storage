@@ -68,19 +68,6 @@ class LocalFileStorageListener extends AbstractStorageEventListener {
 	}
 
 /**
- * Builds the path under which the data gets stored in the storage adapter
- *
- * @param Table $table
- * @param Entity $entity
- * @return string
- */
-	public function buildPath($table, $entity) {
-		$path = parent::buildPath($table, $entity);
-		// Backward compatibility
-		return 'files' . DS . $path;
-	}
-
-/**
  * afterSave
  *
  * @param Event $event
