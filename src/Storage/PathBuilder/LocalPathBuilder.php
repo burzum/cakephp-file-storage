@@ -1,6 +1,7 @@
 <?php
 /**
  * @author Florian Krämer
+ * @author Bernhard Picher
  * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
  */
