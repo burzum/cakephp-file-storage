@@ -158,7 +158,7 @@ class ImageVersionShell extends Shell {
 
 		foreach ($operations as $version => $operation) {
 			try {
-				$this->_loop($this->command, $this->args[0], array($version));
+				$this->_loop($this->command, $this->args[0], array($version => $operation));
 			} catch (\Exception $e) {
 				$this->out($e->getMessage());
 				$this->_stop();
@@ -181,7 +181,7 @@ class ImageVersionShell extends Shell {
 		}
 
 		try {
-			$this->_loop('generate', $model, array($version));
+			$this->_loop('generate', $model, array($version => $operations));
 		} catch (\Exception $e) {
 			$this->out($e->getMessage());
 			$this->_stop();
@@ -215,9 +215,9 @@ class ImageVersionShell extends Shell {
  *
  * @param string $action
  * @param $model
- * @param array $versions
+ * @param array $operations
  */
-	protected function _loop($action, $model, $versions = []) {
+	protected function _loop($action, $model, $operations = []) {
 		if (!in_array($action, array('generate', 'remove', 'regenerate'))) {
 			$this->_stop();
 		}
@@ -245,7 +245,8 @@ class ImageVersionShell extends Shell {
 						$payload = array(
 							'record' => $image,
 							'storage' => $Storage,
-							'versions' => $versions,
+							'operations' => $operations,
+							'versions' => array_keys($operations),
 							'table' => $this->Table
 						);
 
