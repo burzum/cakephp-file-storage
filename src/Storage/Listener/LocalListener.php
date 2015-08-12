@@ -125,7 +125,7 @@ class LocalListener extends AbstractListener {
 /**
  * Stores the file in the configured storage backend.
  *
- * @param $event \Cake\Event\Event $event
+ * @param \Cake\Event\Event $event
  * @throws \Burzum\Filestorage\Storage\StorageException
  * @return boolean
  */
@@ -167,6 +167,26 @@ class LocalListener extends AbstractListener {
 			return;
 		}
 
+		$versions = $this->_getVersionData($event);
+
+		$this->_loadImageProcessingFromConfig();
+		$event->result = $this->{$method}(
+			$event->data['record'],
+			$versions
+		);
+	}
+
+/**
+ * This method retrieves version names from event data.
+ * For backward compatibility version names are resolved from operations data keys because in old
+ * ImageProcessingListener operations were required in event data. ImageProcessingTrait need only
+ * version names so operations can be read from the config.
+ *
+ * @param \Cake\Event\Event $event
+ * @return array
+ */
+	protected function _getVersionData($event)
+	{
 		if (isset($event->data['versions'])) {
 			$versions = $event->data['versions'];
 		} elseif (isset($event->data['operations'])) {
@@ -175,10 +195,6 @@ class LocalListener extends AbstractListener {
 			$versions = [];
 		}
 
-		$this->_loadImageProcessingFromConfig();
-		$event->result = $this->{$method}(
-			$event->data['record'],
-			$versions
-		);
+		return $versions;
 	}
 }
