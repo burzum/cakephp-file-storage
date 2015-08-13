@@ -110,16 +110,18 @@ trait ImageProcessingTrait {
  * Creates the image versions of an entity.
  *
  * @param \Cake\Datasource\EntityInterface $entity
- * @param array $versions $options
- * @param array $options
+ * @param array $versions Versions array.
+ * @param array $options Imagine save options.
  * @return array
  */
 	public function createImageVersions(EntityInterface $entity, array $versions, array $options = []) {
 		$this->_checkImageVersions($entity->model, $versions);
 
+		$options += (array)Configure::read('FileStorage.saveOptions');
+
 		$result = [];
 		$storage = $this->storageAdapter($entity->adapter);
-		foreach ($this->_imageVersions[$entity->model] as $version => $config) {
+		foreach ($this->_imageVersions[$entity->model] as $version => $operations) {
 			if (!in_array($version, $versions)) {
 				continue;
 			}
@@ -134,7 +136,7 @@ trait ImageProcessingTrait {
 				$output = $this->createTmpFile();
 				$tmpFile = $this->_tmpFile($storage, $this->pathBuilder()->fullPath($entity));
 				$this->imageProcessor()->open($tmpFile);
-				$this->imageProcessor()->batchProcess($output, $config, ['format' => $entity->extension]);
+				$this->imageProcessor()->batchProcess($output, $operations, ['format' => $entity->extension] + $options);
 				$storage->write($path, file_get_contents($output));
 
 				unlink($tmpFile);
