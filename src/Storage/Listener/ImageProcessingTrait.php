@@ -138,7 +138,7 @@ trait ImageProcessingTrait {
 				if ($options['overwrite'] || !$storage->has($path)) {
 					$saveOptions = $options + ['format' => $entity->extension];
 					if (isset($operations['_output'])) {
-						$saveOptions += $operations['_output'];
+						$saveOptions = $operations['_output'] + $saveOptions;
 						unset($operations['_output']);
 					}
 					unset($saveOptions['overwrite']);
