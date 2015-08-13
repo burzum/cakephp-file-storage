@@ -15,6 +15,7 @@ use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\Filesystem\Folder;
 use Cake\Log\LogTrait;
+use Cake\ORM\Table;
 use Cake\Utility\MergeVariablesTrait;
 use Cake\Utility\Text;
 
@@ -51,18 +52,6 @@ abstract class AbstractListener implements EventListenerInterface {
  * @param null|string
  */
 	protected $_adapterClass = null;
-
-/**
- * Name of the storage table class name the event listener requires the table
- * instances to extend.
- *
- * This information is important to know when to use the event callbacks or not.
- *
- * Must be \FileStorage\Model\Table\FileStorageTable or \FileStorage\Model\Table\ImageStorageTable
- *
- * @var string
- */
-	public $storageTableClass = '\Burzum\FileStorage\Model\Table\FileStorageTable';
 
 /**
  * List of adapter classes the event listener can work with
@@ -126,13 +115,6 @@ abstract class AbstractListener implements EventListenerInterface {
 	public function initialize($config) {}
 
 /**
- * Implemented Events
- *
- * @return array
- */
-	abstract public function implementedEvents();
-
-/**
  * Check if the event is of a type or subject object of type model we want to
  * process with this listener.
  *
@@ -141,15 +123,9 @@ abstract class AbstractListener implements EventListenerInterface {
  * @return boolean
  */
 	protected function _checkEvent(Event $event) {
-		$classes = [
-			'\Burzum\FileStorage\Model\Table\FileStorageTable',
-			'\Burzum\FileStorage\Model\Table\ImageStorageTable'
-		];
-		if (!in_array($this->storageTableClass, $classes)) {
-			throw new \InvalidArgumentException(sprintf('Invalid storage table `%s`! Table must be FileStorage or ImageStorage or extend one of both!', $this->storageTableClass));
-		}
 		return (
-			$this->_checkTable($event)
+			isset($event->data['table'])
+			&& $event->data['table'] instanceof Table
 			&& $this->getAdapterClassName($event->data['record']['adapter'])
 			&& $this->_modelFilter($event)
 		);
@@ -169,16 +145,6 @@ abstract class AbstractListener implements EventListenerInterface {
 			}
 		}
 		return true;
-	}
-
-/**
- * Checks if the events subject is a model and extending FileStorage or ImageStorage.
- *
- * @param Event $event
- * @return boolean
- */
-	protected function _checkTable(Event $event) {
-		return ($event->subject() instanceOf $this->storageTableClass);
 	}
 
 /**

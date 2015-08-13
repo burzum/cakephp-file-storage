@@ -1,8 +1,7 @@
 <?php
-namespace Burzum\FileStorage\Test\TestCase\Model\Table;
+namespace Burzum\FileStorage\Test\TestCase\Model\Behavior;
 
 use Cake\Event\Event;
-use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
 use Burzum\FileStorage\TestSuite\FileStorageTestCase;
 
@@ -13,7 +12,7 @@ use Burzum\FileStorage\TestSuite\FileStorageTestCase;
  * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
  */
-class FileStorageTest extends FileStorageTestCase {
+class FileStorageBehaviorTest extends FileStorageTestCase {
 
 /**
  * Fixtures
@@ -32,6 +31,7 @@ class FileStorageTest extends FileStorageTestCase {
 	public function setUp() {
 		parent::setUp();
 		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
+		$this->FileStorageBehavior = $this->FileStorage->behaviors()->get('FileStorage');
 	}
 
 /**
@@ -42,6 +42,7 @@ class FileStorageTest extends FileStorageTestCase {
 	public function tearDown() {
 		parent::tearDown();
 		unset($this->FileStorage);
+		unset($this->FileStorageBehavior);
 		TableRegistry::clear();
 	}
 
@@ -53,7 +54,7 @@ class FileStorageTest extends FileStorageTestCase {
 	public function testBeforeDelete() {
 		$entity = $this->FileStorage->get('file-storage-1');
 		$event = new Event('Model.beforeDelete', $this->FileStorage);
-		$this->FileStorage->beforeDelete($event, $entity);
+		$this->FileStorageBehavior->beforeDelete($event, $entity);
 		$this->assertEquals($this->FileStorage->record, $entity);
 	}
 
@@ -69,7 +70,7 @@ class FileStorageTest extends FileStorageTestCase {
 			'record' => $entity,
 			'adapter' => 'Local'
 		]);
-		$result = $this->FileStorage->afterDelete($event, $entity, []);
+		$result = $this->FileStorageBehavior->afterDelete($event, $entity, []);
 		$this->assertTrue($result);
 	}
 }

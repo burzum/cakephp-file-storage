@@ -1,5 +1,5 @@
 <?php
-namespace Burzum\FileStorage\Test\TestCase\Model\Table;
+namespace Burzum\FileStorage\Test\TestCase\Model\Behavior;
 
 use Burzum\FileStorage\Lib\FileStorageUtils;
 use Burzum\FileStorage\Lib\StorageManager;
@@ -19,7 +19,7 @@ use Burzum\FileStorage\TestSuite\FileStorageTestCase;
  * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
  */
-class ImageStorageTest extends FileStorageTestCase {
+class ImageStorageBehaviorTest extends FileStorageTestCase {
 
 /**
  * Fixtures

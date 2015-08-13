@@ -141,10 +141,10 @@ class BasePathBuilder implements PathBuilderInterface {
 		if ($options['stripUuid'] === true) {
 			$filename = $this->stripDashes($filename);
 		}
+		if (!empty($options['fileSuffix'])) {
+			$filename = $filename . $options['fileSuffix'];
+		}
 		if ($options['preserveExtension'] === true) {
-			if (!empty($options['fileSuffix'])) {
-				$filename = $filename . $options['fileSuffix'];
-			}
 			$filename = $filename . '.' . $entity['extension'];
 		}
 		if (!empty($options['filePrefix'])) {
@@ -169,7 +169,10 @@ class BasePathBuilder implements PathBuilderInterface {
 		}
 		if (!empty($options['fileSuffix'])) {
 			$split = $this->splitFilename($filename, true);
-			$filename = $split['filename'] . $options['fileSuffix'] . $split['extension'];
+			$filename = $split['filename'] . $options['fileSuffix'];
+			if ($options['preserveExtension'] === true) {
+				$filename .= $split['extension'];
+			}
 		}
 		return $filename;
 	}

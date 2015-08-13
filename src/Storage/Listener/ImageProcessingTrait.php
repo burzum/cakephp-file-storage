@@ -10,7 +10,6 @@ use Burzum\FileStorage\Storage\StorageUtils;
 use Burzum\Imagine\Lib\ImageProcessor;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
-use Cake\ORM\TableRegistry;
 
 /**
  * ImageProcessingTrait
@@ -22,6 +21,7 @@ trait ImageProcessingTrait {
 	protected $_imageProcessor = null;
 	protected $_imageVersions = [];
 	protected $_imageVersionHashes = [];
+	protected $_defaultOutput = [];
 
 /**
  * Convenience method to auto create ALL and auto remove ALL image versions for
@@ -56,6 +56,7 @@ trait ImageProcessingTrait {
 	protected function _loadImageProcessingFromConfig() {
 		$this->_imageVersions = (array)Configure::read('FileStorage.imageSizes');
 		$this->_imageVersionHashes = StorageUtils::generateHashes();
+		$this->_defaultOutput = (array)Configure::read('FileStorage.defaultOutput');
 	}
 
 /**
@@ -110,35 +111,49 @@ trait ImageProcessingTrait {
  * Creates the image versions of an entity.
  *
  * @param \Cake\Datasource\EntityInterface $entity
- * @param array $versions $options
- * @param array $options
+ * @param array $versions Versions array.
+ * @param array $options Imagine save options.
  * @return array
  */
 	public function createImageVersions(EntityInterface $entity, array $versions, array $options = []) {
 		$this->_checkImageVersions($entity->model, $versions);
 
+		$options += $this->_defaultOutput + [
+			'overwrite' => true
+		];
+
 		$result = [];
 		$storage = $this->storageAdapter($entity->adapter);
-		foreach ($this->_imageVersions[$entity->model] as $version => $config) {
+		foreach ($this->_imageVersions[$entity->model] as $version => $operations) {
 			if (!in_array($version, $versions)) {
 				continue;
 			}
-			$hash = $this->getImageVersionHash($entity->model, $version);
-			$path = $this->pathBuilder()->fullPath($entity, ['fileSuffix' => '.' . $hash]);
-			$result[$version] = [
-				'status' => 'success',
-				'path' => $path,
-				'hash' => $this->_imageVersionHashes[$entity->model][$version],
-			];
-			try {
-				$output = $this->createTmpFile();
-				$tmpFile = $this->_tmpFile($storage, $this->pathBuilder()->fullPath($entity));
-				$this->imageProcessor()->open($tmpFile);
-				$this->imageProcessor()->batchProcess($output, $config, ['format' => $entity->extension]);
-				$storage->write($path, file_get_contents($output));
+			$saveOptions = $options + ['format' => $entity->extension];
+			if (isset($operations['_output'])) {
+				$saveOptions = $operations['_output'] + $saveOptions;
+				unset($operations['_output']);
+			}
 
-				unlink($tmpFile);
-				unlink($output);
+			$path = $this->imageVersionPath($entity, $version, 'fullPath', $saveOptions);
+
+			try {
+				if ($options['overwrite'] || !$storage->has($path)) {
+					unset($saveOptions['overwrite']);
+
+					$output = $this->createTmpFile();
+					$tmpFile = $this->_tmpFile($storage, $this->pathBuilder()->fullPath($entity));
+					$this->imageProcessor()->open($tmpFile);
+					$this->imageProcessor()->batchProcess($output, $operations, $saveOptions);
+					$storage->write($path, file_get_contents($output), true);
+
+					unlink($tmpFile);
+					unlink($output);
+				}
+				$result[$version] = [
+					'status' => 'success',
+					'path' => $path,
+					'hash' => $this->getImageVersionHash($entity->model, $version)
+				];
 			} catch (\Exception $e) {
 				$result[$version] = [
 					'status' => 'error',
@@ -222,5 +237,29 @@ trait ImageProcessingTrait {
 			$this->getAllVersionsKeysForModel($entity->model),
 			$options
 		);
+	}
+
+/**
+ * Generates image version path / url / filename, etc.
+ *
+ * @param \Cake\Datasource\EntityInterface $entity Image entity.
+ * @param string $version Version name
+ * @param string $type Path type
+ * @param array $options PathBuilder options
+ * @return string
+ */
+	public function imageVersionPath(EntityInterface $entity, $version, $type = 'fullPath', $options = []) {
+		$hash = $this->getImageVersionHash($entity->model, $version);
+
+		$output = $this->_defaultOutput + ['format' => $entity->extension];
+		$operations = $this->_imageVersions[$entity->model][$version];
+		if (isset($operations['_output'])) {
+			$output = $operations['_output'] + $output;
+		}
+
+		return $this->pathBuilder()->{$type}($entity, $options + [
+			'preserveExtension' => false,
+			'fileSuffix' => '.' . $hash . '.' . $output['format']
+		]);
 	}
 }
