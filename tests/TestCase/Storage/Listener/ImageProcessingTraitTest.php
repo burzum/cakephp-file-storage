@@ -114,7 +114,7 @@ class ImageProcessingTraitTest extends FileStorageTestCase {
 				'hash' => '41e51a3f'
 			]
 		];
-		$this->assertEquals($result, $expected);
+		$this->assertEquals($expected, $result);
 		$this->assertFileExists($this->testPath . '95' . DS . '61' . DS . '80' . DS . 'filestorage3' . DS . 'titus.20876bcd.jpg');
 		$this->assertFileExists($this->testPath . '95' . DS . '61' . DS . '80' . DS . 'filestorage3' . DS . 'titus.41e51a3f.jpg');
 

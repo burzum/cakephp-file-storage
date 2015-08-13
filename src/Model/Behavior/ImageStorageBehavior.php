@@ -1,47 +1,62 @@
 <?php
-namespace Burzum\FileStorage\Model\Table;
+namespace Burzum\FileStorage\Model\Behavior;
 
+use Burzum\FileStorage\Model\Behavior\Event\EventDispatcherTrait;
 use Burzum\FileStorage\Storage\StorageTrait;
 use Burzum\FileStorage\Storage\PathBuilder\PathBuilderTrait;
-use Cake\Log\LogTrait;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
+use Cake\Event\EventDispatcherInterface;
+use Cake\Log\LogTrait;
+use Cake\ORM\Behavior;
 use Cake\Validation\Validation;
 
 /**
- * ImageStorageTable
+ * ImageStorageBehavior
+ * Works alongside FileStorageBehavior so make sure you add both of them in your tables.
  *
  * @author Florian Krämer
+ * @author Robert Pustułka
  * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
- * @deprecated 3.1.0 Use ImageStorageBehavior in your tables instead.
  */
-class ImageStorageTable extends FileStorageTable {
+class ImageStorageBehavior extends Behavior implements EventDispatcherInterface {
+
+	use EventDispatcherTrait;
+	use LogTrait;
+	use PathBuilderTrait;
+	use StorageTrait;
 
 /**
- * Name
  *
- * @var string
+ * @var array
  */
-	public $name = 'ImageStorage';
+	protected $_defaultConfig = [
+		'implementedMethods' => [
+			'validateImageSize' => 'validateImageSize',
+			'getImageVersions' => 'getImageVersions'
+		]
+	];
 
 /**
- * Initialize
  *
  * @param array $config
  * @return void
  */
 	public function initialize(array $config) {
+		$this->_eventManager = $this->_table->eventManager();
+
 		parent::initialize($config);
-		$this->addBehavior('Burzum/Imagine.Imagine');
-		$this->addBehavior('Burzum/FileStorage.UploadValidator', array(
-			'localFile' => false,
-			'validate' => true,
-			'allowedExtensions' => array(
-				'jpg', 'jpeg', 'png', 'gif'
-			)
-		));
+
+		//remove FileStorageBehavior afterSave and afterDelete listeners to keep BC with overwrited callbacks in old tables.
+		$fileStorageBehavior = $this->_table->behaviors()->get('FileStorage');
+		if ($fileStorageBehavior) {
+			$events = ['Model.afterSave', 'Model.afterDelete'];
+			foreach ($events as $event) {
+				$this->_eventManager->off($event, $fileStorageBehavior);
+			}
+		}
 	}
 
 /**
@@ -53,15 +68,12 @@ class ImageStorageTable extends FileStorageTable {
  * @return boolean true on success
  */
 	public function beforeSave(Event $event, EntityInterface $entity, $options) {
-		if (!parent::beforeSave($event, $entity, $options)) {
-			return false;
-		}
 		$imageEvent = $this->dispatchEvent('ImageStorage.beforeSave', [
 			'record' => $entity
 		]);
 		if ($imageEvent->isStopped()) {
 			return false;
-}
+		}
 		return true;
 	}
 
@@ -81,7 +93,7 @@ class ImageStorageTable extends FileStorageTable {
 				'record' => $entity,
 				'storage' => $this->storageAdapter($entity->get('adapter'))
 			]);
-			$this->deleteOldFileOnSave($entity);
+			$this->_table->deleteOldFileOnSave($entity);
 		}
 		return true;
 	}
@@ -94,13 +106,9 @@ class ImageStorageTable extends FileStorageTable {
  * @return boolean
  */
 	public function beforeDelete(Event $event, EntityInterface $entity) {
-		if (!parent::beforeDelete($event, $entity)) {
-			return false;
-		}
-
 		$imageEvent = $this->dispatchEvent('ImageStorage.beforeDelete', [
-			'record' => $this->record,
-			'storage' => $this->storageAdapter($this->record['adapter'])
+			'record' => $this->_table->record,
+			'storage' => $this->storageAdapter($this->_table->record['adapter'])
 		]);
 
 		if ($imageEvent->isStopped()) {
@@ -158,7 +166,7 @@ class ImageStorageTable extends FileStorageTable {
 			}
 		}
 
-		$imageSizes = $this->getImageSize($imageFile);
+		$imageSizes = $this->_table->getImageSize($imageFile);
 
 		if (isset($options['height'])) {
 			$height = Validation::comparison($imageSizes[1], $options['height'][0], $options['height'][1]);
@@ -204,12 +212,11 @@ class ImageStorageTable extends FileStorageTable {
 		foreach ($versionData as $version => $data) {
 			$hash = Configure::read('FileStorage.imageHashes.' . $entity->get('model') . '.' . $version);
 			$event = $this->dispatchEvent('ImageVersion.getVersions', [
-					'hash' => $hash,
-					'image' => $entity,
-					'version' => $version,
-					'options' => []
-				]
-			);
+				'hash' => $hash,
+				'image' => $entity,
+				'version' => $version,
+				'options' => []
+			]);
 			if ($event->isStopped()) {
 				$versions[$version] = str_replace('\\', '/', $event->data['path']);
 			}

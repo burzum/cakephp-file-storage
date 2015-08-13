@@ -6,6 +6,7 @@
  */
 namespace Burzum\FileStorage\Storage\Listener;
 
+use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 
 /**
@@ -36,23 +37,21 @@ class LegacyLocalFileStorageListener extends LocalListener {
  * Save the file to the storage backend after the record was created.
  *
  * @param \Cake\Event\Event $event
+ * @param \Cake\Datasource\EntityInterface $entity
  * @return void
  */
-	public function afterSave(Event $event) {
-		if ($this->_checkEvent($event) && $event->data['record']->isNew()) {
-			if ($this->_checkEvent($event) && $event->data['record']->isNew()) {
-				$entity = $event->data['record'];
-				$fileField = $this->config('fileField');
+	public function afterSave(Event $event, EntityInterface $entity) {
+		if ($this->_checkEvent($event) && $entity->isNew()) {
+			$fileField = $this->config('fileField');
 
-				$this->entity['hash'] = $this->getHash($entity, $fileField);
-				$entity['path'] = $this->pathBuilder()->path($entity);
+			$entity['hash'] = $this->getHash($entity, $fileField);
+			$entity['path'] = $this->pathBuilder()->path($entity);
 
-				if (!$this->_storeFile($entity)) {
-					return;
-				}
-
-				$event->stopPropagation();
+			if (!$this->_storeFile($entity)) {
+				return;
 			}
+
+			$event->stopPropagation();
 		}
 	}
 }

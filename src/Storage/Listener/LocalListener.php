@@ -7,6 +7,7 @@
 namespace Burzum\FileStorage\Storage\Listener;
 
 use Burzum\FileStorage\Storage\StorageException;
+use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Psr\Log\LogLevel;
 
@@ -61,7 +62,9 @@ class LocalListener extends AbstractListener {
 			'ImageStorage.afterSave' => 'afterSave',
 			'ImageStorage.afterDelete' => 'afterDelete',
 			'ImageVersion.removeVersion' => 'removeImageVersion',
-			'ImageVersion.createVersion' => 'createImageVersion'
+			'ImageVersion.createVersion' => 'createImageVersion',
+			'ImageVersion.getVersions' => 'imagePath',
+			'FileStorage.ImageHelper.imagePath' => 'imagePath' // deprecated
 		];
 	}
 
@@ -71,12 +74,12 @@ class LocalListener extends AbstractListener {
  * No need to use an adapter here, just delete the whole folder using cakes Folder class
  *
  * @param \Cake\Event\Event $event
+ * @param \Cake\Datasource\EntityInterface $entity
  * @throws \Burzum\Filestorage\Storage\StorageException
  * @return void
  */
-	public function afterDelete(Event $event) {
+	public function afterDelete(Event $event, EntityInterface $entity) {
 		if ($this->_checkEvent($event)) {
-			$entity = $event->data['record'];
 			$path = $this->pathBuilder()->fullPath($entity);
 			try {
 				if ($this->storageAdapter($entity->adapter)->delete($path)) {
@@ -99,11 +102,11 @@ class LocalListener extends AbstractListener {
  * Save the file to the storage backend after the record was created.
  *
  * @param \Cake\Event\Event $event
+ * @param \Cake\Datasource\EntityInterface $entity
  * @return void
  */
-	public function afterSave(Event $event) {
-		if ($this->_checkEvent($event) && $event->data['record']->isNew()) {
-			$entity = $event->data['record'];
+	public function afterSave(Event $event, EntityInterface $entity) {
+		if ($this->_checkEvent($event) && $entity->isNew()) {
 			$fileField = $this->config('fileField');
 
 			$entity['hash'] = $this->getFileHash($entity, $fileField);
@@ -114,7 +117,8 @@ class LocalListener extends AbstractListener {
 			}
 
 			if ($this->_config['imageProcessing'] === true) {
-				$this->autoProcessImageVersions($entity, 'create');
+				$options = isset($event->data['options']) ? $event->data['options'] : [];
+				$this->autoProcessImageVersions($entity, 'create', $options);
 			}
 
 			$event->stopPropagation();
@@ -122,9 +126,39 @@ class LocalListener extends AbstractListener {
 	}
 
 /**
+ * Generates the path the image url / path for viewing it in a browser depending on the storage adapter
+ *
+ * @param \Cake\Event\Event $event
+ * @throws \InvalidArgumentException
+ * @return void
+ */
+	public function imagePath(Event $event) {
+		$data = $event->data + [
+			'image' => null,
+			'version' => null,
+			'options' => [],
+			'pathType' => 'fullPath'
+		];
+
+		$entity = $data['image'];
+		$version = $data['version'];
+		$options = $data['options'];
+		$type = $data['pathType'];
+
+		if (!$entity) {
+			throw new \InvalidArgumentException('No image entity provided.');
+		}
+
+		$this->_loadImageProcessingFromConfig();
+		$event->data['path'] = $this->imageVersionPath($entity, $version, $type, $options);
+
+		$event->stopPropagation();
+	}
+
+/**
  * Stores the file in the configured storage backend.
  *
- * @param $event \Cake\Event\Event $event
+ * @param \Cake\Event\Event $event
  * @throws \Burzum\Filestorage\Storage\StorageException
  * @return boolean
  */
@@ -134,7 +168,7 @@ class LocalListener extends AbstractListener {
 			$entity = $event->data['record'];
 			$Storage = $this->storageAdapter($entity['adapter']);
 			$Storage->write($entity['path'], file_get_contents($entity[$fileField]['tmp_name']), true);
-			$event->result = $event->subject()->save($entity, array(
+			$event->result = $event->data['table']->save($entity, array(
 				'checkRules' => false
 			));
 			return true;
@@ -165,9 +199,37 @@ class LocalListener extends AbstractListener {
 		if ($this->config('imageProcessing') !== true) {
 			return;
 		}
+
+		$versions = $this->_getVersionData($event);
+		$options = isset($event->data['options']) ? $event->data['options'] : [];
+
+		$this->_loadImageProcessingFromConfig();
 		$event->result = $this->{$method}(
 			$event->data['record'],
-			$event->data['operations']
+			$versions,
+			$options
 		);
+	}
+
+/**
+ * This method retrieves version names from event data.
+ * For backward compatibility version names are resolved from operations data keys because in old
+ * ImageProcessingListener operations were required in event data. ImageProcessingTrait need only
+ * version names so operations can be read from the config.
+ *
+ * @param \Cake\Event\Event $event
+ * @return array
+ */
+	protected function _getVersionData($event)
+	{
+		if (isset($event->data['versions'])) {
+			$versions = $event->data['versions'];
+		} elseif (isset($event->data['operations'])) {
+			$versions = array_keys($event->data['operations']);
+		} else {
+			$versions = [];
+		}
+
+		return $versions;
 	}
 }

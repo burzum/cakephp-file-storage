@@ -198,7 +198,7 @@ class ImageStorageTest extends FileStorageTestCase {
 		$result = $this->Image->validateImageSize($file, ['height' => ['<', 100]]);
 		$this->assertFalse($result);
 	}
-	
+
 /**
  * testDeleteOldFileOnSave
  *

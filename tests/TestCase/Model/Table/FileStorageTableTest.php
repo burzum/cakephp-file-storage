@@ -1,8 +1,7 @@
 <?php
-namespace Burzum\FileStorage\Test\TestCase\Model\Table;
+namespace Burzum\FileStorage\Test\TestCase\Model\Behavior;
 
 use Cake\Event\Event;
-use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
 use Burzum\FileStorage\TestSuite\FileStorageTestCase;
 
@@ -13,7 +12,7 @@ use Burzum\FileStorage\TestSuite\FileStorageTestCase;
  * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
  */
-class FileStorageTest extends FileStorageTestCase {
+class FileStorageTableTest extends FileStorageTestCase {
 
 /**
  * Fixtures
@@ -42,6 +41,7 @@ class FileStorageTest extends FileStorageTestCase {
 	public function tearDown() {
 		parent::tearDown();
 		unset($this->FileStorage);
+		unset($this->FileStorageBehavior);
 		TableRegistry::clear();
 	}
 
