@@ -72,7 +72,7 @@ class ImageVersionShell extends Shell {
 						'keep-old-versions' => [
 							'short' => 'k',
 							'help' => __d('file_storage', 'Use this switch if you do not want to overwrite existing versions.'),
-							'bool' => true
+							'boolean' => true
 						]
 					],
 				],
@@ -123,7 +123,7 @@ class ImageVersionShell extends Shell {
 						'keep-old-versions' => [
 							'short' => 'k',
 							'help' => __d('file_storage', 'Use this switch if you do not want to overwrite existing versions.'),
-							'bool' => true
+							'boolean' => true
 						]
 					],
 				],
