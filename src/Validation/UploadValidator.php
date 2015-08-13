@@ -34,7 +34,7 @@ class UploadValidator extends Validator {
  *
  * @var string
  */
-	protected $_fileSize = 0;
+	protected $_filesize = 0;
 
 /**
  * Upload error message.
@@ -89,8 +89,8 @@ class UploadValidator extends Validator {
  * @return boolean
  */
 	public function fileSize($value, $size, $operator = '>') {
-		$this->_fileSize = $value['size'];
-		return $this->_validateSize($value['size'], $operator, $size);
+		$this->_filesize = $value['size'];
+		return Validation::fileSize($value, $operator, $size);
 	}
 
 /**
