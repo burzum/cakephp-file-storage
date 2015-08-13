@@ -85,11 +85,13 @@ class UploadValidator extends Validator {
  * Validates the filesize.
  *
  * @param array $value.
- * @param array $extensions.
+ * @param int $size.
+ * @param array $context.
+ * @param string $operator.
  * @return boolean
  */
-	public function fileSize($value, $size, $operator = '>') {
-		$this->_filesize = $value['size'];
+	public function fileSize($value, $size, $context = null, $operator = '<') {
+		$this->_filesize = $value['size']; 
 		return Validation::fileSize($value, $operator, $size);
 	}
 
