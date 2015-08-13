@@ -128,19 +128,19 @@ trait ImageProcessingTrait {
 				continue;
 			}
 			$hash = $this->getImageVersionHash($entity->model, $version);
-			$path = $this->pathBuilder()->fullPath($entity, ['fileSuffix' => '.' . $hash]);
-			$result[$version] = [
-				'status' => 'success',
-				'path' => $path,
-				'hash' => $this->_imageVersionHashes[$entity->model][$version],
-			];
+			$saveOptions = $options + ['format' => $entity->extension];
+			if (isset($operations['_output'])) {
+				$saveOptions = $operations['_output'] + $saveOptions;
+				unset($operations['_output']);
+			}
+
+			$path = $this->pathBuilder()->fullPath($entity, [
+				'preserveExtension' => false,
+				'fileSuffix' => '.' . $hash . '.' . $saveOptions['format']
+			]);
+
 			try {
 				if ($options['overwrite'] || !$storage->has($path)) {
-					$saveOptions = $options + ['format' => $entity->extension];
-					if (isset($operations['_output'])) {
-						$saveOptions = $operations['_output'] + $saveOptions;
-						unset($operations['_output']);
-					}
 					unset($saveOptions['overwrite']);
 
 					$output = $this->createTmpFile();
@@ -152,6 +152,11 @@ trait ImageProcessingTrait {
 					unlink($tmpFile);
 					unlink($output);
 				}
+				$result[$version] = [
+					'status' => 'success',
+					'path' => $path,
+					'hash' => $hash,
+				];
 			} catch (\Exception $e) {
 				$result[$version] = [
 					'status' => 'error',
