@@ -12,7 +12,7 @@ use Burzum\FileStorage\TestSuite\FileStorageTestCase;
  * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
  */
-class FileStorageBehaviorTest extends FileStorageTestCase {
+class FileStorageTableTest extends FileStorageTestCase {
 
 /**
  * Fixtures
@@ -31,7 +31,6 @@ class FileStorageBehaviorTest extends FileStorageTestCase {
 	public function setUp() {
 		parent::setUp();
 		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
-		$this->FileStorageBehavior = $this->FileStorage->behaviors()->get('FileStorage');
 	}
 
 /**
@@ -54,7 +53,7 @@ class FileStorageBehaviorTest extends FileStorageTestCase {
 	public function testBeforeDelete() {
 		$entity = $this->FileStorage->get('file-storage-1');
 		$event = new Event('Model.beforeDelete', $this->FileStorage);
-		$this->FileStorageBehavior->beforeDelete($event, $entity);
+		$this->FileStorage->beforeDelete($event, $entity);
 		$this->assertEquals($this->FileStorage->record, $entity);
 	}
 
@@ -70,7 +69,7 @@ class FileStorageBehaviorTest extends FileStorageTestCase {
 			'record' => $entity,
 			'adapter' => 'Local'
 		]);
-		$result = $this->FileStorageBehavior->afterDelete($event, $entity, []);
+		$result = $this->FileStorage->afterDelete($event, $entity, []);
 		$this->assertTrue($result);
 	}
 }

@@ -1,5 +1,5 @@
 <?php
-namespace Burzum\FileStorage\Test\TestCase\Model\Behavior;
+namespace Burzum\FileStorage\Test\TestCase\Model\Table;
 
 use Burzum\FileStorage\Lib\FileStorageUtils;
 use Burzum\FileStorage\Lib\StorageManager;
@@ -19,7 +19,7 @@ use Burzum\FileStorage\TestSuite\FileStorageTestCase;
  * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
  */
-class ImageStorageBehaviorTest extends FileStorageTestCase {
+class ImageStorageTest extends FileStorageTestCase {
 
 /**
  * Fixtures
@@ -198,7 +198,7 @@ class ImageStorageBehaviorTest extends FileStorageTestCase {
 		$result = $this->Image->validateImageSize($file, ['height' => ['<', 100]]);
 		$this->assertFalse($result);
 	}
-	
+
 /**
  * testDeleteOldFileOnSave
  *
