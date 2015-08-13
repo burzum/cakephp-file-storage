@@ -115,7 +115,8 @@ class LocalListener extends AbstractListener {
 			}
 
 			if ($this->_config['imageProcessing'] === true) {
-				$this->autoProcessImageVersions($entity, 'create');
+				$options = isset($event->data['options']) ? $event->data['options'] : [];
+				$this->autoProcessImageVersions($entity, 'create', $options);
 			}
 
 			$event->stopPropagation();
@@ -168,11 +169,13 @@ class LocalListener extends AbstractListener {
 		}
 
 		$versions = $this->_getVersionData($event);
+		$options = isset($event->data['options']) ? $event->data['options'] : [];
 
 		$this->_loadImageProcessingFromConfig();
 		$event->result = $this->{$method}(
 			$event->data['record'],
-			$versions
+			$versions,
+			$options
 		);
 	}
 

@@ -117,7 +117,9 @@ trait ImageProcessingTrait {
 	public function createImageVersions(EntityInterface $entity, array $versions, array $options = []) {
 		$this->_checkImageVersions($entity->model, $versions);
 
-		$options += (array)Configure::read('FileStorage.saveOptions');
+		$options += (array)Configure::read('FileStorage.saveOptions') + [
+			'overwrite' => true
+		];
 
 		$result = [];
 		$storage = $this->storageAdapter($entity->adapter);
@@ -133,14 +135,19 @@ trait ImageProcessingTrait {
 				'hash' => $this->_imageVersionHashes[$entity->model][$version],
 			];
 			try {
-				$output = $this->createTmpFile();
-				$tmpFile = $this->_tmpFile($storage, $this->pathBuilder()->fullPath($entity));
-				$this->imageProcessor()->open($tmpFile);
-				$this->imageProcessor()->batchProcess($output, $operations, ['format' => $entity->extension] + $options);
-				$storage->write($path, file_get_contents($output), true);
+				if ($options['overwrite'] || !$storage->has($path)) {
+					$saveOptions = ['format' => $entity->extension] + $options;
+					unset($saveOptions['overwrite']);
 
-				unlink($tmpFile);
-				unlink($output);
+					$output = $this->createTmpFile();
+					$tmpFile = $this->_tmpFile($storage, $this->pathBuilder()->fullPath($entity));
+					$this->imageProcessor()->open($tmpFile);
+					$this->imageProcessor()->batchProcess($output, $operations, $saveOptions);
+					$storage->write($path, file_get_contents($output), true);
+
+					unlink($tmpFile);
+					unlink($output);
+				}
 			} catch (\Exception $e) {
 				$result[$version] = [
 					'status' => 'error',

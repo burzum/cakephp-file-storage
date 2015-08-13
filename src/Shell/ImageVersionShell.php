@@ -69,6 +69,11 @@ class ImageVersionShell extends Shell {
 							'short' => 'l',
 							'help' => __d('file_storage', 'Limits the amount of records to be processed in one batch'),
 						],
+						'keep-old-versions' => [
+							'short' => 'k',
+							'help' => __d('file_storage', 'Use this switch if you do not want to overwrite existing versions.'),
+							'bool' => true
+						]
 					],
 				],
 			],
@@ -115,6 +120,11 @@ class ImageVersionShell extends Shell {
 							'short' => 'l',
 							'help' => __d('file_storage', 'Limits the amount of records to be processed in one batch'),
 						],
+						'keep-old-versions' => [
+							'short' => 'k',
+							'help' => __d('file_storage', 'Use this switch if you do not want to overwrite existing versions.'),
+							'bool' => true
+						]
 					],
 				],
 			],
@@ -150,6 +160,9 @@ class ImageVersionShell extends Shell {
  */
 	public function regenerate() {
 		$operations = Configure::read('FileStorage.imageSizes.' . $this->args[0]);
+		$options = [
+			'overwrite' => !$this->params['keep-old-versions']
+		];
 
 		if (empty($operations)) {
 			$this->out(__d('file_storage', 'Invalid table or version.'));
@@ -158,7 +171,7 @@ class ImageVersionShell extends Shell {
 
 		foreach ($operations as $version => $operation) {
 			try {
-				$this->_loop($this->command, $this->args[0], array($version => $operation));
+				$this->_loop($this->command, $this->args[0], array($version => $operation), $options);
 			} catch (\Exception $e) {
 				$this->out($e->getMessage());
 				$this->_stop();
@@ -174,6 +187,9 @@ class ImageVersionShell extends Shell {
  */
 	public function generate($model, $version) {
 		$operations = Configure::read('FileStorage.imageSizes.' . $model . '.' . $version);
+		$options = [
+			'overwrite' => !$this->params['keep-old-versions']
+		];
 
 		if (empty($operations)) {
 			$this->out(__d('file_storage', 'Invalid table or version.'));
@@ -181,7 +197,7 @@ class ImageVersionShell extends Shell {
 		}
 
 		try {
-			$this->_loop('generate', $model, array($version => $operations));
+			$this->_loop('generate', $model, array($version => $operations), $options);
 		} catch (\Exception $e) {
 			$this->out($e->getMessage());
 			$this->_stop();
@@ -217,7 +233,7 @@ class ImageVersionShell extends Shell {
  * @param $model
  * @param array $operations
  */
-	protected function _loop($action, $model, $operations = []) {
+	protected function _loop($action, $model, $operations = [], $options = []) {
 		if (!in_array($action, array('generate', 'remove', 'regenerate'))) {
 			$this->_stop();
 		}
@@ -247,7 +263,8 @@ class ImageVersionShell extends Shell {
 							'storage' => $Storage,
 							'operations' => $operations,
 							'versions' => array_keys($operations),
-							'table' => $this->Table
+							'table' => $this->Table,
+							'options' => $options
 						);
 
 						if ($action == 'generate' || $action == 'regenerate') {
