@@ -19,10 +19,6 @@ use Cake\Validation\Validation;
  */
 class ImageStorageTable extends FileStorageTable {
 
-	use LogTrait;
-	use PathBuilderTrait;
-	use StorageTrait;
-
 /**
  * Name
  *
