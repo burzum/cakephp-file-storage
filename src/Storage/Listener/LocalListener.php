@@ -133,10 +133,21 @@ class LocalListener extends AbstractListener {
  * @return void
  */
 	public function imagePath(Event $event) {
-		$entity = $event->data['image'];
-		$version = $event->data['version'];
-		$options = $event->data['options'];
-		$type = isset($event->data['pathType']) ? $event->data['pathType'] : 'fullPath';
+		$data = $event->data + [
+			'image' => null,
+			'version' => null,
+			'options' => [],
+			'pathType' => 'fullPath'
+		];
+
+		$entity = $data['image'];
+		$version = $data['version'];
+		$options = $data['options'];
+		$type = $data['pathType'];
+
+		if (!$entity) {
+			throw new \InvalidArgumentException('No image entity provided.');
+		}
 
 		$this->_loadImageProcessingFromConfig();
 		$event->data['path'] = $this->imageVersionPath($entity, $version, $type, $options);
