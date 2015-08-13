@@ -128,8 +128,8 @@ class LocalListener extends AbstractListener {
 /**
  * Generates the path the image url / path for viewing it in a browser depending on the storage adapter
  *
- * @param Event $event
- * @throws RuntimeException
+ * @param \Cake\Event\Event $event
+ * @throws \InvalidArgumentException
  * @return void
  */
 	public function imagePath(Event $event) {

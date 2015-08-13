@@ -10,7 +10,6 @@ use Burzum\FileStorage\Storage\StorageUtils;
 use Burzum\Imagine\Lib\ImageProcessor;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
-use Cake\ORM\TableRegistry;
 
 /**
  * ImageProcessingTrait
@@ -24,7 +23,7 @@ trait ImageProcessingTrait {
 	protected $_imageVersionHashes = [];
 	protected $_defaultOutput = [];
 
-	/**
+/**
  * Convenience method to auto create ALL and auto remove ALL image versions for
  * an entity.
  *
@@ -243,7 +242,7 @@ trait ImageProcessingTrait {
 /**
  * Generates image version path / url / filename, etc.
  *
- * @param EntityInterface $entity Image entity.
+ * @param \Cake\Datasource\EntityInterface $entity Image entity.
  * @param string $version Version name
  * @param string $type Path type
  * @param array $options PathBuilder options
