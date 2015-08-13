@@ -134,7 +134,7 @@ trait ImageProcessingTrait {
 				unset($operations['_output']);
 			}
 
-			$path = $this->imageVersionPath($entity, $version, $saveOptions);
+			$path = $this->imageVersionPath($entity, $version, 'fullPath', $saveOptions);
 
 			try {
 				if ($options['overwrite'] || !$storage->has($path)) {
@@ -257,7 +257,7 @@ trait ImageProcessingTrait {
 			$output = $operations['_output'] + $output;
 		}
 
-		return $this->pathBuilder()->$type($entity, $options + [
+		return $this->pathBuilder()->{$type}($entity, $options + [
 			'preserveExtension' => false,
 			'fileSuffix' => '.' . $hash . '.' . $output['format']
 		]);

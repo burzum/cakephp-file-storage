@@ -169,7 +169,10 @@ class BasePathBuilder implements PathBuilderInterface {
 		}
 		if (!empty($options['fileSuffix'])) {
 			$split = $this->splitFilename($filename, true);
-			$filename = $split['filename'] . $options['fileSuffix'] . $split['extension'];
+			$filename = $split['filename'] . $options['fileSuffix'];
+			if ($options['preserveExtension'] === true) {
+				$filename .= $split['extension'];
+			}
 		}
 		return $filename;
 	}
