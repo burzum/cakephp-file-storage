@@ -117,7 +117,7 @@ trait ImageProcessingTrait {
 	public function createImageVersions(EntityInterface $entity, array $versions, array $options = []) {
 		$this->_checkImageVersions($entity->model, $versions);
 
-		$options += (array)Configure::read('FileStorage.saveOptions') + [
+		$options += (array)Configure::read('FileStorage.defaultOutput') + [
 			'overwrite' => true
 		];
 
@@ -136,7 +136,11 @@ trait ImageProcessingTrait {
 			];
 			try {
 				if ($options['overwrite'] || !$storage->has($path)) {
-					$saveOptions = ['format' => $entity->extension] + $options;
+					$saveOptions = $options + ['format' => $entity->extension];
+					if (isset($operations['_output'])) {
+						$saveOptions += $operations['_output'];
+						unset($operations['_output']);
+					}
 					unset($saveOptions['overwrite']);
 
 					$output = $this->createTmpFile();
