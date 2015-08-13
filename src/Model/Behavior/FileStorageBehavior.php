@@ -12,7 +12,7 @@ use Cake\Log\LogTrait;
 use Cake\ORM\Behavior;
 
 /**
- * FileStorageTable
+ * FileStorageBehavior
  *
  * @author Florian Krämer
  * @author Robert Pustułka

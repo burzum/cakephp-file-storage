@@ -13,7 +13,8 @@ use Cake\ORM\Behavior;
 use Cake\Validation\Validation;
 
 /**
- * FileStorageTable
+ * ImageStorageBehavior
+ * Works alongside FileStorageBehavior so make sure you add both of them in your tables.
  *
  * @author Florian Krämer
  * @author Robert Pustułka

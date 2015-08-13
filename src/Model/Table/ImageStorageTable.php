@@ -7,6 +7,7 @@ namespace Burzum\FileStorage\Model\Table;
  * @author Florian Krämer
  * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
+ * @deprecated 3.1.0 Use ImageStorageBehavior in your tables instead.
  */
 class ImageStorageTable extends FileStorageTable {
 
