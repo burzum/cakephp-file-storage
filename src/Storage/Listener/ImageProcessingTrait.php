@@ -137,7 +137,7 @@ trait ImageProcessingTrait {
 				$tmpFile = $this->_tmpFile($storage, $this->pathBuilder()->fullPath($entity));
 				$this->imageProcessor()->open($tmpFile);
 				$this->imageProcessor()->batchProcess($output, $operations, ['format' => $entity->extension] + $options);
-				$storage->write($path, file_get_contents($output));
+				$storage->write($path, file_get_contents($output), true);
 
 				unlink($tmpFile);
 				unlink($output);
