@@ -63,11 +63,12 @@ class ImageHelper extends Helper {
 			$hash = null;
 		}
 
-		$Event = new Event('FileStorage.ImageHelper.imagePath', $this, [
+		$Event = new Event('ImageVersion.getVersions', $this, [
 				'hash' => $hash,
 				'image' => $image,
 				'version' => $version,
-				'options' => $options
+				'options' => $options,
+				'pathType' => 'url'
 			]
 		);
 		EventManager::instance()->dispatch($Event);

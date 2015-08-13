@@ -62,7 +62,9 @@ class LocalListener extends AbstractListener {
 			'ImageStorage.afterSave' => 'afterSave',
 			'ImageStorage.afterDelete' => 'afterDelete',
 			'ImageVersion.removeVersion' => 'removeImageVersion',
-			'ImageVersion.createVersion' => 'createImageVersion'
+			'ImageVersion.createVersion' => 'createImageVersion',
+			'ImageVersion.getVersions' => 'imagePath',
+			'FileStorage.ImageHelper.imagePath' => 'imagePath' // deprecated
 		];
 	}
 
@@ -121,6 +123,25 @@ class LocalListener extends AbstractListener {
 
 			$event->stopPropagation();
 		}
+	}
+
+/**
+ * Generates the path the image url / path for viewing it in a browser depending on the storage adapter
+ *
+ * @param Event $event
+ * @throws RuntimeException
+ * @return void
+ */
+	public function imagePath(Event $event) {
+		$entity = $event->data['image'];
+		$version = $event->data['version'];
+		$options = $event->data['options'];
+		$type = isset($event->data['pathType']) ? $event->data['pathType'] : 'fullPath';
+
+		$this->_loadImageProcessingFromConfig();
+		$event->data['path'] = $this->imageVersionPath($entity, $version, $type, $options);
+
+		$event->stopPropagation();
 	}
 
 /**

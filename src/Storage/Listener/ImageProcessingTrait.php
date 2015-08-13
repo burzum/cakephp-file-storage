@@ -22,8 +22,9 @@ trait ImageProcessingTrait {
 	protected $_imageProcessor = null;
 	protected $_imageVersions = [];
 	protected $_imageVersionHashes = [];
+	protected $_defaultOutput = [];
 
-/**
+	/**
  * Convenience method to auto create ALL and auto remove ALL image versions for
  * an entity.
  *
@@ -56,6 +57,7 @@ trait ImageProcessingTrait {
 	protected function _loadImageProcessingFromConfig() {
 		$this->_imageVersions = (array)Configure::read('FileStorage.imageSizes');
 		$this->_imageVersionHashes = StorageUtils::generateHashes();
+		$this->_defaultOutput = (array)Configure::read('FileStorage.defaultOutput');
 	}
 
 /**
@@ -117,7 +119,7 @@ trait ImageProcessingTrait {
 	public function createImageVersions(EntityInterface $entity, array $versions, array $options = []) {
 		$this->_checkImageVersions($entity->model, $versions);
 
-		$options += (array)Configure::read('FileStorage.defaultOutput') + [
+		$options += $this->_defaultOutput + [
 			'overwrite' => true
 		];
 
@@ -127,17 +129,13 @@ trait ImageProcessingTrait {
 			if (!in_array($version, $versions)) {
 				continue;
 			}
-			$hash = $this->getImageVersionHash($entity->model, $version);
 			$saveOptions = $options + ['format' => $entity->extension];
 			if (isset($operations['_output'])) {
 				$saveOptions = $operations['_output'] + $saveOptions;
 				unset($operations['_output']);
 			}
 
-			$path = $this->pathBuilder()->fullPath($entity, [
-				'preserveExtension' => false,
-				'fileSuffix' => '.' . $hash . '.' . $saveOptions['format']
-			]);
+			$path = $this->imageVersionPath($entity, $version, $saveOptions);
 
 			try {
 				if ($options['overwrite'] || !$storage->has($path)) {
@@ -155,7 +153,7 @@ trait ImageProcessingTrait {
 				$result[$version] = [
 					'status' => 'success',
 					'path' => $path,
-					'hash' => $hash,
+					'hash' => $this->getImageVersionHash($entity->model, $version)
 				];
 			} catch (\Exception $e) {
 				$result[$version] = [
@@ -240,5 +238,29 @@ trait ImageProcessingTrait {
 			$this->getAllVersionsKeysForModel($entity->model),
 			$options
 		);
+	}
+
+/**
+ * Generates image version path / url / filename, etc.
+ *
+ * @param EntityInterface $entity Image entity.
+ * @param string $version Version name
+ * @param string $type Path type
+ * @param array $options PathBuilder options
+ * @return string
+ */
+	public function imageVersionPath(EntityInterface $entity, $version, $type = 'fullPath', $options = []) {
+		$hash = $this->getImageVersionHash($entity->model, $version);
+
+		$output = $this->_defaultOutput + ['format' => $entity->extension];
+		$operations = $this->_imageVersions[$entity->model][$version];
+		if (isset($operations['_output'])) {
+			$output = $operations['_output'] + $output;
+		}
+
+		return $this->pathBuilder()->$type($entity, $options + [
+			'preserveExtension' => false,
+			'fileSuffix' => '.' . $hash . '.' . $output['format']
+		]);
 	}
 }
