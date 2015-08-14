@@ -88,10 +88,10 @@ class UploadValidator extends Validator {
  * @param int $size.
  * @param array $context.
  * @param string $operator.
- * @return boolean
+ * @return bool
  */
 	public function fileSize($value, $size, $context = null, $operator = '<') {
-		$this->_filesize = $value['size']; 
+		$this->_filesize = $value['size'];
 		return Validation::fileSize($value, $operator, $size);
 	}
 
