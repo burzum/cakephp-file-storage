@@ -92,4 +92,29 @@ class FileStorageTest extends FileStorageTestCase {
 		$result = $this->FileStorage->afterDelete($event, $entity, []);
 		$this->assertTrue($result);
 	}
+
+/**
+ * testBeforeMarshal
+ *
+ * @return void
+ */
+	public function testBeforeMarshal() {
+		$filename = \Cake\Core\Plugin::path('Burzum/FileStorage') . DS . 'tests' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg';
+		$event = new Event('Model.beforeMarshal', $this->FileStorage);
+
+		$data = new \ArrayObject([
+			'file' => [
+				'name' => 'titus.jpg',
+				'tmp_name' => $filename
+			]
+		]);
+
+		$this->FileStorage->beforeMarshal($event, $data);
+
+		$this->assertEquals(332643, $data['filesize']);
+		$this->assertEquals('Local', $data['adapter']);
+		$this->assertEquals('image/jpeg', $data['mime_type']);
+		$this->assertEquals('jpg', $data['extension']);
+		$this->assertEquals('file_storage', $data['model']);
+	}
 }
