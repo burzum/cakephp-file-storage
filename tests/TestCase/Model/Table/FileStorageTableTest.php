@@ -72,4 +72,28 @@ class FileStorageTableTest extends FileStorageTestCase {
 		$result = $this->FileStorage->afterDelete($event, $entity, []);
 		$this->assertTrue($result);
 	}
+
+/**
+ * testGetFileInfoFromUpload
+ *
+ * @return void
+ */
+	public function testGetFileInfoFromUpload() {
+		$filename = \Cake\Core\Plugin::path('Burzum/FileStorage') . DS . 'tests' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg';
+
+		$data = new \ArrayObject([
+			'file' => [
+				'name' => 'titus.jpg',
+				'tmp_name' => $filename
+			]
+		]);
+
+		$this->FileStorage->getFileInfoFromUpload($data);
+
+		$this->assertEquals(332643, $data['filesize']);
+		$this->assertEquals('Local', $data['adapter']);
+		$this->assertEquals('image/jpeg', $data['mime_type']);
+		$this->assertEquals('jpg', $data['extension']);
+		$this->assertEquals('file_storage', $data['model']);
+	}
 }

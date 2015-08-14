@@ -122,7 +122,7 @@ class FileStorageTable extends Table {
 			$upload['filename'] = $upload[$field]['name'];
 		}
 		if (empty($upload['model'])) {
-			$upload['model'] = $this->_table->table();
+			$upload['model'] = $this->table();
 		}
 		if (empty($upload['adapter'])) {
 			$upload['adapter'] = 'Local';
