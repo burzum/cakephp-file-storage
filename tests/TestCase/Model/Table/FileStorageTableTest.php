@@ -72,4 +72,32 @@ class FileStorageTableTest extends FileStorageTestCase {
 		$result = $this->FileStorage->afterDelete($event, $entity, []);
 		$this->assertTrue($result);
 	}
+
+/**
+ * Testing a complete save call
+ *
+ * @link https://github.com/burzum/cakephp-file-storage/issues/85
+ * @return void
+ */
+	public function testFileSaving() {
+		$entity = $this->FileStorage->newEntity([
+			'model' => 'Document',
+			'adapter' => 'Local',
+			'file' => [
+				'error' => UPLOAD_ERR_OK,
+				'size' => filesize($this->fileFixtures . 'titus.jpg'),
+				'type' => 'image/jpeg',
+				'name' => 'tituts.jpg',
+				'tmp_name' => $this->fileFixtures . 'titus.jpg'
+			]
+		]);
+		$this->FileStorage->configureUploadValidation([
+			'allowedExtensions' => ['jpg'],
+			'validateUploadArray' => true,
+			'localFile' => true,
+			'validateUploadErrors' => true
+		]);
+		$this->FileStorage->save($entity);
+		$this->assertEquals($entity->errors(), []);
+	}
 }
