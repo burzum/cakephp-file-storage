@@ -230,7 +230,6 @@ class FileStorageTable extends Table {
  */
 	public function dispatchEvent($name, $data = null, $subject = null) {
 		$data['table'] = $this;
-
 		return parent::dispatchEvent($name, $data, $subject);
 	}
 }

@@ -1,17 +1,18 @@
 <?php
 namespace Burzum\FileStorage\TestSuite;
 
+use Burzum\FileStorage\Storage\Listener\LocalListener;
 use Cake\Core\Configure;
-use Cake\ORM\TableRegistry;
-use Cake\TestSuite\TestCase;
-use Cake\Filesystem\Folder;
-use Cake\Filesystem\File;
 use Cake\Core\Plugin;
 use Cake\Event\EventManager;
-use Burzum\FileStorage\Lib\StorageManager;
-use Burzum\FileStorage\Storage\StorageUtils;
+use Cake\Filesystem\Folder;
+use Cake\Filesystem\File;
+use Cake\ORM\TableRegistry;
+use Cake\TestSuite\TestCase;
 use Burzum\FileStorage\Event\ImageProcessingListener;
 use Burzum\FileStorage\Event\LocalFileStorageListener;
+use Burzum\FileStorage\Storage\StorageManager;
+use Burzum\FileStorage\Storage\StorageUtils;
 
 /**
  * FileStorageTestCase
@@ -89,6 +90,7 @@ class FileStorageTestCase extends TestCase {
 	protected function _setupListeners() {
 		$this->listeners['ImageProcessingListener'] = new ImageProcessingListener();
 		$this->listeners['LocalFileStorageListener'] = new LocalFileStorageListener();
+		$this->listeners['LocalListener'] = new LocalListener();
 		EventManager::instance()->on($this->listeners['ImageProcessingListener']);
 		EventManager::instance()->on($this->listeners['LocalFileStorageListener']);
 	}

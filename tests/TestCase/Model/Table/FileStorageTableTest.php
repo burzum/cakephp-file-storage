@@ -2,6 +2,7 @@
 namespace Burzum\FileStorage\Test\TestCase\Model\Behavior;
 
 use Cake\Event\Event;
+use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
 use Burzum\FileStorage\TestSuite\FileStorageTestCase;
 
@@ -80,24 +81,33 @@ class FileStorageTableTest extends FileStorageTestCase {
  * @return void
  */
 	public function testFileSaving() {
-		$entity = $this->FileStorage->newEntity([
-			'model' => 'Document',
-			'adapter' => 'Local',
-			'file' => [
-				'error' => UPLOAD_ERR_OK,
-				'size' => filesize($this->fileFixtures . 'titus.jpg'),
-				'type' => 'image/jpeg',
-				'name' => 'tituts.jpg',
-				'tmp_name' => $this->fileFixtures . 'titus.jpg'
-			]
-		]);
-		$this->FileStorage->configureUploadValidation([
-			'allowedExtensions' => ['jpg'],
-			'validateUploadArray' => true,
-			'localFile' => true,
-			'validateUploadErrors' => true
-		]);
-		$this->FileStorage->save($entity);
-		$this->assertEquals($entity->errors(), []);
+		$listenersToTest = [
+			'LocalListener',
+		];
+		$results = [];
+		foreach ($listenersToTest as $listener) {
+			$this->_removeListeners();
+			EventManager::instance()->on($this->listeners[$listener]);
+			$entity = $this->FileStorage->newEntity([
+				'model' => 'Document',
+				'adapter' => 'Local',
+				'file' => [
+					'error' => UPLOAD_ERR_OK,
+					'size' => filesize($this->fileFixtures . 'titus.jpg'),
+					'type' => 'image/jpeg',
+					'name' => 'tituts.jpg',
+					'tmp_name' => $this->fileFixtures . 'titus.jpg'
+				]
+			]);
+			$this->FileStorage->configureUploadValidation([
+				'allowedExtensions' => ['jpg'],
+				'validateUploadArray' => true,
+				'localFile' => true,
+				'validateUploadErrors' => true
+			]);
+			$this->FileStorage->save($entity);
+			$this->assertEquals($entity->errors(), []);
+			$results[] = $entity;
+		}
 	}
 }
