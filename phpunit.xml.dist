@@ -38,6 +38,7 @@
 				<directory>./tests</directory>
 				<directory>./src/Model/Entity</directory>
 				<directory>./src/Event</directory>
+				<directory>./src/Lib</directory>
 			</exclude>
 		</whitelist>
 	</filter>
