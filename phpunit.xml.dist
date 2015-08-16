@@ -29,13 +29,15 @@
 		</listener>
 	</listeners>
 
-	<!-- Add a filter to make sure we don't count venders and Tests in the coverage report -->
+	<!-- Add a filter to make sure we don't count vendors and Tests in the coverage report -->
 	<filter>
 		<whitelist>
 			<directory suffix=".php">./src</directory>
 			<exclude>
 				<directory>./vendor</directory>
 				<directory>./tests</directory>
+				<directory>./src/Model/Entity</directory>
+				<directory>./src/Event</directory>
 			</exclude>
 		</whitelist>
 	</filter>
