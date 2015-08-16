@@ -47,7 +47,7 @@ class FileStorageTestCase extends TestCase {
 		$this->fileFixtures = Plugin::path('Burzum/FileStorage') . 'tests' . DS . 'Fixture' . DS . 'File' . DS;
 
 		if (!is_dir($this->testPath)) {
-			$Folder = new Folder($this->testPath, true);
+			mkdir($this->testPath);
 		}
 
 		Configure::write('FileStorage.basePath', $this->testPath);

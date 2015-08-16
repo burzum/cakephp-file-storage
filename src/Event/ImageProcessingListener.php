@@ -282,7 +282,6 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 				if (!empty($operations)) {
 					$this->_createVersions($table, $record, $operations);
 				}
-
 				$table->data = $data;
 			} catch (\Exception $e) {
 				$this->log($e->getMessage());
