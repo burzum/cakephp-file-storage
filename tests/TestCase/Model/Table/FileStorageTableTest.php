@@ -1,5 +1,5 @@
 <?php
-namespace Burzum\FileStorage\Test\TestCase\Model\Behavior;
+namespace Burzum\FileStorage\Test\TestCase\Model\Table;
 
 use Cake\Event\Event;
 use Cake\Event\EventManager;

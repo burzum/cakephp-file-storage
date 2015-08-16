@@ -19,7 +19,7 @@ use Burzum\FileStorage\TestSuite\FileStorageTestCase;
  * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
  */
-class ImageStorageTest extends FileStorageTestCase {
+class ImageStorageTableTest extends FileStorageTestCase {
 
 /**
  * Fixtures
