@@ -139,8 +139,8 @@ class FileStorageTable extends Table {
  */
 	public function afterSave(Event $event, EntityInterface $entity, $options) {
 		$this->dispatchEvent('FileStorage.afterSave', [
-			'created' => $event->data['entity']->isNew(),
 			'record' => $entity,
+			'created' => $event->data['entity']->isNew(),
 			'storage' => $this->storageAdapter($entity['adapter'])
 		]);
 		$this->deleteOldFileOnSave($entity);

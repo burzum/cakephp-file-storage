@@ -105,8 +105,7 @@ class LocalListener extends AbstractListener {
  * @param \Cake\Datasource\EntityInterface $entity
  * @return void
  */
-	public function afterSave(Event $event) {
-		$entity = $event->data['record'];
+	public function afterSave(Event $event, EntityInterface $entity) {
 		if ($this->_checkEvent($event) && $entity->isNew()) {
 			$fileField = $this->config('fileField');
 
