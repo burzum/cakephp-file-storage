@@ -13,7 +13,7 @@ tools:
         enabled: true
         excluded_dirs: [vendor, tests, config, docs]
 filter:
-    paths: [src/Event/*, src/Lib/*]
+    excluded_paths: [src/Event/, src/Lib/]
 build:
     tests:
         override:
