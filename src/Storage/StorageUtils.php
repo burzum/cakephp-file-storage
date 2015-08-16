@@ -1,6 +1,7 @@
 <?php
 namespace Burzum\FileStorage\Storage;
 
+use Burzum\FileStorage\Storage\PathBuilder\BasePathBuilder;
 use Cake\Core\Configure;
 use Cake\Filesystem\File;
 
@@ -38,6 +39,7 @@ class StorageUtils {
  * Works up to 5 level deep
  *
  * @deprecated Use the randomPath() method from the BasePathBuilder instead.
+ * @link http://php.net/manual/en/function.crc32.php
  * @link https://www.box.com/blog/crc32-checksums-the-good-the-bad-and-the-ugly/
  * @throws InvalidArgumentException
  * @param mixed $string
@@ -48,14 +50,7 @@ class StorageUtils {
 		if (!$string) {
 			throw new \InvalidArgumentException('First argument is not a string!');
 		}
-		$string = crc32($string);
-		$decrement = 0;
-		$path = null;
-		for ($i = 0; $i < $level; $i++) {
-			$decrement = $decrement - 2;
-			$path .= sprintf("%02d" . DS, substr(str_pad('', 2 * $level, '0') . $string, $decrement, 2));
-		}
-		return $path;
+		return (new BasePathBuilder())->randomPath($string, $level, 'crc32');
 	}
 
 /**

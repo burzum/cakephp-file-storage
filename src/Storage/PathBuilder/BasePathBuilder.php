@@ -216,18 +216,57 @@ class BasePathBuilder implements PathBuilderInterface {
 	public function randomPath($string, $level = 3, $method = 'sha1') {
 		// Keeping this for backward compatibility but please stop using crc32()!
 		if ($method === 'crc32') {
-			return StorageUtils::randomPath($string);
+			return $this->_randomPathCrc32($string, $level);
 		}
 		if ($method === 'sha1') {
-			$result = sha1($string);
-			$randomString = '';
-			$counter = 0;
-			for ($i = 1; $i <= $level; $i++) {
-				$counter = $counter + 2;
-				$randomString .= substr($result, $counter, 2) . DS;
-			}
-			return $randomString;
+			return $this->_randomPathSha1($string, $level);
 		}
+		if (method_exists($this, $method)) {
+			return $this->{$method}($string, $level);
+		}
+	}
+
+/**
+ * Creates a semi-random path based on a string.
+ *
+ * Please STOP USING CR32! See the huge warning on the php documentation page.
+ * of the crc32() function.
+ *
+ * @link http://php.net/manual/en/function.crc32.php
+ * @link https://www.box.com/blog/crc32-checksums-the-good-the-bad-and-the-ugly/
+ * @param string $string Input string
+ * @param int $level Depth of the path to generate.
+ * @return string
+ */
+	protected function _randomPathCrc32($string, $level) {
+		$string = crc32($string);
+		$decrement = 0;
+		$path = null;
+		for ($i = 0; $i < $level; $i++) {
+			$decrement = $decrement - 2;
+			$path .= sprintf("%02d" . DS, substr(str_pad('', 2 * $level, '0') . $string, $decrement, 2));
+		}
+		return $path;
+	}
+
+/**
+ * Creates a semi-random path based on a string.
+ *
+ * Makes it possible to overload this functionality.
+ *
+ * @param string $string Input string
+ * @param int $level Depth of the path to generate.
+ * @return string
+ */
+	protected function _randomPathSha1($string, $level) {
+		$result = sha1($string);
+		$randomString = '';
+		$counter = 0;
+		for ($i = 1; $i <= $level; $i++) {
+			$counter = $counter + 2;
+			$randomString .= substr($result, $counter, 2) . DS;
+		}
+		return $randomString;
 	}
 
 /**
