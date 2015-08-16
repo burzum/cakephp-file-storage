@@ -13,9 +13,9 @@ class PathBuilderTraitTest extends TestCase {
 	public function testCreatePathBuilder() {
 		$object = $this->getObjectForTrait('Burzum\FileStorage\Storage\PathBuilder\PathBuilderTrait');
 
-		$pathBuilder = $object->createPathBuilder('Local');
+		$pathBuilder = $object->createPathBuilder('Base');
 		$this->assertInstanceOf('Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface', $pathBuilder);
-		$this->assertInstanceOf('Burzum\FileStorage\Storage\PathBuilder\LocalPathBuilder', $pathBuilder);
+		$this->assertInstanceOf('Burzum\FileStorage\Storage\PathBuilder\BasePathBuilder', $pathBuilder);
 	}
 
 /**

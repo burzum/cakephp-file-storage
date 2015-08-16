@@ -24,7 +24,7 @@ class LegacyLocalFileStorageListener extends LocalListener {
  * @var array
  */
 	protected $_defaultConfig = [
-		'pathBuilder' => 'Local',
+		'pathBuilder' => 'Base',
 		'pathBuilderOptions' => [
 			'pathPrefix' => 'files',
 			'modelFolder' => false,
