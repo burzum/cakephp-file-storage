@@ -66,6 +66,7 @@ class LocalListenerTest extends TestCase {
 			->will($this->returnValue(true));
 
 		$this->listener->afterSave($event, $entity);
+		$this->assertTrue($event->result);
 	}
 
 /**
@@ -74,6 +75,21 @@ class LocalListenerTest extends TestCase {
  * @return void
  */
 	public function testAfterDelete() {
+		$entity = $this->FileStorage->get('file-storage-3');
+		$event = new Event('FileStorage.afterDelete', $this->FileStorage, [
+			'record' => $entity,
+			'table' => $this->FileStorage
+		]);
 
+		$this->listener->expects($this->at(0))
+			->method('storageAdapter')
+			->will($this->returnValue($this->adapterMock));
+
+		$this->adapterMock->expects($this->at(0))
+			->method('delete')
+			->will($this->returnValue(true));
+
+		$this->listener->afterDelete($event, $entity);
+		$this->assertTrue($event->result);
 	}
 }

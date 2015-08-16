@@ -121,6 +121,7 @@ class LocalListener extends AbstractListener {
 				$this->autoProcessImageVersions($entity, 'create', $options);
 			}
 
+			$event->result = true;
 			$event->stopPropagation();
 		}
 	}
