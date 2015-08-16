@@ -5,7 +5,7 @@ use Burzum\FileStorage\Storage\StorageException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
-class TestStorageException extends TestCase {
+class StorageExceptionTest extends TestCase {
 
 /**
  * testSetAndGetEntity

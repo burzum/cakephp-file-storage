@@ -6,6 +6,9 @@ use Cake\Event\EventDispatcherTrait as CakeEventDispatcherTrait;
 /**
  * EventDispatcherTrait
  *
+ * This "overrides" the original dispatchEvent() method to inject the table object
+ * to keep the events backward compatible.
+ *
  * @author Robert Pustułka
  * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
