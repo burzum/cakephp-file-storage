@@ -1,6 +1,7 @@
 <?php
 namespace Burzum\FileStorage\Model\Behavior;
 
+use ArrayAccess;
 use Burzum\FileStorage\Model\Behavior\Event\EventDispatcherTrait;
 use Burzum\FileStorage\Storage\StorageTrait;
 use Burzum\FileStorage\Storage\PathBuilder\PathBuilderTrait;
@@ -86,12 +87,22 @@ class FileStorageBehavior extends Behavior implements EventDispatcherInterface {
  * beforeSave callback
  *
  * @param \Cake\Event\Event $event
+ * @param \ArrayAccess $data
+ * @return void
+ */
+	public function beforeMarshal(Event $event, ArrayAccess $data) {
+		$this->getFileInfoFromUpload($data);
+	}
+
+/**
+ * beforeSave callback
+ *
+ * @param \Cake\Event\Event $event
  * @param \Cake\Datasource\EntityInterface $entity
  * @param array $options
  * @return boolean true on success
  */
 	public function beforeSave(Event $event, EntityInterface $entity, $options) {
-		$this->getFileInfoFromUpload($entity);
 		$storageEvent = $this->dispatchEvent('FileStorage.beforeSave', [
 			'record' => $entity,
 			'storage' => $this->storageAdapter($entity->get('adapter'))
