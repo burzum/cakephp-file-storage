@@ -28,7 +28,7 @@ class LocalListener extends AbstractListener {
  * @var array
  */
 	protected $_defaultConfig = [
-		'pathBuilder' => 'Local',
+		'pathBuilder' => 'Base',
 		'pathBuilderOptions' => [
 			'modelFolder' => true,
 		],
