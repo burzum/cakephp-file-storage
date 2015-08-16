@@ -34,6 +34,7 @@
 		<whitelist>
 			<directory suffix=".php">./src</directory>
 			<exclude>
+				<file>./src/Storage/PathBuilder/PathBuilderInterface.php</file>
 				<directory>./vendor</directory>
 				<directory>./tests</directory>
 				<directory>./src/Model/Entity</directory>

@@ -64,7 +64,7 @@ class LegacyLocalFileStorageListenerTest extends TestCase {
  * @return void
  */
 	public function testAfterSave() {
-		$this->skipIf(PHP_INT_SIZE !== 4, 'This will produce a different result on a 64bit php version, skipping test.');
+		//$this->skipIf(PHP_INT_SIZE !== 4, 'This will produce a different result on a 64bit php version, skipping test.');
 
 		$entity = $this->FileStorage->newEntity([
 			'model' => 'Item',
