@@ -254,20 +254,4 @@ class UploadValidator extends Validator {
 		$this->_uploadError = '';
 		return true;
 	}
-
-	public function getFilesize() {
-		return $this->_filesize;
-	}
-
-	public function getExtension() {
-		return $this->_extension;
-	}
-
-	public function getMimeType() {
-		return $this->_mimeType;
-	}
-
-	public function getUploadError() {
-		return $this->_uploadError;
-	}
 }
