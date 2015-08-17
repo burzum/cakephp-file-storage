@@ -151,8 +151,7 @@ class LocalListener extends AbstractListener {
 		}
 
 		$this->_loadImageProcessingFromConfig();
-		$event->data['path'] = $this->imageVersionPath($entity, $version, $type, $options);
-
+		$event->data['path'] = $event->result = $this->imageVersionPath($entity, $version, $type, $options);
 		$event->stopPropagation();
 	}
 
