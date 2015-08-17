@@ -1,6 +1,7 @@
 <?php
 namespace Burzum\FileStorage\Model\Table;
 
+use ArrayObject;
 use Cake\Log\LogTrait;
 use Cake\ORM\Table;
 use Cake\ORM\Entity;
@@ -64,27 +65,39 @@ class FileStorageTable extends Table {
 	}
 
 /**
+ * beforeMarshal callback
+ *
+ * @param Event $event
+ * @param ArrayObject $data
+ * @return void
+ */
+	public function beforeMarshal(Event $event, ArrayObject $data) {
+		if (!empty($data['file']['tmp_name'])) {
+			$File = new File($data['file']['tmp_name']);
+			$data['filesize'] = $File->size();
+			$data['mime_type'] = $File->mime();
+		}
+		if (!empty($data['file']['name'])) {
+			$data['extension'] = pathinfo($data['file']['name'], PATHINFO_EXTENSION);
+			$data['filename'] = $data['file']['name'];
+		}
+		if (empty($data['model'])) {
+			$data['model'] = $this->table();
+		}
+		if (empty($data['adapter'])) {
+			$data['adapter'] = 'Local';
+		}
+	}
+
+/**
  * beforeSave callback
  *
+ * @param Event $event
+ * @param Entity $entity
  * @param array $options
- * @return boolean true on success
+ * @return bool true on success
  */
 	public function beforeSave(Event $event, Entity $entity, $options) {
-		if (!empty($event->data['entity']['file']['tmp_name'])) {
-			$File = new File($event->data['entity']['file']['tmp_name']);
-			$event->data['entity']['filesize'] = $File->size();
-			$event->data['entity']['mime_type'] = $File->mime();
-		}
-		if (!empty($event->data['entity']['file']['name'])) {
-			$event->data['entity']['extension'] = pathinfo($event->data['entity']['file']['name'], PATHINFO_EXTENSION);
-			$event->data['entity']['filename'] = $event->data['entity']['file']['name'];
-		}
-		if (empty($event->data['entity']['model'])) {
-			$event->data['entity']['model'] = $this->table();
-		}
-		if (empty($event->data['entity']['adapter'])) {
-			$event->data['entity']['adapter'] = 'Local';
-		}
 		$Event = new Event('FileStorage.beforeSave', $this, array(
 			'record' => $entity,
 			'storage' => $this->getStorageAdapter($event->data['entity']['adapter'])

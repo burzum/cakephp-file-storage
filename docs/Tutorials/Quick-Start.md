@@ -146,18 +146,20 @@ namespace App\Model\Table;
 use Burzum\FileStorage\Model\Table\ImageStorageTable;
 
 class ProductImagesTable extends ImageStorageTable {
-	public function uploadImage($productId, $data) {
-		$data['adapter'] = 'Local';
-		$data['model'] = 'ProductImage',
-		$data['foreign_key'] = $productId;
-		$entity = $this->newEntity($data);
+	public function uploadImage($productId, $entity) {
+		$entity = $this->patchEntity($entity, [
+			'adapter' => 'Local',
+			'model' => 'ProductImage',
+			'foreign_key' => $productId
+		]);
 		return $this->save($entity);
 	}
-	public function uploadDocument($productId, $data) {
-		$data['adapter'] = 'Local';
-		$data['model'] = 'ProductDocument',
-		$data['foreign_key'] = $productId;
-		$entity = $this->newEntity($data);
+	public function uploadDocument($productId, $entity) {
+		$entity = $this->patchEntity($entity, [
+			'adapter' => 'Local',
+			'model' => 'ProductDocument',
+			'foreign_key' => $productId
+		]);
 		return $this->save($entity);
 	}
 }
@@ -172,11 +174,17 @@ namespace App\Controller;
 class ProductsController extends AppController {
 	// Upload an image
 	public function upload($productId = null) {
-		if (!$this->request->is('get')) {
-			if ($this->Products->ProductImages->upload($productId, $this->request->data)) {
+		$entity = $this->Products->ProductImages->newEntity();
+		if ($this->request->is(['post', 'put])) {
+			$entity = $this->Products->ProductImages->patchEntity(
+				$entity,
+				$this->request->data
+			);
+			if ($this->Products->ProductImages->upload($productId, $entity)) {
 				$this->Flash->set(__('Upload successful!');
 			}
 		}
+		$this->set('productImage', $entity);
 	}
 }
 ```
