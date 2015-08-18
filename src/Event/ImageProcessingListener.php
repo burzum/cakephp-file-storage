@@ -322,7 +322,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 	protected function _buildLocalPath(Event $Event) {
 		extract($Event->data);
 		$path = $this->_buildPath($image, true, $hash);
-		$Event->data['path'] = '/' . $path;
+		$Event->data['path'] = $Event->result = '/' . $path;
 		$Event->stopPropagation();
 	}
 
@@ -367,7 +367,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 		$image['path'] = str_replace('\\', '/', $image['path']);
 		$bucketPrefix = !empty($Event->data['options']['bucketPrefix']) && $Event->data['options']['bucketPrefix'] === true;
 
-		$Event->data['path'] = $this->_buildCloudFrontDistributionUrl($http, $image['path'], $bucket, $bucketPrefix, $cfDist);
+		$Event->data['path'] = $Event->result = $this->_buildCloudFrontDistributionUrl($http, $image['path'], $bucket, $bucketPrefix, $cfDist);
 		$Event->stopPropagation();
 	}
 
