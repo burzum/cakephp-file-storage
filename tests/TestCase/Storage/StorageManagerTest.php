@@ -9,7 +9,7 @@
 namespace Burzum\FileStorage\Test\TestCase\Lib;
 
 use Burzum\FileStorage\TestSuite\FileStorageTestCase;
-use Burzum\FileStorage\Lib\StorageManager;;
+use Burzum\FileStorage\Storage\StorageManager;
 
 class StorageManagerTest extends FileStorageTestCase {
 /**

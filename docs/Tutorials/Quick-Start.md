@@ -42,7 +42,9 @@ Configure::write('FileStorage', array(
 				'thumbnail' => array(
 					'mode' => 'inbound',
 					'width' => 800,
-					'height' => 800)),
+					'height' => 800
+				)
+			),
 			'medium' => array(
 				'thumbnail' => array(
 					'mode' => 'inbound',
@@ -192,7 +194,7 @@ class ProductsController extends AppController {
 Products Upload View
 --------------------
 
-View for the controller action above.
+View for the controller action above `Products/upload.ctp`:
 
 ```php
 echo $this->Form->create($productImage, array(

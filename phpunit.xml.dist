@@ -29,12 +29,18 @@
 		</listener>
 	</listeners>
 
-	<php>
-		<!-- Postgres
-		<env name="db_dsn" value="postgres://root@localhost/cake_test_db"/>
-		-->
-		<!-- Mysql
-		<env name="db_dsn" value="mysql://root@localhost/cake_test_db"/>
-		-->
-	</php>
+	<!-- Add a filter to make sure we don't count vendors and Tests in the coverage report -->
+	<filter>
+		<whitelist>
+			<directory suffix=".php">./src</directory>
+			<exclude>
+				<file>./src/Storage/PathBuilder/PathBuilderInterface.php</file>
+				<directory>./vendor</directory>
+				<directory>./tests</directory>
+				<directory>./src/Model/Entity</directory>
+				<directory>./src/Event</directory>
+				<directory>./src/Lib</directory>
+			</exclude>
+		</whitelist>
+	</filter>
 </phpunit>

@@ -6,8 +6,7 @@ use Cake\Console\Shell;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
-use Burzum\FileStorage\Lib\StorageManager;
-use Burzum\FileStorage\Model\Table\ImageStorageTable;
+use Burzum\FileStorage\Storage\StorageManager;
 
 /**
  * ImageShell
@@ -70,6 +69,11 @@ class ImageVersionShell extends Shell {
 							'short' => 'l',
 							'help' => __d('file_storage', 'Limits the amount of records to be processed in one batch'),
 						],
+						'keep-old-versions' => [
+							'short' => 'k',
+							'help' => __d('file_storage', 'Use this switch if you do not want to overwrite existing versions.'),
+							'boolean' => true
+						]
 					],
 				],
 			],
@@ -116,6 +120,11 @@ class ImageVersionShell extends Shell {
 							'short' => 'l',
 							'help' => __d('file_storage', 'Limits the amount of records to be processed in one batch'),
 						],
+						'keep-old-versions' => [
+							'short' => 'k',
+							'help' => __d('file_storage', 'Use this switch if you do not want to overwrite existing versions.'),
+							'boolean' => true
+						]
 					],
 				],
 			],
@@ -126,8 +135,8 @@ class ImageVersionShell extends Shell {
 /**
  * @inheritDoc
  */
-	public function initialize() {
-		parent::initialize();
+	public function startup() {
+		parent::startup();
 
 		$storageTable = 'Burzum/FileStorage.ImageStorage';
 		if (isset($this->params['storageTable'])) {
@@ -135,12 +144,6 @@ class ImageVersionShell extends Shell {
 		}
 
 		$this->Table = TableRegistry::get($storageTable);
-
-		if (!$this->Table instanceOf ImageStorageTable) {
-			$this->out(__d('file_storage', 'Invalid Storage Table: {0}', $storageTable));
-			$this->out(__d('file_storage', 'The table must be an instance of Burzum\FileStorage\Model\Table\ImageStorageTable or extend it!'));
-			$this->_stop();
-		}
 
 		if (isset($this->params['limit'])) {
 			if (!is_numeric($this->params['limit'])) {
@@ -154,19 +157,21 @@ class ImageVersionShell extends Shell {
 /**
  * Generate all image versions.
  *
- * @param string $model
  */
 	public function regenerate() {
 		$operations = Configure::read('FileStorage.imageSizes.' . $this->args[0]);
+		$options = [
+			'overwrite' => !$this->params['keep-old-versions']
+		];
 
 		if (empty($operations)) {
 			$this->out(__d('file_storage', 'Invalid table or version.'));
 			$this->_stop();
 		}
 
-		foreach ($operations as $operation) {
+		foreach ($operations as $version => $operation) {
 			try {
-				$this->_loop($this->command, $this->args[0], array($operation));
+				$this->_loop($this->command, $this->args[0], array($version => $operation), $options);
 			} catch (\Exception $e) {
 				$this->out($e->getMessage());
 				$this->_stop();
@@ -182,6 +187,9 @@ class ImageVersionShell extends Shell {
  */
 	public function generate($model, $version) {
 		$operations = Configure::read('FileStorage.imageSizes.' . $model . '.' . $version);
+		$options = [
+			'overwrite' => !$this->params['keep-old-versions']
+		];
 
 		if (empty($operations)) {
 			$this->out(__d('file_storage', 'Invalid table or version.'));
@@ -189,7 +197,7 @@ class ImageVersionShell extends Shell {
 		}
 
 		try {
-			$this->_loop('generate', $model, array($version => $operations));
+			$this->_loop('generate', $model, array($version => $operations), $options);
 		} catch (\Exception $e) {
 			$this->out($e->getMessage());
 			$this->_stop();
@@ -221,40 +229,29 @@ class ImageVersionShell extends Shell {
 /**
  * Loops through image records and performs requested operation on them.
  *
- * @param $action
+ * @param string $action
  * @param $model
  * @param array $operations
  */
-	protected function _loop($action, $model, $operations = array()) {
+	protected function _loop($action, $model, $operations = [], $options = []) {
 		if (!in_array($action, array('generate', 'remove', 'regenerate'))) {
 			$this->_stop();
 		}
 
-		$this->totalImageCount = $this->Table
-			->find()
-			->where(['model' => $model])
-			->andWhere(['extension IN' => ['jpg', 'png']])
-			->count();
+		$totalImageCount = $this->_getCount($model);
 
-		if ($this->totalImageCount == 0) {
+		if ($totalImageCount === 0) {
 			$this->out(__d('file_storage', 'No Images for model {0} found', $model));
 			$this->_stop();
 		}
 
-		$this->out(__d('file_storage', '{0} image file(s) will be processed' . "\n", $this->totalImageCount));
+		$this->out(__d('file_storage', '{0} image file(s) will be processed' . "\n", $totalImageCount));
 
 		$offset = 0;
 		$limit = $this->limit;
 
 		do {
-			$images = $this->Table
-				->find()
-				->where(['model' => $model])
-				->andWhere(['extension IN' => ['jpg', 'png']])
-				->limit($limit)
-				->offset($offset)
-				->all();
-
+			$images = $this->_getRecords($model, $limit, $offset);
 			if (!empty($images)) {
 				foreach ($images as $image) {
 					$Storage = StorageManager::adapter($image->adapter);
@@ -264,7 +261,11 @@ class ImageVersionShell extends Shell {
 						$payload = array(
 							'record' => $image,
 							'storage' => $Storage,
-							'operations' => $operations);
+							'operations' => $operations,
+							'versions' => array_keys($operations),
+							'table' => $this->Table,
+							'options' => $options
+						);
 
 						if ($action == 'generate' || $action == 'regenerate') {
 							$Event = new Event('ImageVersion.createVersion', $this->Table, $payload);
@@ -282,5 +283,30 @@ class ImageVersionShell extends Shell {
 			}
 			$offset += $limit;
 		} while ($images->count() > 0);
+	}
+
+/**
+ * Gets the amount of images for a model in the DB.
+ *
+ * @param string $identifier
+ * @param array $extensions
+ * @return integer
+ */
+	protected function _getCount($identifier, array $extensions = ['jpg', 'png', 'jpeg']) {
+		return $this->Table
+			->find()
+			->where(['model' => $identifier])
+			->andWhere(['extension IN' => $extensions])
+			->count();
+	}
+
+	protected function _getRecords($identifier, $limit, $offset, array $extensions = ['jpg', 'png', 'jpeg']) {
+		return $this->Table
+			->find()
+			->where(['model' => $identifier])
+			->andWhere(['extension IN' => $extensions])
+			->limit($limit)
+			->offset($offset)
+			->all();
 	}
 }

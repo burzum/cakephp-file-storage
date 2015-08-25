@@ -5,7 +5,6 @@ use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\ORM\Table;
-use Cake\ORM\Entity;
 use Cake\ORM\Behavior;
 use Cake\Utility\File;
 use Cake\Utility\Number;

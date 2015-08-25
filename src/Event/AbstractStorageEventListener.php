@@ -1,16 +1,16 @@
 <?php
 namespace Burzum\FileStorage\Event;
 
-use Cake\Core\Configure;
 use Cake\Core\InstanceConfigTrait;
+use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
+use Cake\Log\LogTrait;
 use Cake\ORM\Table;
-use Cake\ORM\Entity;
 use Cake\Utility\Text;
 use Cake\Filesystem\Folder;
-use Burzum\FileStorage\Lib\StorageManager;
-use Burzum\FileStorage\Lib\FileStorageUtils;
+use Burzum\FileStorage\Storage\StorageManager;
+use Burzum\FileStorage\Storage\StorageUtils;
 
 /**
  * AbstractStorageEventListener
@@ -34,6 +34,7 @@ use Burzum\FileStorage\Lib\FileStorageUtils;
 abstract class AbstractStorageEventListener implements EventListenerInterface {
 
 	use InstanceConfigTrait;
+	use LogTrait;
 
 /**
  * The adapter class
@@ -85,7 +86,6 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
  * Constructor
  *
  * @param array $config
- * @return AbstractStorageEventListener
  */
 	public function __construct(array $config = []) {
 		$this->config($config);
@@ -120,7 +120,7 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 			return $entity['filename'];
 		}
 		$filename = $entity['id'];
-		if ($this->_config['stripUuid'] ===  true) {
+		if ($this->_config['stripUuid'] === true) {
 			$filename = $this->stripDashes($filename);
 		}
 		if ($this->_config['preserveExtension'] === true) {
@@ -133,7 +133,7 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
  * Builds the path under which the data gets stored in the storage adapter.
  *
  * @param Table $table
- * @param Entity $entity
+ * @param EntityInterface $entity
  * @return string
  */
 	public function buildPath($table, $entity) {
@@ -141,10 +141,10 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 		if ($this->_config['tableFolder']) {
 			$path .= $table->table() . DS;
 		}
-		if ($this->_config['randomPath'] == true) {
-			$path .= FileStorageUtils::randomPath($entity[$table->primaryKey()]);
+		if ($this->_config['randomPath'] === true) {
+			$path .= StorageUtils::randomPath($entity[$table->primaryKey()]);
 		}
-		if ($this->_config['uuidFolder'] == true) {
+		if ($this->_config['uuidFolder'] === true) {
 			$path .= $this->stripDashes($entity[$table->primaryKey()]) . DS;
 		}
 		return $path;
@@ -164,7 +164,7 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 		}
 		return (
 			$this->_checkTable($event)
-			&& $this->getAdapterClassName($event->data['record']['adapter'])
+			&& (bool)$this->getAdapterClassName($event->data['record']['adapter'])
 			&& $this->_modelFilter($event)
 		);
 	}
@@ -216,7 +216,7 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
  * You must define a list of supported classes via AbstractStorageEventListener::$_adapterClasses.
  *
  * @param string $configName Name of the adapter configuration.
- * @return boolean|string String, the adapter class name or false if it was not found.
+ * @return string|false String, the adapter class name or false if it was not found.
  */
 	public function getAdapterClassName($configName) {
 		$className = $this->_getAdapterClassFromConfig($configName);
@@ -268,17 +268,12 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
  * @param string $path Path / key of the storage adapter file
  * @param string $tmpFolder
  * @throws Exception
- * @return bool|string
+ * @return string
  */
 	protected function _tmpFile($Storage, $path, $tmpFolder = null) {
-		try {
-			$tmpFile = $this->createTmpFile($tmpFolder);
-			file_put_contents($tmpFile, $Storage->read($path));
-			return $tmpFile;
-		} catch (Exception $e) {
-			$this->log($e->getMessage(), 'file_storage');
-			throw $e;
-		}
+		$tmpFile = $this->createTmpFile($tmpFolder);
+		file_put_contents($tmpFile, $Storage->read($path));
+		return $tmpFile;
 	}
 
 /**
@@ -314,7 +309,7 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
  */
 	public function fsPath($type, $string, $idFolder = true) {
 		$string = str_replace('-', '', $string);
-		$path = $type . DS . FileStorageUtils::randomPath($string);
+		$path = $type . DS . StorageUtils::randomPath($string);
 		if ($idFolder) {
 			$path .= $string . DS;
 		}

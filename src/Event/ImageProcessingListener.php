@@ -6,8 +6,8 @@ use Burzum\Imagine\Lib\ImagineUtility;
 use Cake\Event\Event;
 use Cake\Core\Configure;
 use Cake\ORM\Table;
-use Burzum\FileStorage\Lib\StorageManager;
-use Burzum\FileStorage\Lib\FileStorageUtils;
+use Burzum\FileStorage\Storage\StorageManager;
+use Burzum\FileStorage\Storage\StorageUtils;
 
 /**
  * @author Florian Krämer
@@ -79,6 +79,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
  */
 	protected function _autoRotate($imageFile, $format) {
 		$orientation = ImagineUtility::getImageOrientation($imageFile);
+		$degree = 0;
 		if ($orientation === false) {
 			return false;
 		}
@@ -111,7 +112,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
  * @param array $operations
  * @throws \Burzum\FileStorage\Event\Exception
  * @throws \Exception
- * @return boolean
+ * @return false|null
  */
 	protected function _createVersions(Table $table, $entity, array $operations) {
 		$Storage = StorageManager::adapter($entity['adapter']);
@@ -119,10 +120,10 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 		$tmpFile = $this->_tmpFile($Storage, $path, TMP . 'image-processing');
 
 		foreach ($operations as $version => $imageOperations) {
-			$hash = FileStorageUtils::hashOperations($imageOperations);
+			$hash = StorageUtils::hashOperations($imageOperations);
 			$string = $this->_buildPath($entity, true, $hash);
 
-			if ($this->adapterClass === 'AmazonS3' || $this->adapterClass === 'AwsS3' ) {
+			if ($this->adapterClass === 'AmazonS3' || $this->adapterClass === 'AwsS3') {
 				$string = str_replace('\\', '/', $string);
 			}
 
@@ -132,9 +133,9 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 
 			try {
 				$image = $table->processImage($tmpFile, null, array('format' => $entity['extension']), $imageOperations);
-				$result = $Storage->write($string, $image->get($entity['extension']), true);
+				$Storage->write($string, $image->get($entity['extension']), true);
 			} catch (\Exception $e) {
-				$this->log($e->getMessage(), 'file_storage');
+				$this->log($e->getMessage());
 				unlink($tmpFile);
 				throw $e;
 			}
@@ -178,9 +179,9 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 			$Storage = $Event->data['storage'];
 			$record = $Event->data['record'];
 			foreach ($Event->data['operations'] as $version => $operations) {
-				$hash = FileStorageUtils::hashOperations($operations);
+				$hash = StorageUtils::hashOperations($operations);
 				$string = $this->_buildPath($record, true, $hash);
-				if ($this->adapterClass === 'AmazonS3' || $this->adapterClass === 'AwsS3' ) {
+				if ($this->adapterClass === 'AmazonS3' || $this->adapterClass === 'AwsS3') {
 					$string = str_replace('\\', '/', $string);
 				}
 				try {
@@ -188,7 +189,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 						$Storage->delete($string);
 					}
 				} catch (\Exception $e) {
-					$this->log($e->getMessage(), 'file_storage');
+					$this->log($e->getMessage());
 				}
 			}
 			$Event->stopPropagation();
@@ -199,13 +200,13 @@ class ImageProcessingListener extends AbstractStorageEventListener {
  * afterDelete
  *
  * @param Event $Event
- * @return void
+ * @return boolean|null
  */
 	public function afterDelete(Event $Event) {
 		if ($this->_checkEvent($Event)) {
 			$record = $Event->data['record'];
 			$string = $this->_buildPath($record, true, null);
-			if ($this->adapterClass === 'AmazonS3' || $this->adapterClass === 'AwsS3' ) {
+			if ($this->adapterClass === 'AmazonS3' || $this->adapterClass === 'AwsS3') {
 				$string = str_replace('\\', '/', $string);
 			}
 			try {
@@ -214,8 +215,8 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 					return false;
 				}
 				$Storage->delete($string);
-			} catch (Exception $e) {
-				$this->log($e->getMessage(), 'file_storage');
+			} catch (\Exception $e) {
+				$this->log($e->getMessage());
 				return false;
 			}
 			$operations = Configure::read('FileStorage.imageSizes.' . $record['model']);
@@ -237,7 +238,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 		if ($this->_checkEvent($Event)) {
 			if (in_array($Event->data['record']['model'], (array)$this->config('autoRotate'))) {
 				$imageFile = $Event->data['record']['file']['tmp_name'];
-				$format = FileStorageUtils::fileExtension($Event->data['record']['file']['name']);
+				$format = StorageUtils::fileExtension($Event->data['record']['file']['name']);
 				$this->_autoRotate($imageFile, $format);
 			}
 		}
@@ -265,7 +266,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 					$path = $record['path'] . $filename . '.' . $record['extension'];
 				}
 
-				if ($this->adapterClass === 'AmazonS3' || $this->adapterClass === 'AwsS3' ) {
+				if ($this->adapterClass === 'AmazonS3' || $this->adapterClass === 'AwsS3') {
 					$path = str_replace('\\', '/', $path);
 					$record['path'] = str_replace('\\', '/', $record['path']);
 				}
@@ -281,10 +282,9 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 				if (!empty($operations)) {
 					$this->_createVersions($table, $record, $operations);
 				}
-
 				$table->data = $data;
 			} catch (\Exception $e) {
-				$this->log($e->getMessage(), 'file_storage');
+				$this->log($e->getMessage());
 			}
 		}
 	}
@@ -322,7 +322,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 	protected function _buildLocalPath(Event $Event) {
 		extract($Event->data);
 		$path = $this->_buildPath($image, true, $hash);
-		$Event->data['path'] = '/' . $path;
+		$Event->data['path'] = $Event->result = '/' . $path;
 		$Event->stopPropagation();
 	}
 
@@ -367,7 +367,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 		$image['path'] = str_replace('\\', '/', $image['path']);
 		$bucketPrefix = !empty($Event->data['options']['bucketPrefix']) && $Event->data['options']['bucketPrefix'] === true;
 
-		$Event->data['path'] = $this->_buildCloudFrontDistributionUrl($http, $image['path'], $bucket, $bucketPrefix, $cfDist);
+		$Event->data['path'] = $Event->result = $this->_buildCloudFrontDistributionUrl($http, $image['path'], $bucket, $bucketPrefix, $cfDist);
 		$Event->stopPropagation();
 	}
 
@@ -379,11 +379,12 @@ class ImageProcessingListener extends AbstractStorageEventListener {
  * @param string $bucket
  * @param string null $bucketPrefix
  * @param string $cfDist
+ * @param boolean $bucketPrefix
  * @return string
  */
 	protected function _buildCloudFrontDistributionUrl($protocol, $image, $bucket, $bucketPrefix = null, $cfDist = null) {
 		$path = $protocol . '://';
-		if ($cfDist) {
+		if (is_string($cfDist)) {
 			$path .= $cfDist;
 		} else {
 			if ($bucketPrefix) {
@@ -417,12 +418,12 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 			if (!empty($hash)) {
 				$path .= '.' . $hash;
 			}
-			if ($extension == true) {
+			if ($extension === true) {
 				$path .= '.' . $record['extension'];
 			}
 		}
 
-		if ($this->adapterClass === 'AmazonS3' || $this->adapterClass === 'AwsS3' ) {
+		if ($this->adapterClass === 'AmazonS3' || $this->adapterClass === 'AwsS3') {
 			return str_replace('\\', '/', $path);
 		}
 
@@ -433,7 +434,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
  * Gets the adapter class name from the adapter configuration key
  *
  * @param string
- * @return void
+ * @return string|false
  */
 	public function getAdapterClassName($adapterConfigName) {
 		$config = StorageManager::config($adapterConfigName);

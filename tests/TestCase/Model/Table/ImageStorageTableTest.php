@@ -19,7 +19,7 @@ use Burzum\FileStorage\TestSuite\FileStorageTestCase;
  * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
  */
-class ImageStorageTest extends FileStorageTestCase {
+class ImageStorageTableTest extends FileStorageTestCase {
 
 /**
  * Fixtures
@@ -198,7 +198,7 @@ class ImageStorageTest extends FileStorageTestCase {
 		$result = $this->Image->validateImageSize($file, ['height' => ['<', 100]]);
 		$this->assertFalse($result);
 	}
-	
+
 /**
  * testDeleteOldFileOnSave
  *
@@ -223,34 +223,40 @@ class ImageStorageTest extends FileStorageTestCase {
 			])
 			->first();
 
+		// Get the old file path to assert late that it doesn't exist anymore
+		$Folder = new Folder($this->testPath . $result['path']);
+		$files = $Folder->read();
+		$oldFile = $result['path'] . $files[1][2];
+
 		$this->assertTrue(!empty($result) && is_a($result, '\Cake\ORM\Entity'));
 		$this->assertTrue(file_exists($this->testPath . $result['path']));
-		
-		$oldImageFile = $this->testPath . $result['path']; 
+
 		$secondEntity = $this->Image->newEntity([
 			'foreign_key' => 'test-1',
 			'model' => 'Test',
 			'file' => [
-				'name' => 'titus.jpg',
+				'name' => 'cake.icon.png',
 				'size' => 332643,
-				'tmp_name' => Plugin::path('Burzum/FileStorage') . DS . 'tests' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg',
+				'tmp_name' => Plugin::path('Burzum/FileStorage') . DS . 'tests' . DS . 'Fixture' . DS . 'File' . DS . 'cake.icon.png',
 				'error' => 0
 			],
 			'old_file_id' => $entity->id
 		]);
 
 		$this->Image->save($secondEntity);
-		$result = $this->Image->find()
+		$result2 = $this->Image->find()
 			->where([
 				'id' => $secondEntity->id
 			])
 			->first();
-		
-		$this->assertTrue(!empty($result) && is_a($result, '\Cake\ORM\Entity'));
-		$this->assertTrue(file_exists($this->testPath . $result['path']));
-		
-		$Folder = new Folder($oldImageFile);
-		$folderResult = $Folder->read(); 
-		$this->assertEquals(count($folderResult[1]), 0);
+
+		$this->assertTrue(!empty($result) && is_a($result2, '\Cake\ORM\Entity'));
+		$this->assertFileExists($this->testPath . $result2['path']);
+
+		// Assert that the old file was removed
+		$this->assertFileNotExists($this->testPath . $oldFile);
+
+		$this->assertNotEquals($result['path'], $result2['path']);
+		$this->assertNotEquals($result['filename'], $result2['filename']);
 	}
 }

@@ -1,10 +1,9 @@
 <?php
 namespace Burzum\FileStorage\Event;
 
-use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Filesystem\Folder;
-use Burzum\FileStorage\Lib\StorageManager;
+use Burzum\FileStorage\Storage\StorageManager;
 
 /**
  * Local FileStorage Event Listener for the CakePHP FileStorage plugin
@@ -53,7 +52,7 @@ class LocalFileStorageListener extends AbstractStorageEventListener {
  * No need to use an adapter here, just delete the whole folder using cakes Folder class
  *
  * @param Event $event
- * @return void
+ * @return boolean|null
  */
 	public function afterDelete(Event $event) {
 		if ($this->_checkEvent($event)) {
@@ -94,14 +93,15 @@ class LocalFileStorageListener extends AbstractStorageEventListener {
 			$Storage = StorageManager::adapter($entity['adapter']);
 			try {
 				$filename = $this->buildFileName($table, $entity);
-				$entity['path'] = $this->buildPath($table, $entity);
+				$entity->path = $this->buildPath($table, $entity);
+
 				$Storage->write($entity['path'] . $filename, file_get_contents($entity['file']['tmp_name']), true);
 				$table->save($entity, array(
 					'validate' => false,
 					'callbacks' => false
 				));
-			} catch (Exception $e) {
-				$this->log($e->getMessage(), 'file_storage');
+			} catch (\Exception $e) {
+				$this->log($e->getMessage());
 			}
 		}
 	}

@@ -13,7 +13,6 @@
 	],
 	"minimum-stability": "dev",
 	"require": {
-		"php": ">=5.4.19",
 		"cakephp/cakephp": "~3.0",
 		"cakephp/plugin-installer": "*",
 		"cakephp/migrations": "~1.0",

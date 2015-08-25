@@ -2,17 +2,23 @@
 namespace Burzum\FileStorage\Test\TestCase\Lib\Utility;
 
 use Cake\Core\Configure;
+use Cake\Core\Plugin;
 use Burzum\FileStorage\TestSuite\FileStorageTestCase;
-use Burzum\FileStorage\Lib\FileStorageUtils;
+use Burzum\FileStorage\Storage\StorageUtils;
 
 /**
- * StorageManagerTest
+ * Storage Utils Test
  *
  * @author Florian Krämer
  * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
  */
-class FileStorageUtilsTest extends FileStorageTestCase {
+class StorageUtilsTest extends FileStorageTestCase {
+
+	public function setUp() {
+		parent::setUp();
+		$this->fileFixtures = Plugin::path('Burzum/FileStorage') . 'tests' . DS . 'Fixture' . DS . 'File' . DS;
+	}
 
 /**
  * testRandomPath
@@ -20,8 +26,13 @@ class FileStorageUtilsTest extends FileStorageTestCase {
  * @return void
  */
 	public function testRandomPath() {
-		$result = FileStorageUtils::randomPath('someteststring');
+		$this->skipIf(PHP_INT_SIZE === 8);
+
+		$result = StorageUtils::randomPath('someteststring');
 		$this->assertEquals($result, '38' . DS . '88' . DS . '98' . DS);
+
+		$result = StorageUtils::randomPath('file-storage-3');
+		$this->assertEquals($result, '48' . DS . '75' . DS . '05' . DS);
 	}
 
 /**
@@ -30,7 +41,7 @@ class FileStorageUtilsTest extends FileStorageTestCase {
  * @return void
  */
 	public function testTrimPath() {
-		$result = FileStorageUtils::trimPath('foobar/');
+		$result = StorageUtils::trimPath('foobar/');
 		$this->assertEquals($result, 'foobar');
 	}
 
@@ -41,14 +52,19 @@ class FileStorageUtilsTest extends FileStorageTestCase {
  */
 	public function testNormalizePath() {
 		if (DS == '\\') {
-			$result = FileStorageUtils::normalizePath('/nice/path/test');
+			$result = StorageUtils::normalizePath('/nice/path/test');
 			$this->assertEquals($result, '\nice\path\test');
 		} else {
-			$result = FileStorageUtils::normalizePath('\nice\path\test');
+			$result = StorageUtils::normalizePath('\nice\path\test');
 			$this->assertEquals($result, '/nice/path/test');
 		}
 	}
 
+/**
+ * testNormalizeGlobalFilesArray
+ *
+ * @return void
+ */
 	public function testNormalizeGlobalFilesArray() {
 		$data = array(
 			'name' => array
@@ -109,12 +125,20 @@ class FileStorageUtilsTest extends FileStorageTestCase {
 				]
 			]
 		];
-		$result = FileStorageUtils::normalizeGlobalFilesArray($data);
+		$result = StorageUtils::normalizeGlobalFilesArray($data);
 		$this->assertEquals($result, $expected);
+
+		$result = StorageUtils::normalizeGlobalFilesArray([]);
+		$this->assertEquals($result, []);
 	}
 
+/**
+ * testHashOperations
+ *
+ * @return void
+ */
 	public function testHashOperations() {
-		$result = FileStorageUtils::hashOperations(array(
+		$result = StorageUtils::hashOperations(array(
 			'mode' => 'inbound',
 			'width' => 80,
 			'height' => 80
@@ -122,6 +146,11 @@ class FileStorageUtilsTest extends FileStorageTestCase {
 		$this->assertEquals($result, '8c70933e');
 	}
 
+/**
+ * testGenerateHashes
+ *
+ * @return void
+ */
 	public function testGenerateHashes() {
 		Configure::write('FileStorage.imageSizes', array(
 			'Test' => array(
@@ -156,9 +185,32 @@ class FileStorageUtilsTest extends FileStorageTestCase {
 				'small' => '19e760eb'
 			]
 		];
-		FileStorageUtils::generateHashes();
+		StorageUtils::generateHashes();
 		$result = Configure::read('FileStorage.imageHashes');
 		$this->assertEquals($result, $expected);
+	}
+
+/**
+ * testGenerateHashesRuntimeException
+ *
+ * @expectedException \RuntimeException
+ */
+	public function testGenerateHashesRuntimeException() {
+		Configure::write('FileStorage.imageSizes', null);
+		StorageUtils::generateHashes();
+	}
+
+/**
+ * testFileExtension
+ *
+ * @return void
+ */
+	public function testFileExtension() {
+		$result = StorageUtils::fileExtension($this->fileFixtures . 'titus.jpg', true);
+		$this->assertEquals($result, 'jpg');
+
+		$result = StorageUtils::fileExtension('something.else');
+		$this->assertEquals($result, 'else');
 	}
 
 /**
@@ -174,8 +226,29 @@ class FileStorageUtilsTest extends FileStorageTestCase {
 			'type' => 'image/jpeg',
 			'size' => 332643
 		];
-		$result = FileStorageUtils::uploadArray($this->fileFixtures . 'titus.jpg');
+		$result = StorageUtils::uploadArray($this->fileFixtures . 'titus.jpg');
 		$this->assertEquals($result, $expected);
 	}
 
+/**
+ * testGetFileHash
+ *
+ * @return void
+ */
+	public function testGetFileHash() {
+		$result = StorageUtils::getFileHash($this->fileFixtures . 'titus.jpg');
+		$this->assertEquals($result, 'd68da24d79835d70d5d8a544f62616d0e51af191');
+
+		$result = StorageUtils::getFileHash($this->fileFixtures . 'titus.jpg', 'md5');
+		$this->assertEquals($result, '29574141b2c44cc029828f6c5c6d3cd2');
+	}
+
+/**
+ * testGetFileHashInvalidArgumentException
+ *
+ * @expectedException \InvalidArgumentException
+ */
+	public function testGetFileHashInvalidArgumentException() {
+		StorageUtils::getFileHash($this->fileFixtures . 'titus.jpg', 'invalid-hash-method!');
+	}
 }

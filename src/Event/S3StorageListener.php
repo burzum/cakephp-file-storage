@@ -2,8 +2,6 @@
 namespace Burzum\FileStorage\Event;
 
 use Cake\Event\Event;
-use Cake\ORM\Table;
-use Cake\ORM\Entity;
 
 /**
  * S3StorageListener
@@ -40,7 +38,7 @@ class S3StorageListener extends AbstractStorageEventListener {
  * afterDelete
  *
  * @param \Cake\Event\Event $Event
- * @return void
+ * @return boolean|null
  */
 	public function afterDelete(Event $Event) {
 		if ($this->_checkEvent($Event)) {
@@ -54,7 +52,7 @@ class S3StorageListener extends AbstractStorageEventListener {
 				}
 				$Storage->delete($path['combined']);
 			} catch (\Exception $e) {
-				$this->log($e->getMessage(), 'file_storage');
+				$this->log($e->getMessage());
 				return false;
 			}
 			return true;
@@ -76,13 +74,13 @@ class S3StorageListener extends AbstractStorageEventListener {
 			try {
 				$path = $this->buildPath($Event->subject(), $Event->data['record']);
 				$record['path'] = $path['path'];
-				$result = $Storage->write($path['combined'], file_get_contents($record['file']['tmp_name']), true);
+				$Storage->write($path['combined'], file_get_contents($record['file']['tmp_name']), true);
 				$table->save($record, array(
 					'validate' => false,
 					'callbacks' => false)
 				);
-			} catch (Exception $e) {
-				$this->log($e->getMessage(), 'file_storage');
+			} catch (\Exception $e) {
+				$this->log($e->getMessage());
 			}
 		}
 	}
@@ -91,7 +89,7 @@ class S3StorageListener extends AbstractStorageEventListener {
  * Builds the storage path for this adapter.
  *
  * @param \Cake\ORM\Table $table
- * @param \Cake\ORM\Entity $entity
+ * @param \Cake\Datasource\EntityInterface $entity
  * @return array
  */
 	public function buildPath($table, $entity) {

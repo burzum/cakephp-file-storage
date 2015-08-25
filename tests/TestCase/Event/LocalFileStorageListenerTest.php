@@ -101,7 +101,7 @@ class LocalFileStorageListenerTest extends FileStorageTestCase {
 		$entity->file = [
 			'tmp_name' => $this->fileFixtures . 'titus.jpg',
 		];
-		$event = new Event('FileStorage.afterDelete',  $this->FileStorage, [
+		$event = new Event('FileStorage.afterSave',  $this->FileStorage, [
 			'record' => $entity,
 		]);
 		$this->Listener->afterSave($event);

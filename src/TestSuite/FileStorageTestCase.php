@@ -1,17 +1,18 @@
 <?php
 namespace Burzum\FileStorage\TestSuite;
 
+use Burzum\FileStorage\Storage\Listener\LocalListener;
 use Cake\Core\Configure;
-use Cake\ORM\TableRegistry;
-use Cake\TestSuite\TestCase;
-use Cake\Filesystem\Folder;
-use Cake\Filesystem\File;
 use Cake\Core\Plugin;
 use Cake\Event\EventManager;
-use Burzum\FileStorage\Lib\StorageManager;
-use Burzum\FileStorage\Lib\FileStorageUtils;
+use Cake\Filesystem\Folder;
+use Cake\Filesystem\File;
+use Cake\ORM\TableRegistry;
+use Cake\TestSuite\TestCase;
 use Burzum\FileStorage\Event\ImageProcessingListener;
 use Burzum\FileStorage\Event\LocalFileStorageListener;
+use Burzum\FileStorage\Storage\StorageManager;
+use Burzum\FileStorage\Storage\StorageUtils;
 
 /**
  * FileStorageTestCase
@@ -31,6 +32,8 @@ class FileStorageTestCase extends TestCase {
 		'plugin.Burzum\FileStorage.FileStorage'
 	);
 
+	public $listeners = [];
+
 /**
  * Setup test folders and files
  *
@@ -38,18 +41,13 @@ class FileStorageTestCase extends TestCase {
  */
 	public function setUp() {
 		parent::setUp();
-
-		$listener = new ImageProcessingListener();
-		EventManager::instance()->on($listener);
-
-		$listener = new LocalFileStorageListener();
-		EventManager::instance()->on($listener);
+		$this->_setupListeners();
 
 		$this->testPath = TMP . 'file-storage-test' . DS;
 		$this->fileFixtures = Plugin::path('Burzum/FileStorage') . 'tests' . DS . 'Fixture' . DS . 'File' . DS;
 
 		if (!is_dir($this->testPath)) {
-			$Folder = new Folder($this->testPath, true);
+			mkdir($this->testPath);
 		}
 
 		Configure::write('FileStorage.basePath', $this->testPath);
@@ -77,13 +75,24 @@ class FileStorageTestCase extends TestCase {
 			]
 		));
 
-		FileStorageUtils::generateHashes();
+		StorageUtils::generateHashes();
 
 		StorageManager::config('Local', array(
 			'adapterOptions' => [$this->testPath, true],
 			'adapterClass' => '\Gaufrette\Adapter\Local',
 			'class' => '\Gaufrette\Filesystem'
 		));
+
+		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
+		$this->ImageStorage = TableRegistry::get('Burzum/FileStorage.ImageStorage');
+	}
+
+	protected function _setupListeners() {
+		$this->listeners['ImageProcessingListener'] = new ImageProcessingListener();
+		$this->listeners['LocalFileStorageListener'] = new LocalFileStorageListener();
+		$this->listeners['LocalListener'] = new LocalListener();
+		EventManager::instance()->on($this->listeners['ImageProcessingListener']);
+		EventManager::instance()->on($this->listeners['LocalFileStorageListener']);
 	}
 
 /**
@@ -93,8 +102,17 @@ class FileStorageTestCase extends TestCase {
  */
 	public function tearDown() {
 		parent::tearDown();
-		$Folder = new Folder(TMP . 'file-storage-test');
+
+		$this->_removeListeners();
+
+		TableRegistry::clear();
+		$Folder = new Folder($this->testPath);
 		$Folder->delete();
 	}
 
+	protected function _removeListeners() {
+		foreach ($this->listeners as $listener) {
+			EventManager::instance()->off($listener);
+		}
+	}
 }

@@ -1,17 +1,28 @@
-FileStorage Plugin for CakePHP 2.x and 3.x
-==========================================
+FileStorage Plugin for CakePHP
+==============================
 
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.txt) 
 [![Build Status](https://img.shields.io/travis/burzum/cakephp-file-storage/3.0.svg?style=flat-square)](https://travis-ci.org/burzum/cakephp-file-storage) 
 [![Coverage Status](https://img.shields.io/coveralls/burzum/cakephp-file-storage/3.0.svg?style=flat-square)](https://coveralls.io/r/burzum/cakephp-file-storage)
 
+**If you're upgrading from CakePHP 2.x please read [the migration guide](docs/Documentation/Migrating-from-CakePHP-2.md).**
+
 The **File Storage** plugin is giving you the possibility to upload and store files in virtually any kind of storage backend. This plugin is wrapping the [Gaufrette](https://github.com/KnpLabs/Gaufrette) library in a CakePHP fashion and provides a simple way to use the storage adapters through the [StorageManager](Lib/StorageManager.php) class.
 
 Storage adapters are an unified interface that allow you to store file data to your local file system, in memory, in a database or into a zip file and remote systems. There is a database table keeping track of what you stored where. You can always write your own adapter or extend and overload existing ones.
 
-**If you're upgrading from CakePHP 2.x please read [the migration guide](docs/Documentation/Migrating-from-CakePHP-2.md).**
+[Please donate if you like it!](https://pledgie.com/campaigns/29682)
+------------------------------
 
-**List of supported Adapters**
+Already thought of how many hours development time this plugin saved you already? It would be *awesome* if you don't mind sharing some of your success by donating a small amount! Thank you.
+
+How it works
+------------
+
+The whole plugin is build with clear [Separation of Concerns](https://en.wikipedia.org/wiki/Separation_of_concerns) in mind: A file is *always* an entry in the `file_storage` table from the app perspective. The table is the *reference* to the real place of where the file is stored and keeps some meta information like mime type, filename, file hash (optional) and size as well. You associate the `file_storage` table with your model using the FileStorage or ImageStorage model from the plugin via hasOne, hasMany or HABTM. When you upload a file you save it to the FileStorage model through the associations, `Documents.file` for example. The FileStorage model dispatches then file storage specific events, the listeners listening to these events process the file and put it in the configured storage backend using adapters for different backends and build the storage path using a path builder class.
+
+List of supported Adapters
+--------------------------
 
  * Apc
  * Amazon S3

@@ -1,15 +1,16 @@
 <?php
 namespace Burzum\FileStorage\Model\Table;
 
-use ArrayObject;
-use Cake\Log\LogTrait;
-use Cake\ORM\Table;
-use Cake\ORM\Entity;
+use ArrayAccess;
+use Burzum\FileStorage\Storage\PathBuilder\PathBuilderTrait;
+use Burzum\FileStorage\Storage\StorageTrait;
+use Cake\Database\Query;
+use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\Filesystem\Folder;
 use Cake\Filesystem\File;
-use Burzum\FileStorage\Lib\StorageManager;
+use Cake\Log\LogTrait;
+use Cake\ORM\Table;
 
 /**
  * FileStorageTable
@@ -17,10 +18,13 @@ use Burzum\FileStorage\Lib\StorageManager;
  * @author Florian Krämer
  * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
+ * @deprecated 3.1.0 Use ImageStorageBehavior in your tables instead.
  */
 class FileStorageTable extends Table {
 
 	use LogTrait;
+	use PathBuilderTrait;
+	use StorageTrait;
 
 /**
  * Name
@@ -37,7 +41,7 @@ class FileStorageTable extends Table {
  *
  * @var array
  */
-	public $record = array();
+	public $record = [];
 
 /**
  * Initialize
@@ -65,44 +69,29 @@ class FileStorageTable extends Table {
 	}
 
 /**
- * beforeMarshal callback
+ * beforeSave callback
  *
- * @param Event $event
- * @param ArrayObject $data
+ * @param \Cake\Event\Event $event
+ * @param \ArrayAccess $data
  * @return void
  */
-	public function beforeMarshal(Event $event, ArrayObject $data) {
-		if (!empty($data['file']['tmp_name'])) {
-			$File = new File($data['file']['tmp_name']);
-			$data['filesize'] = $File->size();
-			$data['mime_type'] = $File->mime();
-		}
-		if (!empty($data['file']['name'])) {
-			$data['extension'] = pathinfo($data['file']['name'], PATHINFO_EXTENSION);
-			$data['filename'] = $data['file']['name'];
-		}
-		if (empty($data['model'])) {
-			$data['model'] = $this->table();
-		}
-		if (empty($data['adapter'])) {
-			$data['adapter'] = 'Local';
-		}
+	public function beforeMarshal(Event $event, ArrayAccess $data) {
+		$this->getFileInfoFromUpload($data);
 	}
 
 /**
  * beforeSave callback
  *
- * @param Event $event
- * @param Entity $entity
+ * @param \Cake\Event\Event $event
+ * @param \Cake\Datasource\EntityInterface $entity
  * @param array $options
- * @return bool true on success
+ * @return boolean true on success
  */
-	public function beforeSave(Event $event, Entity $entity, $options) {
-		$Event = new Event('FileStorage.beforeSave', $this, array(
+	public function beforeSave(Event $event, EntityInterface $entity, $options) {
+		$Event = $this->dispatchEvent('FileStorage.beforeSave', array(
 			'record' => $entity,
-			'storage' => $this->getStorageAdapter($event->data['entity']['adapter'])
+			'storage' => $this->storageAdapter($entity['adapter'])
 		));
-		$this->getEventManager()->dispatch($Event);
 		if ($Event->isStopped()) {
 			return false;
 		}
@@ -110,20 +99,50 @@ class FileStorageTable extends Table {
 	}
 
 /**
- * afterSave callback
+ * Gets information about the file that is being uploaded.
  *
- * @param Event $event
- * @param  Entity $entity
- * @param array $options
+ * - gets the file size
+ * - gets the mime type
+ * - gets the extension if present
+ * - sets the adapter by default to local if not already set
+ * - sets the model field to the table name if not already set
+ *
+ * @param array|\ArrayAccess $upload
+ * @param string $field
  * @return void
  */
-	public function afterSave(Event $event, Entity $entity, $options) {
-		$Event = new Event('FileStorage.afterSave', $this, [
-			'created' => $event->data['entity']->isNew(),
+	public function getFileInfoFromUpload(&$upload, $field = 'file') {
+		if (!empty($upload[$field]['tmp_name'])) {
+			$File = new File($upload[$field]['tmp_name']);
+			$upload['filesize'] = $File->size();
+			$upload['mime_type'] = $File->mime();
+		}
+		if (!empty($upload[$field]['name'])) {
+			$upload['extension'] = pathinfo($upload[$field]['name'], PATHINFO_EXTENSION);
+			$upload['filename'] = $upload[$field]['name'];
+		}
+		if (empty($upload['model'])) {
+			$upload['model'] = $this->table();
+		}
+		if (empty($upload['adapter'])) {
+			$upload['adapter'] = 'Local';
+		}
+	}
+
+/**
+ * afterSave callback
+ *
+ * @param \Cake\Event\Event $event
+ * @param \Cake\Datasource\EntityInterface $entity
+ * @param array $options
+ * @return boolean
+ */
+	public function afterSave(Event $event, EntityInterface $entity, $options) {
+		$this->dispatchEvent('FileStorage.afterSave', [
 			'record' => $entity,
-			'storage' => $this->getStorageAdapter($event->data['entity']['adapter'])
+			'created' => $event->data['entity']->isNew(),
+			'storage' => $this->storageAdapter($entity['adapter'])
 		]);
-		$this->getEventManager()->dispatch($Event);
 		$this->deleteOldFileOnSave($entity);
 		return true;
 	}
@@ -132,11 +151,10 @@ class FileStorageTable extends Table {
  * Get a copy of the actual record before we delete it to have it present in afterDelete
  *
  * @param \Cake\Event\Event $event
- * @param \Burzum\FileStorage\Model\Table\Entity $entity
- * @param array $options
+ * @param \Cake\Datasource\EntityInterface $entity
  * @return boolean
  */
-	public function beforeDelete(\Cake\Event\Event $event, \Cake\ORM\Entity $entity) {
+	public function beforeDelete(Event $event, EntityInterface $entity) {
 		$this->record = $this->find()
 			->contain([])
 			->where([
@@ -155,36 +173,16 @@ class FileStorageTable extends Table {
  * afterDelete callback
  *
  * @param \Cake\Event\Event $event
- * @param \Cake\ORM\Entity $entity
+ * @param \Cake\Datasource\EntityInterface $entity
  * @param array $options
  * @return boolean
  */
-	public function afterDelete(\Cake\Event\Event $event, Entity $entity, $options) {
-		try {
-			$Storage = $this->getStorageAdapter($entity['adapter']);
-			$Storage->delete($entity['path']);
-		} catch (Exception $e) {
-			$this->log($e->getMessage(), 'file_storage');
-			return false;
-		}
-
-		$Event = new Event('FileStorage.afterDelete', $this, array(
-			'record' => $event->data['record'],
-			'storage' => $this->getStorageAdapter($entity['adapter'])));
-		$this->getEventManager()->dispatch($Event);
-
+	public function afterDelete(Event $event, EntityInterface $entity, $options) {
+		$this->dispatchEvent('FileStorage.afterDelete', [
+			'record' => $entity,
+			'storage' => $this->storageAdapter($entity['adapter'])
+		]);
 		return true;
-	}
-
-/**
- * Get a storage adapter from the StorageManager
- *
- * @param string $adapterName
- * @param boolean $renewObject
- * @return \Gaufrette\Adapter
- */
-	public function getStorageAdapter($adapterName, $renewObject = false) {
-		return StorageManager::adapter($adapterName, $renewObject);
 	}
 
 /**
@@ -195,17 +193,18 @@ class FileStorageTable extends Table {
  *
  * The old id has to be the UUID of the file_storage record that should be deleted.
  *
- * @param string $oldIdField Name of the field in the data that holds the old id
+ * @param \Cake\Datasource\EntityInterface $entity
+ * @param string $oldIdField Name of the field in the data that holds the old id.
  * @return boolean Returns true if the old record was deleted
  */
-	public function deleteOldFileOnSave(Entity $entity, $oldIdField = 'old_file_id') {
+	public function deleteOldFileOnSave(EntityInterface $entity, $oldIdField = 'old_file_id') {
 		if (!empty($entity[$oldIdField]) && $entity['model']) {
 			$oldEntity = $this->find()
 				->contain([])
-				->where(
-					[$this->alias() . '.' . $this->primaryKey() => $entity[$oldIdField], 'model' => $entity['model']])
+				->where([
+					$this->alias() . '.' . $this->primaryKey() => $entity[$oldIdField], 'model' => $entity['model']
+				])
 				->first();
-			
 			if (!empty($oldEntity)) {
 				return $this->delete($oldEntity);
 			}
@@ -214,12 +213,34 @@ class FileStorageTable extends Table {
 	}
 
 /**
- * Returns an EventManager instance
+ * Returns full file path for an entity.
  *
- * @return \Cake\Event\EventManager
+ * @param \Cake\Datasource\EntityInterface $entity
+ * @param array $options
+ * @return string
  */
-	public function getEventManager() {
-		return EventManager::instance();
+	public function fullFilePath(EntityInterface $entity, array $options = []) {
+		$pathBuilder = $this->createPathBuilder($entity['adapter']);
+		return $pathBuilder->fullPath($entity, $options);
 	}
 
+/**
+ * Returns file url for an entity.
+ *
+ * @param \Cake\Datasource\EntityInterface $entity
+ * @param array $options
+ * @return string
+ */
+	public function fileUrl(EntityInterface $entity, array $options = []) {
+		$pathBuilder = $this->createPathBuilder($entity['adapter']);
+		return $pathBuilder->url($entity, $options);
+	}
+
+/**
+ * {@inheritDoc}
+ */
+	public function dispatchEvent($name, $data = null, $subject = null) {
+		$data['table'] = $this;
+		return parent::dispatchEvent($name, $data, $subject);
+	}
 }
