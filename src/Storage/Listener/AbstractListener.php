@@ -114,6 +114,12 @@ abstract class AbstractListener implements EventListenerInterface {
  */
 	public function initialize($config) {}
 
+	public function implementedEvents() {
+		return [
+			'FileStorage.path' => 'getPath'
+		];
+	}
+
 /**
  * Check if the event is of a type or subject object of type model we want to
  * process with this listener.
@@ -269,6 +275,14 @@ abstract class AbstractListener implements EventListenerInterface {
 	}
 
 /**
+ * @param \Cake\Datasource\EntityInterface
+ * @return string
+ */
+	public function getPath(Event $event) {
+		return $this->pathBuilder()->{$event->data['method']}($event->subject(), $event->data);
+	}
+
+/**
  * Constructs a path builder instance.
  *
  * @param string $class
@@ -277,7 +291,6 @@ abstract class AbstractListener implements EventListenerInterface {
  */
 	protected function _constructPathBuilder($class, array $options = []) {
 		$pathBuilder = $this->createPathBuilder($class, $options);
-
 		return $this->pathBuilder($pathBuilder);
 	}
 }

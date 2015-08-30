@@ -301,7 +301,7 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 /**
  * Generates a semi-random file system path
  *
- * @deprecated Don't use this anymore but it is still used by two listeners :(
+ * @deprecated Don't use this anymore but it is still used by two legacy listeners :(
  * @param string $type
  * @param string $string
  * @param boolean $idFolder

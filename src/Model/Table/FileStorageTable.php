@@ -213,30 +213,6 @@ class FileStorageTable extends Table {
 	}
 
 /**
- * Returns full file path for an entity.
- *
- * @param \Cake\Datasource\EntityInterface $entity
- * @param array $options
- * @return string
- */
-	public function fullFilePath(EntityInterface $entity, array $options = []) {
-		$pathBuilder = $this->createPathBuilder($entity['adapter']);
-		return $pathBuilder->fullPath($entity, $options);
-	}
-
-/**
- * Returns file url for an entity.
- *
- * @param \Cake\Datasource\EntityInterface $entity
- * @param array $options
- * @return string
- */
-	public function fileUrl(EntityInterface $entity, array $options = []) {
-		$pathBuilder = $this->createPathBuilder($entity['adapter']);
-		return $pathBuilder->url($entity, $options);
-	}
-
-/**
  * {@inheritDoc}
  */
 	public function dispatchEvent($name, $data = null, $subject = null) {

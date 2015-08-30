@@ -1,6 +1,7 @@
 <?php
 namespace Burzum\FileStorage\Model\Entity;
 
+use Cake\Event\EventDispatcherTrait;
 use Cake\ORM\Entity;
 
 /**
@@ -12,28 +13,47 @@ use Cake\ORM\Entity;
  */
 class FileStorage extends Entity {
 
+	use EventDispatcherTrait;
+
 /**
  * Fields that can be mass assigned using newEntity() or patchEntity().
  *
  * @var array
  */
 	protected $_accessible = [
-		'id' => true,
-		'user_id' => true,
-		'foreign_key' => true,
-		'model' => true,
-		'file' => true,
-		'filename' => true,
-		'filesize' => true,
-		'mime_type' => true,
-		'extension' => true,
-		'hash' => true,
-		'path' => true,
-		'adapter' => true,
-		'created' => true,
-		'modified' => true,
-		'file' => true,
-		'old_file_id' => true
+		'*' => true,
 	];
 
+/**
+ * Gets a path for this entities file.
+ *
+ * @param array $options
+ * @return string
+ */
+	public function path(array $options = []) {
+		$options['method'] = 'fullPath';
+		return $this->_path($options);
+	}
+
+/**
+ * Gets an URL for this entities file.
+ *
+ * @param array $options
+ * @return string
+ */
+	public function url(array $options = []) {
+		$options['method'] = 'url';
+		return $this->_path($options);
+	}
+
+/**
+ * Gets a path for this entities file.
+ *
+ * @param array $options
+ * @return string
+ */
+	protected function _path($options) {
+		$event = $this->dispatchEvent('FileStorage.path', $options);
+		return $event->result;
+	}
 }

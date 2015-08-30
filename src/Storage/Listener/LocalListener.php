@@ -56,7 +56,7 @@ class LocalListener extends AbstractListener {
  * @return array
  */
 	public function implementedEvents() {
-		return [
+		return array_merge(parent::implementedEvents(), [
 			'FileStorage.afterSave' => 'afterSave',
 			'FileStorage.afterDelete' => 'afterDelete',
 			'ImageStorage.afterSave' => 'afterSave',
@@ -64,8 +64,9 @@ class LocalListener extends AbstractListener {
 			'ImageVersion.removeVersion' => 'removeImageVersion',
 			'ImageVersion.createVersion' => 'createImageVersion',
 			'ImageVersion.getVersions' => 'imagePath',
-			'FileStorage.ImageHelper.imagePath' => 'imagePath' // deprecated
-		];
+			'FileStorage.ImageHelper.imagePath' => 'imagePath', // deprecated
+			'FileStorage.getPath' => 'getPath' // deprecated
+		]);
 	}
 
 /**
