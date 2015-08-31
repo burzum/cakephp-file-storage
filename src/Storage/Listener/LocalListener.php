@@ -180,21 +180,25 @@ class LocalListener extends AbstractListener {
 	}
 
 /**
- *
+ * @param \Cake\Event\Event $event
+ * @return void
  */
 	public function removeImageVersion(Event $event) {
 		$this->_processImages($event, 'removeImageVersions');
 	}
 
 /**
- *
+ * @param \Cake\Event\Event $event
+ * @return void
  */
 	public function createImageVersion(Event $event) {
 		$this->_processImages($event, 'createImageVersions');
 	}
 
 /**
- *
+ * @param \Cake\Event\Event $event
+ * @param string $method
+ * return void
  */
 	protected function _processImages(Event $event, $method) {
 		if ($this->config('imageProcessing') !== true) {
