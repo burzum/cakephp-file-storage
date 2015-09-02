@@ -25,13 +25,35 @@ class FileStorage extends Entity {
 	];
 
 /**
+ * Accessor to get the *real* path on disk + filename.
+ *
+ * @link http://book.cakephp.org/3.0/en/orm/entities.html#accessors-mutators
+ * @return string
+ */
+	protected function _getFullPath() {
+		$this->path();
+	}
+
+/**
+ * Accessor to get the URL to this file.
+ *
+ * @link http://book.cakephp.org/3.0/en/orm/entities.html#accessors-mutators
+ * @return string
+ */
+	protected function _getUrl() {
+		$this->url();
+	}
+
+/**
  * Gets a path for this entities file.
  *
  * @param array $options
  * @return string
  */
 	public function path(array $options = []) {
-		$options['method'] = 'fullPath';
+		if (empty($options['method'])) {
+			$options['method'] = 'fullPath';
+		}
 		return $this->_path($options);
 	}
 
@@ -53,6 +75,9 @@ class FileStorage extends Entity {
  * @return string
  */
 	protected function _path($options) {
+		if (empty($options['method'])) {
+			$options['method'] = 'path';
+		}
 		$event = $this->dispatchEvent('FileStorage.path', $options);
 		return $event->result;
 	}
