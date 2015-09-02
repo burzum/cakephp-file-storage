@@ -65,26 +65,86 @@ class BasePathBuilder implements PathBuilderInterface {
 	public function path(EntityInterface $entity, array $options = []) {
 		$config = array_merge($this->config(), $options);
 		$path = '';
-		if (!empty($config['pathPrefix']) && is_string($config['pathPrefix'])) {
-			$path = $config['pathPrefix'] . DS . $path;
-		}
-		if ($this->_config['modelFolder'] === true) {
+		$path = $this->_pathPrefix($entity, $path, $config);
+		$path = $this->_path($entity, $path, $config);
+		$path = $this->_pathSuffix($entity, $path, $config);
+		return $this->ensureSlash($path, 'after');
+	}
+
+/**
+ * Handles the path prefix generation.
+ *
+ * Overload this method as needed with your custom implementation.
+ *
+ * @param \Cake\Datasource\EntityInterface $entity
+ * @param $path string
+ * @param $config array
+ * @return string
+ */
+	protected function _pathPrefix(EntityInterface $entity, $path, array $config) {
+		return $this->_pathPreAndSuffix($entity, $path, $config, 'prefix');
+	}
+
+	protected function _path(EntityInterface $entity, $path, array $config) {
+		if ($config['modelFolder'] === true) {
 			$path .= $entity->model . DS;
 		}
-		if ($this->_config['randomPath'] === true) {
+		if ($config['randomPath'] === true) {
 			$path .= $this->randomPath($entity->id);
 		}
-		if (is_string($this->_config['randomPath'])) {
-			$path .= $this->randomPath($entity->id, 3, $this->_config['randomPath']);
+		if (is_string($config['randomPath'])) {
+			$path .= $this->randomPath($entity->id, 3, $config['randomPath']);
 		}
 		// uuidFolder for backward compatibility
-		if ($this->_config['uuidFolder'] === true || $this->_config['idFolder'] === true) {
+		if ($config['uuidFolder'] === true || $config['idFolder'] === true) {
 			$path .= $this->stripDashes($entity->id) . DS;
 		}
-		if (!empty($this->_config['pathSuffix']) && is_string($this->_config['pathSuffix'])) {
-			$path = $path . $this->_config['pathSuffix'] . DS;
+		return $path;
+	}
+
+/**
+ * Handles the path suffix generation.
+ *
+ * Overload this method as needed with your custom implementation.
+ *
+ * @param \Cake\Datasource\EntityInterface $entity
+ * @param $path string
+ * @param $config array
+ * @return string
+ */
+	protected function _pathSuffix(EntityInterface $entity, $path, array $config) {
+		return $this->_pathPreAndSuffix($entity, $path, $config, 'suffix');
+	}
+
+/**
+ * Handles the path suffix generation.
+ *
+ * By default prefix and suffix are handled the same but just use a different
+ * config array key. This methods handles both and just changes the config
+ * key conditionally. Overload _pathSuffix() and _pathPrefix() for your custom
+ * implementation instead of touching this methods.
+ *
+ * @see BasePathBuilder::_pathSuffix()
+ * @see BasePathBuilder::_pathPrefix()
+ * @param \Cake\Datasource\EntityInterface $entity
+ * @param $path string
+ * @param $config array
+ * @param $type string
+ * @return string
+ */
+	protected function _pathPreAndSuffix(EntityInterface $entity, $path, array $config, $type = 'suffix') {
+		$type = ucfirst($type);
+		if (!in_array($type, ['Suffix', 'Prefix'])) {
+			throw new \InvalidArgumentException(sprintf('Invalid argument "%s" for $type!', $type));
 		}
-		return $this->ensureSlash($path, 'after');
+		$type = 'path' . $type;
+		if (!empty($config[$type]) && is_string($config[$type])) {
+			$path = $path . $config[$type] . DS;
+		}
+		if (!empty($config[$type]) && is_callable($config[$type])) {
+			$path = $config[$type]($entity, $path);
+		}
+		return $path;
 	}
 
 /**
