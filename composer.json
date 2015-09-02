@@ -19,7 +19,7 @@
 		"knplabs/gaufrette": "*"
 	},
 	"require-dev": {
-		"phpunit/phpunit": "*",
+		"phpunit/phpunit": "~4.8",
 		"burzum/cakephp-imagine-plugin": "3.0.*-dev"
 	},
 	"autoload": {
