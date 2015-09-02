@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "9834cfa8dcefcdaed29f14338be863f7",
+    "hash": "e7673634de4f009b19e5a38e1d069601",
     "packages": [
         {
             "name": "aura/installer-default",
@@ -1128,20 +1128,20 @@
         },
         {
             "name": "phpunit/php-code-coverage",
-            "version": "dev-master",
+            "version": "2.2.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "4308b3a44ddba35e298792f22e8f3b0685f31191"
+                "reference": "ab2283bf4a836d7f2ec5f33c15d6802d9f4cb512"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/4308b3a44ddba35e298792f22e8f3b0685f31191",
-                "reference": "4308b3a44ddba35e298792f22e8f3b0685f31191",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/ab2283bf4a836d7f2ec5f33c15d6802d9f4cb512",
+                "reference": "ab2283bf4a836d7f2ec5f33c15d6802d9f4cb512",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.6",
+                "php": ">=5.3.3",
                 "phpunit/php-file-iterator": "~1.3",
                 "phpunit/php-text-template": "~1.2",
                 "phpunit/php-token-stream": "~1.3",
@@ -1150,7 +1150,7 @@
             },
             "require-dev": {
                 "ext-xdebug": ">=2.1.4",
-                "phpunit/phpunit": "~5"
+                "phpunit/phpunit": "~4"
             },
             "suggest": {
                 "ext-dom": "*",
@@ -1160,7 +1160,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.0.x-dev"
+                    "dev-master": "2.2.x-dev"
                 }
             },
             "autoload": {
@@ -1186,7 +1186,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2015-09-02 07:03:47"
+            "time": "2015-09-01 12:25:27"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -1923,6 +1923,8 @@
     },
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": ">=5.4.19"
+    },
     "platform-dev": []
 }
