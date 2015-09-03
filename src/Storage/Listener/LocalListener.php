@@ -180,6 +180,8 @@ class LocalListener extends AbstractListener {
 	}
 
 /**
+ * Removes a specific image version.
+ *
  * @param \Cake\Event\Event $event
  * @return void
  */
@@ -188,6 +190,8 @@ class LocalListener extends AbstractListener {
 	}
 
 /**
+ * Creates the verions for an image.
+ *
  * @param \Cake\Event\Event $event
  * @return void
  */

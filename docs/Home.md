@@ -15,12 +15,14 @@ Documentation
 * [How it works](Documentation/How-it-works.md)
 * [The Storage Manager](Documentation/The-Storage-Manager.md)
 * [How to Use it](Documentation/How-To-Use.md)
-* [Image Storage and Versioning](Documentation/Image-Storage-And-Versioning.md)
-* [The Image Helper](Documentation/The-Image-Helper.md)
 * [Specific Adapter Configurations](Documentation/Specific-Adapter-Configurations.md)
 * [Included Event Listeners](Documentation/Included-Event-Listeners.md)
 * [Legacy Event Listeners](Documentation/Legacy-Event-Listeners.md)
 * [Path Builders](Documentation/Path-Builders.md)
+* Image processing
+  * [Image Storage and Versioning](Documentation/Image-Storage-And-Versioning.md)
+  * [The Image Version Shell](Documentation/The-Image-Version-Shell.md)
+  * [The Image Helper](Documentation/The-Image-Helper.md)
 
 Tutorials
 ---------
