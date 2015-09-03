@@ -15,6 +15,9 @@ tools:
 filter:
     excluded_paths: [src/Event/, src/Lib/]
 build:
+    environment:
+        php:
+            version: 5.6
     tests:
         override:
             -
