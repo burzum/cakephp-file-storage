@@ -41,6 +41,63 @@ class LocalListenerTest extends TestCase {
 	}
 
 /**
+ * testimplementedEvents
+ *
+ * @return void
+ */
+	public function testimplementedEvents() {
+		$expected = [
+			'FileStorage.path' => 'getPath',
+			'FileStorage.afterSave' => 'afterSave',
+			'FileStorage.afterDelete' => 'afterDelete',
+			'ImageStorage.afterSave' => 'afterSave',
+			'ImageStorage.afterDelete' => 'afterDelete',
+			'ImageVersion.removeVersion' => 'removeImageVersion',
+			'ImageVersion.createVersion' => 'createImageVersion',
+			'ImageVersion.getVersions' => 'imagePath',
+			'FileStorage.ImageHelper.imagePath' => 'imagePath',
+			'FileStorage.getPath' => 'getPath'
+		];
+		$result = $this->listener->implementedEvents();
+		$this->assertEquals($result, $expected);
+	}
+
+/**
+ * testImagePath
+ *
+ * @return void
+ */
+	public function testImagePath() {
+		Configure::write('FileStorage.imageSizes', [
+			'Test' => [
+				't150' => [
+					'thumbnail' => [
+						'mode' => 'outbound',
+						'width' => 150, 'height' => 150
+					]
+				]
+			],
+		]);
+		$image = $this->FileStorage->newEntity([
+			'id' => 'e479b480-f60b-11e1-a21f-0800200c9a66',
+			'model' => 'Test',
+			'path' => 'test/path/',
+			'extension' => 'jpg',
+			'adapter' => 'Local'
+		]);
+
+		$event = new Event('ImageVersion.getVersions', $this->FileStorage, [
+			'image' => $image,
+			'version' => 't150'
+		]);
+
+		$expected = 'Test' . DS . '5c' . DS . '39' . DS . '33' . DS . 'e479b480f60b11e1a21f0800200c9a66' . DS . 'e479b480f60b11e1a21f0800200c9a66.c3f33c2a.jpg';
+		$this->listener->imagePath($event);
+		$this->assertEquals($event->data['path'], $expected);
+		$this->assertEquals($event->result, $expected);
+	}
+
+/**
  * testAfterSave
  *
  * @return void
