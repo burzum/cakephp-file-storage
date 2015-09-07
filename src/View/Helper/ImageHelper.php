@@ -40,6 +40,17 @@ class ImageHelper extends Helper {
 		return $this->fallbackImage($options, $image, $version);
 	}
 
+	protected function _getHash($version, $image) {
+		if (!empty($version)) {
+			$hash = Configure::read('FileStorage.imageHashes.' . $image['model'] . '.' . $version);
+			if (empty($hash)) {
+				throw new \InvalidArgumentException(sprintf('No valid version key (Identifier: `%s` Key: `%s`) passed!', @$image['model'], $version));
+			}
+			return $hash;
+		}
+		return null;
+	}
+
 /**
  * URL
  *
@@ -54,17 +65,8 @@ class ImageHelper extends Helper {
 			return false;
 		}
 
-		if (!empty($version)) {
-			$hash = Configure::read('FileStorage.imageHashes.' . $image['model'] . '.' . $version);
-			if (empty($hash)) {
-				throw new \InvalidArgumentException(sprintf('No valid version key (Identifier: `%s` Key: `%s`) passed!', @$image['model'], $version));
-			}
-		} else {
-			$hash = null;
-		}
-
 		$eventOptions = [
-			'hash' => $hash,
+			'hash' => $this->_getHash($version, $image),
 			'image' => $image,
 			'version' => $version,
 			'options' => $options,
