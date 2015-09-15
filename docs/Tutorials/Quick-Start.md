@@ -175,7 +175,7 @@ class ProductsController extends AppController {
 	// Upload an image
 	public function upload($productId = null) {
 		$entity = $this->Products->ProductImages->newEntity();
-		if ($this->request->is(['post', 'put])) {
+		if ($this->request->is(['post', 'put'])) {
 			$entity = $this->Products->ProductImages->patchEntity(
 				$entity,
 				$this->request->data
