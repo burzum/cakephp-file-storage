@@ -215,7 +215,7 @@ class UploadValidator extends Validator {
 				case UPLOAD_ERR_OK:
 					return true;
 				case UPLOAD_ERR_INI_SIZE:
-					return __d('file_storage', 'The uploaded file exceeds limit of %s.', Number::toReadableSize(ini_get('upload_max_filesize')));
+					return __d('file_storage', 'The uploaded file exceeds limit of {0}.', Number::toReadableSize(ini_get('upload_max_filesize')));
 				case UPLOAD_ERR_FORM_SIZE:
 					return __d('file_storage', 'The uploaded file is to big, please choose a smaller file or try to compress it.');
 				case UPLOAD_ERR_PARTIAL:

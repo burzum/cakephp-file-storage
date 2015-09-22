@@ -310,7 +310,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 			return $this->$buildMethod($Event);
 		}
 
-		throw new \RuntimeException(__d('file_storage', 'No callback image url callback implemented for adapter %s', $adapterClass));
+		throw new \RuntimeException(__d('file_storage', 'No callback image url callback implemented for adapter {0}', $adapterClass));
 	}
 
 /**
