@@ -103,7 +103,6 @@ class UploadValidatorBehavior extends Behavior {
 					'uploadErrors',
 					['allowNoFileError' => $config['allowNoFileError']]
 				],
-				'message' => __d('file_storage', 'No file was uploaded.')
 			]);
 		}
 		if ($config['validateUploadArray'] === true) {
