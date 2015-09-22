@@ -94,12 +94,8 @@ class LocalFileStorageListener extends AbstractStorageEventListener {
 			try {
 				$filename = $this->buildFileName($table, $entity);
 				$entity->path = $this->buildPath($table, $entity);
-
 				$Storage->write($entity['path'] . $filename, file_get_contents($entity['file']['tmp_name']), true);
-				$table->save($entity, array(
-					'validate' => false,
-					'callbacks' => false
-				));
+				$table->save($entity);
 			} catch (\Exception $e) {
 				$this->log($e->getMessage());
 			}

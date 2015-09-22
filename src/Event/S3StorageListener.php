@@ -75,10 +75,7 @@ class S3StorageListener extends AbstractStorageEventListener {
 				$path = $this->buildPath($event->subject(), $event->data['record']);
 				$record['path'] = $path['path'];
 				$Storage->write($path['combined'], file_get_contents($record['file']['tmp_name']), true);
-				$table->save($record, array(
-					'validate' => false,
-					'callbacks' => false)
-				);
+				$table->save($record);
 			} catch (\Exception $e) {
 				$this->log($e->getMessage());
 			}
