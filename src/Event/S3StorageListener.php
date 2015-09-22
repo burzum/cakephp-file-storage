@@ -37,14 +37,14 @@ class S3StorageListener extends AbstractStorageEventListener {
 /**
  * afterDelete
  *
- * @param \Cake\Event\Event $Event
+ * @param \Cake\Event\Event $event
  * @return boolean|null
  */
-	public function afterDelete(Event $Event) {
-		if ($this->_checkEvent($Event)) {
-			$table = $Event->subject();
-			$record = $Event->data['record'][$table->alias()];
-			$path = $this->_buildPath($Event);
+	public function afterDelete(Event $event) {
+		if ($this->_checkEvent($event)) {
+			$table = $event->subject();
+			$record = $event->data['record'][$table->alias()];
+			$path = $this->_buildPath($event);
 			try {
 				$Storage = $this->getAdapter($record['adapter']);
 				if (!$Storage->has($path['combined'])) {
@@ -62,17 +62,17 @@ class S3StorageListener extends AbstractStorageEventListener {
 /**
  * afterSave
  *
- * @param Event $Event
+ * @param Event $event
  * @return void
  */
-	public function afterSave(Event $Event) {
-		if ($this->_checkEvent($Event)) {
-			$table = $Event->subject();
-			$record = $Event->data['record'];
+	public function afterSave(Event $event) {
+		if ($this->_checkEvent($event)) {
+			$table = $event->subject();
+			$record = $event->data['record'];
 			$Storage = $this->getAdapter($record['adapter']);
 
 			try {
-				$path = $this->buildPath($Event->subject(), $Event->data['record']);
+				$path = $this->buildPath($event->subject(), $event->data['record']);
 				$record['path'] = $path['path'];
 				$Storage->write($path['combined'], file_get_contents($record['file']['tmp_name']), true);
 				$table->save($record, array(
