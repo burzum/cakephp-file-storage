@@ -66,7 +66,7 @@ class S3StorageListener extends AbstractStorageEventListener {
  * @return void
  */
 	public function afterSave(Event $event) {
-		if ($this->_checkEvent($event)) {
+		if ($this->_checkEvent($event) && $event->data['record']->isNew()) {
 			$table = $event->subject();
 			$record = $event->data['record'];
 			$Storage = $this->getAdapter($record['adapter']);
