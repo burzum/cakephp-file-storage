@@ -90,14 +90,14 @@ class UploadValidatorTest extends FileStorageTestCase {
  */
 	public function testUploadErrors() {
 		$this->assertTrue($this->Validator->uploadErrors(['error' => UPLOAD_ERR_OK]));
-		$this->assertFalse($this->Validator->uploadErrors(['error' => UPLOAD_ERR_INI_SIZE]));
-		$this->assertFalse($this->Validator->uploadErrors(['error' => UPLOAD_ERR_FORM_SIZE]));
-		$this->assertFalse($this->Validator->uploadErrors(['error' => UPLOAD_ERR_PARTIAL]));
-		$this->assertFalse($this->Validator->uploadErrors(['error' => UPLOAD_ERR_NO_FILE], ['allowNoFileError' => false]));
+		$this->assertInternalType('string', $this->Validator->uploadErrors(['error' => UPLOAD_ERR_INI_SIZE]));
+		$this->assertInternalType('string', $this->Validator->uploadErrors(['error' => UPLOAD_ERR_FORM_SIZE]));
+		$this->assertInternalType('string', $this->Validator->uploadErrors(['error' => UPLOAD_ERR_PARTIAL]));
+		$this->assertInternalType('string', $this->Validator->uploadErrors(['error' => UPLOAD_ERR_NO_FILE], ['allowNoFileError' => false]));
 		$this->assertTrue($this->Validator->uploadErrors(['error' => UPLOAD_ERR_NO_FILE], ['allowNoFileError' => true]));
-		$this->assertFalse($this->Validator->uploadErrors(['error' => UPLOAD_ERR_NO_TMP_DIR]));
-		$this->assertFalse($this->Validator->uploadErrors(['error' => UPLOAD_ERR_CANT_WRITE]));
-		$this->assertFalse($this->Validator->uploadErrors(['error' => UPLOAD_ERR_EXTENSION]));
+		$this->assertInternalType('string', $this->Validator->uploadErrors(['error' => UPLOAD_ERR_NO_TMP_DIR]));
+		$this->assertInternalType('string', $this->Validator->uploadErrors(['error' => UPLOAD_ERR_CANT_WRITE]));
+		$this->assertInternalType('string', $this->Validator->uploadErrors(['error' => UPLOAD_ERR_EXTENSION]));
 	}
 
 /**
