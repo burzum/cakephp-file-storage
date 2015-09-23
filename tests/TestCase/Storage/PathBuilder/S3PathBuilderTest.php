@@ -48,8 +48,6 @@ class S3PathBuilderTest extends TestCase {
  * @todo finish me
  */
 	public function testUrl() {
-		$builder = new S3PathBuilder();
-		$result = $builder->url($this->entity);
-		//debug($result);
+		$this->markTestIncomplete('Not implemented yet.');
 	}
 }
