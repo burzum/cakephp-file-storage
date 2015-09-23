@@ -214,6 +214,22 @@ class BasePathBuilder implements PathBuilderInterface {
 	}
 
 /**
+ * Checks if a subdirectory has been set in the adapter settings.
+ *
+ * Used to add to the URL functions.
+ *
+ * @param string $adapter Adapter config name set in the StorageManager
+ * @return string
+ */
+	protected function _adapterSubDirectory($adapter) {
+		$config = StorageManager::config($adapter);
+		if (isset($config['adapterOptions'][2]['directory'])) {
+			return $config['adapterOptions'][2]['directory'] . '/';
+		}
+		return '';
+	}
+
+/**
  * Keeps the original filename but is able to inject pre- and suffix.
  *
  * This can be useful to create versions of files for example.
@@ -259,7 +275,8 @@ class BasePathBuilder implements PathBuilderInterface {
  * @return string
  */
 	public function url(EntityInterface $entity, array $options = []) {
-		$url = $this->path($entity) . $this->filename($entity);
+		$directory = _adapterSubDirectory($entity->adapter);
+		$url = $directory . $this->path($entity) . $this->filename($entity);
 		return str_replace('\\', '/', $url);
 	}
 
