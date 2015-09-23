@@ -12,9 +12,11 @@ use Cake\Datasource\EntityInterface;
 class S3PathBuilder extends BasePathBuilder {
 
 	public function __construct(array $config = []) {
-		$this->_defaultConfig['https'] = false;
-		$this->_defaultConfig['modelFolder'] = true;
-		$this->_defaultConfig['s3Url'] = 's3.amazonaws.com';
+		$config += [
+			'https' => true,
+			'modelFolder' => true,
+			'baseUrl' => false,
+		];
 		parent::__construct($config);
 	}
 
@@ -23,17 +25,15 @@ class S3PathBuilder extends BasePathBuilder {
 		return $config['adapterOptions'][1];
 	}
 
-	protected function _buildCloudUrl($bucket, $bucketPrefix = null, $cfDist = null) {
+	protected function _getRegion($adapter) {
+		$config = StorageManager::config($adapter);
+		$S3Client = $config['adapterOptions'][0];
+		return $S3Client->getRegion();
+	}
+
+	protected function _buildCloudUrl($adapter, $bucketPrefix = null, $cfDist = null) {
 		$path = $this->config('https') === true ? 'https://' : 'http://';
-		if ($cfDist) {
-			$path .= $cfDist;
-		} else {
-			if ($bucketPrefix) {
-				$path .= $bucket . '.' . $this->_config['s3Url'];
-			} else {
-				$path .= $this->_config['s3Url'] . '/' . $bucket;
-			}
-		}
+		$path .= 's3-' . $this->_getRegion($adapter) . '.amazonaws.com/' . $this->_getBucket($adapter) . '/';
 		return $path;
 	}
 
@@ -48,10 +48,13 @@ class S3PathBuilder extends BasePathBuilder {
  * @return string
  */
 	public function url(EntityInterface $entity, array $options = []) {
-		$bucket = $this->_getBucket($entity->adapter);
-		$pathPrefix = $this->_buildCloudUrl($bucket);
-		$path = parent::path($entity);
+		if (($baseUrl = $this->config('baseUrl')) === false) {
+			$baseUrl = $this->_buildCloudUrl($entity->adapter);
+		}
+		$subDirectory = $this->_adapterSubDirectory($entity->adapter);
+		$path = $subDirectory . $this->path($entity) . $this->filename($entity);
 		$path = str_replace('\\', '/', $path);
-		return $pathPrefix . $path;
+		$path = ltrim($path, '/');
+		return $baseUrl . $path;
 	}
 }
