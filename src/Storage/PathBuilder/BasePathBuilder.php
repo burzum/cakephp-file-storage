@@ -8,6 +8,7 @@ namespace Burzum\FileStorage\Storage\PathBuilder;
 
 use Cake\Core\InstanceConfigTrait;
 use Cake\Datasource\EntityInterface;
+use Burzum\FileStorage\Storage\StorageManager;
 use Burzum\FileStorage\Storage\StorageUtils;
 
 /**
@@ -275,7 +276,7 @@ class BasePathBuilder implements PathBuilderInterface {
  * @return string
  */
 	public function url(EntityInterface $entity, array $options = []) {
-		$directory = _adapterSubDirectory($entity->adapter);
+		$directory = $this->_adapterSubDirectory($entity->adapter);
 		$url = $directory . $this->path($entity) . $this->filename($entity);
 		return str_replace('\\', '/', $url);
 	}
