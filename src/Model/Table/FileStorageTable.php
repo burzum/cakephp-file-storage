@@ -18,20 +18,12 @@ use Cake\ORM\Table;
  * @author Florian Krämer
  * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
- * @deprecated 3.1.0 Use ImageStorageBehavior in your tables instead.
  */
 class FileStorageTable extends Table {
 
 	use LogTrait;
 	use PathBuilderTrait;
 	use StorageTrait;
-
-/**
- * Name
- *
- * @var string
- */
-	public $name = 'FileStorage';
 
 /**
  * The record that was deleted
@@ -198,7 +190,7 @@ class FileStorageTable extends Table {
  * @return boolean Returns true if the old record was deleted
  */
 	public function deleteOldFileOnSave(EntityInterface $entity, $oldIdField = 'old_file_id') {
-		if (!empty($entity[$oldIdField]) && $entity['model']) {
+		if (!empty($entity[$oldIdField]) && !empty($entity['model'])) {
 			$oldEntity = $this->find()
 				->contain([])
 				->where([

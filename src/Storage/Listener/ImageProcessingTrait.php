@@ -38,7 +38,7 @@ trait ImageProcessingTrait {
  */
 	public function autoProcessImageVersions(EntityInterface $entity, $action) {
 		if (!in_array($action, ['create', 'remove'])) {
-			throw new \InvalidArgumentException();
+			throw new \InvalidArgumentException(sprintf('Expected "create" or "remove" but got "%s"', $action));
 		}
 		$this->_loadImageProcessingFromConfig();
 		if (!isset($this->_imageVersions[$entity->model])) {
