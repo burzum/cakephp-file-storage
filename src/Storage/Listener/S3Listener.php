@@ -23,7 +23,7 @@ class S3Listener extends LocalListener {
 	protected $_defaultConfig = [
 		'pathBuilder' => 'S3',
 		'pathBuilderOptions' => [
-			'modelFolder' => true,
+			'modelFolder' => false,
 		],
 		'fileHash' => false,
 		'imageProcessing' => false,

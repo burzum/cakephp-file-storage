@@ -14,7 +14,7 @@ class S3PathBuilder extends BasePathBuilder {
 	public function __construct(array $config = []) {
 		$config += [
 			'https' => true,
-			'modelFolder' => true,
+			'modelFolder' => false,
 			'baseUrl' => false,
 		];
 		parent::__construct($config);
