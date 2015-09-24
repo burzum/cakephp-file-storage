@@ -20,6 +20,22 @@ class S3PathBuilder extends BasePathBuilder {
 		parent::__construct($config);
 	}
 
+/**
+ * Checks if a subdirectory has been set in the adapter settings.
+ *
+ * Used to add to the URL functions.
+ *
+ * @param string $adapter Adapter config name set in the StorageManager
+ * @return string
+ */
+	protected function _adapterSubDirectory($adapter) {
+		$config = StorageManager::config($adapter);
+		if (isset($config['adapterOptions'][2]['directory'])) {
+			return $config['adapterOptions'][2]['directory'] . '/';
+		}
+		return '';
+	}
+
 	protected function _getBucket($adapter) {
 		$config = StorageManager::config($adapter);
 		return $config['adapterOptions'][1];
