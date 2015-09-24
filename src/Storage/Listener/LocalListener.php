@@ -84,7 +84,7 @@ class LocalListener extends AbstractListener {
 			$path = $this->pathBuilder()->fullPath($entity);
 			try {
 				if ($this->storageAdapter($entity->adapter)->delete($path)) {
-					if ($this->_config['imageProcessing'] === true) {
+					if ($this->config('imageProcessing') === true) {
 						$this->autoProcessImageVersions($entity, 'remove');
 					}
 					$event->result = true;
@@ -117,7 +117,7 @@ class LocalListener extends AbstractListener {
 				return;
 			}
 
-			if ($this->_config['imageProcessing'] === true) {
+			if ($this->config('imageProcessing') === true) {
 				$options = isset($event->data['options']) ? $event->data['options'] : [];
 				$this->autoProcessImageVersions($entity, 'create', $options);
 			}
