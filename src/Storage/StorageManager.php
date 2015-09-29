@@ -2,7 +2,7 @@
 namespace Burzum\FileStorage\Storage;
 
 /**
- * StorageManager - manages and instantiates gaufrette storage engine instances
+ * StorageManager - manages and instantiates Gaufrette storage engine instances
  *
  * @author Florian Krämer
  * @copyright 2012 - 2015 Florian Krämer
@@ -11,7 +11,7 @@ namespace Burzum\FileStorage\Storage;
 class StorageManager {
 
 /**
- * Adapter configs
+ * Adapter configurations
  *
  * @var array
  */
@@ -26,7 +26,7 @@ class StorageManager {
 /**
  * Return a singleton instance of the StorageManager.
  *
- * @return ClassRegistry instance
+ * @return \Burzum\FileStorage\Storage\StorageManager
  */
 	public static function &getInstance() {
 		static $instance = array();
@@ -61,8 +61,7 @@ class StorageManager {
  * Flush all or a single adapter from the config.
  *
  * @param string $name Config name, if none all adapters are flushed.
- * @throws RuntimeException
- * @return boolean True on success
+ * @return bool True on success.
  */
 	public static function flush($name = null) {
 		$_this = StorageManager::getInstance();
@@ -76,12 +75,12 @@ class StorageManager {
 	}
 
 /**
- * StorageAdapter
+ * Gets a configured instance of a storage adapter.
  *
  * @param mixed $adapterName string of adapter configuration or array of settings
  * @param boolean $renewObject Creates a new instance of the given adapter in the configuration
- * @throws RuntimeException
- * @return Gaufrette object as configured by first argument
+ * @throws \RuntimeException
+ * @return \Gaufrette\Adapter
  */
 	public static function adapter($adapterName, $renewObject = false) {
 		$_this = StorageManager::getInstance();
