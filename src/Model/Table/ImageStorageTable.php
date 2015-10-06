@@ -50,19 +50,18 @@ class ImageStorageTable extends FileStorageTable {
  * @param \Cake\Event\Event $event
  * @param \Cake\Datasource\EntityInterface $entity
  * @param array $options
- * @return boolean true on success
+ * @return void
  */
 	public function beforeSave(Event $event, EntityInterface $entity, $options) {
-		if (!parent::beforeSave($event, $entity, $options)) {
-			return false;
+		if ($event->isStopped()) {
+			return;
 		}
 		$imageEvent = $this->dispatchEvent('ImageStorage.beforeSave', [
 			'record' => $entity
 		]);
 		if ($imageEvent->isStopped()) {
-			return false;
-}
-		return true;
+			$event->stopPropagation();
+		}
 	}
 
 /**
@@ -73,7 +72,7 @@ class ImageStorageTable extends FileStorageTable {
  * @param \Cake\Event\Event $event
  * @param \Cake\Datasource\EntityInterface $entity
  * @param array $options
- * @return boolean
+ * @return void
  */
 	public function afterSave(Event $event, EntityInterface $entity, $options) {
 		if ($entity->isNew()) {
@@ -83,7 +82,6 @@ class ImageStorageTable extends FileStorageTable {
 			]);
 			$this->deleteOldFileOnSave($entity);
 		}
-		return true;
 	}
 
 /**
@@ -91,11 +89,12 @@ class ImageStorageTable extends FileStorageTable {
  *
  * @param \Cake\Event\Event $event
  * @param \Cake\Datasource\EntityInterface $entity
- * @return boolean
+ * @return void
  */
 	public function beforeDelete(Event $event, EntityInterface $entity) {
-		if (!parent::beforeDelete($event, $entity)) {
-			return false;
+		parent::beforeDelete($event, $entity);
+		if ($event->isStopped()) {
+			return;
 		}
 
 		$imageEvent = $this->dispatchEvent('ImageStorage.beforeDelete', [
@@ -104,10 +103,8 @@ class ImageStorageTable extends FileStorageTable {
 		]);
 
 		if ($imageEvent->isStopped()) {
-			return false;
+			$event->stopPropagation();
 		}
-
-		return true;
 	}
 
 /**

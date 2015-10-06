@@ -48,6 +48,8 @@ class LocalListenerTest extends TestCase {
 	public function testimplementedEvents() {
 		$expected = [
 			'FileStorage.path' => 'getPath',
+			'FileStorage.beforeSave' => 'beforeSaveCheckFileField',
+			'ImageStorage.beforeSave' => 'beforeSaveCheckFileField',
 			'FileStorage.afterSave' => 'afterSave',
 			'FileStorage.afterDelete' => 'afterDelete',
 			'ImageStorage.afterSave' => 'afterSave',

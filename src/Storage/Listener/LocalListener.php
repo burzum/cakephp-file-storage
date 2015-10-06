@@ -57,8 +57,10 @@ class LocalListener extends AbstractListener {
  */
 	public function implementedEvents() {
 		return array_merge(parent::implementedEvents(), [
+			'FileStorage.beforeSave' => 'beforeSaveCheckFileField',
 			'FileStorage.afterSave' => 'afterSave',
 			'FileStorage.afterDelete' => 'afterDelete',
+			'ImageStorage.beforeSave' => 'beforeSaveCheckFileField',
 			'ImageStorage.afterSave' => 'afterSave',
 			'ImageStorage.afterDelete' => 'afterDelete',
 			'ImageVersion.removeVersion' => 'removeImageVersion',
@@ -158,29 +160,6 @@ class LocalListener extends AbstractListener {
 		$this->_loadImageProcessingFromConfig();
 		$event->data['path'] = $event->result = $this->imageVersionPath($entity, $version, $type, $options);
 		$event->stopPropagation();
-	}
-
-/**
- * Stores the file in the configured storage backend.
- *
- * @param \Cake\Event\Event $event
- * @throws \Burzum\Filestorage\Storage\StorageException
- * @return boolean
- */
-	protected function _storeFile(Event $event) {
-		try {
-			$fileField = $this->config('fileField');
-			$entity = $event->data['record'];
-			$Storage = $this->storageAdapter($entity['adapter']);
-			$Storage->write($entity['path'], file_get_contents($entity[$fileField]['tmp_name']), true);
-			$event->result = $event->data['table']->save($entity, array(
-				'checkRules' => false
-			));
-			return true;
-		} catch (\Exception $e) {
-			$this->log($e->getMessage(), LogLevel::ERROR, ['scope' => ['storage']]);
-			throw new StorageException($e->getMessage());
-		}
 	}
 
 /**
