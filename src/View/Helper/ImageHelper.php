@@ -74,15 +74,16 @@ class ImageHelper extends Helper {
 		];
 
 		$event1 = new Event('ImageVersion.getVersions', $this, $eventOptions);
-		$event2 = new Event('FileStorage.ImageHelper.imagePath', $this, $eventOptions);
-
 		EventManager::instance()->dispatch($event1);
-		EventManager::instance()->dispatch($event2);
 
 		if ($event1->isStopped()) {
 			return $this->normalizePath($event1->data['path']);
-		} elseif ($event2->isStopped()) {
-			return $this->normalizePath($event2->data['path']);
+		} else {
+			$event2 = new Event('FileStorage.ImageHelper.imagePath', $this, $eventOptions);
+			EventManager::instance()->dispatch($event2);
+			if ($event2->isStopped()) {
+				return $this->normalizePath($event2->data['path']);
+			}
 		}
 		return false;
 	}

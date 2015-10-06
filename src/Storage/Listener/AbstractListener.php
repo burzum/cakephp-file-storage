@@ -7,6 +7,7 @@
 namespace Burzum\FileStorage\Storage\Listener;
 
 use Burzum\FileStorage\Storage\PathBuilder\PathBuilderTrait;
+use Burzum\FileStorage\Storage\StorageException;
 use Burzum\FileStorage\Storage\StorageTrait;
 use Burzum\FileStorage\Storage\StorageUtils;
 use Cake\Core\InstanceConfigTrait;
@@ -114,9 +115,16 @@ abstract class AbstractListener implements EventListenerInterface {
  */
 	public function initialize($config) {}
 
+/**
+ * Implemented events
+ *
+ * @return array
+ */
 	public function implementedEvents() {
 		return [
-			'FileStorage.path' => 'getPath'
+			'FileStorage.path' => 'getPath',
+			'FileStorage.beforeSave' => 'beforeSaveCheckFileField',
+			'ImageStorage.beforeSave' => 'beforeSaveCheckFileField',
 		];
 	}
 
@@ -275,11 +283,68 @@ abstract class AbstractListener implements EventListenerInterface {
 	}
 
 /**
- * @param \Cake\Datasource\EntityInterface
+ * Gets a type of a path.
+ *
+ * @param \Cake\Event\Event
  * @return string
  */
 	public function getPath(Event $event) {
 		return $this->pathBuilder()->{$event->data['method']}($event->subject(), $event->data);
+	}
+
+/**
+ *
+ */
+	public function beforeSaveCheckFileField(Event $event, EntityInterface $entity, $options) {
+		if ($this->_checkEvent($event) && !$this->_checkFileField($entity)) {
+			$event->stopPropagation();
+		}
+	}
+
+/**
+ * Stores the file in the configured storage backend.
+ *
+ * @param \Cake\Event\Event $event
+ * @throws \Burzum\Filestorage\Storage\StorageException
+ * @return boolean
+ */
+	protected function _storeFile(Event $event) {
+		try {
+			$fileField = $this->config('fileField');
+			$entity = $event->data['record'];
+			$Storage = $this->storageAdapter($entity['adapter']);
+			$Storage->write($entity['path'], file_get_contents($entity[$fileField]['tmp_name']), true);
+			$event->result = $event->data['table']->save($entity, array(
+				'checkRules' => false
+			));
+			return true;
+		} catch (\Exception $e) {
+			$this->log($e->getMessage(), LogLevel::ERROR, ['scope' => ['storage']]);
+			throw new StorageException($e->getMessage());
+		}
+	}
+
+/**
+ * Avoid saving of empty files at any chance.
+ *
+ * Use this check BEFORE saving a storage entity!
+ *
+ * We don't want to save "empty files", dead records with no real file. If this
+ * is not checked the system will still store an empty file in the storage
+ * backend and a record is created any way.
+ *
+ * @param \Cake\Datasource\EntityInterface
+ * @return boolean
+ */
+	protected function _checkFileField(EntityInterface $entity) {
+		$fileField = $this->config('fileField');
+		if (!$entity->has($fileField)) {
+			return false;
+		}
+		if (!is_array($entity->{$fileField}) || (isset($entity->{$fileField}['error']) && $entity->{$fileField}['error'] === UPLOAD_ERR_NO_FILE)) {
+			return false;
+		}
+		return true;
 	}
 
 /**

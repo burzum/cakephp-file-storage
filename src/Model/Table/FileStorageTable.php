@@ -88,14 +88,13 @@ class FileStorageTable extends Table {
  * @return boolean true on success
  */
 	public function beforeSave(Event $event, EntityInterface $entity, $options) {
-		$Event = $this->dispatchEvent('FileStorage.beforeSave', array(
+		$storageEvent = $this->dispatchEvent('FileStorage.beforeSave', array(
 			'record' => $entity,
 			'storage' => $this->storageAdapter($entity['adapter'])
 		));
-		if ($Event->isStopped()) {
-			return false;
+		if ($storageEvent->isStopped()) {
+			$event->stopPropagation();
 		}
-		return true;
 	}
 
 /**
@@ -135,7 +134,7 @@ class FileStorageTable extends Table {
  * @param \Cake\Event\Event $event
  * @param \Cake\Datasource\EntityInterface $entity
  * @param array $options
- * @return boolean
+ * @return void
  */
 	public function afterSave(Event $event, EntityInterface $entity, $options) {
 		$this->dispatchEvent('FileStorage.afterSave', [
@@ -144,7 +143,6 @@ class FileStorageTable extends Table {
 			'storage' => $this->storageAdapter($entity['adapter'])
 		]);
 		$this->deleteOldFileOnSave($entity);
-		return true;
 	}
 
 /**
@@ -152,7 +150,7 @@ class FileStorageTable extends Table {
  *
  * @param \Cake\Event\Event $event
  * @param \Cake\Datasource\EntityInterface $entity
- * @return boolean
+ * @return void
  */
 	public function beforeDelete(Event $event, EntityInterface $entity) {
 		$this->record = $this->find()
@@ -163,10 +161,8 @@ class FileStorageTable extends Table {
 			->first();
 
 		if (empty($this->record)) {
-			return false;
+			$event->stopPropagation();
 		}
-
-		return true;
 	}
 
 /**
@@ -189,7 +185,7 @@ class FileStorageTable extends Table {
  * Deletes an old file to replace it with the new one if an old id was passed.
  *
  * Thought to be called in Model::afterSave() but can be used from any other
- * place as well like Model::beforeSave() as long as the field data is present.
+ * place as well like Table::beforeSave() as long as the field data is present.
  *
  * The old id has to be the UUID of the file_storage record that should be deleted.
  *
