@@ -35,53 +35,55 @@ EventManager::instance()->on($listener);
 $listener = new ImageProcessingListener();
 EventManager::instance()->on($listener);
 
-Configure::write('FileStorage', array(
-	// Configure image versions on a per model base
-	'imageSizes' => array(
-		'ProductImage' => array(
-			'large' => array(
-				'thumbnail' => array(
-					'mode' => 'inbound',
-					'width' => 800,
-					'height' => 800)),
-			'medium' => array(
-				'thumbnail' => array(
-					'mode' => 'inbound',
-					'width' => 200,
-					'height' => 200
-				)
-			),
-			'small' => array(
-				'thumbnail' => array(
-					'mode' => 'inbound',
-					'width' => 80,
-					'height' => 80
-				)
-			)
-		)
-	)
-));
+Configure::write('FileStorage', [
+// Configure image versions on a per model base
+    'imageSizes' => [
+        'ProductImage' => [
+            'large' => [
+                'thumbnail' => [
+                    'mode' => 'inbound',
+                    'width' => 800,
+                    'height' => 800
+                ]
+            ],
+            'medium' => [
+                'thumbnail' => [
+                    'mode' => 'inbound',
+                    'width' => 200,
+                    'height' => 200
+                ]
+            ],
+            'small' => [
+                'thumbnail' => [
+                    'mode' => 'inbound',
+                    'width' => 80,
+                    'height' => 80
+                ]
+            ]
+        ]
+    ]
+]);
 
 // This is very important! The hashes are needed to calculate the image versions!
 FileStorageUtils::generateHashes();
 
 // Optional, lets use the AwsS3 adapter here instead of local
-$S3Client = \Aws\S3\S3Client::factory(array(
-	'key' => 'YOUR-KEY',
-	'secret' => 'YOUR-SECRET'
-));
+$S3Client = \Aws\S3\S3Client::factory([
+            'key' => 'YOUR-KEY',
+            'secret' => 'YOUR-SECRET'
+        ]);
 
 // Configure the Gaufrette adapter through the StorageManager
-StorageManager::config('S3Image', array(
-	'adapterOptions' => array(
-		$S3Client,
-		'YOUR-BUCKET-NAME',
-		array(),
-		true
-	),
-	'adapterClass' => '\Gaufrette\Adapter\AwsS3',
-	'class' => '\Gaufrette\Filesystem')
-);
+StorageManager::config('S3Image', [
+    'adapterOptions' => [
+        $S3Client,
+        'YOUR-BUCKET-NAME',
+        [],
+        true
+    ],
+    'adapterClass' => '\Gaufrette\Adapter\AwsS3',
+    'class' => '\Gaufrette\Filesystem'
+]);
 ```
 
 **It is highly recommended to read the following sections to understand how this works.**
