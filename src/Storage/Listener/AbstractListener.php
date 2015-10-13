@@ -275,7 +275,9 @@ abstract class AbstractListener implements EventListenerInterface {
 	}
 
 /**
- * @param \Cake\Datasource\EntityInterface
+ * Get the path for a storage entity.
+ *
+ * @param \Cake\Event\Event $event
  * @return string
  */
 	public function getPath(Event $event) {

@@ -80,7 +80,7 @@ class StorageManager {
  * @param mixed $adapterName string of adapter configuration or array of settings
  * @param boolean $renewObject Creates a new instance of the given adapter in the configuration
  * @throws \RuntimeException
- * @return \Gaufrette\Adapter
+ * @return \Gaufrette\Filesystem
  */
 	public static function adapter($adapterName, $renewObject = false) {
 		$_this = StorageManager::getInstance();

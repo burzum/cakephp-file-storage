@@ -1,6 +1,7 @@
 <?php
 namespace Burzum\FileStorage\Test\TestCase\Model\Table;
 
+use \Cake\Core\Plugin;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
@@ -80,7 +81,7 @@ class FileStorageTableTest extends FileStorageTestCase {
  * @return void
  */
 	public function testGetFileInfoFromUpload() {
-		$filename = \Cake\Core\Plugin::path('Burzum/FileStorage') . DS . 'tests' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg';
+		$filename = Plugin::path('Burzum/FileStorage') . DS . 'tests' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg';
 
 		$data = new \ArrayObject([
 			'file' => [
