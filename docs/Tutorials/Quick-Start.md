@@ -124,11 +124,11 @@ use Cake\ORM\Table;
 class Products extends Table {
 	public function initialize() {
 		parent::initialize();
-		$this->hasMany('Images', [
+		$this->hasMany('ProductImages', [
 			'className' => 'ProductImages',
 			'foreignKey' => 'foreign_key',
 			'conditions' => [
-				'Images.model' => 'ProductImage'
+				'ProductImages.model' => 'ProductImage'
 			]
 		]);
 		$this->hasMany('Documents', [
