@@ -278,7 +278,7 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 			file_put_contents($tmpFile, $Storage->read($path));
 			return $tmpFile;
 		} catch (Exception $e) {
-			$this->log($e->getMessage(), 'file_storage');
+			$this->log($e->getMessage());
 			throw $e;
 		}
 	}
