@@ -65,7 +65,7 @@ Insted of doing all of this in the model that has the files associated to it you
 How to store an uploaded file II - using Events
 -----------------------------------------------
 
-The **FileStorage** plugin comes with a class that acts just as a listener to some of the events in this plugin. Take a look at [LocalImageProcessingLister.php](../../Event/LocalImageProcessingLister.php).
+The **FileStorage** plugin comes with a class that acts just as a listener to some of the events in this plugin. Take a look at [ImageProcessingListener.php](../../Event/ImageProcessingListener.php).
 
 This class will listen to all the ImageStorage model events and save the uploaded image and then create the versions for that image and storage adapter.
 
