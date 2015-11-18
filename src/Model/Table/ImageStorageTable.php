@@ -19,19 +19,19 @@ use Cake\Validation\Validation;
  */
 class ImageStorageTable extends FileStorageTable {
 
-/**
- * Name
- *
- * @var string
- */
+	/**
+	 * Name
+	 *
+	 * @var string
+	 */
 	public $name = 'ImageStorage';
 
-/**
- * Initialize
- *
- * @param array $config
- * @return void
- */
+	/**
+	 * Initialize
+	 *
+	 * @param array $config
+	 * @return void
+	 */
 	public function initialize(array $config) {
 		parent::initialize($config);
 		$this->addBehavior('Burzum/Imagine.Imagine');
@@ -44,14 +44,14 @@ class ImageStorageTable extends FileStorageTable {
 		));
 	}
 
-/**
- * beforeSave callback
- *
- * @param \Cake\Event\Event $event
- * @param \Cake\Datasource\EntityInterface $entity
- * @param array $options
- * @return boolean true on success
- */
+	/**
+	 * beforeSave callback
+	 *
+	 * @param \Cake\Event\Event $event
+	 * @param \Cake\Datasource\EntityInterface $entity
+	 * @param array $options
+	 * @return boolean true on success
+	 */
 	public function beforeSave(Event $event, EntityInterface $entity, $options) {
 		if (!parent::beforeSave($event, $entity, $options)) {
 			return false;
@@ -61,20 +61,20 @@ class ImageStorageTable extends FileStorageTable {
 		]);
 		if ($imageEvent->isStopped()) {
 			return false;
-}
+		}
 		return true;
 	}
 
-/**
- * afterSave callback
- *
- * Does not call the parent to avoid that the regular file storage event listener saves the image already
- *
- * @param \Cake\Event\Event $event
- * @param \Cake\Datasource\EntityInterface $entity
- * @param array $options
- * @return boolean
- */
+	/**
+	 * afterSave callback
+	 *
+	 * Does not call the parent to avoid that the regular file storage event listener saves the image already
+	 *
+	 * @param \Cake\Event\Event $event
+	 * @param \Cake\Datasource\EntityInterface $entity
+	 * @param array $options
+	 * @return boolean
+	 */
 	public function afterSave(Event $event, EntityInterface $entity, $options) {
 		if ($entity->isNew()) {
 			$this->dispatchEvent('ImageStorage.afterSave', [
@@ -86,13 +86,13 @@ class ImageStorageTable extends FileStorageTable {
 		return true;
 	}
 
-/**
- * Get a copy of the actual record before we delete it to have it present in afterDelete
- *
- * @param \Cake\Event\Event $event
- * @param \Cake\Datasource\EntityInterface $entity
- * @return boolean
- */
+	/**
+	 * Get a copy of the actual record before we delete it to have it present in afterDelete
+	 *
+	 * @param \Cake\Event\Event $event
+	 * @param \Cake\Datasource\EntityInterface $entity
+	 * @return boolean
+	 */
 	public function beforeDelete(Event $event, EntityInterface $entity) {
 		if (!parent::beforeDelete($event, $entity)) {
 			return false;
@@ -110,16 +110,16 @@ class ImageStorageTable extends FileStorageTable {
 		return true;
 	}
 
-/**
- * After the main file was deleted remove the the thumbnails
- *
- * Note that we do not call the parent::afterDelete(), we just want to trigger the ImageStorage.afterDelete event but not the FileStorage.afterDelete at the same time!
- *
- * @param \Cake\Event\Event $event
- * @param \Cake\Datasource\EntityInterface $entity
- * @param array $options
- * @return boolean
- */
+	/**
+	 * After the main file was deleted remove the the thumbnails
+	 *
+	 * Note that we do not call the parent::afterDelete(), we just want to trigger the ImageStorage.afterDelete event but not the FileStorage.afterDelete at the same time!
+	 *
+	 * @param \Cake\Event\Event $event
+	 * @param \Cake\Datasource\EntityInterface $entity
+	 * @param array $options
+	 * @return boolean
+	 */
 	public function afterDelete(Event $event, EntityInterface $entity, $options) {
 		$this->dispatchEvent('ImageStorage.afterDelete', [
 			'record' => $entity,
@@ -128,19 +128,19 @@ class ImageStorageTable extends FileStorageTable {
 		return true;
 	}
 
-/**
- * Image size validation method
- *
- * @param mixed $check
- * @param array $options is an array with key width or height and a value of array
- *    with two options, operator and value. For example:
- *    array('height' => array('==', 100)) will only be true if the image has a
- *    height of exactly 100px. See the CakePHP core class and method
- *    Validation::comparison for all operators.
- * @return boolean true
- * @see Validation::comparison()
- * @throws \InvalidArgumentException
- */
+	/**
+	 * Image size validation method
+	 *
+	 * @param mixed $check
+	 * @param array $options is an array with key width or height and a value of array
+	 *    with two options, operator and value. For example:
+	 *    array('height' => array('==', 100)) will only be true if the image has a
+	 *    height of exactly 100px. See the CakePHP core class and method
+	 *    Validation::comparison for all operators.
+	 * @return boolean true
+	 * @see Validation::comparison()
+	 * @throws \InvalidArgumentException
+	 */
 	public function validateImageSize($check, array $options = []) {
 		if (!isset($options['height']) && !isset($options['width'])) {
 			throw new \InvalidArgumentException('Missing image size validation options! You must provide a hight and / or width.');
@@ -179,24 +179,23 @@ class ImageStorageTable extends FileStorageTable {
 		return true;
 	}
 
-/**
- * Gets a list of image versions for a given record.
- *
- * Use this method to get a list of ALL versions when needed or to cache all the
- * versions somewhere. This method will return all configured versions for an
- * image. For example you could store them serialized along with the file data
- * by adding a "versions" field to the DB table and extend this model.
- *
- * Just in case you're wondering about the event name in the method code: It's
- * called FileStorage.ImageHelper.imagePath there because the event is the same
- * as in the helper. No need to introduce yet another event, the existing event
- * already fulfills the purpose. I might rename this event in the 3.0 version of
- * the plugin to a more generic one.
- *
- * @param \Cake\Datasource\EntityInterface $entity An ImageStorage database record
- * @param array $options Options for the version.
- * @return array A list of versions for this image file. Key is the version, value is the path or URL to that image.
- */
+	/**
+	 * Gets a list of image versions for a given record.
+	 *
+	 * Use this method to get a list of ALL versions when needed or to cache all the
+	 * versions somewhere. This method will return all configured versions for an
+	 * image. For example you could store them serialized along with the file data
+	 * by adding a "versions" field to the DB table and extend this model.
+	 * Just in case you're wondering about the event name in the method code: It's
+	 * called FileStorage.ImageHelper.imagePath there because the event is the same
+	 * as in the helper. No need to introduce yet another event, the existing event
+	 * already fulfills the purpose. I might rename this event in the 3.0 version of
+	 * the plugin to a more generic one.
+	 *
+	 * @param \Cake\Datasource\EntityInterface $entity An ImageStorage database record
+	 * @param array $options Options for the version.
+	 * @return array A list of versions for this image file. Key is the version, value is the path or URL to that image.
+	 */
 	public function getImageVersions(EntityInterface $entity, $options = []) {
 		$versions = [];
 		$versionData = (array)Configure::read('FileStorage.imageSizes.' . $entity->get('model'));

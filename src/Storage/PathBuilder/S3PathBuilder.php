@@ -37,16 +37,16 @@ class S3PathBuilder extends BasePathBuilder {
 		return $path;
 	}
 
-/**
- * Builds the URL under which the file is accessible.
- *
- * This is for example important for S3 and Dropbox but also the Local adapter
- * if you symlink a folder to your webroot and allow direct access to a file.
- *
- * @param \Cake\Datasource\EntityInterface $entity
- * @param array $options
- * @return string
- */
+	/**
+	 * Builds the URL under which the file is accessible.
+	 *
+	 * This is for example important for S3 and Dropbox but also the Local adapter
+	 * if you symlink a folder to your webroot and allow direct access to a file.
+	 *
+	 * @param \Cake\Datasource\EntityInterface $entity
+	 * @param array $options
+	 * @return string
+	 */
 	public function url(EntityInterface $entity, array $options = []) {
 		$bucket = $this->_getBucket($entity->adapter);
 		$pathPrefix = $this->_buildCloudUrl($bucket);

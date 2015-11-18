@@ -18,11 +18,11 @@ class BasePathBuilder implements PathBuilderInterface {
 
 	use InstanceConfigTrait;
 
-/**
- * Default settings.
- *
- * @var array
- */
+	/**
+	 * Default settings.
+	 *
+	 * @var array
+	 */
 	protected $_defaultConfig = array(
 		'stripUuid' => true,
 		'pathPrefix' => '',
@@ -36,32 +36,32 @@ class BasePathBuilder implements PathBuilderInterface {
 		'modelFolder' => false
 	);
 
-/**
- * Constructor
- *
- * @param array $config Configuration options.
- */
+	/**
+	 * Constructor
+	 *
+	 * @param array $config Configuration options.
+	 */
 	public function __construct(array $config = []) {
 		$this->config($config);
 	}
 
-/**
- * Strips dashes from a string
- *
- * @param string
- * @return string String without the dashed
- */
+	/**
+	 * Strips dashes from a string
+	 *
+	 * @param string
+	 * @return string String without the dashed
+	 */
 	public function stripDashes($uuid) {
 		return str_replace('-', '', $uuid);
 	}
 
-/**
- * Builds the path under which the data gets stored in the storage adapter.
- *
- * @param \Cake\Datasource\EntityInterface $entity
- * @param array $options
- * @return string
- */
+	/**
+	 * Builds the path under which the data gets stored in the storage adapter.
+	 *
+	 * @param \Cake\Datasource\EntityInterface $entity
+	 * @param array $options
+	 * @return string
+	 */
 	public function path(EntityInterface $entity, array $options = []) {
 		$config = array_merge($this->config(), $options);
 		$path = '';
@@ -71,20 +71,28 @@ class BasePathBuilder implements PathBuilderInterface {
 		return $this->ensureSlash($path, 'after');
 	}
 
-/**
- * Handles the path prefix generation.
- *
- * Overload this method as needed with your custom implementation.
- *
- * @param \Cake\Datasource\EntityInterface $entity
- * @param $path string
- * @param $config array
- * @return string
- */
+	/**
+	 * Handles the path prefix generation.
+	 *
+	 * Overload this method as needed with your custom implementation.
+	 *
+	 * @param \Cake\Datasource\EntityInterface $entity
+	 * @param $path string
+	 * @param $config array
+	 * @return string
+	 */
 	protected function _pathPrefix(EntityInterface $entity, $path, array $config) {
 		return $this->_pathPreAndSuffix($entity, $path, $config, 'prefix');
 	}
 
+	/**
+	 * Builds a path.
+	 *
+	 * @param \Cake\Datasource\EntityInterface $entity
+	 * @param string $path
+	 * @param array $config
+	 * @return string
+	 */
 	protected function _path(EntityInterface $entity, $path, array $config) {
 		if ($config['modelFolder'] === true) {
 			$path .= $entity->model . DS;
@@ -102,36 +110,36 @@ class BasePathBuilder implements PathBuilderInterface {
 		return $path;
 	}
 
-/**
- * Handles the path suffix generation.
- *
- * Overload this method as needed with your custom implementation.
- *
- * @param \Cake\Datasource\EntityInterface $entity
- * @param $path string
- * @param $config array
- * @return string
- */
+	/**
+	 * Handles the path suffix generation.
+	 *
+	 * Overload this method as needed with your custom implementation.
+	 *
+	 * @param \Cake\Datasource\EntityInterface $entity
+	 * @param $path string
+	 * @param $config array
+	 * @return string
+	 */
 	protected function _pathSuffix(EntityInterface $entity, $path, array $config) {
 		return $this->_pathPreAndSuffix($entity, $path, $config, 'suffix');
 	}
 
-/**
- * Handles the path suffix generation.
- *
- * By default prefix and suffix are handled the same but just use a different
- * config array key. This methods handles both and just changes the config
- * key conditionally. Overload _pathSuffix() and _pathPrefix() for your custom
- * implementation instead of touching this methods.
- *
- * @see BasePathBuilder::_pathSuffix()
- * @see BasePathBuilder::_pathPrefix()
- * @param \Cake\Datasource\EntityInterface $entity
- * @param $path string
- * @param $config array
- * @param $type string
- * @return string
- */
+	/**
+	 * Handles the path suffix generation.
+	 *
+	 * By default prefix and suffix are handled the same but just use a different
+	 * config array key. This methods handles both and just changes the config
+	 * key conditionally. Overload _pathSuffix() and _pathPrefix() for your custom
+	 * implementation instead of touching this methods.
+	 *
+	 * @see BasePathBuilder::_pathSuffix()
+	 * @see BasePathBuilder::_pathPrefix()
+	 * @param \Cake\Datasource\EntityInterface $entity
+	 * @param $path string
+	 * @param $config array
+	 * @param $type string
+	 * @return string
+	 */
 	protected function _pathPreAndSuffix(EntityInterface $entity, $path, array $config, $type = 'suffix') {
 		$type = ucfirst($type);
 		if (!in_array($type, ['Suffix', 'Prefix'])) {
@@ -147,13 +155,13 @@ class BasePathBuilder implements PathBuilderInterface {
 		return $path;
 	}
 
-/**
- * Splits the filename in name and extension.
- *
- * @param string $filename Filename to split in name and extension.
- * @param boolean $keepDot Keeps the dot in front of the extension.
- * @return array
- */
+	/**
+	 * Splits the filename in name and extension.
+	 *
+	 * @param string $filename Filename to split in name and extension.
+	 * @param boolean $keepDot Keeps the dot in front of the extension.
+	 * @return array
+	 */
 	public function splitFilename($filename, $keepDot = false) {
 		$position = strrpos($filename, '.');
 		if ($position === false) {
@@ -168,13 +176,13 @@ class BasePathBuilder implements PathBuilderInterface {
 		return compact('filename', 'extension');
 	}
 
-/**
- * Builds the filename of under which the data gets saved in the storage adapter.
- *
- * @param \Cake\Datasource\EntityInterface $entity
- * @param array $options
- * @return string
- */
+	/**
+	 * Builds the filename of under which the data gets saved in the storage adapter.
+	 *
+	 * @param \Cake\Datasource\EntityInterface $entity
+	 * @param array $options
+	 * @return string
+	 */
 	public function filename(EntityInterface $entity, array $options = []) {
 		$config = array_merge($this->config(), $options);
 		if ($config['preserveFilename'] === true) {
@@ -183,19 +191,19 @@ class BasePathBuilder implements PathBuilderInterface {
 		return $this->_buildFilename($entity, $config);
 	}
 
-/**
- * Used to build a completely customized filename.
- *
- * The default behavior is to use the UUID from the entities primary key to
- * generate a filename based of the UUID that gets the dashes stripped and the
- * extension added if you configured the path builder to preserve it.
- *
- * The filePrefix and fileSuffix options are also supported.
- *
- * @param \Cake\Datasource\EntityInterface $entity
- * @param array $options
- * @return string
- */
+	/**
+	 * Used to build a completely customized filename.
+	 *
+	 * The default behavior is to use the UUID from the entities primary key to
+	 * generate a filename based of the UUID that gets the dashes stripped and the
+	 * extension added if you configured the path builder to preserve it.
+	 *
+	 * The filePrefix and fileSuffix options are also supported.
+	 *
+	 * @param \Cake\Datasource\EntityInterface $entity
+	 * @param array $options
+	 * @return string
+	 */
 	protected function _buildFilename(EntityInterface $entity, array $options = []) {
 		$filename = $entity->id;
 		if ($options['stripUuid'] === true) {
@@ -213,15 +221,15 @@ class BasePathBuilder implements PathBuilderInterface {
 		return $filename;
 	}
 
-/**
- * Keeps the original filename but is able to inject pre- and suffix.
- *
- * This can be useful to create versions of files for example.
- *
- * @param \Cake\Datasource\EntityInterface $entity
- * @param array $options
- * @return string
- */
+	/**
+	 * Keeps the original filename but is able to inject pre- and suffix.
+	 *
+	 * This can be useful to create versions of files for example.
+	 *
+	 * @param \Cake\Datasource\EntityInterface $entity
+	 * @param array $options
+	 * @return string
+	 */
 	protected function _preserveFilename(EntityInterface $entity, array $options = []) {
 		$filename = $entity['filename'];
 		if (!empty($options['filePrefix'])) {
@@ -237,13 +245,13 @@ class BasePathBuilder implements PathBuilderInterface {
 		return $filename;
 	}
 
-/**
- * Returns the path + filename.
- *
- * @param \Cake\Datasource\EntityInterface $entity
- * @param array $options
- * @return string
- */
+	/**
+	 * Returns the path + filename.
+	 *
+	 * @param \Cake\Datasource\EntityInterface $entity
+	 * @param array $options
+	 * @return string
+	 */
 	public function fullPath(EntityInterface $entity, array $options = []) {
 		return $this->path($entity, $options) . $this->filename($entity, $options);
 	}
@@ -263,16 +271,16 @@ class BasePathBuilder implements PathBuilderInterface {
 		return str_replace('\\', '/', $url);
 	}
 
-/**
- * Creates a semi-random path based on a string.
- *
- * Makes it possible to overload this functionality.
- *
- * @param string $string Input string
- * @param int $level Depth of the path to generate.
- * @param string $method Hash method, crc32 or sha1.
- * @return string
- */
+	/**
+	 * Creates a semi-random path based on a string.
+	 *
+	 * Makes it possible to overload this functionality.
+	 *
+	 * @param string $string Input string
+	 * @param int $level Depth of the path to generate.
+	 * @param string $method Hash method, crc32 or sha1.
+	 * @return string
+	 */
 	public function randomPath($string, $level = 3, $method = 'sha1') {
 		// Keeping this for backward compatibility but please stop using crc32()!
 		if ($method === 'crc32') {
@@ -286,18 +294,18 @@ class BasePathBuilder implements PathBuilderInterface {
 		}
 	}
 
-/**
- * Creates a semi-random path based on a string.
- *
- * Please STOP USING CR32! See the huge warning on the php documentation page.
- * of the crc32() function.
- *
- * @link http://php.net/manual/en/function.crc32.php
- * @link https://www.box.com/blog/crc32-checksums-the-good-the-bad-and-the-ugly/
- * @param string $string Input string
- * @param int $level Depth of the path to generate.
- * @return string
- */
+	/**
+	 * Creates a semi-random path based on a string.
+	 *
+	 * Please STOP USING CR32! See the huge warning on the php documentation page.
+	 * of the crc32() function.
+	 *
+	 * @link http://php.net/manual/en/function.crc32.php
+	 * @link https://www.box.com/blog/crc32-checksums-the-good-the-bad-and-the-ugly/
+	 * @param string $string Input string
+	 * @param int $level Depth of the path to generate.
+	 * @return string
+	 */
 	protected function _randomPathCrc32($string, $level) {
 		$string = crc32($string);
 		$decrement = 0;
@@ -309,15 +317,15 @@ class BasePathBuilder implements PathBuilderInterface {
 		return $path;
 	}
 
-/**
- * Creates a semi-random path based on a string.
- *
- * Makes it possible to overload this functionality.
- *
- * @param string $string Input string
- * @param int $level Depth of the path to generate.
- * @return string
- */
+	/**
+	 * Creates a semi-random path based on a string.
+	 *
+	 * Makes it possible to overload this functionality.
+	 *
+	 * @param string $string Input string
+	 * @param int $level Depth of the path to generate.
+	 * @return string
+	 */
 	protected function _randomPathSha1($string, $level) {
 		$result = sha1($string);
 		$randomString = '';
@@ -329,15 +337,15 @@ class BasePathBuilder implements PathBuilderInterface {
 		return $randomString;
 	}
 
-/**
- * Ensures that a path has a leading and/or trailing (back-) slash.
- *
- * @param string $string
- * @param string $position Can be `before`, `after` or `both`
- * @param string $ds Directory separator should be / or \, if not set the DS constant is used.
- * @throws \InvalidArgumentException
- * @return string
- */
+	/**
+	 * Ensures that a path has a leading and/or trailing (back-) slash.
+	 *
+	 * @param string $string
+	 * @param string $position Can be `before`, `after` or `both`
+	 * @param string $ds Directory separator should be / or \, if not set the DS constant is used.
+	 * @throws \InvalidArgumentException
+	 * @return string
+	 */
 	public function ensureSlash($string, $position, $ds = null) {
 		if (!in_array($position, ['before', 'after', 'both'])) {
 			throw new \InvalidArgumentException(sprintf('Invalid position `%s`!', $position));

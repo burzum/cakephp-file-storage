@@ -15,41 +15,41 @@ class FileStorage extends Entity {
 
 	use EventDispatcherTrait;
 
-/**
- * Fields that can be mass assigned using newEntity() or patchEntity().
- *
- * @var array
- */
+	/**
+	 * Fields that can be mass assigned using newEntity() or patchEntity().
+	 *
+	 * @var array
+	 */
 	protected $_accessible = [
 		'*' => true,
 	];
 
-/**
- * Accessor to get the *real* path on disk + filename.
- *
- * @link http://book.cakephp.org/3.0/en/orm/entities.html#accessors-mutators
- * @return string
- */
+	/**
+	 * Accessor to get the *real* path on disk + filename.
+	 *
+	 * @link http://book.cakephp.org/3.0/en/orm/entities.html#accessors-mutators
+	 * @return string
+	 */
 	protected function _getFullPath() {
 		$this->path();
 	}
 
-/**
- * Accessor to get the URL to this file.
- *
- * @link http://book.cakephp.org/3.0/en/orm/entities.html#accessors-mutators
- * @return string
- */
+	/**
+	 * Accessor to get the URL to this file.
+	 *
+	 * @link http://book.cakephp.org/3.0/en/orm/entities.html#accessors-mutators
+	 * @return string
+	 */
 	protected function _getUrl() {
 		$this->url();
 	}
 
-/**
- * Gets a path for this entities file.
- *
- * @param array $options
- * @return string
- */
+	/**
+	 * Gets a path for this entities file.
+	 *
+	 * @param array $options
+	 * @return string
+	 */
 	public function path(array $options = []) {
 		if (empty($options['method'])) {
 			$options['method'] = 'fullPath';
@@ -57,23 +57,23 @@ class FileStorage extends Entity {
 		return $this->_path($options);
 	}
 
-/**
- * Gets an URL for this entities file.
- *
- * @param array $options
- * @return string
- */
+	/**
+	 * Gets an URL for this entities file.
+	 *
+	 * @param array $options
+	 * @return string
+	 */
 	public function url(array $options = []) {
 		$options['method'] = 'url';
 		return $this->_path($options);
 	}
 
-/**
- * Gets a path for this entities file.
- *
- * @param array $options
- * @return string
- */
+	/**
+	 * Gets a path for this entities file.
+	 *
+	 * @param array $options
+	 * @return string
+	 */
 	protected function _path($options) {
 		if (empty($options['method'])) {
 			$options['method'] = 'path';

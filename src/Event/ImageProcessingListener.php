@@ -16,48 +16,46 @@ use Burzum\FileStorage\Storage\StorageUtils;
  */
 class ImageProcessingListener extends AbstractStorageEventListener {
 
-/**
- * The adapter class
- *
- * @param null|string
- */
+	/**
+	 * The adapter class
+	 *
+	 * @param null|string
+	 */
 	public $adapterClass = null;
 
-/**
- * ImageProcessor instance
- *
- * @var ImageProcessor
- */
+	/**
+	 * ImageProcessor instance
+	 *
+	 * @var ImageProcessor
+	 */
 	public $_imageProcessor = null;
 
-/**
- * Name of the storage table class name the event listener requires the table
- * instances to extend.
- *
- * This information is important to know when to use the event callbacks or not.
- *
- * Must be \FileStorage\Model\Table\FileStorageTable or \FileStorage\Model\Table\ImageStorageTable
- *
- * @var string
- */
+	/**
+	 * Name of the storage table class name the event listener requires the table
+	 * instances to extend.
+	 * This information is important to know when to use the event callbacks or not.
+	 * Must be \FileStorage\Model\Table\FileStorageTable or \FileStorage\Model\Table\ImageStorageTable
+	 *
+	 * @var string
+	 */
 	public $storageTableClass = '\Burzum\FileStorage\Model\Table\ImageStorageTable';
 
-/**
- * Constructor
- *
- * @param array $config
- */
+	/**
+	 * Constructor
+	 *
+	 * @param array $config
+	 */
 	public function __construct(array $config = []) {
 		$this->config('autoRotate', []);
 		$this->config($config);
 		$this->_imageProcessor = new ImageProcessor();
 	}
 
-/**
- * Implemented Events
- *
- * @return array
- */
+	/**
+	 * Implemented Events
+	 *
+	 * @return array
+	 */
 	public function implementedEvents() {
 		return array(
 			'ImageVersion.createVersion' => 'createVersions',
@@ -70,13 +68,13 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 		);
 	}
 
-/**
- * Auto rotates the image if an orientation in the exif data is found that is not 0.
- *
- * @param string $imageFile Path to the image file.
- * @param string $format Format of the image to save. Workaround for imagines save(). :(
- * @return boolean
- */
+	/**
+	 * Auto rotates the image if an orientation in the exif data is found that is not 0.
+	 *
+	 * @param string $imageFile Path to the image file.
+	 * @param string $format Format of the image to save. Workaround for imagines save(). :(
+	 * @return boolean
+	 */
 	protected function _autoRotate($imageFile, $format) {
 		$orientation = ImagineUtility::getImageOrientation($imageFile);
 		$degree = 0;
@@ -104,16 +102,16 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 		return true;
 	}
 
-/**
- * Creates the different versions of images that are configured
- *
- * @param \Cake\ORM\Table $table
- * @param array $entity
- * @param array $operations
- * @throws \Burzum\FileStorage\Event\Exception
- * @throws \Exception
- * @return false|null
- */
+	/**
+	 * Creates the different versions of images that are configured
+	 *
+	 * @param \Cake\ORM\Table $table
+	 * @param array $entity
+	 * @param array $operations
+	 * @throws \Burzum\FileStorage\Event\Exception
+	 * @throws \Exception
+	 * @return false|null
+	 */
 	protected function _createVersions(Table $table, $entity, array $operations) {
 		$Storage = StorageManager::adapter($entity['adapter']);
 		$path = $this->_buildPath($entity, true);
@@ -144,12 +142,12 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 		unlink($tmpFile);
 	}
 
-/**
- * Creates versions for a given image record
- *
- * @param Event $Event
- * @return void
- */
+	/**
+	 * Creates versions for a given image record
+	 *
+	 * @param Event $Event
+	 * @return void
+	 */
 	public function createVersions(Event $Event) {
 		if ($this->_checkEvent($Event)) {
 			$table = $Event->subject();
@@ -159,21 +157,21 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 		}
 	}
 
-/**
- * Removes versions for a given image record
- *
- * @param Event $Event
- */
+	/**
+	 * Removes versions for a given image record
+	 *
+	 * @param Event $Event
+	 */
 	public function removeVersions(Event $Event) {
 		$this->_removeVersions($Event);
 	}
 
-/**
- * Removes versions for a given image record
- *
- * @param Event $Event
- * @return void
- */
+	/**
+	 * Removes versions for a given image record
+	 *
+	 * @param Event $Event
+	 * @return void
+	 */
 	protected function _removeVersions(Event $Event) {
 		if ($this->_checkEvent($Event)) {
 			$Storage = $Event->data['storage'];
@@ -196,12 +194,12 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 		}
 	}
 
-/**
- * afterDelete
- *
- * @param Event $Event
- * @return boolean|null
- */
+	/**
+	 * afterDelete
+	 *
+	 * @param Event $Event
+	 * @return boolean|null
+	 */
 	public function afterDelete(Event $Event) {
 		if ($this->_checkEvent($Event)) {
 			$record = $Event->data['record'];
@@ -228,12 +226,12 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 		}
 	}
 
-/**
- * beforeSave
- *
- * @param Event $Event
- * @return void
- */
+	/**
+	 * beforeSave
+	 *
+	 * @param Event $Event
+	 * @return void
+	 */
 	public function beforeSave(Event $Event) {
 		if ($this->_checkEvent($Event)) {
 			if (in_array($Event->data['record']['model'], (array)$this->config('autoRotate'))) {
@@ -244,12 +242,12 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 		}
 	}
 
-/**
- * afterSave
- *
- * @param Event $Event
- * @return void
- */
+	/**
+	 * afterSave
+	 *
+	 * @param Event $Event
+	 * @return void
+	 */
 	public function afterSave(Event $Event) {
 		if ($this->_checkEvent($Event)) {
 			$table = $Event->subject();
@@ -289,13 +287,13 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 		}
 	}
 
-/**
- * Generates the path the image url / path for viewing it in a browser depending on the storage adapter
- *
- * @param Event $Event
- * @throws RuntimeException
- * @return void
- */
+	/**
+	 * Generates the path the image url / path for viewing it in a browser depending on the storage adapter
+	 *
+	 * @param Event $Event
+	 * @throws RuntimeException
+	 * @return void
+	 */
 	public function imagePath(Event $Event) {
 		extract($Event->data);
 
@@ -313,12 +311,12 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 		throw new \RuntimeException(__d('file_storage', 'No callback image url callback implemented for adapter %s', $adapterClass));
 	}
 
-/**
- * Builds an url to the given image
- *
- * @param Event $Event
- * @return void
- */
+	/**
+	 * Builds an url to the given image
+	 *
+	 * @param Event $Event
+	 * @return void
+	 */
 	protected function _buildLocalPath(Event $Event) {
 		extract($Event->data);
 		$path = $this->_buildPath($image, true, $hash);
@@ -326,25 +324,24 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 		$Event->stopPropagation();
 	}
 
-/**
- * Wrapper around the other AmazonS3 Adapter
- *
- * @param Event $Event
- * @see ImageProcessingListener::_buildAmazonS3Path()
- */
+	/**
+	 * Wrapper around the other AmazonS3 Adapter
+	 *
+	 * @param Event $Event
+	 * @see ImageProcessingListener::_buildAmazonS3Path()
+	 */
 	protected function _buildAwsS3Path($Event) {
 		$this->_buildAmazonS3Path($Event);
 	}
 
-/**
- * Builds an url to the given image for the amazon s3 adapter
- *
- * http(s)://<bucket>.s3.amazonaws.com/<object>
- * http(s)://s3.amazonaws.com/<bucket>/<object>
- *
- * @param Event $Event
- * @return void
- */
+	/**
+	 * Builds an url to the given image for the amazon s3 adapter
+	 * http(s)://<bucket>.s3.amazonaws.com/<object>
+	 * http(s)://s3.amazonaws.com/<bucket>/<object>
+	 *
+	 * @param Event $Event
+	 * @return void
+	 */
 	protected function _buildAmazonS3Path(Event $Event) {
 		extract($Event->data);
 
@@ -371,17 +368,17 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 		$Event->stopPropagation();
 	}
 
-/**
- * Builds an url to serve content from cloudfront
- *
- * @param string $protocol
- * @param string $image
- * @param string $bucket
- * @param string null $bucketPrefix
- * @param string $cfDist
- * @param boolean $bucketPrefix
- * @return string
- */
+	/**
+	 * Builds an url to serve content from cloudfront
+	 *
+	 * @param string $protocol
+	 * @param string $image
+	 * @param string $bucket
+	 * @param string null $bucketPrefix
+	 * @param string $cfDist
+	 * @param boolean $bucketPrefix
+	 * @return string
+	 */
 	protected function _buildCloudFrontDistributionUrl($protocol, $image, $bucket, $bucketPrefix = null, $cfDist = null) {
 		$path = $protocol . '://';
 		if (is_string($cfDist)) {
@@ -398,14 +395,14 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 		return $path;
 	}
 
-/**
- * Builds a path to a file
- *
- * @param array $record
- * @param boolean $extension
- * @param string $hash
- * @return string
- */
+	/**
+	 * Builds a path to a file
+	 *
+	 * @param array $record
+	 * @param boolean $extension
+	 * @param string $hash
+	 * @return string
+	 */
 	protected function _buildPath($record, $extension = true, $hash = null) {
 		if ($this->_config['preserveFilename'] === true) {
 			if (!empty($hash)) {
@@ -430,12 +427,12 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 		return $path;
 	}
 
-/**
- * Gets the adapter class name from the adapter configuration key
- *
- * @param string
- * @return string|false
- */
+	/**
+	 * Gets the adapter class name from the adapter configuration key
+	 *
+	 * @param string
+	 * @return string|false
+	 */
 	public function getAdapterClassName($adapterConfigName) {
 		$config = StorageManager::config($adapterConfigName);
 

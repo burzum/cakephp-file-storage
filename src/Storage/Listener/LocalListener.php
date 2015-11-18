@@ -22,11 +22,11 @@ class LocalListener extends AbstractListener {
 
 	use ImageProcessingTrait;
 
-/**
- * Default settings
- *
- * @var array
- */
+	/**
+	 * Default settings
+	 *
+	 * @var array
+	 */
 	protected $_defaultConfig = [
 		'pathBuilder' => 'Base',
 		'pathBuilderOptions' => [
@@ -36,25 +36,25 @@ class LocalListener extends AbstractListener {
 		'imageProcessing' => false,
 	];
 
-/**
- * List of adapter classes the event listener can work with.
- *
- * It is used in FileStorageEventListenerBase::getAdapterClassName to get the
- * class, to detect if an event passed to this listener should be processed or
- * not. Only events with an adapter class present in this array will be
- * processed.
- *
- * @var array
- */
+	/**
+	 * List of adapter classes the event listener can work with.
+	 *
+	 * It is used in FileStorageEventListenerBase::getAdapterClassName to get the
+	 * class, to detect if an event passed to this listener should be processed or
+	 * not. Only events with an adapter class present in this array will be
+	 * processed.
+	 *
+	 * @var array
+	 */
 	public $_adapterClasses = [
 		'\Gaufrette\Adapter\Local'
 	];
 
-/**
- * Implemented Events
- *
- * @return array
- */
+	/**
+	 * Implemented Events
+	 *
+	 * @return array
+	 */
 	public function implementedEvents() {
 		return array_merge(parent::implementedEvents(), [
 			'FileStorage.afterSave' => 'afterSave',
@@ -69,16 +69,16 @@ class LocalListener extends AbstractListener {
 		]);
 	}
 
-/**
- * File removal is handled AFTER the database record was deleted.
- *
- * No need to use an adapter here, just delete the whole folder using cakes Folder class
- *
- * @param \Cake\Event\Event $event
- * @param \Cake\Datasource\EntityInterface $entity
- * @throws \Burzum\Filestorage\Storage\StorageException
- * @return void
- */
+	/**
+	 * File removal is handled AFTER the database record was deleted.
+	 *
+	 * No need to use an adapter here, just delete the whole folder using cakes Folder class
+	 *
+	 * @param \Cake\Event\Event $event
+	 * @param \Cake\Datasource\EntityInterface $entity
+	 * @throws \Burzum\Filestorage\Storage\StorageException
+	 * @return void
+	 */
 	public function afterDelete(Event $event, EntityInterface $entity) {
 		if ($this->_checkEvent($event)) {
 			$path = $this->pathBuilder()->fullPath($entity);
@@ -99,13 +99,13 @@ class LocalListener extends AbstractListener {
 		}
 	}
 
-/**
- * Save the file to the storage backend after the record was created.
- *
- * @param \Cake\Event\Event $event
- * @param \Cake\Datasource\EntityInterface $entity
- * @return void
- */
+	/**
+	 * Save the file to the storage backend after the record was created.
+	 *
+	 * @param \Cake\Event\Event $event
+	 * @param \Cake\Datasource\EntityInterface $entity
+	 * @return void
+	 */
 	public function afterSave(Event $event, EntityInterface $entity) {
 		if ($this->_checkEvent($event) && $entity->isNew()) {
 			$fileField = $this->config('fileField');
@@ -127,13 +127,13 @@ class LocalListener extends AbstractListener {
 		}
 	}
 
-/**
- * Generates the path the image url / path for viewing it in a browser depending on the storage adapter
- *
- * @param \Cake\Event\Event $event
- * @throws \InvalidArgumentException
- * @return void
- */
+	/**
+	 * Generates the path the image url / path for viewing it in a browser depending on the storage adapter
+	 *
+	 * @param \Cake\Event\Event $event
+	 * @throws \InvalidArgumentException
+	 * @return void
+	 */
 	public function imagePath(Event $event) {
 		$data = $event->data + [
 			'image' => null,
@@ -160,13 +160,13 @@ class LocalListener extends AbstractListener {
 		$event->stopPropagation();
 	}
 
-/**
- * Stores the file in the configured storage backend.
- *
- * @param \Cake\Event\Event $event
- * @throws \Burzum\Filestorage\Storage\StorageException
- * @return boolean
- */
+	/**
+	 * Stores the file in the configured storage backend.
+	 *
+	 * @param \Cake\Event\Event $event
+	 * @throws \Burzum\Filestorage\Storage\StorageException
+	 * @return boolean
+	 */
 	protected function _storeFile(Event $event) {
 		try {
 			$fileField = $this->config('fileField');
@@ -183,31 +183,31 @@ class LocalListener extends AbstractListener {
 		}
 	}
 
-/**
- * Removes a specific image version.
- *
- * @param \Cake\Event\Event $event
- * @return void
- */
+	/**
+	 * Removes a specific image version.
+	 *
+	 * @param \Cake\Event\Event $event
+	 * @return void
+	 */
 	public function removeImageVersion(Event $event) {
 		$this->_processImages($event, 'removeImageVersions');
 	}
 
-/**
- * Creates the verions for an image.
- *
- * @param \Cake\Event\Event $event
- * @return void
- */
+	/**
+	 * Creates the verions for an image.
+	 *
+	 * @param \Cake\Event\Event $event
+	 * @return void
+	 */
 	public function createImageVersion(Event $event) {
 		$this->_processImages($event, 'createImageVersions');
 	}
 
-/**
- * @param \Cake\Event\Event $event
- * @param string $method
- * return void
- */
+	/**
+	 * @param \Cake\Event\Event $event
+	 * @param string $method
+	 * return void
+	 */
 	protected function _processImages(Event $event, $method) {
 		if ($this->config('imageProcessing') !== true) {
 			return;
@@ -224,15 +224,15 @@ class LocalListener extends AbstractListener {
 		);
 	}
 
-/**
- * This method retrieves version names from event data.
- * For backward compatibility version names are resolved from operations data keys because in old
- * ImageProcessingListener operations were required in event data. ImageProcessingTrait need only
- * version names so operations can be read from the config.
- *
- * @param \Cake\Event\Event $event
- * @return array
- */
+	/**
+	 * This method retrieves version names from event data.
+	 * For backward compatibility version names are resolved from operations data keys because in old
+	 * ImageProcessingListener operations were required in event data. ImageProcessingTrait need only
+	 * version names so operations can be read from the config.
+	 *
+	 * @param \Cake\Event\Event $event
+	 * @return array
+	 */
 	protected function _getVersionData($event)
 	{
 		if (isset($event->data['versions'])) {

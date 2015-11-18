@@ -10,11 +10,11 @@ namespace Burzum\FileStorage\Storage;
  */
 class StorageManager {
 
-/**
- * Adapter configurations
- *
- * @var array
- */
+	/**
+	 * Adapter configurations
+	 *
+	 * @var array
+	 */
 	protected $_adapterConfig = [
 		'Local' => [
 			'adapterOptions' => [TMP, true],
@@ -23,11 +23,11 @@ class StorageManager {
 		]
 	];
 
-/**
- * Return a singleton instance of the StorageManager.
- *
- * @return \Burzum\FileStorage\Storage\StorageManager
- */
+	/**
+	 * Return a singleton instance of the StorageManager.
+	 *
+	 * @return \Burzum\FileStorage\Storage\StorageManager
+	 */
 	public static function &getInstance() {
 		static $instance = array();
 		if (!$instance) {
@@ -36,13 +36,13 @@ class StorageManager {
 		return $instance[0];
 	}
 
-/**
- * Gets the configuration array for an adapter.
- *
- * @param string $adapter
- * @param array $options
- * @return mixed
- */
+	/**
+	 * Gets the configuration array for an adapter.
+	 *
+	 * @param string $adapter
+	 * @param array $options
+	 * @return mixed
+	 */
 	public static function config($adapter, $options = array()) {
 		$_this = StorageManager::getInstance();
 
@@ -57,12 +57,12 @@ class StorageManager {
 		return false;
 	}
 
-/**
- * Flush all or a single adapter from the config.
- *
- * @param string $name Config name, if none all adapters are flushed.
- * @return bool True on success.
- */
+	/**
+	 * Flush all or a single adapter from the config.
+	 *
+	 * @param string $name Config name, if none all adapters are flushed.
+	 * @return bool True on success.
+	 */
 	public static function flush($name = null) {
 		$_this = StorageManager::getInstance();
 
@@ -74,14 +74,14 @@ class StorageManager {
 		return false;
 	}
 
-/**
- * Gets a configured instance of a storage adapter.
- *
- * @param mixed $adapterName string of adapter configuration or array of settings
- * @param boolean $renewObject Creates a new instance of the given adapter in the configuration
- * @throws \RuntimeException
- * @return \Gaufrette\Filesystem
- */
+	/**
+	 * Gets a configured instance of a storage adapter.
+	 *
+	 * @param mixed $adapterName string of adapter configuration or array of settings
+	 * @param boolean $renewObject Creates a new instance of the given adapter in the configuration
+	 * @throws \RuntimeException
+	 * @return \Gaufrette\Filesystem
+	 */
 	public static function adapter($adapterName, $renewObject = false) {
 		$_this = StorageManager::getInstance();
 

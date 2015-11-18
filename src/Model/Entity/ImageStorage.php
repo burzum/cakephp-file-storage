@@ -12,13 +12,13 @@ use Cake\Core\Configure;
  */
 class ImageStorage extends FileStorage {
 
-/**
- * Gets the version of an image.
- *
- * @param string
- * @param array $options
- * @return string
- */
+	/**
+	 * Gets the version of an image.
+	 *
+	 * @param string
+	 * @param array $options
+	 * @return string
+	 */
 	public function imageVersion($version, $options = []) {
 		$options['version'] = $version;
 		$options['image'] = $this;

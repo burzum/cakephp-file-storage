@@ -14,25 +14,25 @@ use Burzum\FileStorage\Storage\StorageManager;
  */
 class LocalFileStorageListener extends AbstractStorageEventListener {
 
-/**
- * List of adapter classes the event listener can work with
- *
- * It is used in FileStorageEventListenerBase::getAdapterClassName to get the
- * class, to detect if an event passed to this listener should be processed or
- * not. Only events with an adapter class present in this array will be
- * processed.
- *
- * @var array
- */
+	/**
+	 * List of adapter classes the event listener can work with
+	 *
+	 * It is used in FileStorageEventListenerBase::getAdapterClassName to get the
+	 * class, to detect if an event passed to this listener should be processed or
+	 * not. Only events with an adapter class present in this array will be
+	 * processed.
+	 *
+	 * @var array
+	 */
 	public $_adapterClasses = array(
 		'\Gaufrette\Adapter\Local'
 	);
 
-/**
- * Implemented Events
- *
- * @return array
- */
+	/**
+	 * Implemented Events
+	 *
+	 * @return array
+	 */
 	public function implementedEvents() {
 		return [
 			'FileStorage.afterSave' => [
@@ -46,14 +46,14 @@ class LocalFileStorageListener extends AbstractStorageEventListener {
 		];
 	}
 
-/**
- * afterDelete
- *
- * No need to use an adapter here, just delete the whole folder using cakes Folder class
- *
- * @param Event $event
- * @return boolean|null
- */
+	/**
+	 * afterDelete
+	 *
+	 * No need to use an adapter here, just delete the whole folder using cakes Folder class
+	 *
+	 * @param Event $event
+	 * @return boolean|null
+	 */
 	public function afterDelete(Event $event) {
 		if ($this->_checkEvent($event)) {
 			$entity = $event->data['record'];
@@ -67,25 +67,25 @@ class LocalFileStorageListener extends AbstractStorageEventListener {
 		}
 	}
 
-/**
- * Builds the path under which the data gets stored in the storage adapter
- *
- * @param Table $table
- * @param Entity $entity
- * @return string
- */
+	/**
+	 * Builds the path under which the data gets stored in the storage adapter
+	 *
+	 * @param Table $table
+	 * @param Entity $entity
+	 * @return string
+	 */
 	public function buildPath($table, $entity) {
 		$path = parent::buildPath($table, $entity);
 		// Backward compatibility
 		return 'files' . DS . $path;
 	}
 
-/**
- * afterSave
- *
- * @param Event $event
- * @return void
- */
+	/**
+	 * afterSave
+	 *
+	 * @param Event $event
+	 * @return void
+	 */
 	public function afterSave(Event $event) {
 		if ($this->_checkEvent($event) && $event->data['record']->isNew()) {
 			$table = $event->subject();

@@ -12,21 +12,21 @@ use RuntimeException;
 
 trait PathBuilderTrait {
 
-/**
- * Local PathBuilderInterface instance.
- *
- * @var \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
- */
+	/**
+	 * Local PathBuilderInterface instance.
+	 *
+	 * @var \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
+	 */
 	protected $_pathBuilder;
 
-/**
- * Builds the path builder for given interface.
- *
- * @param string $name
- * @param array $options
- * @param bool $renewObject
- * @return \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
- */
+	/**
+	 * Builds the path builder for given interface.
+	 *
+	 * @param string $name
+	 * @param array $options
+	 * @param bool $renewObject
+	 * @return \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
+	 */
 	public function createPathBuilder($name, array $options = []) {
 		$className = App::className($name, 'Storage/PathBuilder', 'PathBuilder');
 		if (!class_exists($className)) {
@@ -42,12 +42,12 @@ trait PathBuilderTrait {
 		return $pathBuilder;
 	}
 
-/**
- * Accessor/mutator for local PathBuilderInterface instance.
- *
- * @param \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface $pathBuilder
- * @return \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
- */
+	/**
+	 * Accessor/mutator for local PathBuilderInterface instance.
+	 *
+	 * @param \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface $pathBuilder
+	 * @return \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
+	 */
 	public function pathBuilder(PathBuilderInterface $pathBuilder = null) {
 		if ($pathBuilder !== null) {
 			$this->_pathBuilder = $pathBuilder;

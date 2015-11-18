@@ -27,11 +27,11 @@ use Cake\Utility\Hash;
  */
 class UploadValidatorBehavior extends Behavior {
 
-/**
- * Default settings array
- *
- * @var array
- */
+	/**
+	 * Default settings array
+	 *
+	 * @var array
+	 */
 	protected $_defaultConfig = array(
 		'fileField' => 'file',
 		'validate' => true,
@@ -46,12 +46,12 @@ class UploadValidatorBehavior extends Behavior {
 		'localFile' => false
 	);
 
-/**
- * Constructor
- *
- * @param \Cake\ORM\Table $table The table this behavior is attached to.
- * @param array $config The settings for this behavior.
- */
+	/**
+	 * Constructor
+	 *
+	 * @param \Cake\ORM\Table $table The table this behavior is attached to.
+	 * @param array $config The settings for this behavior.
+	 */
 	public function __construct(Table $table, array $config = []) {
 		$this->_defaultConfig = Hash::merge($this->_defaultConfig, (array)Configure::read('FileStorage.Behavior'));
 		parent::__construct($table, $config);
@@ -61,13 +61,13 @@ class UploadValidatorBehavior extends Behavior {
 		}
 	}
 
-/**
- * Configures upload related validation rules for a validator.
- *
- * @param string $validatorName Config name of a validator.
- * @param array $config Config options.
- * @return void
- */
+	/**
+	 * Configures upload related validation rules for a validator.
+	 *
+	 * @param string $validatorName Config name of a validator.
+	 * @param array $config Config options.
+	 * @return void
+	 */
 	public function configureUploadValidation($validatorName = 'default', $config = []) {
 		$uploadValidator = new \Burzum\FileStorage\Validation\UploadValidator();
 		$validator = $this->_table->validator($validatorName);

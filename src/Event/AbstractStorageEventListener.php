@@ -36,42 +36,40 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 	use InstanceConfigTrait;
 	use LogTrait;
 
-/**
- * The adapter class
- *
- * @param null|string
- */
+	/**
+	 * The adapter class
+	 *
+	 * @param null|string
+	 */
 	public $adapterClass = null;
 
-/**
- * Name of the storage table class name the event listener requires the table
- * instances to extend.
- *
- * This information is important to know when to use the event callbacks or not.
- *
- * Must be \FileStorage\Model\Table\FileStorageTable or \FileStorage\Model\Table\ImageStorageTable
- *
- * @var string
- */
+	/**
+	 * Name of the storage table class name the event listener requires the table instances to extend.
+	 *
+	 * This information is important to know when to use the event callbacks or not.
+	 * Must be \FileStorage\Model\Table\FileStorageTable or \FileStorage\Model\Table\ImageStorageTable
+	 *
+	 * @var string
+	 */
 	public $storageTableClass = '\Burzum\FileStorage\Model\Table\FileStorageTable';
 
-/**
- * List of adapter classes the event listener can work with
- *
- * It is used in FileStorageEventListenerBase::getAdapterClassName to get the
- * class, to detect if an event passed to this listener should be processed or
- * not. Only events with an adapter class present in this array will be
- * processed.
- *
- * @var array
- */
+	/**
+	 * List of adapter classes the event listener can work with
+	 *
+	 * It is used in FileStorageEventListenerBase::getAdapterClassName to get the
+	 * class, to detect if an event passed to this listener should be processed or
+	 * not. Only events with an adapter class present in this array will be
+	 * processed.
+	 *
+	 * @var array
+	 */
 	protected $_adapterClasses = array();
 
-/**
- * Default settings
- *
- * @var array
- */
+	/**
+	 * Default settings
+	 *
+	 * @var array
+	 */
 	protected $_defaultConfig = array(
 		'models' => false,
 		'stripUuid' => true,
@@ -82,39 +80,39 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 		'tableFolder' => false
 	);
 
-/**
- * Constructor
- *
- * @param array $config
- */
+	/**
+	 * Constructor
+	 *
+	 * @param array $config
+	 */
 	public function __construct(array $config = []) {
 		$this->config($config);
 	}
 
-/**
- * Strips dashes from a string
- *
- * @param string
- * @return string String without the dashed
- */
+	/**
+	 * Strips dashes from a string
+	 *
+	 * @param string
+	 * @return string String without the dashed
+	 */
 	public function stripDashes($uuid) {
 		return str_replace('-', '', $uuid);
 	}
 
-/**
- * Implemented Events
- *
- * @return array
- */
+	/**
+	 * Implemented Events
+	 *
+	 * @return array
+	 */
 	abstract public function implementedEvents();
 
-/**
- * Builds the filename of under which the data gets saved in the storage adapter.
- *
- * @param Table $table
- * @param Entity $entity
- * @return string
- */
+	/**
+	 * Builds the filename of under which the data gets saved in the storage adapter.
+	 *
+	 * @param Table $table
+	 * @param Entity $entity
+	 * @return string
+	 */
 	public function buildFilename($table, $entity) {
 		if ($this->_config['preserveFilename'] === true) {
 			return $entity['filename'];
@@ -129,13 +127,13 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 		return $filename;
 	}
 
-/**
- * Builds the path under which the data gets stored in the storage adapter.
- *
- * @param Table $table
- * @param EntityInterface $entity
- * @return string
- */
+	/**
+	 * Builds the path under which the data gets stored in the storage adapter.
+	 *
+	 * @param Table $table
+	 * @param EntityInterface $entity
+	 * @return string
+	 */
 	public function buildPath($table, $entity) {
 		$path = '';
 		if ($this->_config['tableFolder']) {
@@ -150,14 +148,14 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 		return $path;
 	}
 
-/**
- * Check if the event is of a type or subject object of type model we want to
- * process with this listener.
- *
- * @throws \InvalidArgumentException
- * @param Event $event
- * @return boolean
- */
+	/**
+	 * Check if the event is of a type or subject object of type model we want to
+	 * process with this listener.
+	 *
+	 * @throws \InvalidArgumentException
+	 * @param Event $event
+	 * @return boolean
+	 */
 	protected function _checkEvent(Event $event) {
 		if (!in_array($this->storageTableClass, array('\Burzum\FileStorage\Model\Table\FileStorageTable', '\Burzum\FileStorage\Model\Table\ImageStorageTable'))) {
 			throw new \InvalidArgumentException(sprintf('Invalid storage table `%s`! Table must be FileStorage or ImageStorage or extend one of both!', $this->storageTableClass));
@@ -169,12 +167,12 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 		);
 	}
 
-/**
- * Detects if an entities model field has name of one of the allowed models set.
- *
- * @param Event $event
- * @return boolean
- */
+	/**
+	 * Detects if an entities model field has name of one of the allowed models set.
+	 *
+	 * @param Event $event
+	 * @return boolean
+	 */
 	protected function _modelFilter(Event $event) {
 		if (is_array($this->_config['models'])) {
 			$model = $event->data['record']['model'];
@@ -185,22 +183,22 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 		return true;
 	}
 
-/**
- * Checks if the events subject is a model and extending FileStorage or ImageStorage.
- *
- * @param Event $event
- * @return boolean
- */
+	/**
+	 * Checks if the events subject is a model and extending FileStorage or ImageStorage.
+	 *
+	 * @param Event $event
+	 * @return boolean
+	 */
 	protected function _checkTable(Event $event) {
 		return ($event->subject() instanceOf $this->storageTableClass);
 	}
 
-/**
- * Gets the adapter class name from the adapter config
- *
- * @param string $configName Name of the configuration
- * @return boolean|string False if the config is not present
- */
+	/**
+	 * Gets the adapter class name from the adapter config
+	 *
+	 * @param string $configName Name of the configuration
+	 * @return boolean|string False if the config is not present
+	 */
 	protected function _getAdapterClassFromConfig($configName) {
 		$config = $this->getAdapterconfig($configName);
 		if (!empty($config['adapterClass'])) {
@@ -209,15 +207,15 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 		return false;
 	}
 
-/**
- * Gets the adapter class name from the adapter configuration key and checks if
- * it is in the list of supported adapters for the listener.
- *
- * You must define a list of supported classes via AbstractStorageEventListener::$_adapterClasses.
- *
- * @param string $configName Name of the adapter configuration.
- * @return string|false String, the adapter class name or false if it was not found.
- */
+	/**
+	 * Gets the adapter class name from the adapter configuration key and checks if
+	 * it is in the list of supported adapters for the listener.
+	 *
+	 * You must define a list of supported classes via AbstractStorageEventListener::$_adapterClasses.
+	 *
+	 * @param string $configName Name of the adapter configuration.
+	 * @return string|false String, the adapter class name or false if it was not found.
+	 */
 	public function getAdapterClassName($configName) {
 		$className = $this->_getAdapterClassFromConfig($configName);
 		if (in_array($className, $this->_adapterClasses)) {
@@ -228,48 +226,44 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 		return false;
 	}
 
-/**
- * Wrapper around the singleton call to StorageManager::config
- *
- * Makes it easy to mock the adapter in tests.
- *
- * @param string $configName
- * @return array
- */
+	/**
+	 * Wrapper around the singleton call to StorageManager::config
+	 * Makes it easy to mock the adapter in tests.
+	 *
+	 * @param string $configName
+	 * @return array
+	 */
 	public function getAdapterconfig($configName) {
 		return StorageManager::config($configName);
 	}
 
-/**
- * Wrapper around the singleton call to StorageManager::config
- *
- * Makes it easy to mock the adapter in tests.
- *
- * @param string $configName
- * @return Object
- */
+	/**
+	 * Wrapper around the singleton call to StorageManager::config
+	 * Makes it easy to mock the adapter in tests.
+	 *
+	 * @param string $configName
+	 * @return Object
+	 */
 	public function getAdapter($configName) {
 		return StorageManager::adapter($configName);
 	}
 
-/**
- * Create a temporary file locally based on a file from an adapter.
- *
- * A common case is image manipulation or video processing for example. It is
- * required to get the file first from the adapter and then write it to
- * a tmp file. Then manipulate it and upload the changed file.
- *
- * The adapter might not be one that is using a local file system, so we first
- * get the file from the storage system, store it locally in a tmp file and
- * later load the new file that was generated based on the tmp file into the
- * storage adapter. This method here just generates the tmp file.
- *
- * @param Adapter $Storage Storage adapter
- * @param string $path Path / key of the storage adapter file
- * @param string $tmpFolder
- * @throws Exception
- * @return string
- */
+	/**
+	 * Create a temporary file locally based on a file from an adapter.
+	 * A common case is image manipulation or video processing for example. It is
+	 * required to get the file first from the adapter and then write it to
+	 * a tmp file. Then manipulate it and upload the changed file.
+	 * The adapter might not be one that is using a local file system, so we first
+	 * get the file from the storage system, store it locally in a tmp file and
+	 * later load the new file that was generated based on the tmp file into the
+	 * storage adapter. This method here just generates the tmp file.
+	 *
+	 * @param Adapter $Storage Storage adapter
+	 * @param string $path Path / key of the storage adapter file
+	 * @param string $tmpFolder
+	 * @throws Exception
+	 * @return string
+	 */
 	protected function _tmpFile($Storage, $path, $tmpFolder = null) {
 		try {
 			$tmpFile = $this->createTmpFile($tmpFolder);
@@ -281,18 +275,17 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 		}
 	}
 
-/**
- * Creates a temporary file name and checks the tmp path, creates one if required
- *
- * This method is thought to be used to generate tmp file locations for use cases
- * like audio or image process were you need copies of a file and want to avoid
- * conflicts. By default the tmp file is generated using cakes TMP constant +
- * folder if passed and a uuid as filename.
- *
- * @param string $folder
- * @param boolean $checkAndCreatePath
- * @return string For example /var/www/app/tmp/<uuid> or /var/www/app/tmp/<my-folder>/<uuid>
- */
+	/**
+	 * Creates a temporary file name and checks the tmp path, creates one if required
+	 * This method is thought to be used to generate tmp file locations for use cases
+	 * like audio or image process were you need copies of a file and want to avoid
+	 * conflicts. By default the tmp file is generated using cakes TMP constant +
+	 * folder if passed and a uuid as filename.
+	 *
+	 * @param string $folder
+	 * @param boolean $checkAndCreatePath
+	 * @return string For example /var/www/app/tmp/<uuid> or /var/www/app/tmp/<my-folder>/<uuid>
+	 */
 	public function createTmpFile($folder = null, $checkAndCreatePath = true) {
 		if (is_null($folder)) {
 			$folder = TMP;
@@ -303,15 +296,15 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
 		return $folder . DS . Text::uuid();
 	}
 
-/**
- * Generates a semi-random file system path
- *
- * @deprecated Don't use this anymore but it is still used by two legacy listeners :(
- * @param string $type
- * @param string $string
- * @param boolean $idFolder
- * @return string
- */
+	/**
+	 * Generates a semi-random file system path
+	 *
+	 * @deprecated Don't use this anymore but it is still used by two legacy listeners :(
+	 * @param string $type
+	 * @param string $string
+	 * @param boolean $idFolder
+	 * @return string
+	 */
 	public function fsPath($type, $string, $idFolder = true) {
 		$string = str_replace('-', '', $string);
 		$path = $type . DS . StorageUtils::randomPath($string);
