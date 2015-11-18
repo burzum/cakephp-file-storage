@@ -62,6 +62,7 @@ class FileStorageTableTest extends FileStorageTestCase {
 /**
  * testAfterDelete
  *
+ * @todo Create a mock of FileStorage::getStorageAdapter() and test it
  * @return void
  */
 	public function testAfterDelete() {
@@ -71,8 +72,7 @@ class FileStorageTableTest extends FileStorageTestCase {
 			'record' => $entity,
 			'adapter' => 'Local'
 		]);
-		$result = $this->FileStorage->afterDelete($event, $entity, []);
-		$this->assertTrue($result);
+		$this->FileStorage->afterDelete($event, $entity, []);
 	}
 
 /**
