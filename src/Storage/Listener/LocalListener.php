@@ -142,6 +142,10 @@ class LocalListener extends AbstractListener {
 			'pathType' => 'fullPath'
 		];
 
+		if ($event->subject() instanceof EntityInterface) {
+			$data['image'] = $event->subject();
+		}
+
 		$entity = $data['image'];
 		$version = $data['version'];
 		$options = $data['options'];

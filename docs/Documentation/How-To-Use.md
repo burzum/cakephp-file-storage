@@ -14,7 +14,7 @@ Preparing the File Upload
 
 This section is going to show how to store a file using the Storage Manager directly.
 
-For example you have a Report model and want to save a pdf to it, you would then create an association like:
+For example you have a Report table and want to save a pdf to it, you would then create an association like:
 
 ```php
 public function initialize(array $config)
@@ -29,48 +29,21 @@ public function initialize(array $config)
 }
 ```
 
-In your `add.ctp` or `edit.ctp` views you would add something like:
+In your `add.ctp` or `edit.ctp` views you would add something like this.
 
 ```php
+echo $this->Form->create($report, ['type' => 'file']);
 echo $this->Form->input('title');
-echo $this->Form->input('pdf_files.file');
+echo $this->Form->file('pdf_files.file'); // Pay attention here!
 echo $this->Form->input('description');
+echo $this->Form->submit(__('Submit'));
+echo $this->Form->end();
 ```
 
-Handling the File Upload
-------------------------
+[Make sure your form is using the right HTTP method](http://book.cakephp.org/3.0/en/views/helpers/form.html#changing-the-http-method-for-a-form)!
 
-**Now comes the crucial point of the whole implementation**
-
-Because of to many different requirements and personal preferences out there the plugin is *not* automatically storing the file. You'll have to customize it a little but its just a matter for a few lines.
-
-Lets go by this scenario inside the report model, assuming there is an add() method:
-
-```php
-$entity = $this->newEntity($postData);
-$saved = $this->save($entity);
-if ($saved) {
-	$key = 'your-file-name';
-	if (StorageManager::adapter('Local')->write($key, file_get_contents($this->data['pdf_files']['file']['tmp_name']))) {
-		$postData['pdf_files']['foreign_key'] = $saved->id;
-		$postData['pdf_files']['model'] = 'Reports';
-		$postData['pdf_files']['path'] = $key;
-		$postData['pdf_files']['adapter'] = 'Local';
-		$this->PdfDocuments->save($this->PdfDocuments->newEntity($postData));
-	}
-}
-```
-
-Later, when you want to delete the file, for example in the beforeDelete() or afterDelete() callback of your Report model, you'll know the adapter you have used to store the attached PdfFile and can get an instance of this adapter configuration using the StorageManager. By having the path or key available you can then simply call:
-
-```php
-StorageManager::adapter($data['PdfFile']['adapter'])->delete($data['PdfFile']['path']);
-```
-
-Insted of doing all of this in the model that has the files associated to it you can also simply extend the FileStorage model from the plugin and add your storage logic there and use that model for your association.
-
-How to store an uploaded file II - using Events
------------------------------------------------
+Store an uploaded file using Events
+-----------------------------------
 
 The **FileStorage** plugin comes with a class that acts just as a listener to some of the events in this plugin. Take a look at [ImageProcessingListener.php](../../src/Event/ImageProcessingListener.php).
 
@@ -104,6 +77,42 @@ Event Listeners
 ---------------
 
 See [this page](Included-Event-Listeners.md) for the event listeners that are included in the plugin.
+
+
+Handling the File Upload Manually
+---------------------------------
+
+You'll have to customize it a little but its just a matter for a few lines.
+
+Note the Listener expects a request data key `file` present in the form, so use `echo $this->Form->input('file');` to allow the Marshaller pick the right data from the uploaded file.
+
+Lets go by this scenario inside the report table, assuming there is an add() method:
+
+```php
+public function add() {
+	$entity = $this->newEntity($postData);
+	$saved = $this->save($entity);
+	if ($saved) {
+		$key = 'your-file-name';
+		if (StorageManager::adapter('Local')->write($key, file_get_contents($this->data['pdf_files']['file']['tmp_name']))) {
+			$postData['pdf_files']['foreign_key'] = $saved->id;
+			$postData['pdf_files']['model'] = 'Reports';
+			$postData['pdf_files']['path'] = $key;
+			$postData['pdf_files']['adapter'] = 'Local';
+			$this->PdfDocuments->save($this->PdfDocuments->newEntity($postData));
+		}
+	}
+	return $entity;
+}
+```
+
+Later, when you want to delete the file, for example in the beforeDelete() or afterDelete() callback of your Report model, you'll know the adapter you have used to store the attached PdfFile and can get an instance of this adapter configuration using the StorageManager. By having the path or key available you can then simply call:
+
+```php
+StorageManager::adapter($data['PdfFile']['adapter'])->delete($data['PdfFile']['path']);
+```
+
+Insted of doing all of this in the table object that has the files associated to it you can also simply extend the FileStorage table from the plugin and add your storage logic there and use that table for your association.
 
 Why is it done like this?
 -------------------------

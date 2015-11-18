@@ -129,7 +129,7 @@ class Products extends Table {
 			'className' => 'ProductImages',
 			'foreignKey' => 'foreign_key',
 			'conditions' => [
-				'Images.model' => 'ProductImage'
+				'ProductImages.model' => 'ProductImage'
 			]
 		]);
 		$this->hasMany('Documents', [

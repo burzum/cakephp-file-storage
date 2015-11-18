@@ -6,7 +6,11 @@
  * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
  */
-class ItemFixture extends CakeTestFixture {
+namespace Burzum\FileStorage\Test\Fixture;
+
+use Cake\TestSuite\Fixture\TestFixture;
+
+class ItemFixture extends TestFixture {
 
 /**
  * Name
@@ -28,7 +32,7 @@ class ItemFixture extends CakeTestFixture {
  * @var array
  */
 	public $fields = array(
-		'id' => array('type' => 'char', 'null' => false, 'length' => 36),
+		'id' => array('type' => 'uuid', 'null' => true, 'default' => NULL, 'length' => 36),
 		'name' => array('type' => 'string', 'null' => true, 'default' => NULL),
 		'_constraints' => [
 			'primary' => ['type' => 'primary', 'columns' => ['id']],

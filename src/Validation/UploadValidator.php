@@ -64,6 +64,7 @@ class UploadValidator extends Validator {
 /**
  * Validates that a set field / property is a valid upload array.
  *
+ * @deprecated Use \Cake\Utility\Validation::uploadedFile() instead.
  * @param mixed $value
  * @return boolean
  */
@@ -84,6 +85,7 @@ class UploadValidator extends Validator {
 /**
  * Validates the filesize.
  *
+ * @deprecated Use \Cake\Utility\Validation::fileSize() instead.
  * @param array $value.
  * @param int $size.
  * @param array $context.
@@ -119,6 +121,7 @@ class UploadValidator extends Validator {
 /**
  * Validates mime types.
  *
+ * @deprecated Use \Cake\Utility\Validation::mimeType() instead.
  * @param array $value.
  * @param array $mimeTypes.
  * @return boolean
