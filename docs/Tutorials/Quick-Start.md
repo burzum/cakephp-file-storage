@@ -125,7 +125,7 @@ use Cake\ORM\Table;
 class Products extends Table {
 	public function initialize() {
 		parent::initialize();
-		$this->hasMany('Images', [
+		$this->hasMany('ProductImages', [
 			'className' => 'ProductImages',
 			'foreignKey' => 'foreign_key',
 			'conditions' => [
@@ -183,8 +183,8 @@ class ProductsController extends AppController {
 				$entity,
 				$this->request->data
 			);
-			if ($this->Products->ProductImages->upload($productId, $entity)) {
-				$this->Flash->set(__('Upload successful!');
+			if ($this->Products->ProductImages->uploadImage($productId, $entity)) {
+				$this->Flash->set(__('Upload successful!'));
 			}
 		}
 		$this->set('productImage', $entity);
