@@ -1,0 +1,28 @@
+; This file is for unifying the coding style for different editors and IDEs.
+; More information at http://editorconfig.org
+
+root = true
+
+[*]
+indent_style = tabs
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+charset = utf-8
+
+[*.js]
+indent_style = tabs
+indent_size = 4
+
+[*.css]
+indent_style = tabs
+indent_size = 4
+
+[*.bat]
+indent_style = tabs
+indent_size = 4
+end_of_line = crlf
+
+[*.yml]
+indent_style = tabs
+indent_size = 4
