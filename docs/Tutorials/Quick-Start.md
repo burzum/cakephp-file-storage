@@ -20,6 +20,7 @@ There is a good amount of code to be added to prepare everything. In theory you 
 
 ```php
 use Aws\S3;
+use Burzum\FileStorage\Event\ImageProcessingListener;
 use Burzum\FileStorage\Event\S3StorageListener;
 use Burzum\FileStorage\Lib\FileStorageUtils;
 use Burzum\FileStorage\Lib\StorageManager;
@@ -34,55 +35,55 @@ EventManager::instance()->on($listener);
 $listener = new ImageProcessingListener();
 EventManager::instance()->on($listener);
 
-Configure::write('FileStorage', array(
-	// Configure image versions on a per model base
-	'imageSizes' => array(
-		'ProductImage' => array(
-			'large' => array(
-				'thumbnail' => array(
+Configure::write('FileStorage', [
+// Configure image versions on a per model base
+	'imageSizes' => [
+		'ProductImage' => [
+			'large' => [
+				'thumbnail' => [
 					'mode' => 'inbound',
 					'width' => 800,
 					'height' => 800
-				)
-			),
-			'medium' => array(
-				'thumbnail' => array(
+				]
+			],
+			'medium' => [
+				'thumbnail' => [
 					'mode' => 'inbound',
 					'width' => 200,
 					'height' => 200
-				)
-			),
-			'small' => array(
-				'thumbnail' => array(
+				]
+			],
+			'small' => [
+				'thumbnail' => [
 					'mode' => 'inbound',
 					'width' => 80,
 					'height' => 80
-				)
-			)
-		)
-	)
-));
+				]
+			]
+		]
+	]
+]);
 
 // This is very important! The hashes are needed to calculate the image versions!
 FileStorageUtils::generateHashes();
 
 // Optional, lets use the AwsS3 adapter here instead of local
-$S3Client = \Aws\S3\S3Client::factory(array(
-	'key' => 'YOUR-KEY',
-	'secret' => 'YOUR-SECRET'
-));
+$S3Client = \Aws\S3\S3Client::factory([
+			'key' => 'YOUR-KEY',
+			'secret' => 'YOUR-SECRET'
+		]);
 
 // Configure the Gaufrette adapter through the StorageManager
-StorageManager::config('S3Image', array(
-	'adapterOptions' => array(
+StorageManager::config('S3Image', [
+	'adapterOptions' => [
 		$S3Client,
 		'YOUR-BUCKET-NAME',
-		array(),
+		[],
 		true
-	),
+	],
 	'adapterClass' => '\Gaufrette\Adapter\AwsS3',
-	'class' => '\Gaufrette\Filesystem')
-);
+	'class' => '\Gaufrette\Filesystem'
+]);
 ```
 
 **It is highly recommended to read the following sections to understand how this works.**
@@ -124,7 +125,7 @@ use Cake\ORM\Table;
 class Products extends Table {
 	public function initialize() {
 		parent::initialize();
-		$this->hasMany('Images', [
+		$this->hasMany('ProductImages', [
 			'className' => 'ProductImages',
 			'foreignKey' => 'foreign_key',
 			'conditions' => [
@@ -177,13 +178,13 @@ class ProductsController extends AppController {
 	// Upload an image
 	public function upload($productId = null) {
 		$entity = $this->Products->ProductImages->newEntity();
-		if ($this->request->is(['post', 'put])) {
+		if ($this->request->is(['post', 'put'])) {
 			$entity = $this->Products->ProductImages->patchEntity(
 				$entity,
 				$this->request->data
 			);
-			if ($this->Products->ProductImages->upload($productId, $entity)) {
-				$this->Flash->set(__('Upload successful!');
+			if ($this->Products->ProductImages->uploadImage($productId, $entity)) {
+				$this->Flash->set(__('Upload successful!'));
 			}
 		}
 		$this->set('productImage', $entity);

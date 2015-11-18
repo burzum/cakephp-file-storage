@@ -178,11 +178,19 @@ class FileStorageTable extends Table {
  * @return boolean
  */
 	public function afterDelete(Event $event, EntityInterface $entity, $options) {
-		$this->dispatchEvent('FileStorage.afterDelete', [
+		$event = $this->dispatchEvent('FileStorage.afterDelete', [
 			'record' => $entity,
 			'storage' => $this->storageAdapter($entity['adapter'])
 		]);
-		return true;
+		if ($event->isStopped()) {
+			return;
+		}
+		try {
+			$Storage = $this->getStorageAdapter($entity['adapter']);
+			$Storage->delete($entity['path']);
+		} catch (\Exception $e) {
+			$this->log($e->getMessage());
+		}
 	}
 
 /**
@@ -205,6 +213,7 @@ class FileStorageTable extends Table {
 					$this->alias() . '.' . $this->primaryKey() => $entity[$oldIdField], 'model' => $entity['model']
 				])
 				->first();
+
 			if (!empty($oldEntity)) {
 				return $this->delete($oldEntity);
 			}

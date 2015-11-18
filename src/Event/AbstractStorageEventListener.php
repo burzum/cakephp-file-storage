@@ -271,9 +271,14 @@ abstract class AbstractStorageEventListener implements EventListenerInterface {
  * @return string
  */
 	protected function _tmpFile($Storage, $path, $tmpFolder = null) {
-		$tmpFile = $this->createTmpFile($tmpFolder);
-		file_put_contents($tmpFile, $Storage->read($path));
-		return $tmpFile;
+		try {
+			$tmpFile = $this->createTmpFile($tmpFolder);
+			file_put_contents($tmpFile, $Storage->read($path));
+			return $tmpFile;
+		} catch (Exception $e) {
+			$this->log($e->getMessage());
+			throw $e;
+		}
 	}
 
 /**
