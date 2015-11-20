@@ -15,7 +15,6 @@ use Cake\Validation\Validation;
  * @author Florian Krämer
  * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
- * @deprecated 3.1.0 Use ImageStorageBehavior in your tables instead.
  */
 class ImageStorageTable extends FileStorageTable {
 
@@ -189,8 +188,7 @@ class ImageStorageTable extends FileStorageTable {
 	 * Just in case you're wondering about the event name in the method code: It's
 	 * called FileStorage.ImageHelper.imagePath there because the event is the same
 	 * as in the helper. No need to introduce yet another event, the existing event
-	 * already fulfills the purpose. I might rename this event in the 3.0 version of
-	 * the plugin to a more generic one.
+	 * already fulfills the purpose.
 	 *
 	 * @param \Cake\Datasource\EntityInterface $entity An ImageStorage database record
 	 * @param array $options Options for the version.

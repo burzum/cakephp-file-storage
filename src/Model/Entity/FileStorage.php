@@ -25,7 +25,7 @@ class FileStorage extends Entity {
 	];
 
 	/**
-	 * Accessor to get the *real* path on disk + filename.
+	 * Accessor to get the *real* path on disk / backend + filename.
 	 *
 	 * @link http://book.cakephp.org/3.0/en/orm/entities.html#accessors-mutators
 	 * @return string
@@ -47,7 +47,7 @@ class FileStorage extends Entity {
 	/**
 	 * Gets a path for this entities file.
 	 *
-	 * @param array $options
+	 * @param array $options Path options.
 	 * @return string
 	 */
 	public function path(array $options = []) {
@@ -60,7 +60,7 @@ class FileStorage extends Entity {
 	/**
 	 * Gets an URL for this entities file.
 	 *
-	 * @param array $options
+	 * @param array $options Path options.
 	 * @return string
 	 */
 	public function url(array $options = []) {
@@ -71,7 +71,7 @@ class FileStorage extends Entity {
 	/**
 	 * Gets a path for this entities file.
 	 *
-	 * @param array $options
+	 * @param array $options Path options.
 	 * @return string
 	 */
 	protected function _path($options) {
