@@ -211,11 +211,15 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 			try {
 				$Storage = StorageManager::adapter($record['adapter']);
 				if (!$Storage->has($string)) {
+					$Event->stopPropagation();
+					$Event->result = false;
 					return false;
 				}
 				$Storage->delete($string);
 			} catch (Exception $e) {
 				$this->log($e->getMessage());
+				$Event->stopPropagation();
+				$Event->result = false;
 				return false;
 			}
 			$operations = Configure::read('FileStorage.imageSizes.' . $record['model']);
@@ -223,6 +227,8 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 				$Event->data['operations'] = $operations;
 				$this->_removeVersions($Event);
 			}
+			$Event->stopPropagation();
+			$Event->result = true;
 			return true;
 		}
 	}

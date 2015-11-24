@@ -55,8 +55,11 @@ class S3StorageListener extends AbstractStorageEventListener {
 				$Storage->delete($path['combined']);
 			} catch (\Exception $e) {
 				$this->log($e->getMessage());
-				return false;
+				$Event->stopPropagation();
+				$Event->result = false;
 			}
+			$Event->stopPropagation();
+			$Event->result = true;
 			return true;
 		}
 	}
