@@ -43,14 +43,15 @@ trait PathBuilderTrait {
 	}
 
 	/**
-	 * Accessor/mutator for local PathBuilderInterface instance.
+	 * Getter and set for the local PathBuilderInterface instance.
 	 *
-	 * @param \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface $pathBuilder
+	 * @param string $name
+	 * @param array $options
 	 * @return \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
 	 */
-	public function pathBuilder(PathBuilderInterface $pathBuilder = null) {
-		if ($pathBuilder !== null) {
-			$this->_pathBuilder = $pathBuilder;
+	public function pathBuilder($name = null, array $options = []) {
+		if ($name !== null) {
+			$this->_pathBuilder = $this->createPathBuilder($name, $options);
 		}
 		return $this->_pathBuilder;
 	}

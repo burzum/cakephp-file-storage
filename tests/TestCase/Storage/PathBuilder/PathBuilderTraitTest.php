@@ -27,7 +27,6 @@ class PathBuilderTraitTest extends TestCase {
  */
 	public function testCreatePathBuilderInvalidClass() {
 		$object = $this->getObjectForTrait('Burzum\FileStorage\Storage\PathBuilder\PathBuilderTrait');
-
 		$object->createPathBuilder('\stdClass');
 	}
 
@@ -40,7 +39,6 @@ class PathBuilderTraitTest extends TestCase {
  */
 	public function testCreatePathBuilderMissingClass() {
 		$object = $this->getObjectForTrait('Burzum\FileStorage\Storage\PathBuilder\PathBuilderTrait');
-
 		$object->createPathBuilder('Foo');
 	}
 
@@ -52,9 +50,7 @@ class PathBuilderTraitTest extends TestCase {
 	public function testPathBuilder() {
 		$object = $this->getObjectForTrait('Burzum\FileStorage\Storage\PathBuilder\PathBuilderTrait');
 		$pathBuilder = $this->getMock('Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface');
-
-		$object->pathBuilder($pathBuilder);
-		
-		$this->assertSame($pathBuilder, $object->pathBuilder());
+		$result = $object->pathBuilder('Base');
+		$this->assertSame($result, $object->pathBuilder());
 	}
 }
