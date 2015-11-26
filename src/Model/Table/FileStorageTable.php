@@ -159,21 +159,22 @@ class FileStorageTable extends Table {
  * @param array $options
  * @return boolean
  */
-	public function afterDelete(\Cake\Event\Event $event, Entity $entity, $options) {
+	public function afterDelete(Event $event, Entity $entity, $options) {
+		$event = $this->dispatchEvent('FileStorage.afterDelete', [
+			'record' => $entity,
+			'storage' => $this->getStorageAdapter($entity['adapter'])
+		]);
+		if ($event->isStopped()) {
+			return $event->result;
+		}
 		try {
 			$Storage = $this->getStorageAdapter($entity['adapter']);
 			$Storage->delete($entity['path']);
-		} catch (Exception $e) {
+			return true;
+		} catch (\Exception $e) {
 			$this->log($e->getMessage());
-			return false;
 		}
-
-		$Event = new Event('FileStorage.afterDelete', $this, array(
-			'record' => $event->data['record'],
-			'storage' => $this->getStorageAdapter($entity['adapter'])));
-		$this->getEventManager()->dispatch($Event);
-
-		return true;
+		return false;
 	}
 
 /**
