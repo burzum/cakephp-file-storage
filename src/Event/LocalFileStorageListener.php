@@ -61,8 +61,13 @@ class LocalFileStorageListener extends AbstractStorageEventListener {
 			$path = $storageConfig['adapterOptions'][0] . $event->data['record']['path'];
 			if (is_dir($path)) {
 				$Folder = new Folder($path);
-				return $Folder->delete();
+				$Folder->delete();
+				$event->stopPropagation();
+				$event->result = true;
+				return true;
 			}
+			$event->stopPropagation();
+			$event->result = false;
 			return false;
 		}
 	}

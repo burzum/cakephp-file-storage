@@ -73,6 +73,17 @@ class FileStorageTableTest extends FileStorageTestCase {
 			'adapter' => 'Local'
 		]);
 		$this->FileStorage->afterDelete($event, $entity, []);
+
+		// Testing the case the file does not exist
+		$entity = $this->FileStorage->get('file-storage-1');
+		$entity->adapter = 'Local';
+		$entity->path = 'does-not-exist!';
+		$event = new Event('FileStorage.afterDelete',  $this->FileStorage, [
+			'record' => $entity,
+			'adapter' => 'Local'
+		]);
+		$result = $this->FileStorage->afterDelete($event, $entity, []);
+		$this->assertFalse($result);
 	}
 
 /**

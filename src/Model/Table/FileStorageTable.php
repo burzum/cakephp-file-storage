@@ -180,14 +180,16 @@ class FileStorageTable extends Table {
 			'storage' => $this->storageAdapter($entity['adapter'])
 		]);
 		if ($event->isStopped()) {
-			return;
+			return $event->result;
 		}
 		try {
-			$Storage = $this->getStorageAdapter($entity['adapter']);
+			$Storage = $this->storageAdapter($entity['adapter']);
 			$Storage->delete($entity['path']);
+			return true;
 		} catch (\Exception $e) {
 			$this->log($e->getMessage());
 		}
+		return false;
 	}
 
 	/**
