@@ -13,7 +13,7 @@ use Cake\View\Helper;
  * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
  */
-class ImageHelper extends Helper {
+class ImageHelper extends StorageHelper {
 
 /**
  * Helpers
