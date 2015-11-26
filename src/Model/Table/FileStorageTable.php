@@ -225,4 +225,11 @@ class FileStorageTable extends Table {
 		$data['table'] = $this;
 		return parent::dispatchEvent($name, $data, $subject);
 	}
+
+	/**
+	 * @deprecated Use storageAdapter() instead.
+	 */
+	public function getStorageAdapter($configName, $renewObject = false) {
+		return $this->storageAdapter($configName, $renewObject);
+	}
 }
