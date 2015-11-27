@@ -17,14 +17,13 @@ trait PathBuilderTrait {
 	 *
 	 * @var \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
 	 */
-	protected $_pathBuilder;
+	protected $_pathBuilder = null;
 
 	/**
 	 * Builds the path builder for given interface.
 	 *
 	 * @param string $name
 	 * @param array $options
-	 * @param bool $renewObject
 	 * @return \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
 	 */
 	public function createPathBuilder($name, array $options = []) {

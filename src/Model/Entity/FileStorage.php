@@ -1,6 +1,7 @@
 <?php
 namespace Burzum\FileStorage\Model\Entity;
 
+use Burzum\FileStorage\Storage\PathBuilder\PathBuilderTrait;
 use Cake\Event\EventDispatcherTrait;
 use Cake\ORM\Entity;
 
@@ -14,6 +15,26 @@ use Cake\ORM\Entity;
 class FileStorage extends Entity {
 
 	use EventDispatcherTrait;
+	use PathBuilderTrait;
+
+	/**
+	 * @param array $properties hash of properties to set in this entity
+	 * @param array $options list of options to use when creating this entity
+	 */
+	public function __construct(array $properties = [], array $options = []) {
+		$options += [
+			'pathBuilder' => null,
+			'pathBuilderOptions' => []
+		];
+		parent::__construct($properties, $options);
+
+		if (is_string($options['pathBuilder'])) {
+			$this->pathBuilder(
+				$options['pathBuilder'],
+				$options['pathBuilderOptions']
+			);
+		}
+	}
 
 	/**
 	 * Fields that can be mass assigned using newEntity() or patchEntity().

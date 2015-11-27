@@ -5,6 +5,16 @@ use Burzum\FileStorage\Storage\PathBuilder\PathBuilderTrait;
 use Cake\View\View;
 use Cake\View\Helper;
 
+/**
+ * Storage Helper
+ *
+ * This helper provides access to the path builders. This will allow you to get
+ * the url/path and true filename of a file storage entity in the view.
+ *
+ * @author Florian Krämer
+ * @copyright 2012 - 2015 Florian Krämer
+ * @license MIT
+ */
 class StorageHelper extends Helper {
 
 	use PathBuilderTrait;
@@ -19,6 +29,12 @@ class StorageHelper extends Helper {
 		]
 	];
 
+	/**
+	 * Constructor
+	 *
+	 * @param \Cake\View\View
+	 * @param array $config
+	 */
 	public function __construct(View $view, array $config = []) {
 		parent::__construct($view, $config);
 
