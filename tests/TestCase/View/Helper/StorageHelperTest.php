@@ -24,7 +24,7 @@ class StorageHelperTest extends FileStorageTestCase {
  *
  * @var ImageHelper
  */
-	public $Image = null;
+	public $Storage = null;
 
 /**
  * Start Test
@@ -36,7 +36,6 @@ class StorageHelperTest extends FileStorageTestCase {
 		$null = null;
 		$this->View = new View($null);
 		$this->Storage = new StorageHelper($this->View);
-		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
 	}
 
 /**

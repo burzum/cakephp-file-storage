@@ -12,7 +12,26 @@ TBD
 
 ## Getting it using the storage helper
 
-TBD
+The storage helper is basically just a proxy to a path builder. The helper takes two configuration options:
+
+ * **pathBuilder**: Name of the path builder to use.
+ * **pathBuilderOptions**: The options passed to the path builders constructor.
+
+Make sure that the options you pass and the path builder are the same you've used when you uploaded the file! Otherwise you end up with a different path!
+
+```php
+// Load the helper
+$this->loadHelper('Burzum/FileStorage.Storage', [
+	'pathBuilder' => 'Base',
+	//The builder options must match the options and builder class that were used to store the file.
+	'pathBuilderOptions' => [
+		'modelFolder' => true,
+	]
+]);
+
+// Use it in your views
+$url = $this->Storage->url($yourEntity);
+```
 
 ## Getting image versions using the image helper
 
