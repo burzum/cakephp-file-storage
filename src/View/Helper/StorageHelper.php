@@ -53,7 +53,7 @@ class StorageHelper extends Helper {
 	 */
 	public function __call($method, $args) {
 		if (method_exists($this->_pathBuilder, $method)) {
-			return call_user_func([$this->_pathBuilder, $method], $args);
+			return call_user_func_array([$this->_pathBuilder, $method], $args);
 		}
 	}
 }

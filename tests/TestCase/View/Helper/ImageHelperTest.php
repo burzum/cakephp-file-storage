@@ -10,10 +10,10 @@ use Cake\Core\Configure;
 use Cake\Event\EventManager;
 
 /**
- * S3StorageListener
+ * ImageHelperTest
  *
  * @author Florian Krämer
- * @copy 2012 - 2014 Florian Krämer
+ * @copy 2012 - 2015 Florian Krämer
  * @license MIT
  */
 class ImageHelperTest extends FileStorageTestCase {
