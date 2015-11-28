@@ -31,7 +31,8 @@ class BasePathBuilder implements PathBuilderInterface {
 		'fileSuffix' => '',
 		'preserveFilename' => false,
 		'preserveExtension' => true,
-		'uuidFolder' => true,
+		'uuidFolder' => false, // Backward compatibility option, use idFolder
+		'idFolder' => true,
 		'randomPath' => 'sha1',
 		'modelFolder' => false
 	);
