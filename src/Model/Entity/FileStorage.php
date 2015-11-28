@@ -18,12 +18,14 @@ class FileStorage extends Entity {
 	use PathBuilderTrait;
 
 	/**
-	 * Path Builder class to be used by this entity.
+	 * Path Builder Class.
 	 *
-	 * @param \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
+	 * This is named $_pathBuilderClass because $_pathBuilder is already used by
+	 * the trait to store the path builder instance.
+	 *
+	 * @param array
 	 */
-	protected $_pathBuilder = null;
-
+	protected $_pathBuilderClass = null;
 
 	/**
 	 * Path Builder options
@@ -40,12 +42,12 @@ class FileStorage extends Entity {
 	 */
 	public function __construct(array $properties = [], array $options = []) {
 		$options += [
-			'pathBuilder' => $this->_pathBuilder,
+			'pathBuilder' => $this->_pathBuilderClass,
 			'pathBuilderOptions' => $this->_pathBuilderOptions
 		];
 		parent::__construct($properties, $options);
 
-		if (is_string($options['pathBuilder'])) {
+		if (!empty($options['pathBuilder'])) {
 			$this->pathBuilder(
 				$options['pathBuilder'],
 				$options['pathBuilderOptions']
