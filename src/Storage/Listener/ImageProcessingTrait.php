@@ -83,7 +83,7 @@ trait ImageProcessingTrait {
  */
 	public function getImageVersionHash($model, $version) {
 		if (empty($this->_imageVersionHashes[$model][$version])) {
-			throw new \RuntimeException(sprintf('Version "%s" for identifier "%s" does not exist!', $model, $version));
+			throw new \RuntimeException(sprintf('Version "%s" for identifier "%s" does not exist!', $version, $model));
 		}
 		return $this->_imageVersionHashes[$model][$version];
 	}
