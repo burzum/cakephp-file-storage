@@ -8,6 +8,8 @@ Be aware that whenever you use a path builder somewhere, you **must** use the sa
 
 ## Getting it from an entity
 
+While you can do this technically it is **not** the *recommended* way of doing it depending on your overall implementation.
+
 TBD
 
 ## Getting it using the storage helper
@@ -31,6 +33,10 @@ $this->loadHelper('Burzum/FileStorage.Storage', [
 
 // Use it in your views
 $url = $this->Storage->url($yourEntity);
+
+// Change the path builder at run time
+// Be carefully, this will change the path builder instance in the helper!
+$this->Storage->pathBuilder('SomePathBuilder', ['options' => 'here']);
 ```
 
 ## Getting image versions using the image helper

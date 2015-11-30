@@ -16,13 +16,19 @@ class AppView extends View {
 In your views you can now access all your image versions, which you have declared before in your config through the helper.
 
 ```php
-echo $this->Image->display($product['Image'], 'small');
+echo $this->Image->display($product['image'], 'small');
+```
+
+If you want the original image just call the display() method without a version.
+
+```php
+echo $this->Image->display($product['image']);
 ```
 
 If you want to get only the URL to an image you can call ```imageUrl()```.
 
 ```php
-$imageUrl = $this->Image->imageUrl($product['Image'], 'small');
+$imageUrl = $this->Image->imageUrl($product['image'], 'small');
 echo $this->Html->image($imageUrl);
 ```
 
