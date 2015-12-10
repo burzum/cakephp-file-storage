@@ -18,10 +18,6 @@ use Cake\Event\Event;
  */
 class LegacyLocalFileStorageListener extends LocalListener {
 
-//	use ImageProcessingTrait {
-//		autoProcessImageVersions as public imageVersionPathTrait;
-//	}
-
 	/**
 	 * Default settings
 	 *

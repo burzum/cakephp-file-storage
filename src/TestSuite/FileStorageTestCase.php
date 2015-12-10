@@ -25,22 +25,41 @@ use Cake\TestSuite\TestCase;
  */
 class FileStorageTestCase extends TestCase {
 
-/**
- * Fixtures
- *
- * @var array
- */
+	/**
+	 * Fixtures
+	 *
+	 * @var array
+	 */
 	public $fixtures = array(
 		'plugin.Burzum\FileStorage.FileStorage'
 	);
 
+	/**
+	 * Listeners to be used in tests.
+	 *
+	 * @var array
+	 */
 	public $listeners = [];
 
-/**
- * Setup test folders and files
- *
- * @return void
- */
+	/**
+	 * FileStorage Table instance.
+	 *
+	 * @var \Burzum\FileStorage\Model\Table\FileStorageTable
+	 */
+	public $FileStorage;
+
+	/**
+	 * ImageStorage Table instance.
+	 *
+	 * @var \Burzum\FileStorage\Model\Table\ImageStorageTable
+	 */
+	public $ImageStorage;
+
+	/**
+	 * Setup test folders and files
+	 *
+	 * @return void
+	 */
 	public function setUp() {
 		parent::setUp();
 		$this->_setupListeners();
@@ -89,6 +108,11 @@ class FileStorageTestCase extends TestCase {
 		$this->ImageStorage = TableRegistry::get('Burzum/FileStorage.ImageStorage');
 	}
 
+	/**
+	 * Setting up the listeners.
+	 *
+	 * @return void
+	 */
 	protected function _setupListeners() {
 		$this->listeners['ImageProcessingListener'] = new ImageProcessingListener();
 		$this->listeners['LocalFileStorageListener'] = new LocalFileStorageListener();
