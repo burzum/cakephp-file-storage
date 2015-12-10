@@ -57,19 +57,41 @@ class ImageHelperTest extends FileStorageTestCase {
  * @return void
  */
 	public function testImage() {
-		$image = array(
+		$image = $this->ImageStorage->newEntity([
 			'id' => 'e479b480-f60b-11e1-a21f-0800200c9a66',
+			'filename' => 'testimage.jpg',
 			'model' => 'Test',
 			'path' => 'test/path/',
 			'extension' => 'jpg',
 			'adapter' => 'Local'
-		);
+		]);
 
+		// Testing the old deprecated listener
 		$result = $this->Image->display($image, 't150');
 		$this->assertEquals($result, '<img src="/test/path/e479b480f60b11e1a21f0800200c9a66.c3f33c2a.jpg" alt=""/>');
 
 		$result = $this->Image->display($image);
 		$this->assertEquals($result, '<img src="/test/path/e479b480f60b11e1a21f0800200c9a66.jpg" alt=""/>');
+
+		// Testing the LegacyLocalFileStorageListener
+		$this->_removeListeners();
+		EventManager::instance()->on($this->listeners['LegacyLocalFileStorageListener']);
+
+		$result = $this->Image->display($image, 't150');
+		$this->assertEquals($result, '<img src="/img/images/86/51/86/e479b480f60b11e1a21f0800200c9a66/e479b480f60b11e1a21f0800200c9a66.c3f33c2a.jpg" alt=""/>');
+
+		$result = $this->Image->display($image);
+		$this->assertEquals($result, '<img src="/img/images/86/51/86/e479b480f60b11e1a21f0800200c9a66/e479b480f60b11e1a21f0800200c9a66.jpg" alt=""/>');
+
+		// Testing the LocalListener
+		$this->_removeListeners();
+		EventManager::instance()->on($this->listeners['LocalListener']);
+
+		$result = $this->Image->display($image, 't150');
+		$this->assertEquals($result, '<img src="/img/Test/5c/39/33/e479b480f60b11e1a21f0800200c9a66/e479b480f60b11e1a21f0800200c9a66.c3f33c2a.jpg" alt=""/>');
+
+		$result = $this->Image->display($image);
+		$this->assertEquals($result, '<img src="/img/Test/5c/39/33/e479b480f60b11e1a21f0800200c9a66/e479b480f60b11e1a21f0800200c9a66.jpg" alt=""/>');
 	}
 
 /**
@@ -79,13 +101,14 @@ class ImageHelperTest extends FileStorageTestCase {
  * @return void
  */
 	public function testImageUrlInvalidArgumentException() {
-		$image = array(
+		$image = $this->ImageStorage->newEntity([
 			'id' => 'e479b480-f60b-11e1-a21f-0800200c9a66',
+			'filename' => 'testimage.jpg',
 			'model' => 'Test',
 			'path' => 'test/path/',
 			'extension' => 'jpg',
 			'adapter' => 'Local'
-		);
+		]);
 		$this->Image->imageUrl($image, 'invalid-version!');
 	}
 
@@ -97,13 +120,13 @@ class ImageHelperTest extends FileStorageTestCase {
 	public function testFallbackImage() {
 		Configure::write('Media.fallbackImages.Test.t150', 't150fallback.png');
 
-		$result = $this->Image->fallbackImage(array('fallback' => true), array(), 't150');
+		$result = $this->Image->fallbackImage(['fallback' => true], [], 't150');
 		$this->assertEquals($result, '<img src="/img/placeholder/t150.jpg" alt=""/>');
 
-		$result = $this->Image->fallbackImage(array('fallback' => 'something.png'), array(), 't150');
+		$result = $this->Image->fallbackImage(['fallback' => 'something.png'], [], 't150');
 		$this->assertEquals($result, '<img src="/img/something.png" alt=""/>');
 
-		$result = $this->Image->fallbackImage(array(), array(), 't150');
+		$result = $this->Image->fallbackImage([], [], 't150');
 		$this->assertEquals($result, '');
 	}
 

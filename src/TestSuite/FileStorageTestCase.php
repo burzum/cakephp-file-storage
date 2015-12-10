@@ -1,7 +1,13 @@
 <?php
 namespace Burzum\FileStorage\TestSuite;
 
+use Burzum\FileStorage\Event\ImageProcessingListener;
+use Burzum\FileStorage\Event\LocalFileStorageListener;
+use Burzum\FileStorage\Storage\Listener\LegacyLocalFileStorageListener;
 use Burzum\FileStorage\Storage\Listener\LocalListener;
+use Burzum\FileStorage\Storage\StorageManager;
+use Burzum\FileStorage\Storage\StorageUtils;
+
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Event\EventManager;
@@ -9,10 +15,6 @@ use Cake\Filesystem\Folder;
 use Cake\Filesystem\File;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use Burzum\FileStorage\Event\ImageProcessingListener;
-use Burzum\FileStorage\Event\LocalFileStorageListener;
-use Burzum\FileStorage\Storage\StorageManager;
-use Burzum\FileStorage\Storage\StorageUtils;
 
 /**
  * FileStorageTestCase
@@ -91,15 +93,16 @@ class FileStorageTestCase extends TestCase {
 		$this->listeners['ImageProcessingListener'] = new ImageProcessingListener();
 		$this->listeners['LocalFileStorageListener'] = new LocalFileStorageListener();
 		$this->listeners['LocalListener'] = new LocalListener();
+		$this->listeners['LegacyLocalFileStorageListener'] = new LegacyLocalFileStorageListener();
 		EventManager::instance()->on($this->listeners['ImageProcessingListener']);
 		EventManager::instance()->on($this->listeners['LocalFileStorageListener']);
 	}
 
-/**
- * Cleanup test files
- *
- * @return void
- */
+	/**
+	 * Cleanup test files
+	 *
+	 * @return void
+	 */
 	public function tearDown() {
 		parent::tearDown();
 
@@ -110,6 +113,11 @@ class FileStorageTestCase extends TestCase {
 		$Folder->delete();
 	}
 
+	/**
+	 * Helper method to remove all listeners.
+	 *
+	 * @return void
+	 */
 	protected function _removeListeners() {
 		foreach ($this->listeners as $listener) {
 			EventManager::instance()->off($listener);

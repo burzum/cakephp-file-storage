@@ -23,19 +23,19 @@ trait ImageProcessingTrait {
 	protected $_imageVersionHashes = [];
 	protected $_defaultOutput = [];
 
-/**
- * Convenience method to auto create ALL and auto remove ALL image versions for
- * an entity.
- *
- * Call this in your listener after you stored or removed a file that has image
- * versions. If you need more details in your logic around creating or removing
- * image versions use the other methods from this trait to implement the checks
- * and behavior you need.
- *
- * @param \Cake\Datasource\EntityInterface
- * @param string $action `create` or `remove`
- * @return array
- */
+	/**
+	 * Convenience method to auto create ALL and auto remove ALL image versions for
+	 * an entity.
+	 *
+	 * Call this in your listener after you stored or removed a file that has image
+	 * versions. If you need more details in your logic around creating or removing
+	 * image versions use the other methods from this trait to implement the checks
+	 * and behavior you need.
+	 *
+	 * @param \Cake\Datasource\EntityInterface
+	 * @param string $action `create` or `remove`
+	 * @return array
+	 */
 	public function autoProcessImageVersions(EntityInterface $entity, $action) {
 		if (!in_array($action, ['create', 'remove'])) {
 			throw new \InvalidArgumentException();
@@ -48,23 +48,23 @@ trait ImageProcessingTrait {
 		return $this->{$method}($entity);
 	}
 
-/**
- * Loads the image processing configuration into the class.
- *
- * @return void
- */
+	/**
+	 * Loads the image processing configuration into the class.
+	 *
+	 * @return void
+	 */
 	protected function _loadImageProcessingFromConfig() {
 		$this->_imageVersions = (array)Configure::read('FileStorage.imageSizes');
 		$this->_imageVersionHashes = StorageUtils::generateHashes();
 		$this->_defaultOutput = (array)Configure::read('FileStorage.defaultOutput');
 	}
 
-/**
- * Gets the image processor instance.
- *
- * @param array $config
- * @return mixed
- */
+	/**
+	 * Gets the image processor instance.
+	 *
+	 * @param array $config
+	 * @return mixed
+	 */
 	public function imageProcessor(array $config = [], $renew = false) {
 		if (!empty($this->_imageProcessor) && $renew === false) {
 			return $this->_imageProcessor;
@@ -74,13 +74,13 @@ trait ImageProcessingTrait {
 		return $this->_imageProcessor;
 	}
 
-/**
- * Gets the hash of a specific image version for an entity.
- *
- * @param string $model Model identifier.
- * @param string $version Version identifier.
- * @return string
- */
+	/**
+	 * Gets the hash of a specific image version for an entity.
+	 *
+	 * @param string $model Model identifier.
+	 * @param string $version Version identifier.
+	 * @return string
+	 */
 	public function getImageVersionHash($model, $version) {
 		if (empty($this->_imageVersionHashes[$model][$version])) {
 			throw new \RuntimeException(sprintf('Version "%s" for identifier "%s" does not exist!', $version, $model));
@@ -88,14 +88,14 @@ trait ImageProcessingTrait {
 		return $this->_imageVersionHashes[$model][$version];
 	}
 
-/**
- * Check that the image versions exist before doing something with them.
- *
- * @throws \RuntimeException
- * @param string $identifier
- * @param array $versions
- * @return void
- */
+	/**
+	 * Check that the image versions exist before doing something with them.
+	 *
+	 * @throws \RuntimeException
+	 * @param string $identifier
+	 * @param array $versions
+	 * @return void
+	 */
 	protected function _checkImageVersions($identifier, array $versions) {
 		if (!isset($this->_imageVersions[$identifier])) {
 			throw new \RuntimeException(sprintf('No image version config found for identifier "%s"!', $identifier));
@@ -107,14 +107,14 @@ trait ImageProcessingTrait {
 		}
 	}
 
-/**
- * Creates the image versions of an entity.
- *
- * @param \Cake\Datasource\EntityInterface $entity
- * @param array $versions Versions array.
- * @param array $options Imagine save options.
- * @return array
- */
+	/**
+	 * Creates the image versions of an entity.
+	 *
+	 * @param \Cake\Datasource\EntityInterface $entity
+	 * @param array $versions Versions array.
+	 * @param array $options Imagine save options.
+	 * @return array
+	 */
 	public function createImageVersions(EntityInterface $entity, array $versions, array $options = []) {
 		$this->_checkImageVersions($entity->model, $versions);
 
@@ -166,15 +166,15 @@ trait ImageProcessingTrait {
 		return $result;
 	}
 
-/**
- * Removes image versions of an entity.
- *
- * @param \Cake\Datasource\EntityInterface $entity
- * @param array List of image version to remove for that entity.
- * @param array $versions
- * @param array $options
- * @return array
- */
+	/**
+	 * Removes image versions of an entity.
+	 *
+	 * @param \Cake\Datasource\EntityInterface $entity
+	 * @param array List of image version to remove for that entity.
+	 * @param array $versions
+	 * @param array $options
+	 * @return array
+	 */
 	public function removeImageVersions(EntityInterface $entity, array $versions, array $options = []) {
 		$this->_checkImageVersions($entity->model, $versions);
 
@@ -197,13 +197,13 @@ trait ImageProcessingTrait {
 		return $result;
 	}
 
-/**
- * Gets all image version config keys for a specific identifier.
- *
- * @param string $identifier
- * @throws \RuntimeException
- * @return array
- */
+	/**
+	 * Gets all image version config keys for a specific identifier.
+	 *
+	 * @param string $identifier
+	 * @throws \RuntimeException
+	 * @return array
+	 */
 	public function getAllVersionsKeysForModel($identifier) {
 		if (!isset($this->_imageVersions[$identifier])) {
 			throw new \RuntimeException(sprintf('No image config present for identifier "%s"!', $identifier));
@@ -211,12 +211,12 @@ trait ImageProcessingTrait {
 		return array_keys($this->_imageVersions[$identifier]);
 	}
 
-/**
- * Convenience method to create ALL versions for an entity.
- *
- * @param \Cake\Datasource\EntityInterface
- * @return array
- */
+	/**
+	 * Convenience method to create ALL versions for an entity.
+	 *
+	 * @param \Cake\Datasource\EntityInterface
+	 * @return array
+	 */
 	public function createAllImageVersions(EntityInterface $entity, array $options = []) {
 		return $this->createImageVersions(
 			$entity,
@@ -225,12 +225,12 @@ trait ImageProcessingTrait {
 		);
 	}
 
-/**
- * Convenience method to delete ALL versions for an entity.
- *
- * @param \Cake\Datasource\EntityInterface
- * @return array
- */
+	/**
+	 * Convenience method to delete ALL versions for an entity.
+	 *
+	 * @param \Cake\Datasource\EntityInterface
+	 * @return array
+	 */
 	public function removeAllImageVersions(EntityInterface $entity, array $options = []) {
 		return $this->removeImageVersions(
 			$entity,
@@ -239,17 +239,23 @@ trait ImageProcessingTrait {
 		);
 	}
 
-/**
- * Generates image version path / url / filename, etc.
- *
- * @param \Cake\Datasource\EntityInterface $entity Image entity.
- * @param string $version Version name
- * @param string $type Path type
- * @param array $options PathBuilder options
- * @return string
- */
+	/**
+	 * Generates image version path / url / filename, etc.
+	 *
+	 * @param \Cake\Datasource\EntityInterface $entity Image entity.
+	 * @param string $version Version name
+	 * @param string $type Path type
+	 * @param array $options PathBuilder options
+	 * @return string
+	 */
 	public function imageVersionPath(EntityInterface $entity, $version, $type = 'fullPath', $options = []) {
-		$hash = $this->getImageVersionHash($entity->model, $version);
+		if (empty($version)) {
+			// Temporary fix for GH #116, this should be fixed in the helper and by
+			// introducing getting an URL by event as well in the long run.
+			return $this->pathBuilder()->url($entity, $options);
+		} else {
+			$hash = $this->getImageVersionHash($entity->model, $version);
+		}
 
 		$output = $this->_defaultOutput + ['format' => $entity->extension];
 		$operations = $this->_imageVersions[$entity->model][$version];
@@ -257,9 +263,11 @@ trait ImageProcessingTrait {
 			$output = $operations['_output'] + $output;
 		}
 
-		return $this->pathBuilder()->{$type}($entity, $options + [
+		$options += [
 			'preserveExtension' => false,
 			'fileSuffix' => '.' . $hash . '.' . $output['format']
-		]);
+		];
+
+		return $this->pathBuilder()->{$type}($entity, $options);
 	}
 }

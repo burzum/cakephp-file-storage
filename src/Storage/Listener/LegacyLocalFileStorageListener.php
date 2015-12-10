@@ -18,28 +18,32 @@ use Cake\Event\Event;
  */
 class LegacyLocalFileStorageListener extends LocalListener {
 
-/**
- * Default settings
- *
- * @var array
- */
+//	use ImageProcessingTrait {
+//		autoProcessImageVersions as public imageVersionPathTrait;
+//	}
+
+	/**
+	 * Default settings
+	 *
+	 * @var array
+	 */
 	protected $_defaultConfig = [
 		'pathBuilder' => 'Base',
 		'pathBuilderOptions' => [
 			'pathPrefix' => 'files',
 			'modelFolder' => false,
-			'preserveFilename' => true,
+			'preserveFilename' => false,
 			'randomPath' => 'crc32'
 		]
 	];
 
-/**
- * Save the file to the storage backend after the record was created.
- *
- * @param \Cake\Event\Event $event
- * @param \Cake\Datasource\EntityInterface $entity
- * @return void
- */
+	/**
+	 * Save the file to the storage backend after the record was created.
+	 *
+	 * @param \Cake\Event\Event $event
+	 * @param \Cake\Datasource\EntityInterface $entity
+	 * @return void
+	 */
 	public function afterSave(Event $event, EntityInterface $entity) {
 		if ($this->_checkEvent($event) && $entity->isNew()) {
 			$fileField = $this->config('fileField');
@@ -53,5 +57,12 @@ class LegacyLocalFileStorageListener extends LocalListener {
 
 			$event->stopPropagation();
 		}
+	}
+
+	public function imageVersionPath(EntityInterface $entity, $version, $type = 'fullPath', $options = []) {
+		$options += [
+			'pathPrefix' => 'images'
+		];
+		return parent::imageVersionPath($entity, $version, $type, $options);
 	}
 }
