@@ -12,6 +12,8 @@ use Cake\View\Helper;
  * @author Florian Krämer
  * @copyright 2012 - 2015 Florian Krämer
  * @license MIT
+ *
+ * @property \Cake\View\Helper\HtmlHelper $Html
  */
 class ImageHelper extends StorageHelper {
 
@@ -23,13 +25,6 @@ class ImageHelper extends StorageHelper {
 	public $helpers = array(
 		'Html'
 	);
-
-	/**
-	 * Html Helper
-	 *
-	 * @var \Cake\View\Helper\HtmlHelper
-	 */
-	public $Html = null;
 
 	/**
 	 * Generates an image url based on the image record data and the used Gaufrette adapter to store it
