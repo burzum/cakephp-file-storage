@@ -18,18 +18,25 @@ use Cake\Event\EventManager;
  */
 class ImageHelperTest extends FileStorageTestCase {
 
-/**
- * Image Helper
- *
- * @var ImageHelper
- */
+	/**
+	 * Image Helper
+	 *
+	 * @var ImageHelper
+	 */
 	public $Image = null;
 
-/**
- * Start Test
- *
- * @return void
- */
+	/**
+	 * Image Helper
+	 *
+	 * @var \Cake\View\View
+	 */
+	public $View = null;
+
+	/**
+	 * Start Test
+	 *
+	 * @return void
+	 */
 	public function setUp() {
 		parent::setUp();
 		$null = null;
@@ -41,21 +48,21 @@ class ImageHelperTest extends FileStorageTestCase {
 		$this->Image->Html->request->base = '/';
 	}
 
-/**
- * End Test
- *
- * @return void
- */
+	/**
+	 * End Test
+	 *
+	 * @return void
+	 */
 	public function tearDown() {
 		parent::tearDown();
 		unset($this->Image);
 	}
 
-/**
- * testImage
- *
- * @return void
- */
+	/**
+	 * testImage
+	 *
+	 * @return void
+	 */
 	public function testImage() {
 		$image = $this->ImageStorage->newEntity([
 			'id' => 'e479b480-f60b-11e1-a21f-0800200c9a66',
@@ -94,12 +101,12 @@ class ImageHelperTest extends FileStorageTestCase {
 		$this->assertEquals($result, '<img src="/img/Test/5c/39/33/e479b480f60b11e1a21f0800200c9a66/e479b480f60b11e1a21f0800200c9a66.jpg" alt=""/>');
 	}
 
-/**
- * testImage
- *
- * @expectedException \InvalidArgumentException
- * @return void
- */
+	/**
+	 * testImage
+	 *
+	 * @expectedException \InvalidArgumentException
+	 * @return void
+	 */
 	public function testImageUrlInvalidArgumentException() {
 		$image = $this->ImageStorage->newEntity([
 			'id' => 'e479b480-f60b-11e1-a21f-0800200c9a66',
@@ -112,11 +119,11 @@ class ImageHelperTest extends FileStorageTestCase {
 		$this->Image->imageUrl($image, 'invalid-version!');
 	}
 
-/**
- * testFallbackImage
- *
- * @return void
- */
+	/**
+	 * testFallbackImage
+	 *
+	 * @return void
+	 */
 	public function testFallbackImage() {
 		Configure::write('Media.fallbackImages.Test.t150', 't150fallback.png');
 
@@ -129,5 +136,4 @@ class ImageHelperTest extends FileStorageTestCase {
 		$result = $this->Image->fallbackImage([], [], 't150');
 		$this->assertEquals($result, '');
 	}
-
 }
