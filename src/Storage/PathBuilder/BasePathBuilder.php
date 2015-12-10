@@ -268,7 +268,7 @@ class BasePathBuilder implements PathBuilderInterface {
  * @return string
  */
 	public function url(EntityInterface $entity, array $options = []) {
-		$url = $this->path($entity) . $this->filename($entity, $options);
+		$url = $this->path($entity, $options) . $this->filename($entity, $options);
 		return str_replace('\\', '/', $url);
 	}
 
