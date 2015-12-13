@@ -85,10 +85,18 @@ class ImageHelperTest extends FileStorageTestCase {
 		EventManager::instance()->on($this->listeners['LegacyLocalFileStorageListener']);
 
 		$result = $this->Image->display($image, 't150');
-		$this->assertEquals($result, '<img src="/img/images/86/51/86/e479b480f60b11e1a21f0800200c9a66/e479b480f60b11e1a21f0800200c9a66.c3f33c2a.jpg" alt=""/>');
+		if (PHP_INT_SIZE === 8) {
+			$this->assertEquals($result, '<img src="/img/images/10/21/10/e479b480f60b11e1a21f0800200c9a66/e479b480f60b11e1a21f0800200c9a66.c3f33c2a.jpg" alt=""/>');
+		} else {
+			$this->assertEquals($result, '<img src="/img/images/86/51/86/e479b480f60b11e1a21f0800200c9a66/e479b480f60b11e1a21f0800200c9a66.c3f33c2a.jpg" alt=""/>');
+		}
 
 		$result = $this->Image->display($image);
-		$this->assertEquals($result, '<img src="/img/images/86/51/86/e479b480f60b11e1a21f0800200c9a66/e479b480f60b11e1a21f0800200c9a66.jpg" alt=""/>');
+		if (PHP_INT_SIZE === 8) {
+			$this->assertEquals($result, '<img src="/img/images/10/21/10/e479b480f60b11e1a21f0800200c9a66/e479b480f60b11e1a21f0800200c9a66.jpg" alt=""/>');
+		} else {
+			$this->assertEquals($result, '<img src="/img/images/86/51/86/e479b480f60b11e1a21f0800200c9a66/e479b480f60b11e1a21f0800200c9a66.jpg" alt=""/>');
+		}
 
 		// Testing the LocalListener
 		$this->_removeListeners();
