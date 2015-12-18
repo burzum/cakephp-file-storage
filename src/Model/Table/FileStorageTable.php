@@ -180,14 +180,16 @@ class FileStorageTable extends Table {
 			'storage' => $this->storageAdapter($entity['adapter'])
 		]);
 		if ($event->isStopped()) {
-			return;
+			return $event->result;
 		}
 		try {
-			$Storage = $this->getStorageAdapter($entity['adapter']);
+			$Storage = $this->storageAdapter($entity['adapter']);
 			$Storage->delete($entity['path']);
+			return true;
 		} catch (\Exception $e) {
 			$this->log($e->getMessage());
 		}
+		return false;
 	}
 
 	/**
@@ -222,5 +224,12 @@ class FileStorageTable extends Table {
 	public function dispatchEvent($name, $data = null, $subject = null) {
 		$data['table'] = $this;
 		return parent::dispatchEvent($name, $data, $subject);
+	}
+
+	/**
+	 * @deprecated Use storageAdapter() instead.
+	 */
+	public function getStorageAdapter($configName, $renewObject = false) {
+		return $this->storageAdapter($configName, $renewObject);
 	}
 }

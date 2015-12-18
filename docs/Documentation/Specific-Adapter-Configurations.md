@@ -13,7 +13,7 @@ Local Filesystem
 By default the StorageManager already comes with a pre-configured adapter instance for the local file system adapter.
 
 The first array element of the `adapterOptions` config key is `TMP` because the tmp folder and the logs folder should be the only writeable place in a *proper* configured application. The reason for that is simply to make it work out of the box without issues. **You definitely want to change that path for your application.**
- 
+
 ```php
 StorageManager::config('Local', [
 	'adapterOptions' => [TMP, true],
@@ -123,4 +123,24 @@ StorageManager::config('OpenCloudTest', array(
 	'adapterClass' => '\Gaufrette\Adapter\OpenCloud',
 	'class' => '\Gaufrette\Filesystem')
 );
+```
+
+Azure
+-----
+
+Attention: This adapter config was provided by a third party. If you encounter any trouble with it please report it and the best submit a working example.
+
+```php
+$connectionString = "DefaultEndpointsProtocol=https;AccountName=;AccountKey=";
+$blobRestProxy = new Gaufrette\Adapter\AzureBlobStorage\BlobProxyFactory($connectionString);
+$blobRestProxy->create();
+
+StorageManager::config('AzureBlobStorage', [
+    'adapterOptions' => [
+        $blobRestProxy,
+        'gatewayfiles'
+    ],
+    'adapterClass' => '\Gaufrette\Adapter\AzureBlobStorage',
+    'class' => '\Gaufrette\Filesystem'
+]);
 ```

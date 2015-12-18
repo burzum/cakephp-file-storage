@@ -57,6 +57,8 @@ class BasePathBuilderTest extends TestCase {
 		$builder->config('pathPrefix', 'files');
 		$result = $builder->path($this->entity);
 		$this->assertEquals($result, 'files' . DS . '14' . DS . '83' . DS . '23' . DS . 'filestorage1' . DS);
+		$result = $builder->path($this->entity, ['pathPrefix' => 'images']);
+		$this->assertEquals($result, 'images' . DS . '14' . DS . '83' . DS . '23' . DS . 'filestorage1' . DS);
 
 		$builder->config('pathPrefix', 'files');
 		$result = $builder->filename($this->entity);

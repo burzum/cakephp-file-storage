@@ -86,7 +86,7 @@ abstract class AbstractListener implements EventListenerInterface {
 	public function __construct(array $config = []) {
 		$this->_mergeListenerVars();
 		$this->config($config);
-		$this->_constructPathBuilder(
+		$this->pathBuilder(
 			$this->_config['pathBuilder'],
 			$this->_config['pathBuilderOptions']
 		);
@@ -282,17 +282,5 @@ abstract class AbstractListener implements EventListenerInterface {
  */
 	public function getPath(Event $event) {
 		return $this->pathBuilder()->{$event->data['method']}($event->subject(), $event->data);
-	}
-
-/**
- * Constructs a path builder instance.
- *
- * @param string $class
- * @param array $options
- * @return \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
- */
-	protected function _constructPathBuilder($class, array $options = []) {
-		$pathBuilder = $this->createPathBuilder($class, $options);
-		return $this->pathBuilder($pathBuilder);
 	}
 }
