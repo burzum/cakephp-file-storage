@@ -132,7 +132,7 @@ class FileStorageTableTest extends FileStorageTestCase {
 					'name' => 'tituts.jpg',
 					'tmp_name' => $this->fileFixtures . 'titus.jpg'
 				]
-			]);
+			], ['accessibleFields' => ['*' => true]]);
 			$this->FileStorage->configureUploadValidation([
 				'allowedExtensions' => ['jpg'],
 				'validateUploadArray' => true,
@@ -156,7 +156,8 @@ class FileStorageTableTest extends FileStorageTestCase {
 				'error' => UPLOAD_ERR_OK,
 				'tmp_name' => $this->fileFixtures . 'titus.jpg'
 			]
-		]);
+		], ['accessibleFields' => ['*' => true]]);
+
 		$event = new Event('Model.beforeSave',  $this->FileStorage, [
 			'entity' => $entity,
 		]);

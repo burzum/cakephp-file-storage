@@ -60,7 +60,7 @@ class ImageStorageEntityTest extends FileStorageTestCase {
 			'path' => 'test/path/',
 			'extension' => 'jpg',
 			'adapter' => 'Local'
-		]);
+		], ['accessibleFields' => ['*' => true]]);
 		$result = $entity->imageVersion('t150');
 		$this->assertEquals($result, '/test/path/e479b480f60b11e1a21f0800200c9a66.c3f33c2a.jpg');
 	}

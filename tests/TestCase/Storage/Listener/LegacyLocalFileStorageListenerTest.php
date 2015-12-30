@@ -75,7 +75,7 @@ class LegacyLocalFileStorageListenerTest extends TestCase {
 				'error' => UPLOAD_ERR_OK,
 				'tmp_name' => $this->fileFixtures . 'titus.jpg'
 			]
-		]);
+		], ['accessibleFields' => ['*' => true]]);
 
 		$event = new Event('FileStorage.afterSave', $this->FileStorage, [
 			'record' => $entity,

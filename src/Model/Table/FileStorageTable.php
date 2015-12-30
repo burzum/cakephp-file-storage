@@ -93,14 +93,7 @@ class FileStorageTable extends Table {
 	 * @return boolean true on success
 	 */
 	public function beforeSave(Event $event, EntityInterface $entity, $options) {
-		if ($entity->isNew()) {
-			if (empty($entity->model)) {
-				$entity->model = $this->table();
-			}
-			if (empty($entity->adapter)) {
-				$entity->adapter = $this->_defaultAdapter;
-			}
-		}
+		$this->_checkEntityBeforeSave($entity);
 		$Event = $this->dispatchEvent('FileStorage.beforeSave', array(
 			'record' => $entity,
 			'storage' => $this->storageAdapter($entity->adapter)
@@ -109,6 +102,23 @@ class FileStorageTable extends Table {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * _checkEntityBeforeSave
+	 *
+	 * @param \Cake\Datasource\EntityInterface $entity
+	 * @return void
+	 */
+	protected function _checkEntityBeforeSave(EntityInterface &$entity) {
+		if ($entity->isNew()) {
+			if (empty($entity->model)) {
+				$entity->model = $this->table();
+			}
+			if (empty($entity->adapter)) {
+				$entity->adapter = $this->_defaultAdapter;
+			}
+		}
 	}
 
 	/**

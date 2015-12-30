@@ -84,7 +84,7 @@ class LocalListenerTest extends TestCase {
 			'path' => 'test/path/',
 			'extension' => 'jpg',
 			'adapter' => 'Local'
-		]);
+		], ['accessibleFields' => ['*' => true]]);
 
 		$event = new Event('ImageVersion.getVersions', $this->FileStorage, [
 			'image' => $image,

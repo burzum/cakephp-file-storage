@@ -66,6 +66,8 @@ class FileStorage extends Entity {
 		'model' => true,
 		'foreign_key' => true,
 		'file' => true,
+		'old_file_id' => true,
+		// Keep this true for the next major release because it's a BC breaker
 		'*' => true,
 	];
 

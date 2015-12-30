@@ -48,13 +48,12 @@ class S3StorageListenerTest extends FileStorageTestCase {
  */
 	public function testBuildPath() {
 		$entity = $this->Table->newEntity(array(
-				'model' => 'Document',
-				'adapter' => 'Test',
-				'filename' => 'test.png',
-				'extension' => 'png',
-				'id' => '144c4170-6760-11e3-949a-0800200c9a66'
-			)
-		);
+			'model' => 'Document',
+			'adapter' => 'Test',
+			'filename' => 'test.png',
+			'extension' => 'png',
+			'id' => '144c4170-6760-11e3-949a-0800200c9a66'
+		), ['accessibleFields' => ['*' => true]]);
 
 		$adapterConfig = array(
 			'adapterClass' => '\Gaufrette\Adapter\AwsS3',

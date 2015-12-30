@@ -14,7 +14,7 @@ class StorageExceptionTest extends TestCase {
  */
 	public function testSetAndGetEntity() {
 		$FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
-		$entity = $FileStorage->newEntity([]);
+		$entity = $FileStorage->newEntity([], ['accessibleFields' => ['*' => true]]);
 		$exception = new StorageException();
 		$exception->setEntity($entity);
 		$this->assertEquals($exception->getEntity(), $entity);

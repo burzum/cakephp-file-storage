@@ -66,7 +66,7 @@ class ImageStorageTableTest extends FileStorageTestCase {
 				'tmp_name' => Plugin::path('Burzum/FileStorage') . DS . 'tests' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg',
 				'error' => 0
 			]
-		]);
+		], ['accessibleFields' => ['*' => true]]);
 
 		$this->Image->save($entity);
 		$result = $this->Image->find()
@@ -214,7 +214,7 @@ class ImageStorageTableTest extends FileStorageTestCase {
 				'tmp_name' => Plugin::path('Burzum/FileStorage') . DS . 'tests' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg',
 				'error' => 0
 			]
-		]);
+		], ['accessibleFields' => ['*' => true]]);
 
 		$this->Image->save($entity);
 		$result = $this->Image->find()
@@ -241,7 +241,7 @@ class ImageStorageTableTest extends FileStorageTestCase {
 				'error' => 0
 			],
 			'old_file_id' => $entity->id
-		]);
+		], ['accessibleFields' => ['*' => true]]);
 
 		$this->Image->save($secondEntity);
 		$result2 = $this->Image->find()

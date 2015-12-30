@@ -61,7 +61,7 @@ class ImageProcessingTraitTest extends FileStorageTestCase {
 			'hash' => '',
 			'path' => '',
 			'adapter' => 'Local',
-		]);
+		], ['accessibleFields' => ['*' => true]]);
 		$this->entity->accessible('id', true);
 
 		Configure::write('FileStorage.imageSizes', [
