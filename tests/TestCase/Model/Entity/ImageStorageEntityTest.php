@@ -10,8 +10,8 @@ use Burzum\FileStorage\TestSuite\FileStorageTestCase;
 /**
  * File Storage Entity Test
  *
- * @author Florian Kr‰mer
- * @copyright 2012 - 2015 Florian Kr‰mer
+ * @author Florian Kr√§mer
+ * @copyright 2012 - 2015 Florian Kr√§mer
  * @license MIT
  */
 class ImageStorageEntityTest extends FileStorageTestCase {

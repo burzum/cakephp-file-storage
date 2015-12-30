@@ -10,20 +10,20 @@ use Cake\TestSuite\TestCase;
 
 class LocalListenerTest extends TestCase {
 
-/**
- * Fixtures
- *
- * @var array
- */
+	/**
+	 * Fixtures
+	 *
+	 * @var array
+	 */
 	public $fixtures = array(
 		'plugin.Burzum\FileStorage.FileStorage'
 	);
 
-/**
- * setUp
- *
- * @return void
- */
+	/**
+	 * setUp
+	 *
+	 * @return void
+	 */
 	public function setUp() {
 		parent::setUp();
 
@@ -40,11 +40,11 @@ class LocalListenerTest extends TestCase {
 		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
 	}
 
-/**
- * testimplementedEvents
- *
- * @return void
- */
+	/**
+	 * testimplementedEvents
+	 *
+	 * @return void
+	 */
 	public function testimplementedEvents() {
 		$expected = [
 			'FileStorage.path' => 'getPath',
@@ -62,11 +62,11 @@ class LocalListenerTest extends TestCase {
 		$this->assertEquals($result, $expected);
 	}
 
-/**
- * testImagePath
- *
- * @return void
- */
+	/**
+	 * testImagePath
+	 *
+	 * @return void
+	 */
 	public function testImagePath() {
 		Configure::write('FileStorage.imageSizes', [
 			'Test' => [
@@ -97,11 +97,11 @@ class LocalListenerTest extends TestCase {
 		$this->assertEquals($event->result, $expected);
 	}
 
-/**
- * testAfterSave
- *
- * @return void
- */
+	/**
+	 * testAfterSave
+	 *
+	 * @return void
+	 */
 	public function testAfterSave() {
 		$entity = $this->FileStorage->get('file-storage-3');
 		$entity->isNew(true);
@@ -126,11 +126,11 @@ class LocalListenerTest extends TestCase {
 		$this->assertTrue($event->result);
 	}
 
-/**
- * testAfterDelete
- *
- * @return void
- */
+	/**
+	 * testAfterDelete
+	 *
+	 * @return void
+	 */
 	public function testAfterDelete() {
 		$entity = $this->FileStorage->get('file-storage-3');
 		$event = new Event('FileStorage.afterDelete', $this->FileStorage, [

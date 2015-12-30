@@ -45,6 +45,7 @@ class FileStorage extends Entity {
 			'pathBuilder' => $this->_pathBuilderClass,
 			'pathBuilderOptions' => $this->_pathBuilderOptions
 		];
+
 		parent::__construct($properties, $options);
 
 		if (!empty($options['pathBuilder'])) {
@@ -61,6 +62,10 @@ class FileStorage extends Entity {
 	 * @var array
 	 */
 	protected $_accessible = [
+		'filename' => true,
+		'model' => true,
+		'foreign_key' => true,
+		'file' => true,
 		'*' => true,
 	];
 

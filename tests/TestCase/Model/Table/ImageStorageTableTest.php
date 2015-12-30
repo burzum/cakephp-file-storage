@@ -21,29 +21,29 @@ use Burzum\FileStorage\TestSuite\FileStorageTestCase;
  */
 class ImageStorageTableTest extends FileStorageTestCase {
 
-/**
- * Fixtures
- *
- * @var array
- */
+	/**
+	 * Fixtures
+	 *
+	 * @var array
+	 */
 	public $fixtures = array(
 		'plugin.Burzum\FileStorage.FileStorage'
 	);
 
-/**
- * setUp
- *
- * @return void
- */
+	/**
+	 * setUp
+	 *
+	 * @return void
+	 */
 	public function setUp() {
 		parent::setUp();
 		$this->Image = TableRegistry::get('Burzum/FileStorage.ImageStorage');
 	}
 
-/**
- * tearDown
- *
- * @return void
+	/**
+	 * tearDown
+	 *
+	 * @return void
  */
 	public function tearDown() {
 		parent::tearDown();
@@ -51,11 +51,11 @@ class ImageStorageTableTest extends FileStorageTestCase {
 		TableRegistry::clear();
 	}
 
-/**
- * testProcessVersion
- *
- * @return void
- */
+	/**
+	 * testProcessVersion
+	 *
+	 * @return void
+	 */
 	public function testProcessVersion() {
 		$entity = $this->Image->newEntity([
 			'foreign_key' => 'test-1',
@@ -135,11 +135,11 @@ class ImageStorageTableTest extends FileStorageTestCase {
 		$this->assertEquals(count($folderResult[1]), 3);
 	}
 
-/**
- * testGetImageVersions
- *
- * @return void
- */
+	/**
+	 * testGetImageVersions
+	 *
+	 * @return void
+	 */
 	public function testGetImageVersions() {
 		Configure::write('FileStorage.imageSizes', [
 			'Item' => [
@@ -169,22 +169,22 @@ class ImageStorageTableTest extends FileStorageTestCase {
 		$this->assertEquals($result, $expected);
 	}
 
-/**
- * testValidateImageSize
- *
- * @expectedException \InvalidArgumentException
- * @return void
- */
+	/**
+	 * testValidateImageSize
+	 *
+	 * @expectedException \InvalidArgumentException
+	 * @return void
+	 */
 	public function testValidateImageSizeInvalidArgumentException() {
 		$file = $this->fileFixtures . 'titus.jpg';
 		$this->Image->validateImageSize($file);
 	}
 
-/**
- * testValidateImageSize
- *
- * @return void
- */
+	/**
+	 * testValidateImageSize
+	 *
+	 * @return void
+	 */
 	public function testValidateImageSize() {
 		$file = $this->fileFixtures . 'titus.jpg';
 		$result = $this->Image->validateImageSize($file, ['height' => ['>', 100]]);
@@ -199,11 +199,11 @@ class ImageStorageTableTest extends FileStorageTestCase {
 		$this->assertFalse($result);
 	}
 
-/**
- * testDeleteOldFileOnSave
- *
- * @return void
- */
+	/**
+	 * testDeleteOldFileOnSave
+	 *
+	 * @return void
+	 */
 	public function testDeleteOldFileOnSave() {
 		$entity = $this->Image->newEntity([
 			'foreign_key' => 'test-1',

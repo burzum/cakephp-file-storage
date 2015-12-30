@@ -42,6 +42,13 @@ class FileStorageTable extends Table {
 	public $record = [];
 
 	/**
+	 * Default Storage Adapter to use when unspecified.
+	 *
+	 * @var string
+	 */
+	protected $_defaultAdapter = 'Local';
+
+	/**
 	 * Initialize
 	 *
 	 * @param array $config
@@ -86,9 +93,17 @@ class FileStorageTable extends Table {
 	 * @return boolean true on success
 	 */
 	public function beforeSave(Event $event, EntityInterface $entity, $options) {
+		if ($entity->isNew()) {
+			if (empty($entity->model)) {
+				$entity->model = $this->table();
+			}
+			if (empty($entity->adapter)) {
+				$entity->adapter = $this->_defaultAdapter;
+			}
+		}
 		$Event = $this->dispatchEvent('FileStorage.beforeSave', array(
 			'record' => $entity,
-			'storage' => $this->storageAdapter($entity['adapter'])
+			'storage' => $this->storageAdapter($entity->adapter)
 		));
 		if ($Event->isStopped()) {
 			return false;
@@ -117,12 +132,6 @@ class FileStorageTable extends Table {
 		if (!empty($upload[$field]['name'])) {
 			$upload['extension'] = pathinfo($upload[$field]['name'], PATHINFO_EXTENSION);
 			$upload['filename'] = $upload[$field]['name'];
-		}
-		if (empty($upload['model'])) {
-			$upload['model'] = $this->table();
-		}
-		if (empty($upload['adapter'])) {
-			$upload['adapter'] = 'Local';
 		}
 	}
 
