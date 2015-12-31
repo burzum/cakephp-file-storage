@@ -56,6 +56,13 @@ class FileStorageTestCase extends TestCase {
 	public $ImageStorage;
 
 	/**
+	 * Path to the file fixtures, set in the setUp() method.
+	 *
+	 * @var string
+	 */
+	public $fileFixtures;
+
+	/**
 	 * Setup test folders and files
 	 *
 	 * @return void

@@ -15,20 +15,20 @@ class TestAbstractListener extends AbstractListener {
 
 class AbstractListenerTest extends TestCase {
 
-/**
- * Fixtures
- *
- * @var array
- */
+	/**
+	 * Fixtures
+	 *
+	 * @var array
+	 */
 	public $fixtures = array(
 		'plugin.Burzum\FileStorage.FileStorage'
 	);
 
-/**
- * testPathBuilder
- *
- * @return void
- */
+	/**
+	 * testPathBuilder
+	 *
+	 * @return void
+	 */
 	public function testPathBuilder() {
 		$Listener = new TestAbstractListener([
 			'pathBuilder' => 'Base'

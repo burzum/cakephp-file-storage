@@ -62,7 +62,7 @@ class StorageHelperTest extends FileStorageTestCase {
 			'adapter' => 'Local'
 		);
 
-		$entity = $this->FileStorage->newEntity($image);
+		$entity = $this->FileStorage->newEntity($image, ['accessibleFields' => ['*' => true]]);
 		$result = $this->Storage->url($entity);
 		$expected = 'Test/5c/39/33/e479b480f60b11e1a21f0800200c9a66/e479b480f60b11e1a21f0800200c9a66.jpg';
 		$this->assertEquals($result, $expected);

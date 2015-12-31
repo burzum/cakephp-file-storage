@@ -32,7 +32,7 @@ class BasePathBuilderTest extends TestCase {
 			'hash' => '',
 			'path' => '',
 			'adapter' => 'Local',
-		]);
+		], ['accessibleFields' => ['*' => true]]);
 		$this->entity->accessible('id', true);
 	}
 

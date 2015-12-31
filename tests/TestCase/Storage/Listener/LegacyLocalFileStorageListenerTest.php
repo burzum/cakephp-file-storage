@@ -10,20 +10,20 @@ use Cake\TestSuite\TestCase;
 
 class LegacyLocalFileStorageListenerTest extends TestCase {
 
-/**
- * Fixtures
- *
- * @var array
- */
+	/**
+	 * Fixtures
+	 *
+	 * @var array
+	 */
 	public $fixtures = array(
 		'plugin.Burzum\FileStorage.FileStorage'
 	);
 
-/**
- * setUp
- *
- * @return void
- */
+	/**
+	 * setUp
+	 *
+	 * @return void
+	 */
 	public function setUp() {
 		parent::setUp();
 
@@ -46,11 +46,11 @@ class LegacyLocalFileStorageListenerTest extends TestCase {
 		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
 	}
 
-/**
- * Testing that the path is the same as in the old LocalFileStorageListener class.
- *
- * @return void
- */
+	/**
+	 * Testing that the path is the same as in the old LocalFileStorageListener class.
+	 *
+	 * @return void
+	 */
 	public function testPath() {
 		$entity = $this->FileStorage->get('file-storage-1');
 		$result = $this->listener->pathBuilder()->path($entity);
@@ -58,14 +58,15 @@ class LegacyLocalFileStorageListenerTest extends TestCase {
 		$this->assertEquals($result, $expected);
 	}
 
-/**
- * testAfterSave
- *
- * @return void
- */
+	/**
+	 * testAfterSave
+	 *
+	 * @return void
+	 */
 	public function testAfterSave() {
 		$entity = $this->FileStorage->newEntity([
 			'model' => 'Item',
+			'adapter' => 'Local',
 			'id' => '06c0e8e2-4424-11e5-a151-feff819cdc9f',
 			'filename' => 'titus.jpg',
 			'extension' => 'jpg',
@@ -74,7 +75,7 @@ class LegacyLocalFileStorageListenerTest extends TestCase {
 				'error' => UPLOAD_ERR_OK,
 				'tmp_name' => $this->fileFixtures . 'titus.jpg'
 			]
-		]);
+		], ['accessibleFields' => ['*' => true]]);
 
 		$event = new Event('FileStorage.afterSave', $this->FileStorage, [
 			'record' => $entity,

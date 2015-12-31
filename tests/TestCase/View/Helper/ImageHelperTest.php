@@ -71,7 +71,7 @@ class ImageHelperTest extends FileStorageTestCase {
 			'path' => 'test/path/',
 			'extension' => 'jpg',
 			'adapter' => 'Local'
-		]);
+		], ['accessibleFields' => ['*' => true]]);
 
 		// Testing the old deprecated listener
 		$result = $this->Image->display($image, 't150');
@@ -123,7 +123,7 @@ class ImageHelperTest extends FileStorageTestCase {
 			'path' => 'test/path/',
 			'extension' => 'jpg',
 			'adapter' => 'Local'
-		]);
+		], ['accessibleFields' => ['*' => true]]);
 		$this->Image->imageUrl($image, 'invalid-version!');
 	}
 
