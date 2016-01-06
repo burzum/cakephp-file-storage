@@ -8,9 +8,15 @@ Be aware that whenever you use a path builder somewhere, you **must** use the sa
 
 ## Getting it from an entity
 
-While you can do this technically it is **not** the *recommended* way of doing it depending on your overall implementation.
+If you're using an entity from this plugin, or extending it they'll implement the PathBuilderTrait. This enables you to set and get the path builder on the entities.
 
-TBD
+Due to some [limitations of the CakePHP core](http://api.cakephp.org/3.1/source-class-Cake.ORM.Table.html#1965) you can't pass options to the entity when calling `Table::newEntity()`. As a workaround for that you'll have to set it manually:
+
+```php
+$entity->pathBuilder('PathBuilderName', ['options-array' => 'goes-here']);
+$entity->path(); // Gets you the path in the used storage backend to the file
+$entity->url(); // Gets you the URL to the file if possible
+```
 
 ## Getting it using the storage helper
 
@@ -25,7 +31,7 @@ Make sure that the options you pass and the path builder are the same you've use
 // Load the helper
 $this->loadHelper('Burzum/FileStorage.Storage', [
 	'pathBuilder' => 'Base',
-	//The builder options must match the options and builder class that were used to store the file.
+	// The builder options must match the options and builder class that were used to store the file!
 	'pathBuilderOptions' => [
 		'modelFolder' => true,
 	]
@@ -38,11 +44,3 @@ $url = $this->Storage->url($yourEntity);
 // Be carefully, this will change the path builder instance in the helper!
 $this->Storage->pathBuilder('SomePathBuilder', ['options' => 'here']);
 ```
-
-## Getting image versions using the image helper
-
-TBD
-
-## Getting it via events
-
-TBD

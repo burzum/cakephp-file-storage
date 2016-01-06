@@ -1,7 +1,7 @@
 <?php
 namespace Burzum\FileStorage\Test\TestCase\Model\Table;
 
-use \Cake\Core\Plugin;
+use Cake\Core\Plugin;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;

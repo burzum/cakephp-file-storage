@@ -1,8 +1,8 @@
 <?php
 namespace Burzum\FileStorage\Test\TestCase\Model\Table;
 
-use Burzum\FileStorage\Lib\FileStorageUtils;
-use Burzum\FileStorage\Lib\StorageManager;
+use Burzum\FileStorage\Storage\StorageUtils;
+use Burzum\FileStorage\Storage\StorageManager;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Event\Event;
@@ -91,7 +91,7 @@ class ImageStorageTableTest extends FileStorageTestCase {
 				)
 			)
 		));
-		FileStorageUtils::generateHashes();
+		StorageUtils::generateHashes();
 
 		$Event = new Event('ImageVersion.createVersion', $this->Image, array(
 			'record' => $result,
@@ -157,7 +157,8 @@ class ImageStorageTableTest extends FileStorageTestCase {
 				]
 			]
 		]);
-		\Burzum\FileStorage\Lib\FileStorageUtils::generateHashes();
+
+		StorageUtils::generateHashes();
 		$entity = $this->Image->get('file-storage-2');
 		$entity->path = 'images' . DS . '30' . DS . '20' . DS . '10' . DS;
 		$result = $this->Image->getImageVersions($entity);
