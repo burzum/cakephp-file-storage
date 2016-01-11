@@ -84,25 +84,24 @@ class StorageUtils {
 	/**
 	 * Method to normalize the annoying inconsistency of the $_FILE array structure
 	 *
-	 * @link http://www.php.net/manual/en/features.file-upload.multiple.php#109437
+	 * @link http://de2.php.net/manual/en/features.file-upload.multiple.php#53240
 	 * @param array $array
 	 * @return array Empty array if $_FILE is empty, if not normalize array of Filedata.{n}
 	 */
-	public static function normalizeGlobalFilesArray($array = null) {
-		if (empty($array)) {
-			$array = $_FILES;
+	public static function normalizeGlobalFilesArray($files = null) {
+		if (empty($files)) {
+			$files = $_FILES;
 		}
-		$newfiles = array();
-		if (!empty($array)) {
-			foreach ($array as $fieldname => $fieldvalue) {
-				foreach ($fieldvalue as $paramname => $paramvalue) {
-					foreach ((array)$paramvalue as $index => $value) {
-						$newfiles[$fieldname][$index][$paramname] = $value;
-					}
-				}
+		$array = array();
+		$fileCount = count($files['name']);
+		$fileKeys = array_keys($files);
+
+		for ($i = 0; $i < $fileCount; $i++) {
+			foreach ($fileKeys as $key) {
+				$array[$i][$key] = $files[$key][$i];
 			}
 		}
-		return $newfiles;
+		return $array;
 	}
 
 	/**

@@ -65,8 +65,9 @@ class StorageUtilsTest extends FileStorageTestCase {
  *
  * @return void
  */
+
 	public function testNormalizeGlobalFilesArray() {
-		$data = array(
+		$data = $_FILES = array(
 			'name' => array
 			(
 				0 => 'foo.txt',
@@ -94,42 +95,55 @@ class StorageUtilsTest extends FileStorageTestCase {
 			)
 		);
 		$expected = [
-			'name' => [
-				0 => [
-					0 => 'foo.txt',
-					1 => 'bar.txt'
-				]
+			0 => [
+				'name' => 'foo.txt',
+				'type' => 'text/plain',
+				'tmp_name' => '/tmp/phpYzdqkD',
+				'error' => 0,
+				'size' => 123
 			],
-			'type' => [
-				0 => [
-					0 => 'text/plain',
-					1 => 'text/plain'
-				]
-			],
-			'tmp_name' => [
-				0 => [
-					0 => '/tmp/phpYzdqkD',
-					1 => '/tmp/phpeEwEWG'
-				]
-			],
-			'error' => [
-				0 => [
-					0 => 0,
-					1 => 0
-				]
-			],
-			'size' => [
-				0 => [
-					0 => 123,
-					1 => 456
-				]
+			1 => [
+				'name' => 'bar.txt',
+				'type' => 'text/plain',
+				'tmp_name' => '/tmp/phpeEwEWG',
+				'error' => 0,
+				'size' => 456
 			]
 		];
+
+		$data = array(
+			'name' => array
+			(
+				0 => 'foo.txt',
+				1 => 'bar.txt'
+			),
+			'type' => Array
+			(
+				0 => 'text/plain',
+				1 => 'text/plain'
+			),
+			'tmp_name' => Array
+			(
+				0 => '/tmp/phpYzdqkD',
+				1 => '/tmp/phpeEwEWG'
+			),
+			'error' => Array
+			(
+				0 => 0,
+				1 => 0
+			),
+			'size' => Array
+			(
+				0 => 123,
+				1 => 456
+			)
+		);
+
 		$result = StorageUtils::normalizeGlobalFilesArray($data);
 		$this->assertEquals($result, $expected);
 
-		$result = StorageUtils::normalizeGlobalFilesArray([]);
-		$this->assertEquals($result, []);
+		$result = StorageUtils::normalizeGlobalFilesArray();
+		$this->assertEquals($result, $expected);
 	}
 
 /**
