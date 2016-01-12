@@ -68,11 +68,11 @@ class StorageUtils {
 	}
 
 	/**
-	 * Converts windows to linux pathes and vice versa
+	 * Converts windows to linux paths and vice versa
 	 *
 	 * @param string
 	 * @return string
- */
+	 */
 	public static function normalizePath($string) {
 		if (DS == '\\') {
 			return str_replace('/', '\\', $string);
@@ -85,7 +85,7 @@ class StorageUtils {
 	 * Method to normalize the annoying inconsistency of the $_FILE array structure
 	 *
 	 * @link http://de2.php.net/manual/en/features.file-upload.multiple.php#53240
-	 * @param array $array
+	 * @param array $files
 	 * @return array Empty array if $_FILE is empty, if not normalize array of Filedata.{n}
 	 */
 	public static function normalizeGlobalFilesArray($files = null) {
