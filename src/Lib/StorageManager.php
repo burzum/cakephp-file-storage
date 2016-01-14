@@ -7,7 +7,7 @@ use Burzum\FileStorage\Storage\StorageManager as NewStorageManager;
  * StorageManager - manages and instantiates gaufrette storage engine instances
  *
  * @author Florian Krämer
- * @copyright 2012 - 2015 Florian Krämer
+ * @copyright 2012 - 2016 Florian Krämer
  * @license MIT
  *
  * @deprecated Use \Burzum\FileStorage\Storage\StorageManager instead.

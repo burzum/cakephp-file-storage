@@ -14,7 +14,7 @@ use Cake\Validation\Validation;
  * ImageStorageTable
  *
  * @author Florian Krämer
- * @copyright 2012 - 2015 Florian Krämer
+ * @copyright 2012 - 2016 Florian Krämer
  * @license MIT
  */
 class ImageStorageTable extends FileStorageTable {

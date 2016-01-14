@@ -16,7 +16,7 @@ use Cake\ORM\Table;
  * FileStorageTable
  *
  * @author Florian Krämer
- * @copyright 2012 - 2015 Florian Krämer
+ * @copyright 2012 - 2016 Florian Krämer
  * @license MIT
  */
 class FileStorageTable extends Table {

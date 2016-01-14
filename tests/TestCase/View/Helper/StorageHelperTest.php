@@ -14,7 +14,7 @@ use Cake\Event\EventManager;
  * StorageHelperTest
  *
  * @author Florian Krämer
- * @copy 2012 - 2015 Florian Krämer
+ * @copy 2012 - 2016 Florian Krämer
  * @license MIT
  */
 class StorageHelperTest extends FileStorageTestCase {

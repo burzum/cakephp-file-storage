@@ -13,7 +13,7 @@ use Cake\Event\EventManager;
  * ImageHelperTest
  *
  * @author Florian Krämer
- * @copy 2012 - 2015 Florian Krämer
+ * @copy 2012 - 2016 Florian Krämer
  * @license MIT
  */
 class ImageHelperTest extends FileStorageTestCase {

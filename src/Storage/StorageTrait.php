@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Florian Krämer
- * @copyright 2012 - 2015 Florian Krämer
+ * @copyright 2012 - 2016 Florian Krämer
  * @license MIT
  */
 namespace Burzum\FileStorage\Storage;
@@ -12,7 +12,7 @@ namespace Burzum\FileStorage\Storage;
 trait StorageTrait {
 
 	/**
-	 * Wrapper around the singleton call to StorageManager::config
+	 * Wrapper around the singleton call to StorageManager::config()
 	 *
 	 * Makes it easy to mock the adapter in tests.
 	 *
@@ -28,7 +28,7 @@ trait StorageTrait {
 	}
 
 	/**
-	 * Wrapper around the singleton call to StorageManager::config
+	 * Wrapper around the singleton call to StorageManager::adapter()
 	 *
 	 * Makes it easy to mock the adapter in tests.
 	 *
@@ -44,12 +44,11 @@ trait StorageTrait {
 	}
 
 	/**
-	 * Wrapper around the singleton call to StorageManager::config
+	 * Wrapper around the singleton call to StorageManager::getInstance()
 	 *
 	 * Makes it easy to mock the adapter in tests.
 	 *
-	 * @param string $configName
-	 * @return Object
+	 * @return mixed
 	 */
 	public function storageManager() {
 		return StorageManager::getInstance();

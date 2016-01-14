@@ -5,7 +5,7 @@ namespace Burzum\FileStorage\Storage;
  * StorageManager - manages and instantiates Gaufrette storage engine instances
  *
  * @author Florian Krämer
- * @copyright 2012 - 2015 Florian Krämer
+ * @copyright 2012 - 2016 Florian Krämer
  * @license MIT
  */
 class StorageManager {

@@ -9,7 +9,7 @@ use Burzum\FileStorage\Model\Table\FileStorageTable;
  * AbstractStorageEventListenerTest Test
  *
  * @author Florian Krämer
- * @copyright 2012 - 2015 Florian Krämer
+ * @copyright 2012 - 2016 Florian Krämer
  * @license MIT
  */
 class AbstractStorageEventListenerTest extends FileStorageTestCase {

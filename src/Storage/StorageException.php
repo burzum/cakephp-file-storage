@@ -8,7 +8,7 @@ use \Exception;
  * Storage Exception
  *
  * @author Florian Krämer
- * @copyright 2012 - 2015 Florian Krämer
+ * @copyright 2012 - 2016 Florian Krämer
  * @license MIT
  */
 class StorageException extends Exception {

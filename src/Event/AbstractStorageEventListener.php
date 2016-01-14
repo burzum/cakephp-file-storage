@@ -28,7 +28,7 @@ use Burzum\FileStorage\Storage\StorageUtils;
  * - path
  *
  * @author Florian Krämer
- * @copyright 2012 - 2015 Florian Krämer
+ * @copyright 2012 - 2016 Florian Krämer
  * @license MIT
  */
 abstract class AbstractStorageEventListener implements EventListenerInterface {

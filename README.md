@@ -1,8 +1,8 @@
 FileStorage Plugin for CakePHP
 ==============================
 
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.txt) 
-[![Build Status](https://img.shields.io/travis/burzum/cakephp-file-storage/3.0.svg?style=flat-square)](https://travis-ci.org/burzum/cakephp-file-storage) 
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.txt)
+[![Build Status](https://img.shields.io/travis/burzum/cakephp-file-storage/3.0.svg?style=flat-square)](https://travis-ci.org/burzum/cakephp-file-storage)
 [![Coverage Status](https://img.shields.io/coveralls/burzum/cakephp-file-storage/3.0.svg?style=flat-square)](https://coveralls.io/r/burzum/cakephp-file-storage)
 
 **If you're upgrading from CakePHP 2.x please read [the migration guide](docs/Documentation/Migrating-from-CakePHP-2.md).**
@@ -73,7 +73,7 @@ To contribute to this plugin please follow a few basic rules.
 License
 -------
 
-Copyright 2012 - 2015, Florian Krämer
+Copyright 2012 - 2016, Florian Krämer
 
 Licensed under The MIT License
 Redistributions of files must retain the above copyright notice.

@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Florian Krämer
- * @copyright 2012 - 2015 Florian Krämer
+ * @copyright 2012 - 2016 Florian Krämer
  * @license MIT
  */
 namespace Burzum\FileStorage\Storage\Listener;
@@ -157,7 +157,7 @@ class LocalListener extends AbstractListener {
 	}
 
 	/**
-	 * Creates the verions for an image.
+	 * Creates the versions for an image.
 	 *
 	 * @param \Cake\Event\Event $event
 	 * @return void
@@ -189,6 +189,7 @@ class LocalListener extends AbstractListener {
 
 	/**
 	 * This method retrieves version names from event data.
+	 *
 	 * For backward compatibility version names are resolved from operations data keys because in old
 	 * ImageProcessingListener operations were required in event data. ImageProcessingTrait need only
 	 * version names so operations can be read from the config.

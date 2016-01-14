@@ -10,7 +10,7 @@ use Burzum\FileStorage\TestSuite\FileStorageTestCase;
  * Upload Validator Behavior Test
  *
  * @author Florian Krämer
- * @copyright 2012 - 2015 Florian Krämer
+ * @copyright 2012 - 2016 Florian Krämer
  * @license MIT
  */
 

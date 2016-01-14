@@ -1,9 +1,9 @@
-<?php 
+<?php
 /**
  * FileStorage
  *
  * @author Florian Kr�mer
- * @copyright 2012 - 2015 Florian Kr�mer
+ * @copyright 2012 - 2016 Florian Kr�mer
  * @license MIT
  */
 class FileStorageSchema extends CakeSchema {

@@ -22,7 +22,7 @@ use Cake\Utility\Hash;
  * little less code by using it.
  *
  * @author Florian Krämer
- * @copyright 2012 - 2015 Florian Krämer
+ * @copyright 2012 - 2016 Florian Krämer
  * @license MIT
  */
 class UploadValidatorBehavior extends Behavior {

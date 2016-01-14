@@ -12,7 +12,7 @@ use Cake\View\Helper;
  * the url/path and true filename of a file storage entity in the view.
  *
  * @author Florian Krämer
- * @copyright 2012 - 2015 Florian Krämer
+ * @copyright 2012 - 2016 Florian Krämer
  * @license MIT
  */
 class StorageHelper extends Helper {
