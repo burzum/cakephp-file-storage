@@ -76,7 +76,6 @@ class LocalListener extends AbstractListener {
 	 *
 	 * @param \Cake\Event\Event $event
 	 * @param \Cake\Datasource\EntityInterface $entity
-	 * @throws \Burzum\Filestorage\Storage\StorageException
 	 * @return void
 	 */
 	public function afterDelete(Event $event, EntityInterface $entity) {

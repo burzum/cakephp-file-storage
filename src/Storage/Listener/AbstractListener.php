@@ -314,7 +314,7 @@ abstract class AbstractListener implements EventListenerInterface {
 		} catch (\Exception $e) {
 			throw $e;
 			$this->log($e->getMessage(), LogLevel::ERROR, ['scope' => ['storage']]);
-			throw new StorageException($e->getMessage());
+			throw new StorageException($e->getMessage(), $e->getCode(), $e);
 		}
 		return false;
 	}
@@ -342,8 +342,8 @@ abstract class AbstractListener implements EventListenerInterface {
 				return true;
 			}
 		} catch (\Exception $e) {
-			$this->log($e->getMessage(), LOG_ERR, ['scope' => ['storage']]);
-			throw new StorageException($e->getMessage());
+			$this->log($e->getMessage(), LogLevel::ERROR, ['scope' => ['storage']]);
+			throw new StorageException($e->getMessage(), $e->getCode(), $e);
 		}
 		return false;
 	}
