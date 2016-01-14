@@ -7,7 +7,6 @@
 namespace Burzum\FileStorage\Shell;
 
 use Cake\Console\Shell;
-use Cake\Event\EventManagerTrait;
 
 class StorageShell extends Shell {
 
