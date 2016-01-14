@@ -257,16 +257,16 @@ class BasePathBuilder implements PathBuilderInterface {
 		return $this->path($entity, $options) . $this->filename($entity, $options);
 	}
 
-/**
- * Builds the URL under which the file is accessible.
- *
- * This is for example important for S3 and Dropbox but also the Local adapter
- * if you symlink a folder to your webroot and allow direct access to a file.
- *
- * @param \Cake\Datasource\EntityInterface $entity
- * @param array $options
- * @return string
- */
+	/**
+	 * Builds the URL under which the file is accessible.
+	 *
+	 * This is for example important for S3 and Dropbox but also the Local adapter
+	 * if you symlink a folder to your webroot and allow direct access to a file.
+	 *
+	 * @param \Cake\Datasource\EntityInterface $entity
+	 * @param array $options
+	 * @return string
+	 */
 	public function url(EntityInterface $entity, array $options = []) {
 		$url = $this->path($entity, $options) . $this->filename($entity, $options);
 		return str_replace('\\', '/', $url);
@@ -280,6 +280,7 @@ class BasePathBuilder implements PathBuilderInterface {
 	 * @param string $string Input string
 	 * @param int $level Depth of the path to generate.
 	 * @param string $method Hash method, crc32 or sha1.
+	 * @throws \InvalidArgumentException
 	 * @return string
 	 */
 	public function randomPath($string, $level = 3, $method = 'sha1') {
@@ -293,6 +294,7 @@ class BasePathBuilder implements PathBuilderInterface {
 		if (method_exists($this, $method)) {
 			return $this->{$method}($string, $level);
 		}
+		throw new \InvalidArgumentException(sprintf('BasepathBuilder::randomPath() invalid hash `%s` method provided!', $method));
 	}
 
 	/**
@@ -301,6 +303,7 @@ class BasePathBuilder implements PathBuilderInterface {
 	 * Please STOP USING CR32! See the huge warning on the php documentation page.
 	 * of the crc32() function.
 	 *
+	 * @deprecated Stop using it, see the methods doc block for more info.
 	 * @link http://php.net/manual/en/function.crc32.php
 	 * @link https://www.box.com/blog/crc32-checksums-the-good-the-bad-and-the-ugly/
 	 * @param string $string Input string
