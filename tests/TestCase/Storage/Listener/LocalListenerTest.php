@@ -135,6 +135,7 @@ class LocalListenerTest extends TestCase {
 		$entity = $this->FileStorage->get('file-storage-3');
 		$event = new Event('FileStorage.afterDelete', $this->FileStorage, [
 			'record' => $entity,
+			'entity' => $entity,
 			'table' => $this->FileStorage
 		]);
 

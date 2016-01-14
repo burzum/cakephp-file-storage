@@ -81,20 +81,7 @@ class LocalListener extends AbstractListener {
 	 */
 	public function afterDelete(Event $event, EntityInterface $entity) {
 		if ($this->_checkEvent($event)) {
-			$path = $this->pathBuilder()->fullPath($entity);
-			try {
-				if ($this->storageAdapter($entity->adapter)->delete($path)) {
-					if ($this->_config['imageProcessing'] === true) {
-						$this->autoProcessImageVersions($entity, 'remove');
-					}
-					$event->result = true;
-					return;
-				}
-			} catch (\Exception $e) {
-				$this->log($e->getMessage(), LOG_ERR, ['scope' => ['storage']]);
-				throw new StorageException($e->getMessage());
-			}
-			$event->result = false;
+			$event->result = $this->_deleteFile($event);;
 			$event->stopPropagation();
 		}
 	}
@@ -158,29 +145,6 @@ class LocalListener extends AbstractListener {
 		$this->_loadImageProcessingFromConfig();
 		$event->data['path'] = $event->result = $this->imageVersionPath($entity, $version, $type, $options);
 		$event->stopPropagation();
-	}
-
-	/**
-	 * Stores the file in the configured storage backend.
-	 *
-	 * @param \Cake\Event\Event $event
-	 * @throws \Burzum\Filestorage\Storage\StorageException
-	 * @return boolean
-	 */
-	protected function _storeFile(Event $event) {
-		try {
-			$fileField = $this->config('fileField');
-			$entity = $event->data['record'];
-			$Storage = $this->storageAdapter($entity['adapter']);
-			$Storage->write($entity['path'], file_get_contents($entity[$fileField]['tmp_name']), true);
-			$event->result = $event->data['table']->save($entity, array(
-				'checkRules' => false
-			));
-			return true;
-		} catch (\Exception $e) {
-			$this->log($e->getMessage(), LogLevel::ERROR, ['scope' => ['storage']]);
-			throw new StorageException($e->getMessage());
-		}
 	}
 
 	/**

@@ -7,7 +7,6 @@
 namespace Burzum\FileStorage\Storage\Listener;
 
 use Burzum\FileStorage\Storage\StorageUtils;
-use Burzum\Imagine\Lib\ImageProcessor;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 
@@ -18,6 +17,7 @@ use Cake\Datasource\EntityInterface;
  */
 trait ImageProcessingTrait {
 
+	protected $_imageProcessorClass = 'Burzum\Imagine\Lib\ImageProcessor';
 	protected $_imageProcessor = null;
 	protected $_imageVersions = [];
 	protected $_imageVersionHashes = [];
@@ -70,7 +70,8 @@ trait ImageProcessingTrait {
 			return $this->_imageProcessor;
 		}
 		$this->_loadImageProcessingFromConfig();
-		$this->_imageProcessor = new ImageProcessor($config);
+		$class = $this->_imageProcessorClass;
+		$this->_imageProcessor = new $class($config);
 		return $this->_imageProcessor;
 	}
 
