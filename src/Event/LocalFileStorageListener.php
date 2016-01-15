@@ -3,6 +3,8 @@ namespace Burzum\FileStorage\Event;
 
 use Cake\Event\Event;
 use Cake\Filesystem\Folder;
+use Cake\ORM\Entity;
+use Cake\ORM\Table;
 use Burzum\FileStorage\Storage\StorageManager;
 
 /**
