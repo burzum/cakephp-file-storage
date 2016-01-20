@@ -18,21 +18,26 @@ app/Config/file_storage.php
 
 There is a good amount of code to be added to prepare everything. In theory you can put all of this in bootstrap as well but to keep things clean it is recommended to put all of this in a separate file.
 
+This might look like a lot things to do but when this is done storing the files will work immediately and you have a *very* flexible and powerful storage system configured.
+
 ```php
-use Aws\S3;
-use Burzum\FileStorage\Event\ImageProcessingListener;
-use Burzum\FileStorage\Event\S3StorageListener;
-use Burzum\FileStorage\Lib\FileStorageUtils;
-use Burzum\FileStorage\Lib\StorageManager;
+use Aws\S3\S3Client;
+use Burzum\FileStorage\Storage\Listener\BaseListener;
+use Burzum\FileStorage\Storage\StorageUtils;
+use Burzum\FileStorage\Storage\StorageManager;
 use Cake\Core\Configure;
 use Cake\Event\EventManager;
 
-// Attach the S3 Listener to the global EventManager
-$listener = new S3StorageListener();
-EventManager::instance()->on($listener);
-
-// Attach the Image Processing Listener to the global EventManager
-$listener = new ImageProcessingListener();
+// Instantiate a storage event listener
+$listener = new BaseListener(
+	'imageProcessing' => true, // Required if you want image processing!
+	'pathBuilderOptions' => [
+		// Preserves the original filename in the storage backend.
+		// Otherwise it would use a UUID as filename by default.
+		'preserveFilename' => true
+	]
+);
+// Attach the BaseListener to the global EventManager
 EventManager::instance()->on($listener);
 
 Configure::write('FileStorage', [
@@ -65,25 +70,46 @@ Configure::write('FileStorage', [
 ]);
 
 // This is very important! The hashes are needed to calculate the image versions!
-FileStorageUtils::generateHashes();
+StorageUtils::generateHashes();
 
-// Optional, lets use the AwsS3 adapter here instead of local
-$S3Client = \Aws\S3\S3Client::factory([
-			'key' => 'YOUR-KEY',
-			'secret' => 'YOUR-SECRET'
-		]);
+// Lets use the Amazon S3 adapter here instead of the default `Local` config.
+// We need to pass a S3Client instance to this adapter to make it work
+$S3Client = new S3Client([
+	'version' => 'latest',
+	'region'  => 'eu-central-1',
+	'credentials' => [
+		'key' => 'YOUR-AWS-S3-KEY-HERE',
+		'secret' => 'YOUR-SECRET-HERE'
+	]
+]);
 
-// Configure the Gaufrette adapter through the StorageManager
-StorageManager::config('S3Image', [
-	'adapterOptions' => [
+// Configure the S3 adapter instance through the StorageManager
+StorageManager::config('S3', [
+	'adapterOptions' => array(
 		$S3Client,
-		'YOUR-BUCKET-NAME',
+		'YOUR-BUCKET-NAME-HERE', // Bucket
 		[],
 		true
-	],
+	),
 	'adapterClass' => '\Gaufrette\Adapter\AwsS3',
 	'class' => '\Gaufrette\Filesystem'
 ]);
+```
+
+If you did everything right you can now run this command from your app:
+
+```sh
+bin/cake storage store <some-file-to-store-here> --adapter S3
+```
+
+If you did everything right your should see some output like this:
+
+If you're not familiar with the CakePHP shell and running into problems with the shell, not the plugin itself, please [read this](http://book.cakephp.org/3.0/en/console-and-shells.html) first!
+
+```
+File successfully saved!
+UUID: ebb21e79-029d-441d-8f2e-d8c20ca8f5a9
+Path: file_storage/18/ef/b4/ebb21e79029d441d8f2ed8c20ca8f5a9/<some-file-to-store-here>
 ```
 
 **It is highly recommended to read the following sections to understand how this works.**

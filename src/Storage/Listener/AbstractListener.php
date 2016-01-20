@@ -132,15 +132,20 @@ abstract class AbstractListener implements EventListenerInterface {
 	 * Check if the event is of a type or subject object of type model we want to
 	 * process with this listener.
 	 *
-	 * @throws \InvalidArgumentException
 	 * @param Event $event
-	 * @return boolean
+	 * @return bool
+	 * @throws \Burzum\FileStorage\Storage\StorageException
 	 */
 	protected function _checkEvent(Event $event) {
+		$className = $this->_getAdapterClassFromConfig($event->data['record']['adapter']);
+		$classes = $this->_adapterClasses;
+		if (!empty($classes) && !in_array($className, $this->_adapterClasses)) {
+			$message = 'The listener `%s` doesn\'t allow the `%s` adapter class! Probably because it can\'t work with it.';
+			throw new StorageException(sprintf($message, get_class($this), $className));
+		}
 		return (
 			isset($event->data['table'])
 			&& $event->data['table'] instanceof Table
-			&& $this->getAdapterClassName($event->data['record']['adapter'])
 			&& $this->_modelFilter($event)
 		);
 	}
