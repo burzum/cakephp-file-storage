@@ -351,7 +351,8 @@ class BasePathBuilder implements PathBuilderInterface {
 	 */
 	public function ensureSlash($string, $position, $ds = null) {
 		if (!in_array($position, ['before', 'after', 'both'])) {
-			throw new \InvalidArgumentException(sprintf('Invalid position `%s`!', $position));
+			$method = get_class($this) . '::ensureSlash(): ';
+			throw new \InvalidArgumentException(sprintf($method . 'Invalid position `%s`!', $position));
 		}
 		if (is_null($ds)) {
 			$ds = DS;

@@ -9,8 +9,14 @@ namespace Burzum\FileStorage\Storage\PathBuilder;
 use Burzum\FileStorage\Storage\StorageManager;
 use Cake\Datasource\EntityInterface;
 
+/**
+ * The S3 Path Builder.
+ */
 class S3PathBuilder extends BasePathBuilder {
 
+	/**
+	 * {@inheritdoc}
+	 */
 	public function __construct(array $config = []) {
 		$this->_defaultConfig['https'] = false;
 		$this->_defaultConfig['modelFolder'] = true;
@@ -18,11 +24,25 @@ class S3PathBuilder extends BasePathBuilder {
 		parent::__construct($config);
 	}
 
+	/**
+	 * Gets the bucket from the adapter configuration.
+	 *
+	 * @param string Storage adapter config name.
+	 * @return string
+	 */
 	protected function _getBucket($adapter) {
 		$config = StorageManager::config($adapter);
 		return $config['adapterOptions'][1];
 	}
 
+	/**
+	 * Builds the cloud base URL for the given bucket and location.
+	 *
+	 * @param string $bucket
+	 * @param string $bucketPrefix
+	 * @param string $cfDist
+	 * @return string
+	 */
 	protected function _buildCloudUrl($bucket, $bucketPrefix = null, $cfDist = null) {
 		$path = $this->config('https') === true ? 'https://' : 'http://';
 		if ($cfDist) {
@@ -49,9 +69,9 @@ class S3PathBuilder extends BasePathBuilder {
 	 */
 	public function url(EntityInterface $entity, array $options = []) {
 		$bucket = $this->_getBucket($entity->adapter);
-		$pathPrefix = $this->_buildCloudUrl($bucket);
+		$pathPrefix = $this->ensureSlash($this->_buildCloudUrl($bucket), 'after');
 		$path = parent::path($entity);
 		$path = str_replace('\\', '/', $path);
-		return $pathPrefix . $path;
+		return $pathPrefix . $path . $this->filename($entity, $options);
 	}
 }
