@@ -12,23 +12,34 @@ use Burzum\FileStorage\Storage\StorageManager;
 
 class StorageShell extends Shell {
 
-/**
- * Tasks
- *
- * @var array
- */
+	/**
+	 * Tasks
+	 *
+	 * @var array
+	 */
 	public $tasks = [
 		'Burzum/FileStorage.Image'
 	];
 
+	/**
+	 * @inheritdoc
+	 */
 	public function main() {}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function getOptionParser() {
 		$parser = parent::getOptionParser();
 		$parser->addOption('adapter', [
 			'short' => 'a',
 			'help' => __('The adapter config name to use.'),
 			'default' => 'Local'
+		]);
+		$parser->addOption('identifier', [
+			'short' => 'i',
+			'help' => __('The files identifier (`model` field in `file_storage` table).'),
+			'default' => null
 		]);
 		$parser->addOption('model', [
 			'short' => 'm',
@@ -46,12 +57,11 @@ class StorageShell extends Shell {
 	}
 
 	/**
-	 * Store a local file via command line in any storage backend.
+	 * Does the arg and params checks for store().
 	 *
 	 * @return void
 	 */
-	public function store() {
-		$model = $this->loadModel($this->params['model']);
+	protected function _storePrecheck() {
 		if (empty($this->args[0])) {
 			$this->error('No file provided!');
 		}
@@ -64,7 +74,16 @@ class StorageShell extends Shell {
 		if (empty($adapterConfig)) {
 			$this->error(sprintf('Invalid adapter config `%s` provided!', $this->params['adapter']));
 		}
+	}
 
+	/**
+	 * Store a local file via command line in any storage backend.
+	 *
+	 * @return void
+	 */
+	public function store() {
+		$this->_storePrecheck();
+		$model = $this->loadModel($this->params['model']);
 		$fileData = StorageUtils::fileToUploadArray($this->args[0]);
 		$entity = $model->newEntity([
 			'adapter' => $this->params['adapter'],

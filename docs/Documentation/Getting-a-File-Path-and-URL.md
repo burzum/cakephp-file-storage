@@ -10,13 +10,69 @@ Be aware that whenever you use a path builder somewhere, you **must** use the sa
 
 If you're using an entity from this plugin, or extending it they'll implement the PathBuilderTrait. This enables you to set and get the path builder on the entities.
 
-Due to some [limitations of the CakePHP core](http://api.cakephp.org/3.1/source-class-Cake.ORM.Table.html#1965) you can't pass options to the entity when calling `Table::newEntity()`. As a workaround for that you'll have to set it manually:
+Due to some [limitations of the CakePHP core](http://api.cakephp.org/3.1/source-class-Cake.ORM.Table.html#1965) you can't pass options to the entity when calling `Table::newEntity()`.
+
+There are two workarounds for that issue. Either you'll have to set it manually on the entity instance:
 
 ```php
 $entity->pathBuilder('PathBuilderName', ['options-array' => 'goes-here']);
 $entity->path(); // Gets you the path in the used storage backend to the file
 $entity->url(); // Gets you the URL to the file if possible
 ```
+
+Or do it in the constructor of the entity. Pay attention to the two properties `_pathBuilderClass` and `_pathBuilderOptions`. Set whatever you need here. If you're inheriting `Burzum\FileStorage\Model\Entity\FileStorage` these options and the code below will be already present.
+
+```php
+namespace App\Model\Entity;
+
+use Burzum\FileStorage\Storage\PathBuilder\PathBuilderTrait;
+
+class SomeEntityInYourApp extends Entity {
+
+	use PathBuilderTrait;
+
+	/**
+	 * Path Builder Class.
+	 *
+	 * This is named $_pathBuilderClass because $_pathBuilder is already used by
+	 * the trait to store the path builder instance.
+	 *
+	 * @param array
+	 */
+	protected $_pathBuilderClass = null;
+
+	/**
+	 * Path Builder options
+	 *
+	 * @param array
+	 */
+	protected $_pathBuilderOptions = [];
+
+	/**
+	 * Constructor
+	 *
+	 * @param array $properties hash of properties to set in this entity
+	 * @param array $options list of options to use when creating this entity
+	 */
+	public function __construct(array $properties = [], array $options = []) {
+		$options += [
+			'pathBuilder' => $this->_pathBuilderClass,
+			'pathBuilderOptions' => $this->_pathBuilderOptions
+		];
+
+		parent::__construct($properties, $options);
+
+		if (!empty($options['pathBuilder'])) {
+			$this->pathBuilder(
+				$options['pathBuilder'],
+				$options['pathBuilderOptions']
+			);
+		}
+	}
+}
+```
+
+If you want to use path builders depending on the kind of file or the identifier which is stored in the `model` field of the `file_storage` table, you can implement that logic as well there and use the entities data to determine the path builder class or options.
 
 ## Getting it using the storage helper
 

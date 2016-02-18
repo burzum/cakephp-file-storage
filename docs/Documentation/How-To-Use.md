@@ -14,11 +14,14 @@ Preparing the File Upload
 
 This section is going to show how to store a file using the Storage Manager directly.
 
-For example you have a Report table and want to save a pdf to it, you would then create an association like:
+For example you have a `reports` table and want to save a pdf to it, you would then create an association like:
 
 ```php
 public function initialize(array $config)
 {
+        parent::initialize($config);
+        $this->table('reports');
+
         $this->hasOne('PdfFiles', [
             'className' => 'Burzum/FileStorage.PdfFiles',
             'foreignKey' => 'foreign_key',
