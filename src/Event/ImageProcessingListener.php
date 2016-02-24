@@ -351,8 +351,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 	protected function _buildAmazonS3Path(Event $Event) {
 		extract($Event->data);
 
-		$path = $this->_buildPath($image, true, $hash);
-		$image['path'] = '/' . $path;
+		$path = '/' . $this->_buildPath($image, true, $hash);
 
 		$config = StorageManager::config($Event->data['image']['adapter']);
 		$bucket = $config['adapterOptions'][1];
@@ -367,10 +366,10 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 			$http = 'https';
 		}
 
-		$image['path'] = str_replace('\\', '/', $image['path']);
+		$path = str_replace('\\', '/', $path);
 		$bucketPrefix = !empty($Event->data['options']['bucketPrefix']) && $Event->data['options']['bucketPrefix'] === true;
 
-		$Event->data['path'] = $Event->result = $this->_buildCloudFrontDistributionUrl($http, $image['path'], $bucket, $bucketPrefix, $cfDist);
+		$Event->data['path'] = $Event->result = $this->_buildCloudFrontDistributionUrl($http, $path, $bucket, $bucketPrefix, $cfDist);
 		$Event->stopPropagation();
 	}
 
