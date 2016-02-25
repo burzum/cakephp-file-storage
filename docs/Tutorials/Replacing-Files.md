@@ -9,11 +9,11 @@ Assuming we have a model table called `DocumentsTable` that is associated by a`h
 echo $this->Form->file('image.file');
 echo $this->Form->error('image.file');
 
-if (isset($document) && !empty($document['Image']['id'])) {
+if (isset($document) && !empty($document->image->id)) {
 	echo $this->Image->display($document->image);
 	echo $this->Form->input('image.old_file_id', array(
 		'type' => 'hidden',
-		'value' => $document->id,
+		'value' => $document->image->id,
 	));
 }
 ```
