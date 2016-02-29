@@ -387,7 +387,7 @@ abstract class AbstractListener implements EventListenerInterface {
 		$this->_handleLegacyEvent($event);
 		$afterDeleteEvent = new Event('FileStorage.afterDeleteFile', $this, [
 			'entity' => $event->data['entity'],
-			'adapter' => $this->storageAdapter($event->result['adapter'])
+			'adapter' => $this->storageAdapter($event->data['entity']->adapter)
 		]);
 		EventManager::instance()->dispatch($afterDeleteEvent);
 	}
