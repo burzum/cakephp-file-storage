@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "0c4e2661653ba845123336285fd7607a",
-    "content-hash": "9430511f97641f7b866b1aa070ee0826",
+    "hash": "f38b30ef36126c93af3976b37ba47104",
+    "content-hash": "72ac3f8f3630337de7c865db129ac533",
     "packages": [
         {
             "name": "aura/installer-default",
@@ -235,22 +235,22 @@
         },
         {
             "name": "cakephp/migrations",
-            "version": "1.5.6",
+            "version": "1.5.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/migrations.git",
-                "reference": "7ac1946a5322bb1ec7399c0f1a98eb34b0677afb"
+                "reference": "379b7d531e06d7c972ae9161ba49615119ea3057"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/migrations/zipball/7ac1946a5322bb1ec7399c0f1a98eb34b0677afb",
-                "reference": "7ac1946a5322bb1ec7399c0f1a98eb34b0677afb",
+                "url": "https://api.github.com/repos/cakephp/migrations/zipball/379b7d531e06d7c972ae9161ba49615119ea3057",
+                "reference": "379b7d531e06d7c972ae9161ba49615119ea3057",
                 "shasum": ""
             },
             "require": {
-                "cakephp/cakephp": "~3.1 || 3.2.*",
+                "cakephp/cakephp": "~3.1",
                 "php": ">=5.4",
-                "robmorgan/phinx": "~0.5.0"
+                "robmorgan/phinx": "0.5.1"
             },
             "require-dev": {
                 "cakephp/bake": "@stable",
@@ -281,7 +281,7 @@
                 "cakephp",
                 "migrations"
             ],
-            "time": "2016-02-09 21:41:10"
+            "time": "2016-03-02 07:47:34"
         },
         {
             "name": "cakephp/plugin-installer",
@@ -565,12 +565,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "200f109d77649eac204aee729cfc8760f02b3ade"
+                "reference": "dad9b258d9249b5b4bd504a5ee0483c7a5906660"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/200f109d77649eac204aee729cfc8760f02b3ade",
-                "reference": "200f109d77649eac204aee729cfc8760f02b3ade",
+                "url": "https://api.github.com/repos/symfony/console/zipball/dad9b258d9249b5b4bd504a5ee0483c7a5906660",
+                "reference": "dad9b258d9249b5b4bd504a5ee0483c7a5906660",
                 "shasum": ""
             },
             "require": {
@@ -617,7 +617,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2016-02-28 16:28:07"
+            "time": "2016-03-01 17:31:11"
         },
         {
             "name": "symfony/filesystem",
@@ -733,12 +733,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "939b8e10c4e0e1135144fb09e12a3d32ff129e4a"
+                "reference": "c9821ffc2965d57b0404e40ef08dc8da642238f2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/939b8e10c4e0e1135144fb09e12a3d32ff129e4a",
-                "reference": "939b8e10c4e0e1135144fb09e12a3d32ff129e4a",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/c9821ffc2965d57b0404e40ef08dc8da642238f2",
+                "reference": "c9821ffc2965d57b0404e40ef08dc8da642238f2",
                 "shasum": ""
             },
             "require": {
@@ -774,7 +774,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2016-02-28 10:09:55"
+            "time": "2016-03-01 17:09:14"
         }
     ],
     "packages-dev": [
@@ -880,6 +880,48 @@
                 "instantiate"
             ],
             "time": "2015-06-14 21:17:01"
+        },
+        {
+            "name": "fig-r/psr2r-sniffer",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig-rectified/psr2r-sniffer.git",
+                "reference": "198f22d795ac9f2cd8c234b0a5670470b658a9d4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig-rectified/psr2r-sniffer/zipball/198f22d795ac9f2cd8c234b0a5670470b658a9d4",
+                "reference": "198f22d795ac9f2cd8c234b0a5670470b658a9d4",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.16",
+                "squizlabs/php_codesniffer": "~2.3"
+            },
+            "bin": [
+                "bin/tokenize",
+                "bin/sniff"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PSR2R\\": "PSR2R"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mark Scherer",
+                    "homepage": "http://www.dereuromark.de",
+                    "role": "Contributor"
+                }
+            ],
+            "description": "Code-Sniffer, Auto-Fixer and Tokenizer for PSR2-R",
+            "time": "2016-03-01 15:05:13"
         },
         {
             "name": "imagine/imagine",
@@ -1788,11 +1830,90 @@
             "description": "Library that helps with managing the version number of Git-hosted PHP projects",
             "homepage": "https://github.com/sebastianbergmann/version",
             "time": "2015-06-21 13:59:46"
+        },
+        {
+            "name": "squizlabs/php_codesniffer",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
+                "reference": "fd4cddc0663f216c4b9d9f3cd5d52bc08ab3e951"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/fd4cddc0663f216c4b9d9f3cd5d52bc08ab3e951",
+                "reference": "fd4cddc0663f216c4b9d9f3cd5d52bc08ab3e951",
+                "shasum": ""
+            },
+            "require": {
+                "ext-tokenizer": "*",
+                "ext-xmlwriter": "*",
+                "php": ">=5.1.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0"
+            },
+            "bin": [
+                "scripts/phpcs",
+                "scripts/phpcbf"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "CodeSniffer.php",
+                    "CodeSniffer/CLI.php",
+                    "CodeSniffer/Exception.php",
+                    "CodeSniffer/File.php",
+                    "CodeSniffer/Fixer.php",
+                    "CodeSniffer/Report.php",
+                    "CodeSniffer/Reporting.php",
+                    "CodeSniffer/Sniff.php",
+                    "CodeSniffer/Tokens.php",
+                    "CodeSniffer/Reports/",
+                    "CodeSniffer/Tokenizers/",
+                    "CodeSniffer/DocGenerators/",
+                    "CodeSniffer/Standards/AbstractPatternSniff.php",
+                    "CodeSniffer/Standards/AbstractScopeSniff.php",
+                    "CodeSniffer/Standards/AbstractVariableSniff.php",
+                    "CodeSniffer/Standards/IncorrectPatternException.php",
+                    "CodeSniffer/Standards/Generic/Sniffs/",
+                    "CodeSniffer/Standards/MySource/Sniffs/",
+                    "CodeSniffer/Standards/PEAR/Sniffs/",
+                    "CodeSniffer/Standards/PSR1/Sniffs/",
+                    "CodeSniffer/Standards/PSR2/Sniffs/",
+                    "CodeSniffer/Standards/Squiz/Sniffs/",
+                    "CodeSniffer/Standards/Zend/Sniffs/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Greg Sherwood",
+                    "role": "lead"
+                }
+            ],
+            "description": "PHP_CodeSniffer tokenizes PHP, JavaScript and CSS files and detects violations of a defined set of coding standards.",
+            "homepage": "http://www.squizlabs.com/php-codesniffer",
+            "keywords": [
+                "phpcs",
+                "standards"
+            ],
+            "time": "2016-02-29 23:14:08"
         }
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "fig-r/psr2r-sniffer": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
