@@ -52,22 +52,22 @@ class FileStorage extends FileStorageAppModel {
 	public $validate = array(
 		'adapter' => array(
 			'notEmpty' => array(
-				'rule' => array('notEmpty')
+				'rule' => array('notBlank')
 			)
 		),
 		'path' => array(
 			'notEmpty' => array(
-				'rule' => array('notEmpty')
+				'rule' => array('notBlank')
 			)
 		),
 		'foreign_key' => array(
 			'notEmpty' => array(
-				'rule' => array('notEmpty')
+				'rule' => array('notBlank')
 			)
 		),
 		'model' => array(
 			'notEmpty' => array(
-				'rule' => array('notEmpty')
+				'rule' => array('notBlank')
 			)
 		)
 	);
