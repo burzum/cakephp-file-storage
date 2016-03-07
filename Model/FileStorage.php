@@ -126,13 +126,17 @@ class FileStorage extends FileStorageAppModel {
 		}
 	}
 
-/**
- * beforeSave callback
- *
- * @param array $options
- * @return boolean true on success
- */
-	public function beforeSave($options = array()) {
+	/**
+	 * Checks if a new data set is saved or not. When no PK is present we assume
+	 * it is a new record. There is AFAIK no better way to check this in CakePHP2.
+	 *
+	 * @return boolean
+	 */
+	protected function _isNew() {
+		return (empty($this->data[$this->alias][$this->primaryKey]) && empty($this->id));
+	}
+
+	protected function _composeData() {
 		if (!empty($this->data[$this->alias]['file']['tmp_name'])) {
 			$File = new File($this->data[$this->alias]['file']['tmp_name']);
 			$this->data[$this->alias]['filesize'] = $File->size();
@@ -146,15 +150,27 @@ class FileStorage extends FileStorageAppModel {
 		if (empty($this->data[$this->alias]['adapter'])) {
 			$this->data[$this->alias]['adapter'] = 'Local';
 		}
+	}
 
-		$Event = new CakeEvent('FileStorage.beforeSave', $this, array(
-			'record' => $this->data,
-			'storage' => $this->getStorageAdapter($this->data[$this->alias]['adapter'])));
-		$this->getEventManager()->dispatch($Event);
-		if ($Event->isStopped()) {
-			return false;
+/**
+ * beforeSave callback
+ *
+ * @param array $options
+ * @return boolean true on success
+ */
+	public function beforeSave($options = array()) {
+		if ($this->_isNew()) {
+			$this->_composeData();
+
+			$Event = new CakeEvent('FileStorage.beforeSave', $this, array(
+				'record' => $this->data,
+				'storage' => $this->getStorageAdapter($this->data[$this->alias]['adapter'])));
+
+			$this->getEventManager()->dispatch($Event);
+			if ($Event->isStopped()) {
+				return false;
+			}
 		}
-
 		return true;
 	}
 
@@ -168,17 +184,16 @@ class FileStorage extends FileStorageAppModel {
 	public function afterSave($created, $options = array()) {
 		if ($created) {
 			$this->data[$this->alias][$this->primaryKey] = $this->getLastInsertId();
+
+			$Event = new CakeEvent('FileStorage.afterSave', $this, array(
+				'created' => $created,
+				//'record' => $this->record,
+				'record' => $this->data,
+				'storage' => $this->getStorageAdapter($this->data[$this->alias]['adapter'])));
+			$this->getEventManager()->dispatch($Event);
 		}
 
-		$Event = new CakeEvent('FileStorage.afterSave', $this, array(
-			'created' => $created,
-			//'record' => $this->record,
-			'record' => $this->data,
-			'storage' => $this->getStorageAdapter($this->data[$this->alias]['adapter'])));
-		$this->getEventManager()->dispatch($Event);
-
 		$this->deleteOldFileOnSave();
-
 		return true;
 	}
 

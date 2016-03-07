@@ -62,12 +62,15 @@ class ImageStorage extends FileStorage {
 		if (!parent::beforeSave($options)) {
 			return false;
 		}
-		$Event = new CakeEvent('ImageStorage.beforeSave', $this, array(
-			'record' => $this->data));
-		$this->getEventManager()->dispatch($Event);
 
-		if ($Event->isStopped()) {
-			return false;
+		if ($this->_isNew()) {
+			$Event = new CakeEvent('ImageStorage.beforeSave', $this, array(
+				'record' => $this->data));
+			$this->getEventManager()->dispatch($Event);
+
+			if ($Event->isStopped()) {
+				return false;
+			}
 		}
 
 		return true;
