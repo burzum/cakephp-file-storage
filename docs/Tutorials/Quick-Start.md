@@ -29,14 +29,14 @@ use Cake\Core\Configure;
 use Cake\Event\EventManager;
 
 // Instantiate a storage event listener
-$listener = new BaseListener(
+$listener = new BaseListener([
 	'imageProcessing' => true, // Required if you want image processing!
 	'pathBuilderOptions' => [
 		// Preserves the original filename in the storage backend.
 		// Otherwise it would use a UUID as filename by default.
 		'preserveFilename' => true
 	]
-);
+]);
 // Attach the BaseListener to the global EventManager
 EventManager::instance()->on($listener);
 
