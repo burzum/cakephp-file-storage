@@ -14,7 +14,7 @@ Preparing the File Upload
 
 This section is going to show how to store a file using the Storage Manager directly.
 
-For example you have a `reports` table and want to save a pdf to it, you would then create an association like:
+For example you have a `reports` table and want to save a PDF to it, you would then create an association like:
 
 ```php
 public function initialize(array $config)
@@ -52,11 +52,12 @@ The **FileStorage** plugin comes with a class that acts just as a listener to so
 
 This class will listen to all the ImageStorage model events and save the uploaded image and then create the versions for that image and storage adapter.
 
-It is important to understand that nearly each storage adapter requires a little different handling: Most of the time you can't treat a local file the same as a file you store in a cloud service. The interface that this plugin and Gaufrette provide is the same but not the internals. So a path that works for your local file system might not work for your remote storage system because it has other requirements or limitations.
+It is important to understand that nearly each storage adapter requires a little different handling: Most of the time you can't treat a local file the same as a file you store in a cloud service.
+The interface that this plugin and Gaufrette provide is the same but not the internals. So a path that works for your local file system might not work for your remote storage system because it has other requirements or limitations.
 
 So if you want to store a file using Amazon S3 you would have to store it, create all the versions of that image locally and then upload each of them and then delete the local temp files. The good news is the plugin can already take care of that.
 
-When you create a new listener it is important that you check the `model` field and the event subject object (usually a table object inheriting \Cake\ORM\Table) if it matches what you expect. Using the event system you could create any kind of storage and upload behavior without inheriting or touching the model code. Just write a listener class and attach it to the global EventManager.
+When you create a new listener it is important that you check the `model` field and the event subject object (usually a table object inheriting `\Cake\ORM\Table`) if it matches what you expect. Using the event system you could create any kind of storage and upload behavior without inheriting or touching the model code. Just write a listener class and attach it to the global EventManager.
 
 List of events
 --------------
