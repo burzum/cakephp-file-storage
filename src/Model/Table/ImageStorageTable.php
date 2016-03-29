@@ -59,7 +59,7 @@ class ImageStorageTable extends FileStorageTable {
 			return false;
 		}
 		$imageEvent = $this->dispatchEvent('ImageStorage.beforeSave', [
-			'record' => $entity
+			'entity' => $entity
 		]);
 		if ($imageEvent->isStopped()) {
 			return false;
@@ -80,7 +80,7 @@ class ImageStorageTable extends FileStorageTable {
 	public function afterSave(Event $event, EntityInterface $entity, $options) {
 		if ($entity->isNew()) {
 			$this->dispatchEvent('ImageStorage.afterSave', [
-				'record' => $entity,
+				'entity' => $entity,
 				'storage' => $this->storageAdapter($entity->get('adapter'))
 			]);
 			$this->deleteOldFileOnSave($entity);
@@ -101,8 +101,8 @@ class ImageStorageTable extends FileStorageTable {
 		}
 
 		$imageEvent = $this->dispatchEvent('ImageStorage.beforeDelete', [
-			'record' => $this->record,
-			'storage' => $this->storageAdapter($this->record['adapter'])
+			'entity' => $entity,
+			'storage' => $this->storageAdapter($entity['adapter'])
 		]);
 
 		if ($imageEvent->isStopped()) {
@@ -124,7 +124,7 @@ class ImageStorageTable extends FileStorageTable {
 	 */
 	public function afterDelete(Event $event, EntityInterface $entity, $options) {
 		$this->dispatchEvent('ImageStorage.afterDelete', [
-			'record' => $entity,
+			'entity' => $entity,
 			'storage' => $this->storageAdapter($entity->get('adapter'))
 		]);
 		return true;

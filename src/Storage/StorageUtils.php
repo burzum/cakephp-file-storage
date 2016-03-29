@@ -4,6 +4,7 @@ namespace Burzum\FileStorage\Storage;
 use Burzum\FileStorage\Storage\PathBuilder\BasePathBuilder;
 use Cake\Core\Configure;
 use Cake\Filesystem\File;
+use Cake\Utility\Text;
 
 /**
  * Utility methods for which I could not find a better place
@@ -177,6 +178,28 @@ class StorageUtils {
 			'type' => $File->mime(),
 			'size' => $File->size()
 		];
+	}
+
+	/**
+	 * Creates a temporary file name and checks the tmp path, creates one if required.
+	 *
+	 * This method is thought to be used to generate tmp file locations for use cases
+	 * like audio or image process were you need copies of a file and want to avoid
+	 * conflicts. By default the tmp file is generated using cakes TMP constant +
+	 * folder if passed and a uuid as filename.
+	 *
+	 * @param string $folder
+	 * @param boolean $checkAndCreatePath
+	 * @return string For example /var/www/app/tmp/<uuid> or /var/www/app/tmp/<my-folder>/<uuid>
+	 */
+	public static function createTmpFile($folder = null, $checkAndCreatePath = true) {
+		if (is_null($folder)) {
+			$folder = TMP;
+		}
+		if ($checkAndCreatePath === true && !is_dir($folder)) {
+			new Folder($folder, true);
+		}
+		return $folder . Text::uuid();
 	}
 
 	/**

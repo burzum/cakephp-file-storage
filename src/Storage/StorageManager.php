@@ -41,9 +41,10 @@ class StorageManager {
 	 *
 	 * @param string $adapter
 	 * @param array $options
+	 * @throws \InvalidArgumentException
 	 * @return mixed
 	 */
-	public static function config($adapter, $options = array()) {
+	public static function config($adapter, $options = []) {
 		$_this = StorageManager::getInstance();
 
 		if (!empty($adapter) && !empty($options)) {
@@ -77,41 +78,46 @@ class StorageManager {
 	/**
 	 * Gets a configured instance of a storage adapter.
 	 *
-	 * @param mixed $adapterName string of adapter configuration or array of settings
+	 * @param mixed $configName string of adapter configuration or array of settings
 	 * @param boolean $renewObject Creates a new instance of the given adapter in the configuration
 	 * @throws \RuntimeException
+	 * @throws \InvalidArgumentException
 	 * @return \Gaufrette\Filesystem
 	 */
-	public static function adapter($adapterName, $renewObject = false) {
+	public static function get($configName, $renewObject = false) {
+		if (empty($configName) || !is_string($configName)) {
+			throw new \InvalidArgumentException('First arg must be a non empty string!');
+		}
+
 		$_this = StorageManager::getInstance();
 
 		$isConfigured = true;
-		if (is_string($adapterName)) {
-			if (!empty($_this->_adapterConfig[$adapterName])) {
-				$adapter = $_this->_adapterConfig[$adapterName];
+		if (is_string($configName)) {
+			if (!empty($_this->_adapterConfig[$configName])) {
+				$adapter = $_this->_adapterConfig[$configName];
 			} else {
-				throw new \RuntimeException(sprintf('Invalid Storage Adapter %s!', $adapterName));
+				throw new \RuntimeException(sprintf('Invalid Storage Adapter %s!', $configName));
 			}
 
-			if (!empty($_this->_adapterConfig[$adapterName]['object']) && $renewObject === false) {
-				return $_this->_adapterConfig[$adapterName]['object'];
+			if (!empty($_this->_adapterConfig[$configName]['object']) && $renewObject === false) {
+				return $_this->_adapterConfig[$configName]['object'];
 			}
 		}
 
-		if (is_array($adapterName)) {
-			$adapter = $adapterName;
+		if (is_array($configName)) {
+			$adapter = $configName;
 			$isConfigured = false;
 		}
 
 		$class = $adapter['adapterClass'];
 		$Reflection = new \ReflectionClass($class);
 		if (!is_array($adapter['adapterOptions'])) {
-			throw new \InvalidArgumentException(sprintf('%s: The adapter options must be an array!', $adapterName));
+			throw new \InvalidArgumentException(sprintf('%s: The adapter options must be an array!', $configName));
 		}
 		$adapterObject = $Reflection->newInstanceArgs($adapter['adapterOptions']);
 		$engineObject = new $adapter['class']($adapterObject);
 		if ($isConfigured) {
-			$_this->_adapterConfig[$adapterName]['object'] = &$engineObject;
+			$_this->_adapterConfig[$configName]['object'] = &$engineObject;
 		}
 		return $engineObject;
 	}

@@ -1,7 +1,7 @@
 <?php
 namespace Burzum\FileStorage\Test\TestCase\Model\Table;
 
-use Burzum\FileStorage\TestSuite\FileStorageTestCase;
+use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
 use Burzum\FileStorage\Validation\UploadValidator;
 
 /**

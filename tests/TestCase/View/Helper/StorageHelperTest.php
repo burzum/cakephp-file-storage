@@ -1,7 +1,7 @@
 <?php
 namespace Burzum\FileStorage\Test\TestCase\View\Helper;
 
-use Burzum\FileStorage\TestSuite\FileStorageTestCase;
+use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
 use Burzum\FileStorage\View\Helper\StorageHelper;
 use Cake\ORM\TableRegistry;
 use Cake\View\View;

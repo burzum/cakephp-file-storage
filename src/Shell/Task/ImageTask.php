@@ -88,7 +88,7 @@ class ImageTask extends Shell {
  */
 	protected function _removeImage($record, $options) {
 		$Event = new Event('ImageVersion.removeVersion', $this->Table, [
-			'record' => $record,
+			'entity' => $record,
 			'operations' => $options
 		]);
 		EventManager::instance()->dispatch($Event);
@@ -103,7 +103,7 @@ class ImageTask extends Shell {
  */
 	protected function _generateImage($record, $options) {
 		$Event = new Event('ImageVersion.createVersion', $this->Table, [
-			'record' => $record,
+			'entity' => $record,
 			'operations' => $options
 		]);
 		EventManager::instance()->dispatch($Event);

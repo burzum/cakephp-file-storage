@@ -1,11 +1,11 @@
 <?php
 namespace Burzum\FileStorage\Test\TestCase\Model\Table;
 
+use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
 use Cake\Core\Plugin;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
-use Burzum\FileStorage\TestSuite\FileStorageTestCase;
 
 /**
  * File Storage Test
@@ -21,9 +21,9 @@ class FileStorageTableTest extends FileStorageTestCase {
 	 *
 	 * @var array
 	 */
-	public $fixtures = array(
+	public $fixtures = [
 		'plugin.Burzum\FileStorage.FileStorage'
-	);
+	];
 
 	/**
 	 * startTest
@@ -48,64 +48,13 @@ class FileStorageTableTest extends FileStorageTestCase {
 	}
 
 	/**
-	 * testBeforeDelete
+	 * testInitialization
 	 *
 	 * @return void
 	 */
-	public function testBeforeDelete() {
-		$entity = $this->FileStorage->get('file-storage-1');
-		$event = new Event('Model.beforeDelete', $this->FileStorage);
-		$this->FileStorage->beforeDelete($event, $entity);
-		$this->assertEquals($this->FileStorage->record, $entity);
-	}
-
-	/**
-	 * testAfterDelete
-	 *
-	 * @todo Create a mock of FileStorage::getStorageAdapter() and test it
-	 * @return void
-	 */
-	public function testAfterDelete() {
-		$entity = $this->FileStorage->get('file-storage-1');
-		$entity->adapter = 'Local';
-		$event = new Event('FileStorage.afterDelete',  $this->FileStorage, [
-			'record' => $entity,
-			'adapter' => 'Local'
-		]);
-		$this->FileStorage->afterDelete($event, $entity, []);
-
-		// Testing the case the file does not exist
-		$entity = $this->FileStorage->get('file-storage-1');
-		$entity->adapter = 'Local';
-		$entity->path = 'does-not-exist!';
-		$event = new Event('FileStorage.afterDelete',  $this->FileStorage, [
-			'record' => $entity,
-			'adapter' => 'Local'
-		]);
-		$result = $this->FileStorage->afterDelete($event, $entity, []);
-		$this->assertFalse($result);
-	}
-
-	/**
-	 * testGetFileInfoFromUpload
-	 *
-	 * @return void
-	 */
-	public function testGetFileInfoFromUpload() {
-		$filename = Plugin::path('Burzum/FileStorage') . DS . 'tests' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg';
-
-		$data = new \ArrayObject([
-			'file' => [
-				'name' => 'titus.jpg',
-				'tmp_name' => $filename
-			]
-		]);
-
-		$this->FileStorage->getFileInfoFromUpload($data);
-
-		$this->assertEquals(332643, $data['filesize']);
-		$this->assertEquals('image/jpeg', $data['mime_type']);
-		$this->assertEquals('jpg', $data['extension']);
+	public function testInitialize() {
+		$this->assertEquals($this->FileStorage->table(), 'file_storage');
+		$this->assertEquals($this->FileStorage->displayField(), 'filename');
 	}
 
 	/**
@@ -145,26 +94,4 @@ class FileStorageTableTest extends FileStorageTestCase {
 		}
 	}
 
-	/**
-	 * testBeforeSave
-	 *
-	 * @return void
-	 */
-	public function testBeforeSave() {
-		$entity = $this->FileStorage->newEntity([
-			'file' => [
-				'error' => UPLOAD_ERR_OK,
-				'tmp_name' => $this->fileFixtures . 'titus.jpg'
-			]
-		], ['accessibleFields' => ['*' => true]]);
-
-		$event = new Event('Model.beforeSave',  $this->FileStorage, [
-			'entity' => $entity,
-		]);
-		$this->FileStorage->beforeSave($event, $entity, []);
-		$this->assertEquals($entity->adapter, 'Local');
-		$this->assertEquals($entity->filesize, 332643);
-		$this->assertEquals($entity->mime_type, 'image/jpeg');
-		$this->assertEquals($entity->model, 'file_storage');
-	}
 }

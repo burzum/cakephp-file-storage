@@ -8,30 +8,38 @@
  */
 namespace Burzum\FileStorage\Test\TestCase\Lib;
 
-use Burzum\FileStorage\TestSuite\FileStorageTestCase;
+use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
 use Burzum\FileStorage\Storage\StorageManager;
 
 class StorageManagerTest extends FileStorageTestCase {
-/**
- * testAdapter
- *
- * @return void
- */
+
+	/**
+	 * testAdapter
+	 *
+	 * @return void
+	 */
 	public function testAdapter() {
-		$result = StorageManager::adapter('Local');
+		$result = StorageManager::get('Local');
 		$this->assertEquals(get_class($result), 'Gaufrette\Filesystem');
 
 		try {
-			StorageManager::adapter('Does Not Exist');
+			StorageManager::get('Does Not Exist');
 			$this->fail('Exception not thrown!');
-		} catch (\RuntimeException $e) {}
+		} catch (\RuntimeException $e) {
+		}
+
+		try {
+			StorageManager::get('');
+			$this->fail('Exception not thrown!');
+		} catch (\InvalidArgumentException $e) {
+		}
 	}
 
-/**
- * testConfig
- *
- * @return void
- */
+	/**
+	 * testConfig
+	 *
+	 * @return void
+	 */
 	public function testConfig() {
 		$result = StorageManager::config('Local');
 		$expected = [
@@ -46,16 +54,16 @@ class StorageManagerTest extends FileStorageTestCase {
 		$this->assertFalse(StorageManager::config('Does not exist'));
 	}
 
-/**
- * testFlush
- *
- * @return void
- */
+	/**
+	 * testFlush
+	 *
+	 * @return void
+	 */
 	public function testFlush() {
 		$config = StorageManager::config('Local');
-		$result  = StorageManager::flush('Local');
+		$result = StorageManager::flush('Local');
 		$this->assertTrue($result);
-		$result  = StorageManager::flush('Does not exist');
+		$result = StorageManager::flush('Does not exist');
 		$this->assertFalse($result);
 		StorageManager::config('Local', $config);
 	}

@@ -254,12 +254,12 @@ class ImageVersionShell extends Shell {
 			$images = $this->_getRecords($model, $limit, $offset);
 			if (!empty($images)) {
 				foreach ($images as $image) {
-					$Storage = StorageManager::adapter($image->adapter);
+					$Storage = StorageManager::get($image->adapter);
 					if ($Storage === false) {
 						$this->out(__d('file_storage', 'Cant load adapter config {0} for record {1}', $image->adapter, $image->id));
 					} else {
 						$payload = array(
-							'record' => $image,
+							'entity' => $image,
 							'storage' => $Storage,
 							'operations' => $operations,
 							'versions' => array_keys($operations),

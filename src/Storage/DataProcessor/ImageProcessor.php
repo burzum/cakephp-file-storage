@@ -1,21 +1,58 @@
 <?php
-/**
- * @author Florian Krämer
- * @copyright 2012 - 2016 Florian Krämer
- * @license MIT
- */
-namespace Burzum\FileStorage\Storage\Listener;
+namespace Burzum\FileStorage\Storage\DataProcessor;
 
+use Burzum\FileStorage\Storage\Listener\ImageProcessingTrait;
+use Burzum\FileStorage\Storage\PathBuilder\PathBuilderTrait;
+use Burzum\FileStorage\Storage\StorageTrait;
 use Burzum\FileStorage\Storage\StorageUtils;
 use Cake\Core\Configure;
-use Cake\Datasource\EntityInterface;
+use Cake\Event\Event;
+use Cake\Event\EventListenerInterface;
 
-/**
- * ImageProcessingTrait
- *
- * Use this trait for Storage Listeners  that should process and upload image files.
- */
-trait ImageProcessingTrait {
+class ImageProcessor implements EventListenerInterface {
+
+	use StorageTrait;
+	use PathBuilderTrait;
+
+	public function __construct(array $config = []) {
+		$this->_loadImageProcessingFromConfig();
+	}
+
+	/**
+	 * Implemented events
+	 *
+	 * @return array
+	 */
+	public function implementedEvents() {
+		return [
+			'FileStorage.afterStoreFile' => 'afterStore',
+			'FileStorage.afterDeleteFile' => 'afterDelete',
+		];
+	}
+
+	/**
+	 * afterStore
+	 *
+	 * @param \Cake\Event\Event
+	 * @return void
+	 */
+	public function afterStore(Event $event) {
+		$this->pathBuilder($event->subject()->pathBuilder());
+		$this->subject = $event->subject();;
+		$this->autoProcessImageVersions($event->data['entity'], 'create');
+	}
+
+	/**
+	 * afterDelete
+	 *
+	 * @param \Cake\Event\Event
+	 * @return void
+	 */
+	public function afterDelete(Event $event) {
+		$this->pathBuilder($event->subject()->pathBuilder());
+		$this->subject = $event->subject();
+		$this->autoProcessImageVersions($event->data['entity'], 'remove');
+	}
 
 	protected $_imageProcessorClass = 'Burzum\Imagine\Lib\ImageProcessor';
 	protected $_imageProcessor = null;
@@ -141,8 +178,8 @@ trait ImageProcessingTrait {
 				if ($options['overwrite'] || !$storage->has($path)) {
 					unset($saveOptions['overwrite']);
 
-					$output = $this->createTmpFile();
-					$tmpFile = $this->_tmpFile($storage, $this->pathBuilder()->fullPath($entity));
+					$output = $this->subject->createTmpFile();
+					$tmpFile = $this->subject->tmpFile($storage, $this->pathBuilder()->fullPath($entity));
 					$this->imageProcessor()->open($tmpFile);
 					$this->imageProcessor()->batchProcess($output, $operations, $saveOptions);
 					$storage->write($path, file_get_contents($output), true);
@@ -271,4 +308,5 @@ trait ImageProcessingTrait {
 
 		return $this->pathBuilder()->{$type}($entity, $options);
 	}
+
 }

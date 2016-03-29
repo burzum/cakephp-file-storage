@@ -5,7 +5,7 @@ use Burzum\FileStorage\Storage\Listener\LocalListener;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
-use Burzum\FileStorage\TestSuite\FileStorageTestCase;
+use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
 
 /**
  * File Storage Entity Test

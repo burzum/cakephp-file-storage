@@ -78,11 +78,11 @@ class LegacyLocalFileStorageListenerTest extends TestCase {
 		], ['accessibleFields' => ['*' => true]]);
 
 		$event = new Event('FileStorage.afterSave', $this->FileStorage, [
-			'record' => $entity,
+			'entity' => $entity,
 			'table' => $this->FileStorage
 		]);
 
-		$this->listener->expects($this->at(0))
+		$this->listener->expects($this->any())
 			->method('storageAdapter')
 			->will($this->returnValue($this->adapterMock));
 

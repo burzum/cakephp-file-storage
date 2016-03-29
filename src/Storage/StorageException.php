@@ -1,8 +1,8 @@
 <?php
 namespace Burzum\FileStorage\Storage;
 
-use \Cake\Datasource\EntityInterface;
-use \Exception;
+use Cake\Datasource\EntityInterface;
+use Exception;
 
 /**
  * Storage Exception

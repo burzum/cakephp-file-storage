@@ -4,7 +4,7 @@ namespace Burzum\FileStorage\Test\TestCase\Model\Behavior;
 use Cake\ORM\TableRegistry;
 use Cake\ORM\Table;
 use Cake\Core\Plugin;
-use Burzum\FileStorage\TestSuite\FileStorageTestCase;
+use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
 
 /**
  * Upload Validator Behavior Test

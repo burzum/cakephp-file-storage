@@ -16,13 +16,13 @@ StorageManager::config('Local', array(
 To invoke a new instance using a before set configuration call.
 
 ```php
-$Adapter = StorageManager::adapter('Local');
+$Adapter = StorageManager::get('Local');
 ```
 
 You can also call the adapter instances methods like this
 
 ```php
-StorageManager::adapter('Local')->write($key, $data);
+StorageManager::get('Local')->write($key, $data);
 ```
 
 Alternatively you can pass a config array as first argument to get an instance using these settings that is not in the configuration.

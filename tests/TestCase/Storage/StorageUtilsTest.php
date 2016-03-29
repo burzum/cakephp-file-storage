@@ -3,7 +3,7 @@ namespace Burzum\FileStorage\Test\TestCase\Lib\Utility;
 
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
-use Burzum\FileStorage\TestSuite\FileStorageTestCase;
+use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
 use Burzum\FileStorage\Storage\StorageUtils;
 
 /**

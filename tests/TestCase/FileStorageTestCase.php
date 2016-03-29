@@ -1,8 +1,6 @@
 <?php
-namespace Burzum\FileStorage\TestSuite;
+namespace Burzum\FileStorage\Test\TestCase;
 
-use Burzum\FileStorage\Event\ImageProcessingListener;
-use Burzum\FileStorage\Event\LocalFileStorageListener;
 use Burzum\FileStorage\Storage\Listener\LegacyLocalFileStorageListener;
 use Burzum\FileStorage\Storage\Listener\LocalListener;
 use Burzum\FileStorage\Storage\StorageManager;
@@ -121,12 +119,19 @@ class FileStorageTestCase extends TestCase {
 	 * @return void
 	 */
 	protected function _setupListeners() {
-		$this->listeners['ImageProcessingListener'] = new ImageProcessingListener();
-		$this->listeners['LocalFileStorageListener'] = new LocalFileStorageListener();
 		$this->listeners['LocalListener'] = new LocalListener();
+		$this->listeners['LocalListenerImageProcessing'] = new LocalListener([
+			'imageProcessing' => true
+		]);
+
+		$this->listeners['LegacyLocalListener'] = new LegacyLocalFileStorageListener();
+		$this->listeners['LegacyLocalListenerImageProcessing'] = new LegacyLocalFileStorageListener([
+			'imageProcessing' => true
+		]);
+
 		$this->listeners['LegacyLocalFileStorageListener'] = new LegacyLocalFileStorageListener();
-		EventManager::instance()->on($this->listeners['ImageProcessingListener']);
-		EventManager::instance()->on($this->listeners['LocalFileStorageListener']);
+		EventManager::instance()->on($this->listeners['LocalListenerImageProcessing']);
+		//EventManager::instance()->on($this->listeners['LegacyLocalFileStorageListener']);
 	}
 
 	/**

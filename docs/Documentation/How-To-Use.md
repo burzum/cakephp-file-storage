@@ -97,7 +97,7 @@ public function add() {
 	$saved = $this->save($entity);
 	if ($saved) {
 		$key = 'your-file-name';
-		if (StorageManager::adapter('Local')->write($key, file_get_contents($this->data['pdf_files']['file']['tmp_name']))) {
+		if (StorageManager::get('Local')->write($key, file_get_contents($this->data['pdf_files']['file']['tmp_name']))) {
 			$postData['pdf_files']['foreign_key'] = $saved->id;
 			$postData['pdf_files']['model'] = 'Reports';
 			$postData['pdf_files']['path'] = $key;
@@ -112,7 +112,7 @@ public function add() {
 Later, when you want to delete the file, for example in the beforeDelete() or afterDelete() callback of your Report model, you'll know the adapter you have used to store the attached PdfFile and can get an instance of this adapter configuration using the StorageManager. By having the path or key available you can then simply call:
 
 ```php
-StorageManager::adapter($data['PdfFile']['adapter'])->delete($data['PdfFile']['path']);
+StorageManager::get($data['PdfFile']['adapter'])->delete($data['PdfFile']['path']);
 ```
 
 Insted of doing all of this in the table object that has the files associated to it you can also simply extend the FileStorage table from the plugin and add your storage logic there and use that table for your association.

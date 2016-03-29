@@ -6,6 +6,8 @@
  */
 namespace Burzum\FileStorage\Storage;
 
+use Burzum\FileStorage\Storage\StorageManager;
+
 /**
  * Use the StorageTrait for convenient access to the storage adapters in any class.
  */
@@ -21,14 +23,11 @@ trait StorageTrait {
 	 * @return array
 	 */
 	public function storageConfig($configName) {
-		if (empty($configName) || !is_string($configName)) {
-			throw new \InvalidArgumentException('First arg must be a non empty string!');
-		}
 		return StorageManager::config($configName);
 	}
 
 	/**
-	 * Wrapper around the singleton call to StorageManager::adapter()
+	 * Wrapper around the singleton call to StorageManager::get()
 	 *
 	 * Makes it easy to mock the adapter in tests.
 	 *
@@ -37,10 +36,7 @@ trait StorageTrait {
 	 * @return array
 	 */
 	public function storageAdapter($configName, $renewObject = false) {
-		if (empty($configName) || !is_string($configName)) {
-			throw new \InvalidArgumentException('First arg must be a non empty string!');
-		}
-		return StorageManager::adapter($configName, $renewObject);
+		return StorageManager::get($configName, $renewObject);
 	}
 
 	/**

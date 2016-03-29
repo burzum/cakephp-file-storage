@@ -31,7 +31,7 @@ class LocalListenerTest extends TestCase {
 		$this->fileFixtures = Plugin::path('Burzum/FileStorage') . 'tests' . DS . 'Fixture' . DS . 'File' . DS;
 
 		$this->listener = $this->getMockBuilder('Burzum\FileStorage\Storage\Listener\LocalListener')
-			->setMethods(['storageAdapter'])
+			->setMethods(['storageAdapter', 'getStorageAdapter'])
 			->setConstructorArgs([['models' => ['Item']]])
 			->getMock();
 
@@ -76,7 +76,7 @@ class LocalListenerTest extends TestCase {
 						'width' => 150, 'height' => 150
 					]
 				]
-			],
+			]
 		]);
 		$image = $this->FileStorage->newEntity([
 			'id' => 'e479b480-f60b-11e1-a21f-0800200c9a66',
@@ -110,11 +110,11 @@ class LocalListenerTest extends TestCase {
 			'tmp_name' => $this->fileFixtures . 'titus.jpg'
 		];
 		$event = new Event('FileStorage.afterSave', $this->FileStorage, [
-			'record' => $entity,
+			'entity' => $entity,
 			'table' => $this->FileStorage
 		]);
 
-		$this->listener->expects($this->at(0))
+		$this->listener->expects($this->any())
 			->method('storageAdapter')
 			->will($this->returnValue($this->adapterMock));
 
@@ -134,12 +134,11 @@ class LocalListenerTest extends TestCase {
 	public function testAfterDelete() {
 		$entity = $this->FileStorage->get('file-storage-3');
 		$event = new Event('FileStorage.afterDelete', $this->FileStorage, [
-			'record' => $entity,
 			'entity' => $entity,
 			'table' => $this->FileStorage
 		]);
 
-		$this->listener->expects($this->at(0))
+		$this->listener->expects($this->any())
 			->method('storageAdapter')
 			->will($this->returnValue($this->adapterMock));
 

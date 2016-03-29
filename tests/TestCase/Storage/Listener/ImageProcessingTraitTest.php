@@ -6,7 +6,7 @@
  */
 namespace Burzum\FileStorage\Test\TestCase\Storage\PathBuilder;
 
-use Burzum\FileStorage\TestSuite\FileStorageTestCase;
+use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
 use Burzum\FileStorage\Storage\Listener\AbstractListener;
 use Burzum\FileStorage\Storage\Listener\ImageProcessingTrait;
 use Cake\Core\InstanceConfigTrait;
