@@ -54,7 +54,7 @@ class FileStorageTable extends Table {
 	 */
 	public function initialize(array $config) {
 		parent::initialize($config);
-		//$this->addBehavior('Burzum/FileStorage.UploadValidator');
+		$this->primaryKey('id');
 		$this->addBehavior('Timestamp');
 		$this->displayField('filename');
 		$this->table('file_storage');
@@ -236,7 +236,7 @@ class FileStorageTable extends Table {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @inheritDoc
 	 */
 	public function dispatchEvent($name, $data = null, $subject = null) {
 		$data['table'] = $this;
