@@ -46,10 +46,10 @@ class FileStorageTest extends CakeTestCase {
  */
 	public function testFsPath() {
 		$result = $this->FileStorage->fsPath('Foobar', 'random-id');
-		$this->assertEqual($result, 'Foobar' . DS . '63' . DS . '87' . DS . '12' . DS . 'randomid' . DS);
+		$this->assertEquals($result, 'Foobar' . DS . '63' . DS . '87' . DS . '12' . DS . 'randomid' . DS);
 
 		$result = $this->FileStorage->fsPath('Foobar', 'random-id', false);
-		$this->assertEqual($result, 'Foobar' . DS . '63' . DS . '87' . DS . '12' . DS);
+		$this->assertEquals($result, 'Foobar' . DS . '63' . DS . '87' . DS . '12' . DS);
 	}
 
 /**
@@ -59,7 +59,7 @@ class FileStorageTest extends CakeTestCase {
  */
 	public function testStripUuid() {
 		$result = $this->FileStorage->stripUuid('some-string-with-dashes');
-		$this->assertEqual($result, 'somestringwithdashes');
+		$this->assertEquals($result, 'somestringwithdashes');
 	}
 
 }

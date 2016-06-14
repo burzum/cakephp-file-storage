@@ -58,12 +58,10 @@ class LocalFileStorageListener extends Object implements CakeEventListener {
 				$file = $record['file'];
 				$record['path'] = $Model->fsPath('files' . DS . $record['model'], $id);
 				$result = $Storage->write($record['path'] . $filename . '.' . $record['extension'], file_get_contents($file['tmp_name']), true);
-
-				$Model->save(array($Model->alias => $record), array(
+				$Event->result = $Model->save(array($Model->alias => $record), array(
 					'validate' => false,
 					'callbacks' => false
 				));
-
 			} catch (Exception $e) {
 				$this->log($e->getMessage(), 'file_storage');
 			}

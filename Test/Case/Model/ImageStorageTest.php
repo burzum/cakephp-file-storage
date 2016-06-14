@@ -66,7 +66,7 @@ class ImageStorageTest extends FileStorageTestCase {
 		$path = $this->testPath . $result['ImageStorage']['path'];
 		$Folder = new Folder($path);
 		$folderResult = $Folder->read();
-		$this->assertEqual(count($folderResult[1]), 3);
+		$this->assertEquals(count($folderResult[1]), 3);
 
 		Configure::write('Media.imageSizes.Test', array(
 			't200' => array(
@@ -89,7 +89,7 @@ class ImageStorageTest extends FileStorageTestCase {
 		$path = $this->testPath . $result['ImageStorage']['path'];
 		$Folder = new Folder($path);
 		$folderResult = $Folder->read();
-		$this->assertEqual(count($folderResult[1]), 4);
+		$this->assertEquals(count($folderResult[1]), 4);
 
 
 		$Event = new CakeEvent('ImageVersion.removeVersion', $this->Image, array(
@@ -106,7 +106,7 @@ class ImageStorageTest extends FileStorageTestCase {
 		$path = $this->testPath . $result['ImageStorage']['path'];
 		$Folder = new Folder($path);
 		$folderResult = $Folder->read();
-		$this->assertEqual(count($folderResult[1]), 3);
+		$this->assertEquals(count($folderResult[1]), 3);
 	}
 
 /**

@@ -3,8 +3,8 @@ App::uses('StorageManager', 'FileStorage.Lib');
 /**
  * StorageManagerTest
  *
- * @author Florian Krämer
- * @copyright 2012 Florian Krämer
+ * @author Florian Krï¿½mer
+ * @copyright 2012 Florian Krï¿½mer
  * @license MIT
  */
 class StorageManagerTest extends CakeTestCase {
@@ -16,10 +16,10 @@ class StorageManagerTest extends CakeTestCase {
  */
 	public function testAdapter() {
 		$result = StorageManager::adapter('Local');
-		$this->assertEqual(get_class($result), 'Gaufrette\Filesystem');
+		$this->assertEquals(get_class($result), 'Gaufrette\Filesystem');
 
 		$result = StorageManager::activeAdapter();
-		$this->assertEqual($result, 'Local');
+		$this->assertEquals($result, 'Local');
 
 		$result = StorageManager::activeAdapter('invalid-adapter');
 		$this->assertFalse($result);

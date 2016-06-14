@@ -82,5 +82,20 @@ class FileStorageFixture extends CakeTestFixture {
 			'created' => '2012-01-01 12:00:00',
 			'modified' => '2012-01-01 12:00:00',
 		),
+		array(
+			'id' => 'file-storage-3',
+			'user_id' => 'user-1',
+			'foreign_key' => 'item-1',
+			'model' => 'Item',
+			'filename' => 'titus-bienebek-bridle.jpg',
+			'filesize' => '',
+			'mime_type' => 'image/jpg',
+			'extension' => 'jpg',
+			'hash' => '',
+			'path' => 'files\Item\45\06\34\filestorage2\\',
+			'adapter' => 'Local',
+			'created' => '2012-01-01 12:00:00',
+			'modified' => '2012-01-01 12:00:00',
+		)
 	);
 }

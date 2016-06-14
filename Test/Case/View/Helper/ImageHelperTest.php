@@ -61,7 +61,7 @@ class ImageHelperTest extends FileStorageTestCase {
 		);
 
 		$result = $this->Image->display($image, 't150');
-		$this->assertEqual($result, '<img src="/test/path/e479b480f60b11e1a21f0800200c9a66.c3f33c2a.jpg" alt="" />');
+		$this->assertEquals($result, '<img src="/test/path/e479b480f60b11e1a21f0800200c9a66.c3f33c2a.jpg" alt=""/>');
 	}
 
 /**
@@ -90,13 +90,13 @@ class ImageHelperTest extends FileStorageTestCase {
 		Configure::write('Media.fallbackImages.Test.t150', 't150fallback.png');
 
 		$result = $this->Image->fallbackImage(array('fallback' => true), array(), 't150');
-		$this->assertEqual($result, '<img src="/img/placeholder/t150.jpg" alt="" />');
+		$this->assertEquals($result, '<img src="/img/placeholder/t150.jpg" alt=""/>');
 
 		$result = $this->Image->fallbackImage(array('fallback' => 'something.png'), array(), 't150');
-		$this->assertEqual($result, '<img src="/img/something.png" alt="" />');
+		$this->assertEquals($result, '<img src="/img/something.png" alt=""/>');
 
 		$result = $this->Image->fallbackImage(array(), array(), 't150');
-		$this->assertEqual($result, '');
+		$this->assertEquals($result, '');
 	}
 
 }

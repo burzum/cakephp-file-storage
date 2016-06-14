@@ -52,14 +52,14 @@ class ImageProcessingListenerTest extends FileStorageTestCase {
 			'path' => '/xx/xx/xx/uuid/',
 			'extension' => 'jpg'
 		));
-		$this->assertEqual($result, '/xx/xx/xx/uuid/foobar.jpg');
+		$this->assertEquals($result, '/xx/xx/xx/uuid/foobar.jpg');
 
 		$result = $this->Listener->buildPath(array(
 			'filename' => 'foobar.jpg',
 			'path' => '/xx/xx/xx/uuid/',
 			'extension' => 'jpg'
 		), true, '5gh2hf');
-		$this->assertEqual($result, '/xx/xx/xx/uuid/foobar.5gh2hf.jpg');
+		$this->assertEquals($result, '/xx/xx/xx/uuid/foobar.5gh2hf.jpg');
 	}
 
 }
