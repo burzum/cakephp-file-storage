@@ -1,5 +1,4 @@
-Migrating from CakePHP 2
-========================
+# Migrating from CakePHP 2
 
 Here is a list of things that have changed:
 

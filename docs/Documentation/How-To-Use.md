@@ -19,16 +19,16 @@ For example you have a `reports` table and want to save a PDF to it, you would t
 ```php
 public function initialize(array $config)
 {
-        parent::initialize($config);
-        $this->table('reports');
+	parent::initialize($config);
+	$this->table('reports');
 
-        $this->hasOne('PdfFiles', [
-            'className' => 'Burzum/FileStorage.PdfFiles',
-            'foreignKey' => 'foreign_key',
-            'conditions' => [
-                'PdfFiles.model' => 'Reports'
-            ]
-        ]);
+	$this->hasOne('PdfFiles', [
+		'className' => 'Burzum/FileStorage.PdfFiles',
+		'foreignKey' => 'foreign_key',
+		'conditions' => [
+			'PdfFiles.model' => 'Reports'
+		]
+	]);
 }
 ```
 

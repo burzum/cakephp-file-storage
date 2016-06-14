@@ -20,7 +20,7 @@ class LegacyPathBuilder extends BasePathBuilder {
 	 */
 	protected $_defaultConfig = [
 		'pathPrefix' => 'files',
-		'modelFolder' => false,
+		'modelFolder' => 'files',
 		'preserveFilename' => false,
 		'randomPath' => 'crc32'
 	];
