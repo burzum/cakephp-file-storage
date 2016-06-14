@@ -22,6 +22,7 @@ class LegacyPathBuilder extends BasePathBuilder {
 		'pathPrefix' => 'files',
 		'modelFolder' => 'files',
 		'preserveFilename' => false,
+		'idFolder' => true,
 		'randomPath' => 'crc32'
 	];
 
