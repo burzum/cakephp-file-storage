@@ -8,6 +8,7 @@ namespace Burzum\FileStorage\Storage\PathBuilder;
 
 use Cake\Core\InstanceConfigTrait;
 use Cake\Datasource\EntityInterface;
+use Cake\Utility\MergeVariablesTrait;
 
 /**
  * A path builder is an utility class that generates a path and filename for a
@@ -16,6 +17,7 @@ use Cake\Datasource\EntityInterface;
 class BasePathBuilder implements PathBuilderInterface {
 
 	use InstanceConfigTrait;
+	use MergeVariablesTrait;
 
 	/**
 	 * Default settings.
@@ -42,6 +44,10 @@ class BasePathBuilder implements PathBuilderInterface {
 	 * @param array $config Configuration options.
 	 */
 	public function __construct(array $config = []) {
+		$this->_mergeVars(
+			['_defaultConfig'],
+			['associative' => ['_defaultConfig']]
+		);
 		$this->config($config);
 	}
 
@@ -289,6 +295,9 @@ class BasePathBuilder implements PathBuilderInterface {
 		}
 		if ($method === 'sha1') {
 			return $this->_randomPathSha1($string, $level);
+		}
+		if (is_callable($method)) {
+			return $method($string, $level);
 		}
 		if (method_exists($this, $method)) {
 			return $this->{$method}($string, $level);
