@@ -78,6 +78,24 @@ public function __construct(array $properties = [], array $options = []) {
 }
 ```
 
+## Building your own path builder
+
+Put the file in whatever your applications namespace is, usually it is `App`.
+
+Place a file called `MyFancyPathBuilder.php`in `src/Storage/`.
+
+```php
+namespace App\Storage\PathBuilder;
+
+use Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface;
+
+class MyFancyPathBuilder implements PathBuilderInterface {
+	// Implement the interface
+}
+```
+
+Inside the method bodies of the interface you'll implement the logic of whatever path you want to build.
+
 ## Path builders included in the plugin
 
 ### BasePathBuilder
@@ -99,3 +117,7 @@ The BasePathBuilder comes with a set of configuration options:
 	'randomPath' => 'sha1'
 ]
 ```
+
+### LegacyPathBuilder
+
+It is basically the BasePathBuilder with a different default config and a minor change in the randomPath() method that was required to make it behave the same as the old code of the CakePHP2 version.

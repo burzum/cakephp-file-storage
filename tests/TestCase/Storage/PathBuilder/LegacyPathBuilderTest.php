@@ -17,6 +17,11 @@ class LegacyPathBuilderTest extends TestCase {
 		'plugin.Burzum\FileStorage.FileStorage'
 	);
 
+	/**
+	 * setUp
+	 *
+	 * @return void
+	 */
 	public function setUp() {
 		parent::setUp();
 		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
@@ -38,6 +43,11 @@ class LegacyPathBuilderTest extends TestCase {
 		$this->entity->accessible('id', true);
 	}
 
+	/**
+	 * testLegacyRecord
+	 *
+	 * @return void
+	 */
 	public function testLegacyRecord() {
 		$builder = new LegacyPathBuilder();
 		$result = $builder->path($this->entity);
