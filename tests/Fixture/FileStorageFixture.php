@@ -100,6 +100,21 @@ class FileStorageFixture extends TestFixture {
 			'adapter' => 'Local',
 			'created' => '2012-01-01 12:00:00',
 			'modified' => '2012-01-01 12:00:00',
+		),
+		array(
+			'id' => 'file-storage-4',
+			'user_id' => 'user-1',
+			'foreign_key' => 'item-4',
+			'model' => 'Item',
+			'filename' => 'titus.jpg',
+			'filesize' => '335872',
+			'mime_type' => 'image/jpg',
+			'extension' => 'jpg',
+			'hash' => '09d82a31',
+			'path' => null,
+			'adapter' => 'S3',
+			'created' => '2012-01-01 12:00:00',
+			'modified' => '2012-01-01 12:00:00',
 		)
 	);
 }
