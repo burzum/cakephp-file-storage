@@ -1,6 +1,8 @@
 <?php
 namespace Burzum\FileStorage\Model\Table;
 
+use Cake\Datasource\EntityInterface;
+use Cake\Event\Event;
 use Cake\ORM\Table;
 
 /**

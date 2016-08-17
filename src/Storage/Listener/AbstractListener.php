@@ -166,6 +166,10 @@ abstract class AbstractListener implements EventListenerInterface {
 		return ($event->subject() instanceof Table && $this->_modelFilter($event));
 	}
 
+	public function _modelFilter() {
+		return true;
+	}
+
 	/**
 	 * Detects if an entities model field has name of one of the allowed models set.
 	 *
@@ -349,15 +353,16 @@ abstract class AbstractListener implements EventListenerInterface {
 	 */
 	protected function _storeFile(Event $event) {
 		try {
-			$event = $this->_beforeStoreFile($event);
-			if ($event->isStopped()) {
-				return $event->result;
+			$event2 = $this->_beforeStoreFile($event);
+			if ($event2->isStopped()) {
+				return $event2->result;
 			}
 
 			$fileField = $this->config('fileField');
 			$entity = $event->data['entity'];
 			$Storage = $this->storageAdapter($entity['adapter']);
 			$Storage->write($entity['path'], file_get_contents($entity[$fileField]['tmp_name']), true);
+
 			$event->result = $event->subject()->save($entity, array(
 				'checkRules' => false
 			));
@@ -402,6 +407,8 @@ abstract class AbstractListener implements EventListenerInterface {
 	}
 
 	/**
+	 * Creates and triggers the FileStorage.beforeStoreFile event.
+	 *
 	 * @param \Cake\Event\Event $event
 	 * @return \Cake\Event\Event
 	 */

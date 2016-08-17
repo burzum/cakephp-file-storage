@@ -44,6 +44,12 @@ class StorageBehavior extends Behavior {
 		'fileField' => 'file',
 	];
 
+	/**
+	 * Checks if a file upload is present.
+	 *
+	 * @param \Cake\Datasource\EntityInterface|array
+	 * @€turn boolean
+	 */
 	protected function _isFileUploadPresent($entity) {
 		$field = $this->config('fileField');
 		if ($this->config('ignoreEmptyFile') === true) {
@@ -80,6 +86,7 @@ class StorageBehavior extends Behavior {
 			$event->stopPropagation();
 			return;
 		}
+
 		$this->_checkEntityBeforeSave($entity);
 		$this->dispatchEvent('FileStorage.beforeSave', [
 			'entity' => $entity,

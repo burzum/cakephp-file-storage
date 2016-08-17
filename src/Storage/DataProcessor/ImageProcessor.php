@@ -14,6 +14,12 @@ class ImageProcessor implements EventListenerInterface {
 	use StorageTrait;
 	use PathBuilderTrait;
 
+	protected $_imageProcessorClass = 'Burzum\Imagine\Lib\ImageProcessor';
+	protected $_imageProcessor = null;
+	protected $_imageVersions = [];
+	protected $_imageVersionHashes = [];
+	protected $_defaultOutput = [];
+
 	public function __construct(array $config = []) {
 		$this->_loadImageProcessingFromConfig();
 	}
@@ -53,12 +59,6 @@ class ImageProcessor implements EventListenerInterface {
 		$this->subject = $event->subject();
 		$this->autoProcessImageVersions($event->data['entity'], 'remove');
 	}
-
-	protected $_imageProcessorClass = 'Burzum\Imagine\Lib\ImageProcessor';
-	protected $_imageProcessor = null;
-	protected $_imageVersions = [];
-	protected $_imageVersionHashes = [];
-	protected $_defaultOutput = [];
 
 	/**
 	 * Convenience method to auto create ALL and auto remove ALL image versions for

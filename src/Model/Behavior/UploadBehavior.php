@@ -36,6 +36,8 @@ class UploadBehavior extends Behavior {
 	];
 
 	/**
+	 * After save callback.
+	 *
 	 * @param \Cake\Event\Event $event
 	 * @param \Cake\Datasource\EntityInterface $entity
 	 * @return void
@@ -47,6 +49,8 @@ class UploadBehavior extends Behavior {
 	}
 
 	/**
+	 * Before save callback.
+	 *
 	 * @param \Cake\Event\Event $event
 	 * @param \Cake\Datasource\EntityInterface $entity
 	 * @return void
@@ -72,7 +76,8 @@ class UploadBehavior extends Behavior {
 		foreach ($files as $key => $file) {
 			if (is_string($key)) {
 				$field = $key;
-				$options = $this->config('defaults') += $file;
+				$options = $this->config('defaults');
+				$options += $file;
 			}
 			if (is_string($file)) {
 				$field = $file;
@@ -83,6 +88,12 @@ class UploadBehavior extends Behavior {
 		return $results;
 	}
 
+	/**
+	 * Gets the storage table instance.
+	 *
+	 * @param array $options Options.
+	 * @return \Cake\ORM\Table
+	 */
 	protected function _getStorageModel($options) {
 		if (!empty($options['association'])) {
 			return $this->{$options['association']};
@@ -90,6 +101,9 @@ class UploadBehavior extends Behavior {
 		return TableRegistry::get($options['model']);
 	}
 
+	/**
+	 * @param array $options
+	 */
 	protected function _composeEntity($file, $model, $options) {
 		$entity = $model->newEntity([
 			'file' => $file,
@@ -101,8 +115,16 @@ class UploadBehavior extends Behavior {
 		return $entity;
 	}
 
+	/**
+	 * Save a file.
+	 *
+	 * @param array|string $file
+	 * @param array $options
+	 */
 	public function saveFile($file, $options = []) {
-		$options = $this->config('defaults') += $options;
+		$defaults = $this->config('defaults');
+		$defaults += $options;
+		$options = $defaults;
 
 		if (is_string($file)) {
 			$file = StorageUtils::fileToUploadArray($file);
