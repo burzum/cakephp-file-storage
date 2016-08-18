@@ -145,37 +145,54 @@ class ImageStorageTable extends FileStorageTable {
 	 */
 	public function validateImageSize($check, array $options = []) {
 		if (!isset($options['height']) && !isset($options['width'])) {
-			throw new \InvalidArgumentException('Missing image size validation options! You must provide a hight and / or width.');
+			throw new \InvalidArgumentException('Missing image size validation options! You must provide a height and / or width.');
 		}
 
-		if (is_string($check)) {
-			$imageFile = $check;
-		} else {
-			$check = array_values($check);
-			$check = $check[0];
-			if (is_array($check) && isset($check['tmp_name'])) {
-				$imageFile = $check['tmp_name'];
-			} else {
-				$imageFile = $check;
-			}
-		}
+		$imageFile = $this->_extractImageFile($check);
 
-		$imageSizes = $this->getImageSize($imageFile);
-
-		if (isset($options['height'])) {
-			$height = Validation::comparison($imageSizes[1], $options['height'][0], $options['height'][1]);
-		} else {
-			$height = true;
-		}
-
-		if (isset($options['width'])) {
-			$width = Validation::comparison($imageSizes[0], $options['width'][0], $options['width'][1]);
-		} else {
-			$width = true;
-		}
+		list($width, $height) = getimagesize($imageFile);
+		$height = $this->_validateImageSize('height', $height, $options);
+		$width = $this->_validateImageSize('width', $width, $options);
 
 		if ($height === false || $width === false) {
 			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Extract the image file from the check.
+	 *
+	 * @param strong|array $check
+	 * @return string
+	 */
+	protected function _extractImageFile($check) {
+		if (is_string($check)) {
+			return $check;
+		}
+
+		$check = array_values($check);
+		$check = $check[0];
+
+		if (is_array($check) && isset($check['tmp_name'])) {
+			return $check['tmp_name'];
+		}
+
+		return $check;
+	}
+
+	/**
+	 * Validates the image size
+	 *
+	 * @param string $widthOrHeight
+	 * @param int $size
+	 * @param array $options
+	 * @return bool
+	 */
+	protected function _validateImageSize($widthOrHeight, $size, $options) {
+		if (isset($options[$widthOrHeight])) {
+			return Validation::comparison($size, $options[$widthOrHeight][0], $options[$widthOrHeight][1]);
 		}
 
 		return true;

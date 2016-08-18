@@ -17,6 +17,11 @@ class FileStorage extends Entity {
 	use EventDispatcherTrait;
 	use PathBuilderTrait;
 
+	protected $_virtual = [
+		'url',
+		'full_path'
+	];
+
 	/**
 	 * Path Builder Class.
 	 *
@@ -56,33 +61,33 @@ class FileStorage extends Entity {
 		}
 	}
 
-	/**
-	 * BC
-	 */
-	protected function _setAdapter($value) {
-		$this->set('adapter_config', $value);
-	}
-
-	/**
-	 * BC
-	 */
-	protected function _getAdapter() {
-		return $this->get('adapter_config');
-	}
-
-	/**
-	 * BC
-	 */
-	protected function _setModel($value) {
-		$this->set('identifier', $value);
-	}
-
-	/**
-	 * BC
-	 */
-	protected function _getModel() {
-		return $this->get('identifier');
-	}
+//	/**
+//	 * BC
+//	 */
+//	protected function _setAdapter($value) {
+//		$this->set('adapter_config', $value);
+//	}
+//
+//	/**
+//	 * BC
+//	 */
+//	protected function _getAdapter() {
+//		return $this->get('adapter_config');
+//	}
+//
+//	/**
+//	 * BC
+//	 */
+//	protected function _setModel($value) {
+//		$this->set('identifier', $value);
+//	}
+//
+//	/**
+//	 * BC
+//	 */
+//	protected function _getModel() {
+//		return $this->get('identifier');
+//	}
 
 	/**
 	 * Fields that can be mass assigned using newEntity() or patchEntity().
@@ -153,6 +158,7 @@ class FileStorage extends Entity {
 		if (empty($options['method'])) {
 			$options['method'] = 'path';
 		}
+		$options['entity'] = $this;
 		$event = $this->dispatchEvent('FileStorage.path', $options);
 		return $event->result;
 	}

@@ -5,12 +5,10 @@ use Burzum\FileStorage\Storage\Listener\LegacyLocalFileStorageListener;
 use Burzum\FileStorage\Storage\Listener\LocalListener;
 use Burzum\FileStorage\Storage\StorageManager;
 use Burzum\FileStorage\Storage\StorageUtils;
-
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Event\EventManager;
 use Cake\Filesystem\Folder;
-use Cake\Filesystem\File;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -59,6 +57,13 @@ class FileStorageTestCase extends TestCase {
 	 * @var string
 	 */
 	public $fileFixtures;
+
+	/**
+	 * Test file path
+	 *
+	 * @var string
+	 */
+	public $testPath;
 
 	/**
 	 * Setup test folders and files
@@ -146,7 +151,7 @@ class FileStorageTestCase extends TestCase {
 
 		TableRegistry::clear();
 		$Folder = new Folder($this->testPath);
-		$Folder->delete();
+		//$Folder->delete();
 	}
 
 	/**
@@ -157,6 +162,21 @@ class FileStorageTestCase extends TestCase {
 	protected function _removeListeners() {
 		foreach ($this->listeners as $listener) {
 			EventManager::instance()->off($listener);
+		}
+	}
+
+	protected function _createMockFile($file) {
+		if (DS === '/') {
+			$file = str_replace('\\', DS, $file);
+		} else {
+			$file = str_replace('/', DS, $file);
+		}
+		$path = dirname($file);
+		if (!is_dir($this->testPath . $path)) {
+			mkdir($this->testPath . $path, 0777, true);
+		}
+		if (!file_exists($this->testPath . $file)) {
+			touch($this->testPath . $file);
 		}
 	}
 }

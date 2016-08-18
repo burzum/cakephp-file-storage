@@ -53,13 +53,5 @@ class UploadBehaviorTest extends FileStorageTestCase {
 	}
 
 	public function testUpload() {
-		$this->Items->addBehavior('Burzum/FileStorage.Upload', [
-			''
-		]);
-		$options = [
-			'listener' => [
-				'pathBuilder' => []
-			]
-		];
 	}
 }

@@ -57,11 +57,13 @@ class BaseListener extends AbstractListener {
 		return array_merge(parent::implementedEvents(), [
 			'FileStorage.afterSave' => 'afterSave',
 			'FileStorage.afterDelete' => 'afterDelete',
+
 			'ImageStorage.afterSave' => 'afterSave',
 			'ImageStorage.afterDelete' => 'afterDelete',
 			'ImageVersion.removeVersion' => 'removeImageVersion',
 			'ImageVersion.createVersion' => 'createImageVersion',
 			'ImageVersion.getVersions' => 'imagePath',
+
 			'FileStorage.ImageHelper.imagePath' => 'imagePath', // deprecated
 			'FileStorage.getPath' => 'getPath' // deprecated
 		]);
@@ -96,6 +98,8 @@ class BaseListener extends AbstractListener {
 
 			$entity['hash'] = $this->getFileHash($entity, $fileField);
 			$entity['path'] = $this->pathBuilder()->fullPath($entity);
+
+			debug($event);
 
 			if (!$this->_storeFile($event)) {
 				return;

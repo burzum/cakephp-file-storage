@@ -314,10 +314,10 @@ abstract class AbstractListener implements EventListenerInterface {
 	public function getPath(Event $event) {
 		$pathBuilder = $this->pathBuilder();
 		$method = $event->data['method'];
-		if (!method_exists($pathBuilder, $event->data['methid'])) {
+		if (!method_exists($pathBuilder, $event->data['method'])) {
 			throw new \BadMethodCallException(sprintf('`%s` does not implement the `%s` method!', get_class($pathBuilder), $method));
 		}
-
+;
 		$event = $this->dispatchEvent('FileStorage.beforeGetPath', [
 			'entity' => $event->data['entity'],
 			'storageAdapter' => $this->storageAdapter($event->data['entity']['adapter']),
@@ -328,9 +328,16 @@ abstract class AbstractListener implements EventListenerInterface {
 			return $event->result;
 		}
 
-		$path = $pathBuilder->{$method}($event->subject(), $event->data);
+		if ($event->subject() instanceof EntityInterface) {
+			$event->data['entity'];
+		}
+		if (empty($event->data['entity'])) {
+			throw new \RuntimeException('No entity present!');
+		}
 
-		$this->dispatchEvent('FileStorage.afterGetPath', [
+		$path = $pathBuilder->{$method}($event->data['entity'], $event->data);
+
+		$event = $this->dispatchEvent('FileStorage.afterGetPath', [
 			'entity' => $event->data['entity'],
 			'storageAdapter' => $this->storageAdapter($event->data['entity']['adapter']),
 			'pathBuilder' => $pathBuilder,

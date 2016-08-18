@@ -142,7 +142,7 @@ trait ImageProcessingTrait {
 					unset($saveOptions['overwrite']);
 
 					$output = $this->createTmpFile();
-					$tmpFile = $this->_tmpFile($storage, $this->pathBuilder()->fullPath($entity));
+					$tmpFile = $this->tmpFile($storage, $this->pathBuilder()->fullPath($entity));
 					$this->imageProcessor()->open($tmpFile);
 					$this->imageProcessor()->batchProcess($output, $operations, $saveOptions);
 					$storage->write($path, file_get_contents($output), true);

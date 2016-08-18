@@ -86,7 +86,7 @@ class StorageManager {
 	 */
 	public static function get($configName, $renewObject = false) {
 		if (empty($configName) || !is_string($configName)) {
-			throw new \InvalidArgumentException('First arg must be a non empty string!');
+			throw new \InvalidArgumentException('StorageManager::get() first arg must be a non empty string!');
 		}
 
 		$_this = StorageManager::getInstance();
