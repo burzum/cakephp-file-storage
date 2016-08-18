@@ -57,6 +57,7 @@ class StorageBehavior extends Behavior {
 				return false;
 			}
 		}
+
 		return true;
 	}
 
@@ -106,7 +107,6 @@ class StorageBehavior extends Behavior {
 	public function afterSave(Event $event, EntityInterface $entity, $options) {
 		$this->dispatchEvent('FileStorage.afterSave', [
 			'entity' => $entity,
-			//'created' => $event->data['entity']->isNew(), // REMOVE ME
 			'storage' => $this->storageAdapter($entity['adapter']), // REMOVE ME
 			'storageAdapter' => $this->storageAdapter($entity['adapter'])
 		], $this->_table);

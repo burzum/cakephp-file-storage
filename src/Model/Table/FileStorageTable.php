@@ -1,6 +1,7 @@
 <?php
 namespace Burzum\FileStorage\Model\Table;
 
+use Burzum\FileStorage\Storage\StorageTrait;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\Table;
@@ -12,7 +13,7 @@ use Cake\ORM\Table;
  * file data. All information of a row can be used to build a path to the file.
  * So the data in this table is pretty important.
  *
- * The reason for keeping all file references in this table is simply speration
+ * The reason for keeping all file references in this table is simply separation
  * of concerns: We separate the files from the other modules of the application
  * and threat them centralized and all the same.
  *
@@ -87,17 +88,17 @@ class FileStorageTable extends Table {
 //		return false;
 //	}
 
-	public function getFileInfoFromUpload(&$upload, $field = 'file') {
-		if (!empty($upload[$field]['tmp_name'])) {
-			$File = new File($upload[$field]['tmp_name']);
-			$upload['filesize'] = $File->size();
-			$upload['mime_type'] = $File->mime();
-		}
-		if (!empty($upload[$field]['name'])) {
-			$upload['extension'] = pathinfo($upload[$field]['name'], PATHINFO_EXTENSION);
-			$upload['filename'] = $upload[$field]['name'];
-		}
-	}
+//	public function getFileInfoFromUpload(&$upload, $field = 'file') {
+//		if (!empty($upload[$field]['tmp_name'])) {
+//			$File = new File($upload[$field]['tmp_name']);
+//			$upload['filesize'] = $File->size();
+//			$upload['mime_type'] = $File->mime();
+//		}
+//		if (!empty($upload[$field]['name'])) {
+//			$upload['extension'] = pathinfo($upload[$field]['name'], PATHINFO_EXTENSION);
+//			$upload['filename'] = $upload[$field]['name'];
+//		}
+//	}
 
 	/**
 	 * afterSave callback
@@ -107,15 +108,15 @@ class FileStorageTable extends Table {
 	 * @param array $options
 	 * @return boolean
 	 */
-	public function afterSave(Event $event, EntityInterface $entity, $options) {
-		$this->dispatchEvent('FileStorage.afterSave', [
-			'record' => $entity,
-			'created' => $event->data['entity']->isNew(),
-			'storage' => $this->storageAdapter($entity['adapter'])
-		]);
-		$this->deleteOldFileOnSave($entity);
-		return true;
-	}
+//	public function afterSave(Event $event, EntityInterface $entity, $options) {
+//		$this->dispatchEvent('FileStorage.afterSave', [
+//			'record' => $entity,
+//			'created' => $event->data['entity']->isNew(),
+//			'storage' => $this->storageAdapter($entity['adapter'])
+//		]);
+//		$this->deleteOldFileOnSave($entity);
+//		return true;
+//	}
 
 	/**
 	 * Get a copy of the actual record before we delete it to have it present in afterDelete
@@ -124,20 +125,20 @@ class FileStorageTable extends Table {
 	 * @param \Cake\Datasource\EntityInterface $entity
 	 * @return boolean
 	 */
-	public function beforeDelete(Event $event, EntityInterface $entity) {
-		$this->record = $this->find()
-			->contain([])
-			->where([
-				$this->alias() . '.' . $this->primaryKey() => $entity->{$this->primaryKey()}
-			])
-			->first();
-
-		if (empty($this->record)) {
-			return false;
-		}
-
-		return true;
-	}
+//	public function beforeDelete(Event $event, EntityInterface $entity) {
+//		$this->record = $this->find()
+//			->contain([])
+//			->where([
+//				$this->alias() . '.' . $this->primaryKey() => $entity->{$this->primaryKey()}
+//			])
+//			->first();
+//
+//		if (empty($this->record)) {
+//			return false;
+//		}
+//
+//		return true;
+//	}
 
 	/**
 	 * afterDelete callback
@@ -147,23 +148,23 @@ class FileStorageTable extends Table {
 	 * @param array $options
 	 * @return boolean
 	 */
-	public function afterDelete(Event $event, EntityInterface $entity, $options) {
-		$event = $this->dispatchEvent('FileStorage.afterDelete', [
-			'record' => $entity,
-			'storage' => $this->storageAdapter($entity['adapter'])
-		]);
-		if ($event->isStopped()) {
-			return $event->result;
-		}
-		try {
-			$Storage = $this->storageAdapter($entity['adapter']);
-			$Storage->delete($entity['path']);
-			return true;
-		} catch (\Exception $e) {
-			$this->log($e->getMessage());
-		}
-		return false;
-	}
+//	public function afterDelete(Event $event, EntityInterface $entity, $options) {
+//		$event = $this->dispatchEvent('FileStorage.afterDelete', [
+//			'record' => $entity,
+//			'storage' => $this->storageAdapter($entity['adapter'])
+//		]);
+//		if ($event->isStopped()) {
+//			return $event->result;
+//		}
+//		try {
+//			$Storage = $this->storageAdapter($entity['adapter']);
+//			$Storage->delete($entity['path']);
+//			return true;
+//		} catch (\Exception $e) {
+//			$this->log($e->getMessage());
+//		}
+//		return false;
+//	}
 
 	/**
 	 * Deletes an old file to replace it with the new one if an old id was passed.
@@ -175,34 +176,34 @@ class FileStorageTable extends Table {
 	 * @param string $oldIdField Name of the field in the data that holds the old id.
 	 * @return boolean Returns true if the old record was deleted
 	 */
-	public function deleteOldFileOnSave(EntityInterface $entity, $oldIdField = 'old_file_id') {
-		if (!empty($entity[$oldIdField]) && $entity['model']) {
-			$oldEntity = $this->find()
-				->contain([])
-				->where([
-					$this->alias() . '.' . $this->primaryKey() => $entity[$oldIdField], 'model' => $entity['model']
-				])
-				->first();
+//	public function deleteOldFileOnSave(EntityInterface $entity, $oldIdField = 'old_file_id') {
+//		if (!empty($entity[$oldIdField]) && $entity['model']) {
+//			$oldEntity = $this->find()
+//				->contain([])
+//				->where([
+//					$this->alias() . '.' . $this->primaryKey() => $entity[$oldIdField], 'model' => $entity['model']
+//				])
+//				->first();
+//
+//			if (!empty($oldEntity)) {
+//				return $this->delete($oldEntity);
+//			}
+//		}
+//		return false;
+//	}
 
-			if (!empty($oldEntity)) {
-				return $this->delete($oldEntity);
-			}
-		}
-		return false;
-	}
+//	/**
+//	 * @inheritDoc
+//	 */
+//	public function dispatchEvent($name, $data = null, $subject = null) {
+//		$data['table'] = $this;
+//		return parent::dispatchEvent($name, $data, $subject);
+//	}
 
-	/**
-	 * @inheritDoc
-	 */
-	public function dispatchEvent($name, $data = null, $subject = null) {
-		$data['table'] = $this;
-		return parent::dispatchEvent($name, $data, $subject);
-	}
-
-	/**
-	 * @deprecated Use storageAdapter() instead.
-	 */
-	public function getStorageAdapter($configName, $renewObject = false) {
-		return $this->storageAdapter($configName, $renewObject);
-	}
+//	/**
+//	 * @deprecated Use storageAdapter() instead.
+//	 */
+//	public function getStorageAdapter($configName, $renewObject = false) {
+//		return $this->storageAdapter($configName, $renewObject);
+//	}
 }

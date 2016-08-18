@@ -64,34 +64,33 @@ class FileStorageTableTest extends FileStorageTestCase {
 	 * @return void
 	 */
 	public function testFileSaving() {
-		$listenersToTest = [
-			'LocalListener',
-		];
-		$results = [];
-		foreach ($listenersToTest as $listener) {
-			$this->_removeListeners();
-			EventManager::instance()->on($this->listeners[$listener]);
-			$entity = $this->FileStorage->newEntity([
-				'model' => 'Document',
-				'adapter' => 'Local',
-				'file' => [
-					'error' => UPLOAD_ERR_OK,
-					'size' => filesize($this->fileFixtures . 'titus.jpg'),
-					'type' => 'image/jpeg',
-					'name' => 'tituts.jpg',
-					'tmp_name' => $this->fileFixtures . 'titus.jpg'
-				]
-			], ['accessibleFields' => ['*' => true]]);
-			$this->FileStorage->configureUploadValidation([
-				'allowedExtensions' => ['jpg'],
-				'validateUploadArray' => true,
-				'localFile' => true,
-				'validateUploadErrors' => true
-			]);
-			$this->FileStorage->save($entity);
-			$this->assertEquals($entity->errors(), []);
-			$results[] = $entity;
-		}
+		$this->_removeListeners();
+		EventManager::instance()->on($this->listeners['LocalListener']);
+
+		$entity = $this->FileStorage->newEntity([
+			'model' => 'Document',
+			'adapter' => 'Local',
+			'file' => [
+				'error' => UPLOAD_ERR_OK,
+				'size' => filesize($this->fileFixtures . 'titus.jpg'),
+				'type' => 'image/jpeg',
+				'name' => 'tituts.jpg',
+				'tmp_name' => $this->fileFixtures . 'titus.jpg'
+			]
+		], ['accessibleFields' => ['*' => true]]);
+
+		$this->FileStorage->configureUploadValidation([
+			'allowedExtensions' => ['jpg'],
+			'validateUploadArray' => true,
+			'localFile' => true,
+			'validateUploadErrors' => true
+		]);
+
+		$this->FileStorage->save($entity);
+		$this->assertEquals($entity->errors(), []);
+
+		$result = $this->FileStorage->delete($entity);
+		$this->assertTrue($result);
 	}
 
 }

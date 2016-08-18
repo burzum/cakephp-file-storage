@@ -12,7 +12,8 @@ use Cake\Utility\MergeVariablesTrait;
 
 /**
  * A path builder is an utility class that generates a path and filename for a
- * file storage entity.
+ * file storage entity. All the fields from the entity can bed used to create
+ * a path and file name.
  */
 class BasePathBuilder implements PathBuilderInterface {
 

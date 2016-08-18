@@ -52,6 +52,14 @@ class UploadBehaviorTest extends FileStorageTestCase {
 		TableRegistry::clear();
 	}
 
-	public function testUpload() {
+	/**
+	 * testSaveFile
+	 *
+	 * @return void
+	 */
+	public function testSaveFile() {
+		$file = $this->fileFixtures . 'titus.jpg';
+		$result = $this->Items->saveFile($file);
+		//debug($result);
 	}
 }

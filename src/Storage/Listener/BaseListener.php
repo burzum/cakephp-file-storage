@@ -99,15 +99,9 @@ class BaseListener extends AbstractListener {
 			$entity['hash'] = $this->getFileHash($entity, $fileField);
 			$entity['path'] = $this->pathBuilder()->fullPath($entity);
 
-			debug($event);
-
 			if (!$this->_storeFile($event)) {
 				return;
 			}
-
-//			if ($this->_config['imageProcessing'] === true) {
-//				$this->autoProcessImageVersions($entity, 'create');
-//			}
 
 			$event->result = true;
 			$event->stopPropagation();

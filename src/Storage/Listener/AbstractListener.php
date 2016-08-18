@@ -360,9 +360,9 @@ abstract class AbstractListener implements EventListenerInterface {
 	 */
 	protected function _storeFile(Event $event) {
 		try {
-			$event2 = $this->_beforeStoreFile($event);
-			if ($event2->isStopped()) {
-				return $event2->result;
+			$beforeEvent = $this->_beforeStoreFile($event);
+			if ($beforeEvent->isStopped()) {
+				return $beforeEvent->result;
 			}
 
 			$fileField = $this->config('fileField');
@@ -378,11 +378,13 @@ abstract class AbstractListener implements EventListenerInterface {
 			if ($event->isStopped()) {
 				return $event->result;
 			}
+
 			return true;
 		} catch (\Exception $e) {
 			$this->log($e->getMessage(), LogLevel::ERROR, ['scope' => ['storage']]);
 			throw new StorageException($e->getMessage(), $e->getCode(), $e);
 		}
+
 		return false;
 	}
 

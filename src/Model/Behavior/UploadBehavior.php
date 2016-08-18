@@ -21,11 +21,11 @@ use Cake\ORM\TableRegistry;
 class UploadBehavior extends Behavior {
 
 	/**
-	 * Default settings
+	 * Default config
 	 *
 	 * @var array
 	 */
-	protected $_defaultSettings = [
+	protected $_defaultConfig = [
 		'defaults' => [
 			'adapterConfig' => 'Local',
 			'model' => 'Burzum/FileStorage.FileStorage',
@@ -104,14 +104,22 @@ class UploadBehavior extends Behavior {
 	/**
 	 * @param array $options
 	 */
-	protected function _composeEntity($file, $model, $options) {
-		$entity = $model->newEntity([
-			'file' => $file,
-			'adapter' => $options['adapter']
-		]);
-		if (!empty($options['data'])) {
-			$entity = $model->patchEntity($entity, $options['data']);
+	protected function _composeEntity($file, $table, $options) {
+		if (isset($options['validate']) && is_callable($options['validate'])) {
+			$validator = $table->validationDefault();
+			$validator = $options['validate']($validator);
+			$table->validator('_fileUploadValidator', $validator);
 		}
+
+		$entity = $table->newEntity([
+			'file' => $file,
+			'adapter' => $options['adapterConfig']
+		]);
+
+		if (!empty($options['data'])) {
+			$entity = $table->patchEntity($entity, $options['data']);
+		}
+
 		return $entity;
 	}
 
@@ -133,6 +141,7 @@ class UploadBehavior extends Behavior {
 		$model = $this->_getStorageModel($options);
 		$entity = $this->_composeEntity($file, $model, $options);
 
-		return $model->save($entity);
+		$model->save($entity);
+		return $entity;
 	}
 }
