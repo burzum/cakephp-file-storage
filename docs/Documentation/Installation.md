@@ -30,8 +30,8 @@ Add the following part to your applications ```config/bootstrap.php```.
 
 ```php
 use Cake\Event\EventManager;
-use Burzum\FileStorage\Lib\FileStorageUtils;
-use Burzum\FileStorage\Lib\StorageManager;
+use Burzum\FileStorage\Storage\StorageUtils;
+use Burzum\FileStorage\Storage\StorageManager;
 use Burzum\FileStorage\Event\ImageProcessingListener;
 use Burzum\FileStorage\Event\LocalFileStorageListener;
 
