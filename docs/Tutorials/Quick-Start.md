@@ -6,9 +6,8 @@ Add this to your composer.json. Imagine is optional but you'll need it if you wa
 ```js
 {
 	"require": {
-		"burzum/cakephp-file-storage": "dev-3.0",
-		"burzum/cakephp-imagine-plugin": "dev-3.0",
-		"cakephp/migrations": "dev-master"
+		"burzum/cakephp-file-storage": "^1.1",
+		"burzum/cakephp-imagine-plugin": "^2.1"
 	}
 }
 ```
