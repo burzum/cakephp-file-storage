@@ -33,7 +33,7 @@ trait ImageVersionsTrait {
 			if (method_exists($this, 'dispatchEvent')) {
 				$event = $this->dispatchEvent('ImageVersion.getVersions', $eventData);
 			} else {
-				$event = new Event('ImageVersion.getVersions', $eventData);
+				$event = new Event('ImageVersion.getVersions', $this, $eventData);
 				EventManager::instance()->dispatch($event);
 			}
 			if ($event->isStopped()) {
