@@ -49,8 +49,10 @@ Get the SDK from here https://github.com/aws/aws-sdk-php or get it via composer 
 use Aws\S3;
 
 $S3Client = \Aws\S3\S3Client::factory(array(
-	'key' => 'YOUR-KEY',
-	'secret' => 'YOUR-SECRET'
+	'credentials' => array(
+		'key' => 'YOUR-AWS-S3-KEY-HERE',
+		'secret' => 'YOUR-SECRET-HERE'
+	)
 ));
 
 StorageManager::config('S3Image', array(
