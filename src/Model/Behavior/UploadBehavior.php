@@ -72,6 +72,7 @@ class UploadBehavior extends Behavior {
 		if (is_string($files)) {
 			$files = [$files => $this->config('defaults')];
 		}
+
 		$results = [];
 		foreach ($files as $key => $file) {
 			if (is_string($key)) {
@@ -85,6 +86,7 @@ class UploadBehavior extends Behavior {
 			}
 			$results[$field] = $this->saveFile($entity->{$field}, $options);
 		}
+
 		return $results;
 	}
 
@@ -98,6 +100,7 @@ class UploadBehavior extends Behavior {
 		if (!empty($options['association'])) {
 			return $this->{$options['association']};
 		}
+
 		return TableRegistry::get($options['model']);
 	}
 

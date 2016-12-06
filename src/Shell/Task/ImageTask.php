@@ -19,8 +19,8 @@ use Cake\ORM\TableRegistry;
  * The identifier is the "model" field from the storage table. Versions is a comma
  * separated list of image versions configured for the given identifier.
  *
- * bin\cake burzum/FileStorage.storage image remove <identifier> <versions>
- * bin\cake burzum/FileStorage.storage image remove ProfilePicture "thumb60, crop50"
+ * bin\cake Burzum/FileStorage.storage image remove <identifier> <versions>
+ * bin\cake Burzum/FileStorage.storage image remove ProfilePicture "thumb60, crop50"
  */
 class ImageTask extends Shell {
 
@@ -31,30 +31,30 @@ class ImageTask extends Shell {
 		$this->Table = TableRegistry::get('Burzum/FileStorage.ImageStorage');
 	}
 
-/**
- * Remove image versions.
- *
- * @return void
- */
+	/**
+	 * Remove image versions.
+	 *
+	 * @return void
+	 */
 	public function remove() {
 		$this->_loop($this->args[0], explode(',', $this->args[1]), 'remove');
 	}
 
-/**
- * Create image versions.
- *
- * @return void
- */
+	/**
+	 * Create image versions.
+	 *
+	 * @return void
+	 */
 	public function generate() {
 		$this->_loop($this->args[0], explode(',', $this->args[1]), 'generate');
 	}
 
-/**
- * Loops through image records and performs requested operations on them.
- *
- * @param string $identifier
- * @return void
- */
+	/**
+	 * Loops through image records and performs requested operations on them.
+	 *
+	 * @param string $identifier
+	 * @return void
+	 */
 	protected function _loop($identifier, $options, $action) {
 		$count = $this->_getCount($identifier);
 		$offset = 0;
@@ -79,13 +79,13 @@ class ImageTask extends Shell {
 		} while ($records->count() > 0);
 	}
 
-/**
- * Triggers the event to remove image versions.
- *
- * @param \Cake\ORM\Entity
- * @param array
- * @return void
- */
+	/**
+	 * Triggers the event to remove image versions.
+	 *
+	 * @param \Cake\ORM\Entity
+	 * @param array
+	 * @return void
+	 */
 	protected function _removeImage($record, $options) {
 		$Event = new Event('ImageVersion.removeVersion', $this->Table, [
 			'entity' => $record,
@@ -94,13 +94,13 @@ class ImageTask extends Shell {
 		EventManager::instance()->dispatch($Event);
 	}
 
-/**
- * Triggers the event to generate the new images.
- *
- * @param \Cake\ORM\Entity
- * @param array
- * @return void
- */
+	/**
+	 * Triggers the event to generate the new images.
+	 *
+	 * @param \Cake\ORM\Entity
+	 * @param array
+	 * @return void
+	 */
 	protected function _generateImage($record, $options) {
 		$Event = new Event('ImageVersion.createVersion', $this->Table, [
 			'entity' => $record,
@@ -109,14 +109,14 @@ class ImageTask extends Shell {
 		EventManager::instance()->dispatch($Event);
 	}
 
-/**
- * Gets the records for the loop.
- *
- * @param string $identifier
- * @param integer $limit
- * @param integer $offset
- * @return \Cake\ORM\ResultSet
- */
+	/**
+	 * Gets the records for the loop.
+	 *
+	 * @param string $identifier
+	 * @param integer $limit
+	 * @param integer $offset
+	 * @return \Cake\ORM\ResultSet
+	 */
 	public function _getRecords($identifier, $limit, $offset) {
 		return $this->Table
 			->find()
@@ -126,12 +126,12 @@ class ImageTask extends Shell {
 			->all();
 	}
 
-/**
- * Gets the amount of records for an identifier in the DB.
- *
- * @param string $identifier
- * @return integer
- */
+	/**
+	 * Gets the amount of records for an identifier in the DB.
+	 *
+	 * @param string $identifier
+	 * @return integer
+	 */
 	protected function _getCount($identifier) {
 		$count = $this->_getCountQuery($identifier)->count();
 		if ($count === 0) {
@@ -141,12 +141,12 @@ class ImageTask extends Shell {
 		return $count;
 	}
 
-/**
- * Gets the query object for the count.
- *
- * @param string $identifier
- * @return \Cake\ORM\Query
- */
+	/**
+	 * Gets the query object for the count.
+	 *
+	 * @param string $identifier
+	 * @return \Cake\ORM\Query
+	 */
 	protected function _getCountQuery($identifier) {
 		return $this->Table
 			->find()

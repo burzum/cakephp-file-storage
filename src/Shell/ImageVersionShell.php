@@ -17,22 +17,22 @@ use Burzum\FileStorage\Storage\StorageManager;
  */
 class ImageVersionShell extends Shell {
 
-/**
- * Storage Table Object
- * @var \Cake\ORM\Table
- */
+	/**
+	 * Storage Table Object
+	 * @var \Cake\ORM\Table
+	 */
 	public $Table = null;
 
-/**
- * Limit
- *
- * @var integer
- */
+	/**
+	 * Limit
+	 *
+	 * @var integer
+	 */
 	public $limit = 10;
 
-/**
- * @inheritDoc
- */
+	/**
+	 * @inheritDoc
+	 */
 	public function getOptionParser() {
 		$parser = parent::getOptionParser();
 		$parser->description([
@@ -132,9 +132,9 @@ class ImageVersionShell extends Shell {
 		return $parser;
 	}
 
-/**
- * @inheritDoc
- */
+	/**
+	 * @inheritDoc
+	 */
 	public function startup() {
 		parent::startup();
 
@@ -143,7 +143,11 @@ class ImageVersionShell extends Shell {
 			$storageTable = $this->params['storageTable'];
 		}
 
-		$this->Table = TableRegistry::get($storageTable);
+		try {
+			$this->Table = TableRegistry::get($storageTable);
+		} catch (\Exception $e) {
+			$this->abort($e->getMessage());
+		}
 
 		if (isset($this->params['limit'])) {
 			if (!is_numeric($this->params['limit'])) {
@@ -154,10 +158,10 @@ class ImageVersionShell extends Shell {
 		}
 	}
 
-/**
- * Generate all image versions.
- *
- */
+	/**
+	 * Generate all image versions.
+	 *
+	 */
 	public function regenerate() {
 		$operations = Configure::read('FileStorage.imageSizes.' . $this->args[0]);
 		$options = [
@@ -179,12 +183,12 @@ class ImageVersionShell extends Shell {
 		}
 	}
 
-/**
- * Generate a given image version.
- *
- * @param string $model
- * @param string $version
- */
+	/**
+	 * Generate a given image version.
+	 *
+	 * @param string $model
+	 * @param string $version
+	 */
 	public function generate($model, $version) {
 		$operations = Configure::read('FileStorage.imageSizes.' . $model . '.' . $version);
 		$options = [
@@ -204,12 +208,12 @@ class ImageVersionShell extends Shell {
 		}
 	}
 
-/**
- * Remove a given image version.
- *
- * @param string $model
- * @param string $version
- */
+	/**
+	 * Remove a given image version.
+	 *
+	 * @param string $model
+	 * @param string $version
+	 */
 	public function remove($model, $version) {
 		$operations = Configure::read('FileStorage.imageSizes.' . $model . '.' . $version);
 
@@ -226,13 +230,13 @@ class ImageVersionShell extends Shell {
 		}
 	}
 
-/**
- * Loops through image records and performs requested operation on them.
- *
- * @param string $action
- * @param $model
- * @param array $operations
- */
+	/**
+	 * Loops through image records and performs requested operation on them.
+	 *
+	 * @param string $action
+	 * @param $model
+	 * @param array $operations
+	 */
 	protected function _loop($action, $model, $operations = [], $options = []) {
 		if (!in_array($action, array('generate', 'remove', 'regenerate'))) {
 			$this->_stop();

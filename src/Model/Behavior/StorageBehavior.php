@@ -72,6 +72,7 @@ class StorageBehavior extends Behavior {
 		if (!$this->_isFileUploadPresent($data)) {
 			return;
 		}
+
 		$this->getFileInfoFromUpload($data);
 	}
 
@@ -124,6 +125,7 @@ class StorageBehavior extends Behavior {
 				$entity->model = $this->_table->table();
 				$entity->identifier = $this->_table->table();
 			}
+
 			if (empty($entity->adapter)) {
 				$entity->adapter = $this->config('defaultStorageConfig');
 			}
@@ -148,9 +150,13 @@ class StorageBehavior extends Behavior {
 
 	/**
 	 * Deletes an old file to replace it with the new one if an old id was passed.
-	 * Thought to be called in Model::afterSave() but can be used from any other
-	 * place as well like Model::beforeSave() as long as the field data is present.
+	 *
+	 * Thought to be called in Table::afterSave() but can be used from any other
+	 * place as well like Table::beforeSave() as long as the field data is present.
 	 * The old id has to be the UUID of the file_storage record that should be deleted.
+	 *
+	 * Table::deleteAll() is intentionally not used because it doesn't trigger
+	 * callbacks.
 	 *
 	 * @param \Cake\Datasource\EntityInterface $entity
 	 * @param string $oldIdField Name of the field in the data that holds the old id.
@@ -170,6 +176,7 @@ class StorageBehavior extends Behavior {
 				return $this->_table->delete($oldEntity);
 			}
 		}
+
 		return false;
 	}
 
@@ -179,8 +186,6 @@ class StorageBehavior extends Behavior {
 	 * - gets the file size
 	 * - gets the mime type
 	 * - gets the extension if present
-	 * - sets the adapter by default to local if not already set
-	 * - sets the model field to the table name if not already set
 	 *
 	 * @param array|\ArrayAccess $upload
 	 * @param string $field
@@ -192,6 +197,7 @@ class StorageBehavior extends Behavior {
 			$upload['filesize'] = filesize($upload[$field]['tmp_name']);
 			$upload['mime_type'] = $File->mime();
 		}
+
 		if (!empty($upload[$field]['name'])) {
 			$upload['extension'] = pathinfo($upload[$field]['name'], PATHINFO_EXTENSION);
 			$upload['filename'] = $upload[$field]['name'];
