@@ -5,6 +5,8 @@ use Burzum\FileStorage\Storage\PathBuilder\BasePathBuilder;
 use Cake\Core\Configure;
 use Cake\Filesystem\File;
 use Cake\Utility\Text;
+use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * Utility methods for which I could not find a better place
@@ -34,8 +36,9 @@ class StorageUtils {
 	}
 
 	/**
-	 * Builds a semi-random path based on a given string to avoid having thousands of files
-	 * or directories in one directory. This would result in a slowdown on most file systems.
+	 * Builds a semi-random path based on a given string to avoid having
+	 * thousands of files or directories in one directory. This would result in
+	 * a slowdown on most file systems.
 	 *
 	 * Works up to 5 level deep
 	 *
@@ -51,6 +54,7 @@ class StorageUtils {
 		if (!$string) {
 			throw new \InvalidArgumentException('First argument is not a string!');
 		}
+
 		return (new BasePathBuilder())->randomPath($string, $level, 'crc32');
 	}
 
@@ -93,6 +97,7 @@ class StorageUtils {
 		if (empty($files)) {
 			$files = $_FILES;
 		}
+
 		$array = array();
 		$fileCount = count($files['name']);
 		$fileKeys = array_keys($files);
@@ -129,14 +134,16 @@ class StorageUtils {
 			$imageSizes = Configure::read($configPath . '.imageSizes');
 		}
 		if (is_null($imageSizes)) {
-			throw new \RuntimeException(sprintf('Image processing configuration in "%s" is missing!', $configPath . '.imageSizes'));
+			throw new RuntimeException(sprintf('Image processing configuration in "%s" is missing!', $configPath . '.imageSizes'));
 		}
+
 		self::ksortRecursive($imageSizes);
 		foreach ($imageSizes as $model => $version) {
 			foreach ($version as $name => $operations) {
 				Configure::write($configPath . '.imageHashes.' . $model . '.' . $name, self::hashOperations($operations));
 			}
 		}
+
 		return Configure::read($configPath . '.imageHashes');
 	}
 
@@ -152,10 +159,12 @@ class StorageUtils {
 		if (!is_array($array)) {
 			return false;
 		}
+
 		ksort($array, $sortFlags);
 		foreach ($array as &$arr) {
 			self::ksortRecursive($arr, $sortFlags);
 		}
+
 		return true;
 	}
 
@@ -171,6 +180,7 @@ class StorageUtils {
 		if (empty($fileName)) {
 			$filename = basename($file);
 		}
+
 		return [
 			'name' => $filename,
 			'tmp_name' => $file,
@@ -233,6 +243,7 @@ class StorageUtils {
 		if ($method === 'sha1') {
 			return sha1_file($file);
 		}
-		throw new \InvalidArgumentException(sprintf('Invalid hash method "%s" provided!', $method));
+
+		throw new InvalidArgumentException(sprintf('Invalid hash method "%s" provided!', $method));
 	}
 }

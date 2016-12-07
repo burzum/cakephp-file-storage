@@ -9,6 +9,7 @@ namespace Burzum\FileStorage\Storage\PathBuilder;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Datasource\EntityInterface;
 use Cake\Utility\MergeVariablesTrait;
+use InvalidArgumentException;
 
 /**
  * A path builder is an utility class that generates a path and filename for a
@@ -36,7 +37,8 @@ class BasePathBuilder implements PathBuilderInterface {
 		'uuidFolder' => false, // Backward compatibility option, use idFolder
 		'idFolder' => true,
 		'randomPath' => 'sha1',
-		'modelFolder' => false
+		'modelFolder' => false,
+		'sanitizeFilename' => false,
 	);
 
 	/**
@@ -150,7 +152,7 @@ class BasePathBuilder implements PathBuilderInterface {
 	protected function _pathPreAndSuffix(EntityInterface $entity, $path, array $config, $type = 'suffix') {
 		$type = ucfirst($type);
 		if (!in_array($type, ['Suffix', 'Prefix'])) {
-			throw new \InvalidArgumentException(sprintf('Invalid argument "%s" for $type!', $type));
+			throw new InvalidArgumentException(sprintf('Invalid argument "%s" for $type!', $type));
 		}
 		$type = 'path' . $type;
 		if (!empty($config[$type]) && is_string($config[$type])) {
@@ -159,6 +161,7 @@ class BasePathBuilder implements PathBuilderInterface {
 		if (!empty($config[$type]) && is_callable($config[$type])) {
 			$path = $config[$type]($entity, $path);
 		}
+
 		return $path;
 	}
 
@@ -180,6 +183,7 @@ class BasePathBuilder implements PathBuilderInterface {
 				$extension = substr($extension, 1);
 			}
 		}
+
 		return compact('filename', 'extension');
 	}
 
@@ -195,6 +199,7 @@ class BasePathBuilder implements PathBuilderInterface {
 		if ($config['preserveFilename'] === true) {
 			return $this->_preserveFilename($entity, $config);
 		}
+
 		return $this->_buildFilename($entity, $config);
 	}
 
@@ -225,6 +230,7 @@ class BasePathBuilder implements PathBuilderInterface {
 		if (!empty($options['filePrefix'])) {
 			$filename = $options['filePrefix'] . $filename;
 		}
+
 		return $filename;
 	}
 
@@ -249,6 +255,7 @@ class BasePathBuilder implements PathBuilderInterface {
 				$filename .= $split['extension'];
 			}
 		}
+
 		return $filename;
 	}
 
@@ -275,6 +282,7 @@ class BasePathBuilder implements PathBuilderInterface {
 	 */
 	public function url(EntityInterface $entity, array $options = []) {
 		$url = $this->path($entity, $options) . $this->filename($entity, $options);
+
 		return str_replace('\\', '/', $url);
 	}
 
@@ -327,6 +335,7 @@ class BasePathBuilder implements PathBuilderInterface {
 			$decrement = $decrement - 2;
 			$path .= sprintf("%02d" . DS, substr(str_pad('', 2 * $level, '0') . $string, $decrement, 2));
 		}
+
 		return $path;
 	}
 
@@ -347,6 +356,7 @@ class BasePathBuilder implements PathBuilderInterface {
 			$counter = $counter + 2;
 			$randomString .= substr($result, $counter, 2) . DS;
 		}
+
 		return $randomString;
 	}
 
@@ -362,7 +372,7 @@ class BasePathBuilder implements PathBuilderInterface {
 	public function ensureSlash($string, $position, $ds = null) {
 		if (!in_array($position, ['before', 'after', 'both'])) {
 			$method = get_class($this) . '::ensureSlash(): ';
-			throw new \InvalidArgumentException(sprintf($method . 'Invalid position `%s`!', $position));
+			throw new InvalidArgumentException(sprintf($method . 'Invalid position `%s`!', $position));
 		}
 		if (is_null($ds)) {
 			$ds = DS;
@@ -377,6 +387,7 @@ class BasePathBuilder implements PathBuilderInterface {
 				$string = $string . $ds;
 			}
 		}
+
 		return $string;
 	}
 }

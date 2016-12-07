@@ -37,7 +37,7 @@ class FileStorageTable extends Table {
 
 		$this->primaryKey('id');
 		$this->addBehavior('Timestamp');
-		$this->addBehavior('Burzum/FileStorage.Storage');
+		$this->addBehavior('Burzum/FileStorage.FileStorage');
 		$this->displayField('filename');
 		$this->table('file_storage');
 	}
@@ -60,7 +60,7 @@ class FileStorageTable extends Table {
 //		$this->dispatchEvent('FileStorage.afterSave', [
 //			'entity' => $entity,
 //			'created' => $event->data['entity']->isNew(),
-//			'storage' => $this->storageAdapter($entity['adapter'])
+//			'storage' => $this->getStorageAdapter($entity['adapter'])
 //		]);
 //		$this->deleteOldFileOnSave($entity);
 //		return true;
@@ -73,31 +73,19 @@ class FileStorageTable extends Table {
 //	public function afterDelete(Event $event, EntityInterface $entity, $options) {
 //		$event = $this->dispatchEvent('FileStorage.afterDelete', [
 //			'entity' => $entity,
-//			'storage' => $this->storageAdapter($entity['adapter'])
+//			'storage' => $this->getStorageAdapter($entity['adapter'])
 //		]);
 //		if ($event->isStopped()) {
 //			return $event->result;
 //		}
 //		try {
-//			$Storage = $this->storageAdapter($entity['adapter']);
+//			$Storage = $this->getStorageAdapter($entity['adapter']);
 //			$Storage->delete($entity['path']);
 //			return true;
 //		} catch (\Exception $e) {
 //			$this->log($e->getMessage());
 //		}
 //		return false;
-//	}
-
-//	public function getFileInfoFromUpload(&$upload, $field = 'file') {
-//		if (!empty($upload[$field]['tmp_name'])) {
-//			$File = new File($upload[$field]['tmp_name']);
-//			$upload['filesize'] = $File->size();
-//			$upload['mime_type'] = $File->mime();
-//		}
-//		if (!empty($upload[$field]['name'])) {
-//			$upload['extension'] = pathinfo($upload[$field]['name'], PATHINFO_EXTENSION);
-//			$upload['filename'] = $upload[$field]['name'];
-//		}
 //	}
 
 	/**
@@ -112,7 +100,7 @@ class FileStorageTable extends Table {
 //		$this->dispatchEvent('FileStorage.afterSave', [
 //			'record' => $entity,
 //			'created' => $event->data['entity']->isNew(),
-//			'storage' => $this->storageAdapter($entity['adapter'])
+//			'storage' => $this->getStorageAdapter($entity['adapter'])
 //		]);
 //		$this->deleteOldFileOnSave($entity);
 //		return true;
@@ -151,13 +139,13 @@ class FileStorageTable extends Table {
 //	public function afterDelete(Event $event, EntityInterface $entity, $options) {
 //		$event = $this->dispatchEvent('FileStorage.afterDelete', [
 //			'record' => $entity,
-//			'storage' => $this->storageAdapter($entity['adapter'])
+//			'storage' => $this->getStorageAdapter($entity['adapter'])
 //		]);
 //		if ($event->isStopped()) {
 //			return $event->result;
 //		}
 //		try {
-//			$Storage = $this->storageAdapter($entity['adapter']);
+//			$Storage = $this->getStorageAdapter($entity['adapter']);
 //			$Storage->delete($entity['path']);
 //			return true;
 //		} catch (\Exception $e) {
@@ -204,6 +192,6 @@ class FileStorageTable extends Table {
 //	 * @deprecated Use storageAdapter() instead.
 //	 */
 //	public function getStorageAdapter($configName, $renewObject = false) {
-//		return $this->storageAdapter($configName, $renewObject);
+//		return $this->getStorageAdapter($configName, $renewObject);
 //	}
 }

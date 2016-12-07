@@ -20,7 +20,7 @@ use Cake\Filesystem\File;
  * as reference table for keeping the references to all the stored files.
  *
  * A table that will work with this behavior requires at least these fields:
- * id, filename, model, foreign_key, path, adapter, filename, mime_type, hash
+ * id, filename, identifier, foreign_key, path, adapter, filename, mime_type, hash
  *
  * Behavior options:
  *
@@ -28,7 +28,7 @@ use Cake\Filesystem\File;
  * - `ignoreEmptyFile`: If not file is present nothing will be saved.
  * - `fileField`: The field that will be checked for a file upload.
  */
-class StorageBehavior extends Behavior {
+class FileStorageBehavior extends Behavior {
 
 	use EventDispatcherTrait;
 	use StorageTrait;
@@ -73,7 +73,7 @@ class StorageBehavior extends Behavior {
 			return;
 		}
 
-		$this->getFileInfoFromUpload($data);
+		$this->_getFileInfoFromUpload($data);
 	}
 
 	/**
@@ -92,8 +92,7 @@ class StorageBehavior extends Behavior {
 		$this->_checkEntityBeforeSave($entity);
 		$this->dispatchEvent('FileStorage.beforeSave', [
 			'entity' => $entity,
-			'storage' => $this->storageAdapter($entity['adapter']), // REMOVE ME
-			'storageAdapter' => $this->storageAdapter($entity['adapter'])
+			'storageAdapter' => $this->getStorageAdapter($entity['adapter'])
 		], $this->_table);
 	}
 
@@ -108,8 +107,7 @@ class StorageBehavior extends Behavior {
 	public function afterSave(Event $event, EntityInterface $entity, $options) {
 		$this->dispatchEvent('FileStorage.afterSave', [
 			'entity' => $entity,
-			'storage' => $this->storageAdapter($entity['adapter']), // REMOVE ME
-			'storageAdapter' => $this->storageAdapter($entity['adapter'])
+			'storageAdapter' => $this->getStorageAdapter($entity['adapter'])
 		], $this->_table);
 	}
 
@@ -143,8 +141,7 @@ class StorageBehavior extends Behavior {
 	public function afterDelete(Event $event, EntityInterface $entity, $options) {
 		$this->dispatchEvent('FileStorage.afterDelete', [
 			'entity' => $entity,
-			'storageAdapter' => $this->storageAdapter($entity['adapter']),
-			'storage' => $this->storageAdapter($entity['adapter'])
+			'storageAdapter' => $this->getStorageAdapter($entity['adapter']),
 		], $this->_table);
 	}
 
@@ -191,7 +188,7 @@ class StorageBehavior extends Behavior {
 	 * @param string $field
 	 * @return void
 	 */
-	public function getFileInfoFromUpload(&$upload, $field = 'file') {
+	public function _getFileInfoFromUpload(&$upload, $field = 'file') {
 		if (!empty($upload[$field]['tmp_name'])) {
 			$File = new File($upload[$field]['tmp_name']);
 			$upload['filesize'] = filesize($upload[$field]['tmp_name']);

@@ -35,7 +35,7 @@ trait StorageTrait {
 	 * @param string $configName
 	 * @return array
 	 */
-	public function storageAdapter($configName, $renewObject = false) {
+	public function getStorageAdapter($configName, $renewObject = false) {
 		return StorageManager::get($configName, $renewObject);
 	}
 
@@ -46,7 +46,7 @@ trait StorageTrait {
 	 *
 	 * @return mixed
 	 */
-	public function storageManager() {
+	public function getStorageManager() {
 		return StorageManager::getInstance();
 	}
 }

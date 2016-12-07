@@ -37,7 +37,7 @@ class BasePathBuilderTest extends TestCase {
  * @return void
  */
 	public function teststorageAdapter() {
-		$result = $this->StorageTrait->storageAdapter('Local');
+		$result = $this->StorageTrait->getStorageAdapter('Local');
 		$this->assertTrue(is_a($result, '\Gaufrette\Filesystem'));
 	}
 

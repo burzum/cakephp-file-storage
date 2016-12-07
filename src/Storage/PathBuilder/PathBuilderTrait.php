@@ -31,13 +31,16 @@ trait PathBuilderTrait {
 		if (!class_exists($className)) {
 			$className = App::className('Burzum/FileStorage.' . $name, 'Storage/PathBuilder', 'PathBuilder');
 		}
+
 		if (!class_exists($className)) {
 			throw new RuntimeException(sprintf('Could not find path builder "%s"!', $name));
 		}
+
 		$pathBuilder = new $className($options);
 		if (!$pathBuilder instanceof PathBuilderInterface) {
 			throw new RuntimeException(sprintf('Path builder class "%s" does not implement the PathBuilderInterface interface!', $name));
 		}
+
 		return $pathBuilder;
 	}
 
@@ -80,9 +83,11 @@ trait PathBuilderTrait {
 			$this->_pathBuilder = $this->createPathBuilder($pathBuilder, $options);
 			return;
 		}
+
 		if (!$pathBuilder instanceof PathBuilderInterface) {
-			throw new \InvalidArgumentException('The first arg is not a valid path builder object!');
+			throw new \InvalidArgumentException('The first arg does not implement PathBuilderInterface');
 		}
+
 		$this->_pathBuilder = $pathBuilder;
 	}
 }

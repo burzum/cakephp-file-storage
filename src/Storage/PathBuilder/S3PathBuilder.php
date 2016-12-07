@@ -72,6 +72,7 @@ class S3PathBuilder extends BasePathBuilder {
 		$pathPrefix = $this->ensureSlash($this->_buildCloudUrl($bucket), 'after');
 		$path = parent::path($entity);
 		$path = str_replace('\\', '/', $path);
+
 		return $pathPrefix . $path . $this->filename($entity, $options);
 	}
 }
