@@ -42,16 +42,16 @@ class FileStorageTable extends Table {
 		$this->table('file_storage');
 	}
 
-	/**
-	 * Renews the FileUpload behavior with a new configuration
-	 *
-	 * @param array $options
-	 * @return void
-	 */
-	public function configureUploadValidation($options) {
-		$this->removeBehavior('Burzum/FileStorage.UploadValidator');
-		$this->addBehavior('Burzum/FileStorage.UploadValidator', $options);
-	}
+//	/**
+//	 * Renews the FileUpload behavior with a new configuration
+//	 *
+//	 * @param array $options
+//	 * @return void
+//	 */
+//	public function configureUploadValidation($options) {
+//		$this->removeBehavior('Burzum/FileStorage.UploadValidator');
+//		$this->addBehavior('Burzum/FileStorage.UploadValidator', $options);
+//	}
 
 	/**
 	 * REMOVED, just keeping the code for reference until refactor is done
@@ -64,28 +64,6 @@ class FileStorageTable extends Table {
 //		]);
 //		$this->deleteOldFileOnSave($entity);
 //		return true;
-//	}
-
-	/**
-	 * REMOVED, just keeping the code for reference until refactor is done
-	 */
-
-//	public function afterDelete(Event $event, EntityInterface $entity, $options) {
-//		$event = $this->dispatchEvent('FileStorage.afterDelete', [
-//			'entity' => $entity,
-//			'storage' => $this->getStorageAdapter($entity['adapter'])
-//		]);
-//		if ($event->isStopped()) {
-//			return $event->result;
-//		}
-//		try {
-//			$Storage = $this->getStorageAdapter($entity['adapter']);
-//			$Storage->delete($entity['path']);
-//			return true;
-//		} catch (\Exception $e) {
-//			$this->log($e->getMessage());
-//		}
-//		return false;
 //	}
 
 	/**
@@ -104,54 +82,6 @@ class FileStorageTable extends Table {
 //		]);
 //		$this->deleteOldFileOnSave($entity);
 //		return true;
-//	}
-
-	/**
-	 * Get a copy of the actual record before we delete it to have it present in afterDelete
-	 *
-	 * @param \Cake\Event\Event $event
-	 * @param \Cake\Datasource\EntityInterface $entity
-	 * @return boolean
-	 */
-//	public function beforeDelete(Event $event, EntityInterface $entity) {
-//		$this->record = $this->find()
-//			->contain([])
-//			->where([
-//				$this->alias() . '.' . $this->primaryKey() => $entity->{$this->primaryKey()}
-//			])
-//			->first();
-//
-//		if (empty($this->record)) {
-//			return false;
-//		}
-//
-//		return true;
-//	}
-
-	/**
-	 * afterDelete callback
-	 *
-	 * @param \Cake\Event\Event $event
-	 * @param \Cake\Datasource\EntityInterface $entity
-	 * @param array $options
-	 * @return boolean
-	 */
-//	public function afterDelete(Event $event, EntityInterface $entity, $options) {
-//		$event = $this->dispatchEvent('FileStorage.afterDelete', [
-//			'record' => $entity,
-//			'storage' => $this->getStorageAdapter($entity['adapter'])
-//		]);
-//		if ($event->isStopped()) {
-//			return $event->result;
-//		}
-//		try {
-//			$Storage = $this->getStorageAdapter($entity['adapter']);
-//			$Storage->delete($entity['path']);
-//			return true;
-//		} catch (\Exception $e) {
-//			$this->log($e->getMessage());
-//		}
-//		return false;
 //	}
 
 	/**
@@ -180,18 +110,4 @@ class FileStorageTable extends Table {
 //		return false;
 //	}
 
-//	/**
-//	 * @inheritDoc
-//	 */
-//	public function dispatchEvent($name, $data = null, $subject = null) {
-//		$data['table'] = $this;
-//		return parent::dispatchEvent($name, $data, $subject);
-//	}
-
-//	/**
-//	 * @deprecated Use storageAdapter() instead.
-//	 */
-//	public function getStorageAdapter($configName, $renewObject = false) {
-//		return $this->getStorageAdapter($configName, $renewObject);
-//	}
 }

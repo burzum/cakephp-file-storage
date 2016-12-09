@@ -90,9 +90,10 @@ class FileStorageBehavior extends Behavior {
 		}
 
 		$this->_checkEntityBeforeSave($entity);
+
 		$this->dispatchEvent('FileStorage.beforeSave', [
 			'entity' => $entity,
-			'storageAdapter' => $this->getStorageAdapter($entity['adapter'])
+			'storageAdapter' => $this->getStorageAdapter($entity->get('adapter'))
 		], $this->_table);
 	}
 
@@ -107,7 +108,7 @@ class FileStorageBehavior extends Behavior {
 	public function afterSave(Event $event, EntityInterface $entity, $options) {
 		$this->dispatchEvent('FileStorage.afterSave', [
 			'entity' => $entity,
-			'storageAdapter' => $this->getStorageAdapter($entity['adapter'])
+			'storageAdapter' => $this->getStorageAdapter($entity->get('adapter'))
 		], $this->_table);
 	}
 
@@ -119,13 +120,13 @@ class FileStorageBehavior extends Behavior {
 	 */
 	protected function _checkEntityBeforeSave(EntityInterface &$entity) {
 		if ($entity->isNew()) {
-			if (empty($entity->model)) {
-				$entity->model = $this->_table->table();
-				$entity->identifier = $this->_table->table();
+			if (!$entity->has('model')) {
+				$entity->set('model', $this->_table->table());
+				$entity->set('identifier', $this->_table->table());
 			}
 
-			if (empty($entity->adapter)) {
-				$entity->adapter = $this->config('defaultStorageConfig');
+			if (!$entity->has('adapter')) {
+				$entity->set('adapter', $this->config('defaultStorageConfig'));
 			}
 		}
 	}
@@ -141,7 +142,7 @@ class FileStorageBehavior extends Behavior {
 	public function afterDelete(Event $event, EntityInterface $entity, $options) {
 		$this->dispatchEvent('FileStorage.afterDelete', [
 			'entity' => $entity,
-			'storageAdapter' => $this->getStorageAdapter($entity['adapter']),
+			'storageAdapter' => $this->getStorageAdapter($entity->get('adapter')),
 		], $this->_table);
 	}
 
@@ -160,12 +161,12 @@ class FileStorageBehavior extends Behavior {
 	 * @return boolean Returns true if the old record was deleted
 	 */
 	public function deleteOldFileOnSave(EntityInterface $entity, $oldIdField = 'old_file_id') {
-		if (!empty($entity[$oldIdField]) && $entity['model']) {
+		if (!empty($entity->get($oldIdField)) && $entity->get('model')) {
 			$oldEntity = $this->_table->find()
 				->contain([])
 				->where([
-					$this->_table->alias() . '.' . $this->_table->primaryKey() => $entity[$oldIdField],
-					'model' => $entity['model']
+					$this->_table->alias() . '.' . $this->_table->primaryKey() => $entity->get($oldIdField),
+					'model' => $entity->get('model')
 				])
 				->first();
 
@@ -201,4 +202,26 @@ class FileStorageBehavior extends Behavior {
 		}
 	}
 
+	/**
+	 * Don't use Table::deleteAll() if you don't want to end up with orphaned
+	 * files! The reason for that is that deleteAll() doesn't fire the
+	 * callbacks. So the events that will remove the files won't get fired.
+	 *
+	 * @param array $conditions Query::where() array structure.
+	 * @return int Number of deleted records / files
+	 */
+	public function deleteAllFiles($conditions) {
+		$results = $this->find()
+			->select((array)$this->primaryKey())
+			->where($conditions)
+			->all();
+
+		if ($results->count() > 0) {
+			foreach ($results as $result) {
+				$this->delete($result);
+			}
+		}
+
+		return $results->count();
+	}
 }

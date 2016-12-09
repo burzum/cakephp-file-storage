@@ -28,8 +28,8 @@ $loader->setPsr4('Burzum\Imagine\\', './vendor/burzum/cakephp-imagine-plugin/src
 
 Plugin::load('Burzum/FileStorage', [
 	'path' => dirname(dirname(__FILE__)) . DS,
-	'autoload' => true,
-	'bootstrap' => true
+	//'autoload' => true,
+	//'bootstrap' => true
 ]);
 
 Plugin::load('Burzum/Imagine', [

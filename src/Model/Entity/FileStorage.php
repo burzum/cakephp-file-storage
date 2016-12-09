@@ -70,13 +70,26 @@ class FileStorage extends Entity {
 	 * @var array
 	 */
 	protected $_accessible = [
-		'*' => false,
-		'filename' => true,
-		'model' => true,
-		'foreign_key' => true,
-		'file' => true,
-		'old_file_id' => true,
+		'*' => true,
 	];
+
+	/**
+	 * Legacy proxy method
+	 *
+	 * @return string|null
+	 */
+//	protected function _getModel() {
+//		return $this->get('identifier');
+//	}
+
+	/**
+	 * Legacy proxy method
+	 *
+	 * @param string $value Model field value
+	 */
+//	public function _setModel($value) {
+//		$this->_properties['identifier'] = $value;
+//	}
 
 	/**
 	 * Accessor to get the *real* path on disk / backend + filename.

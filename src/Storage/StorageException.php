@@ -13,12 +13,28 @@ use Exception;
  */
 class StorageException extends Exception {
 
-	protected $_entity = null;
+	/**
+	 * Entity
+	 *
+	 * @var \Cake\Datasource\EntityInterface $entity Entity object.
+	 */
+	protected $_entity;
 
+	/**
+	 * Sets the entity in question
+	 *
+	 * @param \Cake\Datasource\EntityInterface $entity Entity object.
+	 * @return void
+	 */
 	public function setEntity(EntityInterface $entity) {
 		$this->_entity = $entity;
 	}
 
+	/**
+	 * Returns the entity.
+	 *
+	 * @return \Cake\Datasource\EntityInterface $entity Entity object.
+	 */
 	public function getEntity() {
 		return $this->_entity;
 	}

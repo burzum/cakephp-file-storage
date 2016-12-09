@@ -9,6 +9,10 @@ namespace Burzum\FileStorage\Storage\Listener;
 use Burzum\FileStorage\Storage\StorageUtils;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
+use Cake\Log\LogTrait;
+use Exception;
+use Psr\Log\LogLevel;
+use RuntimeException;
 
 /**
  * ImageProcessingTrait
@@ -16,6 +20,8 @@ use Cake\Datasource\EntityInterface;
  * Use this trait for Storage Listeners  that should process and upload image files.
  */
 trait ImageProcessingTrait {
+
+	use LogTrait;
 
 	protected $_imageProcessorClass = 'Burzum\Imagine\Lib\ImageProcessor';
 	protected $_imageProcessor = null;
@@ -41,7 +47,7 @@ trait ImageProcessingTrait {
 			throw new \InvalidArgumentException(sprintf('Action was `%s` but must be `create` or `remove`', $action));
 		}
 		$this->_loadImageProcessingFromConfig();
-		if (!isset($this->_imageVersions[$entity->model])) {
+		if (!isset($this->_imageVersions[$entity->get('model')])) {
 			return false;
 		}
 		$method = $action . 'AllImageVersions';
@@ -72,6 +78,7 @@ trait ImageProcessingTrait {
 		$this->_loadImageProcessingFromConfig();
 		$class = $this->_imageProcessorClass;
 		$this->_imageProcessor = new $class($config);
+
 		return $this->_imageProcessor;
 	}
 
@@ -84,26 +91,28 @@ trait ImageProcessingTrait {
 	 */
 	public function getImageVersionHash($model, $version) {
 		if (empty($this->_imageVersionHashes[$model][$version])) {
-			throw new \RuntimeException(sprintf('Version "%s" for identifier "%s" does not exist!', $version, $model));
+			throw new RuntimeException(sprintf('Version "%s" for identifier "%s" does not exist!', $version, $model));
 		}
+
 		return $this->_imageVersionHashes[$model][$version];
 	}
 
 	/**
 	 * Check that the image versions exist before doing something with them.
 	 *
-	 * @throws \RuntimeException
+	 * @throws RuntimeException
 	 * @param string $identifier
 	 * @param array $versions
 	 * @return void
 	 */
 	protected function _checkImageVersions($identifier, array $versions) {
 		if (!isset($this->_imageVersions[$identifier])) {
-			throw new \RuntimeException(sprintf('No image version config found for identifier "%s"!', $identifier));
+			throw new RuntimeException(sprintf('No image version config found for identifier "%s"!', $identifier));
 		}
+
 		foreach ($versions as $version) {
 			if (!isset($this->_imageVersions[$identifier][$version])) {
-				throw new \RuntimeException(sprintf('Invalid version "%s" for identifier "%s"!', $identifier, $version));
+				throw new RuntimeException(sprintf('Invalid version "%s" for identifier "%s"!', $identifier, $version));
 			}
 		}
 	}
@@ -117,19 +126,35 @@ trait ImageProcessingTrait {
 	 * @return array
 	 */
 	public function createImageVersions(EntityInterface $entity, array $versions, array $options = []) {
-		$this->_checkImageVersions($entity->model, $versions);
-
+		$this->_checkImageVersions($entity->get('model'), $versions);
 		$options += $this->_defaultOutput + [
 			'overwrite' => true
 		];
 
 		$result = [];
 		$storage = $this->getStorageAdapter($entity->adapter);
-		foreach ($this->_imageVersions[$entity->model] as $version => $operations) {
+
+		foreach ($this->_imageVersions[$entity->get('model')] as $version => $operations) {
+
 			if (!in_array($version, $versions)) {
 				continue;
 			}
+
 			$saveOptions = $options + ['format' => $entity->extension];
+			$mimeTypeToFileType = [
+				'image/jpg' => 'jpeg',
+				'image/jpeg' => 'jpeg',
+				'image/png' => 'png',
+				'image/gif' => 'gif'
+			];
+
+			if (empty($saveOptions['format'])) {
+				$mime = $entity->get('mime_type');
+				if (isset($mimeTypeToFileType[$mime])) {
+					$saveOptions['format'] = $mimeTypeToFileType[$mime];
+				}
+			}
+
 			if (isset($operations['_output'])) {
 				$saveOptions = $operations['_output'] + $saveOptions;
 				unset($operations['_output']);
@@ -141,21 +166,28 @@ trait ImageProcessingTrait {
 				if ($options['overwrite'] || !$storage->has($path)) {
 					unset($saveOptions['overwrite']);
 
-					$output = $this->createTmpFile();
-					$tmpFile = $this->tmpFile($storage, $this->pathBuilder()->fullPath($entity));
+					$output = StorageUtils::createTmpFile();
+					$tmpFile = $this->_tmpFile($storage, $this->pathBuilder()->fullPath($entity));
+
 					$this->imageProcessor()->open($tmpFile);
 					$this->imageProcessor()->batchProcess($output, $operations, $saveOptions);
+
 					$storage->write($path, file_get_contents($output), true);
 
 					unlink($tmpFile);
 					unlink($output);
 				}
+
 				$result[$version] = [
 					'status' => 'success',
 					'path' => $path,
-					'hash' => $this->getImageVersionHash($entity->model, $version)
+					'hash' => $this->getImageVersionHash($entity->get('model'), $version)
 				];
 			} catch (\Exception $e) {
+				$this->log($e->getMessage(), LogLevel::ERROR, [
+					'fileStorage'
+				]);
+
 				$result[$version] = [
 					'status' => 'error',
 					'error' => $e->getMessage(),
@@ -164,7 +196,23 @@ trait ImageProcessingTrait {
 				];
 			}
 		}
+
 		return $result;
+	}
+
+	protected function _tmpFile($Storage, $path, $tmpFolder = null) {
+		try {
+			$tmpFile = StorageUtils::createTmpFile($tmpFolder);
+			file_put_contents($tmpFile, $Storage->read($path));
+
+			return $tmpFile;
+		} catch (\Exception $e) {
+			$this->log($e->getMessage(), LogLevel::ERROR, [
+				'fileStorage'
+			]);
+
+			throw new StorageException(sprintf('Failed to create the temporary file %s.', $tmpFile));
+		}
 	}
 
 	/**
@@ -177,11 +225,11 @@ trait ImageProcessingTrait {
 	 * @return array
 	 */
 	public function removeImageVersions(EntityInterface $entity, array $versions, array $options = []) {
-		$this->_checkImageVersions($entity->model, $versions);
+		$this->_checkImageVersions($entity->get('model'), $versions);
 
 		$result = [];
 		foreach ($versions as $version) {
-			$hash = $this->getImageVersionHash($entity->model, $version);
+			$hash = $this->getImageVersionHash($entity->get('model'), $version);
 			$path = $this->pathBuilder()->fullPath($entity, ['fileSuffix' => '.' . $hash]);
 			$result[$version] = [
 				'status' => 'success',
@@ -202,13 +250,14 @@ trait ImageProcessingTrait {
 	 * Gets all image version config keys for a specific identifier.
 	 *
 	 * @param string $identifier
-	 * @throws \RuntimeException
+	 * @throws RuntimeException
 	 * @return array
 	 */
 	public function getAllVersionsKeysForModel($identifier) {
 		if (!isset($this->_imageVersions[$identifier])) {
-			throw new \RuntimeException(sprintf('No image config present for identifier "%s"!', $identifier));
+			throw new RuntimeException(sprintf('No image config present for identifier "%s"!', $identifier));
 		}
+
 		return array_keys($this->_imageVersions[$identifier]);
 	}
 
@@ -221,7 +270,7 @@ trait ImageProcessingTrait {
 	public function createAllImageVersions(EntityInterface $entity, array $options = []) {
 		return $this->createImageVersions(
 			$entity,
-			$this->getAllVersionsKeysForModel($entity->model),
+			$this->getAllVersionsKeysForModel($entity->get('model')),
 			$options
 		);
 	}
@@ -235,7 +284,7 @@ trait ImageProcessingTrait {
 	public function removeAllImageVersions(EntityInterface $entity, array $options = []) {
 		return $this->removeImageVersions(
 			$entity,
-			$this->getAllVersionsKeysForModel($entity->model),
+			$this->getAllVersionsKeysForModel($entity->get('model')),
 			$options
 		);
 	}
@@ -250,16 +299,17 @@ trait ImageProcessingTrait {
 	 * @return string
 	 */
 	public function imageVersionPath(EntityInterface $entity, $version, $type = 'fullPath', $options = []) {
+
 		if (empty($version)) {
 			// Temporary fix for GH #116, this should be fixed in the helper and by
 			// introducing getting an URL by event as well in the long run.
 			return $this->pathBuilder()->url($entity, $options);
 		} else {
-			$hash = $this->getImageVersionHash($entity->model, $version);
+			$hash = $this->getImageVersionHash($entity->get('model'), $version);
 		}
 
 		$output = $this->_defaultOutput + ['format' => $entity->extension];
-		$operations = $this->_imageVersions[$entity->model][$version];
+		$operations = $this->_imageVersions[$entity->get('model')][$version];
 		if (isset($operations['_output'])) {
 			$output = $operations['_output'] + $output;
 		}

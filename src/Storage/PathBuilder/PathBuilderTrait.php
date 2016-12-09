@@ -8,6 +8,7 @@
 namespace Burzum\FileStorage\Storage\PathBuilder;
 
 use Cake\Core\App;
+use InvalidArgumentException;
 use RuntimeException;
 
 trait PathBuilderTrait {
@@ -56,9 +57,11 @@ trait PathBuilderTrait {
 			$this->_pathBuilder = $name;
 			return $this->_pathBuilder;
 		}
+
 		if ($name !== null) {
 			$this->_pathBuilder = $this->createPathBuilder($name, $options);
 		}
+
 		return $this->_pathBuilder;
 	}
 
@@ -85,7 +88,7 @@ trait PathBuilderTrait {
 		}
 
 		if (!$pathBuilder instanceof PathBuilderInterface) {
-			throw new \InvalidArgumentException('The first arg does not implement PathBuilderInterface');
+			throw new InvalidArgumentException('The first arg does not implement PathBuilderInterface');
 		}
 
 		$this->_pathBuilder = $pathBuilder;
