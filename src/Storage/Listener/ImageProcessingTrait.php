@@ -211,7 +211,7 @@ trait ImageProcessingTrait {
 				'fileStorage'
 			]);
 
-			throw new StorageException(sprintf('Failed to create the temporary file %s.', $tmpFile));
+			throw new StorageException(sprintf('Failed to create the temporary file %s.', $tmpFile), $e->getCode(), $e);
 		}
 	}
 

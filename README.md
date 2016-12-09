@@ -48,13 +48,15 @@ List of supported Adapters
 Requirements
 ------------
 
- * PHP 5.4+
+ * PHP 5.6+
  * CakePHP 3.0
  * Gaufrette Library (included as composer dependency)
 
 Optional but required for image processing:
 
- * The [Imagine Image processing plugin](https://github.com/burzum/cakephp-imagine-plugin) if you want to process and storag images.
+ * The [Imagine Image processing plugin](https://github.com/burzum/cakephp-imagine-plugin) if you want to process and store images.
+ 
+You can still implement whatever file processing you want very easy. It's not tied to Imagine. 
 
 Documentation
 -------------

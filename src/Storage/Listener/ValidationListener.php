@@ -1,38 +1,68 @@
 <?php
 namespace Burzum\FileStorage\Storage\Listener;
 
+use Burzum\FileStorage\Model\Table\FileStorageTable;
+use Cake\Event\Event;
+use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use RuntimeException;
 
 class ValidationListener {
 
+	/**
+	 * Configuration
+	 *
+	 * @var array
+	 */
 	public $config = [];
 
+	/**
+	 * Constructor
+	 *
+	 * @param array $config
+	 */
 	public function __construct(array $config = []) {
 		if (!isset($config['passDefaultValidator'])) {
 			$config['passDefaultValidator'] = false;
 		}
-		if (!isset($config['models'])) {
-			$config['model'] = FileStorageTable::class;
+		if (!isset($config['model'])) {
+			$config['model'] = [FileStorageTable::class];
 		}
 		$this->config = $config;
 	}
 
+	/**
+	 * Implemented events
+	 *
+	 * @return array
+	 */
 	public function implementedEvents() {
 		return [
 			'Model.initialize' => 'initialize'
 		];
 	}
 
+	/**
+	 * Model initialize event callback
+	 *
+	 * @param \Cake\Event\Event $event Event
+	 * @return void
+	 */
 	public function initialize(Event $event) {
 		$table = $event->subject();
-		if (!$table instanceof $this->config['model']) {
-			return;
+		foreach ($this->config['model'] as $modelClassName) {
+			if (!$table instanceof $modelClassName) {
+				return;
+			}
 		}
 
+		$this->_setValidators($table);
+	}
+
+	protected function _setValidators(Table $table) {
 		$methods = get_class_methods($this);
 		foreach ($methods as $method) {
-			if (substr($method, -9) === 'Validator') {
+			if (substr($method, 0, 10) === 'validation') {
 				if ($this->config['passDefaultValidator']) {
 					$validator = $table->validator('default');
 				} else {
@@ -41,10 +71,10 @@ class ValidationListener {
 
 				$validator = $this->{$method}($validator);
 				if (!$validator instanceof Validator) {
-					throw new RuntimeException();
+					throw new RuntimeException('Object must be of type ' . Validator::class . '. Method ' . $method . ' returned ' . get_class($validator));
 				}
 
-				$table->validator(substr($method, 0, -9), $validator);
+				$table->validator(lcfirst(substr($method, 10)), $validator);
 			}
 		}
 	}

@@ -13,17 +13,12 @@ use Burzum\FileStorage\Storage\StorageTrait;
 use Burzum\FileStorage\Storage\StorageUtils;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Datasource\EntityInterface;
-use Cake\Error\Debugger;
 use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventListenerInterface;
-use Cake\Event\EventManager;
-use Cake\Event\EventManagerTrait;
-use Cake\Filesystem\Folder;
 use Cake\Log\LogTrait;
 use Cake\ORM\Table;
 use Cake\Utility\MergeVariablesTrait;
-use Cake\Utility\Text;
 use Psr\Log\LogLevel;
 
 /**
@@ -163,6 +158,7 @@ abstract class AbstractListener implements EventListenerInterface {
 			$message = 'The listener `%s` doesn\'t allow the `%s` adapter class! Probably because it can\'t work with it.';
 			throw new StorageException(sprintf($message, get_class($this), $className));
 		}
+
 		return ($event->subject() instanceof Table && $this->_modelFilter($event));
 	}
 
