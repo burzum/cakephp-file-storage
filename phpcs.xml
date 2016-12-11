@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<ruleset name="PSA">
+	<rule ref=".\vendor\fig-r\psr2r-sniffer\PSR2R\ruleset.xml"/>
+	<file>./src</file>
+	<file>./tests</file>
+</ruleset>
