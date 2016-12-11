@@ -2,8 +2,6 @@
 namespace Burzum\FileStorage\Test\TestCase\Model\Table;
 
 use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
-use Cake\Core\Plugin;
-use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
 

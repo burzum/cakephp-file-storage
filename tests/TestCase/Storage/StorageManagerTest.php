@@ -8,8 +8,8 @@
  */
 namespace Burzum\FileStorage\Test\TestCase\Lib;
 
-use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
 use Burzum\FileStorage\Storage\StorageManager;
+use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
 
 class StorageManagerTest extends FileStorageTestCase {
 
@@ -67,4 +67,5 @@ class StorageManagerTest extends FileStorageTestCase {
 		$this->assertFalse($result);
 		StorageManager::config('Local', $config);
 	}
+
 }

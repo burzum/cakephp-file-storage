@@ -12,49 +12,49 @@ use Cake\TestSuite\Fixture\TestFixture;
 
 class ItemFixture extends TestFixture {
 
-/**
- * Name
- *
- * @var string $name
- */
+	/**
+	 * Name
+	 *
+	 * @var string
+	 */
 	public $name = 'Item';
 
-/**
- * Table
- *
- * @var array $table
- */
+	/**
+	 * Table
+	 *
+	 * @var string
+	 */
 	public $table = 'items';
 
-/**
- * Fields
- *
- * @var array
- */
-	public $fields = array(
-		'id' => array('type' => 'uuid', 'null' => true, 'default' => NULL, 'length' => 36),
-		'name' => array('type' => 'string', 'null' => true, 'default' => NULL),
+	/**
+	 * Fields
+	 *
+	 * @var array
+	 */
+	public $fields = [
+		'id' => ['type' => 'uuid', 'null' => true, 'default' => null, 'length' => 36],
+		'name' => ['type' => 'string', 'null' => true, 'default' => null],
 		'_constraints' => [
 			'primary' => ['type' => 'primary', 'columns' => ['id']],
 		]
-	);
+	];
 
-/**
- * Records
- *
- * @var array
- */
+	/**
+	 * Records
+	 *
+	 * @var array
+	 */
 	public $records = [
 		[
-			'id'  => 'item-1',
+			'id' => 'item-1',
 			'name' => 'Cake',
 		],
 		[
-			'id'  => 'item-2',
+			'id' => 'item-2',
 			'name' => 'More Cake',
 		],
 		[
-			'id'  => 'item-3',
+			'id' => 'item-3',
 			'name' => 'A lot Cake',
 		],
 	];

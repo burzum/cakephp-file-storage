@@ -26,9 +26,9 @@ class FileStorageTestCase extends TestCase {
 	 *
 	 * @var array
 	 */
-	public $fixtures = array(
+	public $fixtures = [
 		'plugin.Burzum\FileStorage.FileStorage'
-	);
+	];
 
 	/**
 	 * Listeners to be used in tests.
@@ -82,37 +82,37 @@ class FileStorageTestCase extends TestCase {
 		}
 
 		Configure::write('FileStorage.basePath', $this->testPath);
-		Configure::write('FileStorage.imageSizes', array(
-			'Test' => array(
-				't50' => array(
-					'thumbnail' => array(
+		Configure::write('FileStorage.imageSizes', [
+			'Test' => [
+				't50' => [
+					'thumbnail' => [
 						'mode' => 'outbound',
-						'width' => 50, 'height' => 50)),
-				't150' => array(
-					'thumbnail' => array(
+						'width' => 50, 'height' => 50]],
+				't150' => [
+					'thumbnail' => [
 						'mode' => 'outbound',
 						'width' => 150, 'height' => 150
-					)
-				)
-			),
+					]
+				]
+			],
 			'UserAvatar' => [
-				'small' => array(
-					'thumbnail' => array(
+				'small' => [
+					'thumbnail' => [
 						'mode' => 'inbound',
 						'width' => 80,
 						'height' => 80
-					)
-				)
+					]
+				]
 			]
-		));
+		]);
 
 		StorageUtils::generateHashes();
 
-		StorageManager::config('Local', array(
+		StorageManager::config('Local', [
 			'adapterOptions' => [$this->testPath, true],
 			'adapterClass' => '\Gaufrette\Adapter\Local',
 			'class' => '\Gaufrette\Filesystem'
-		));
+		]);
 
 		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
 		$this->ImageStorage = TableRegistry::get('Burzum/FileStorage.ImageStorage');
@@ -179,4 +179,5 @@ class FileStorageTestCase extends TestCase {
 			touch($this->testPath . $file);
 		}
 	}
+
 }

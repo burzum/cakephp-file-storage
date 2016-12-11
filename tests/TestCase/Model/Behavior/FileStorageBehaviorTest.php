@@ -2,24 +2,25 @@
 namespace Burzum\FileStorage\Test\TestCase\Model\Behavior;
 
 use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
+use Cake\Core\Plugin;
 use Cake\Event\Event;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
-use Cake\Core\Plugin;
 
 class FileStorageTestTable extends Table {
 
-	/**
-	 * Initialize
-	 *
-	 * @param array $config
-	 * @return void
-	 */
+		/**
+				 * Initialize
+				 *
+				 * @param array $config
+				 * @return void
+				 */
 		public function initialize(array $config) {
 			parent::initialize($config);
 			$this->table('file_storage');
 			$this->addBehavior('Burzum/FileStorage.FileStorage');
 		}
+
 }
 
 /**
@@ -30,7 +31,7 @@ class StorageBehaviorTest extends FileStorageTestCase {
 	/**
 	 * Holds the instance of the table
 	 *
-	 * @var \Burzum\FileStorage\Model\Table\FileStorageTable
+	 * @var \Burzum\FileStorage\Model\Table\FileStorageTable|null
 	 */
 	public $FileStorage = null;
 
@@ -99,7 +100,7 @@ class StorageBehaviorTest extends FileStorageTestCase {
 
 		$entity = $this->FileStorage->get('file-storage-1');
 		$entity->adapter = 'Local';
-		$event = new Event('FileStorage.afterDelete',  $this->FileStorage, [
+		$event = new Event('FileStorage.afterDelete', $this->FileStorage, [
 			'entity' => $entity,
 			'adapter' => 'Local'
 		]);
@@ -129,7 +130,7 @@ class StorageBehaviorTest extends FileStorageTestCase {
 			]
 		], ['accessibleFields' => ['*' => true]]);
 
-		$event = new Event('Model.beforeSave',  $this->FileStorage, [
+		$event = new Event('Model.beforeSave', $this->FileStorage, [
 			'entity' => $entity,
 		]);
 
@@ -140,4 +141,5 @@ class StorageBehaviorTest extends FileStorageTestCase {
 		$this->assertEquals($entity->mime_type, 'image/jpeg');
 		$this->assertEquals($entity->model, 'file_storage');
 	}
+
 }

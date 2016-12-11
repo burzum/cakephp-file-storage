@@ -7,11 +7,11 @@ use Cake\TestSuite\TestCase;
 
 class StorageExceptionTest extends TestCase {
 
-/**
- * testSetAndGetEntity
- *
- * @return void
- */
+	/**
+	 * testSetAndGetEntity
+	 *
+	 * @return void
+	 */
 	public function testSetAndGetEntity() {
 		$FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
 		$entity = $FileStorage->newEntity([], ['accessibleFields' => ['*' => true]]);
@@ -19,4 +19,5 @@ class StorageExceptionTest extends TestCase {
 		$exception->setEntity($entity);
 		$this->assertEquals($exception->getEntity(), $entity);
 	}
+
 }

@@ -1,10 +1,10 @@
 <?php
 namespace Burzum\FileStorage\Test\TestCase\Model\Behavior;
 
-use Cake\ORM\TableRegistry;
-use Cake\ORM\Table;
-use Cake\Core\Plugin;
 use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
+use Cake\Core\Plugin;
+use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 
 /**
  * Upload Validator Behavior Test
@@ -33,18 +33,19 @@ class VoidUploadModel extends Table {
 	 */
 	public $useTable = false;
 
-	/**
-	 * Initialize
-	 *
-	 * @param array $config
-	 * @return void
-	 */
+		/**
+				 * Initialize
+				 *
+				 * @param array $config
+				 * @return void
+				 */
 		public function initialize(array $config) {
 			parent::initialize($config);
 			$this->addBehavior('Burzum/FileStorage.UploadValidator', [
 				'localFile' => true
 			]);
 		}
+
 }
 
 /**
@@ -52,25 +53,25 @@ class VoidUploadModel extends Table {
  */
 class UploadValidatorBehaviorTest extends FileStorageTestCase {
 
-/**
- * Holds the instance of the table
- *
- * @var mixed
- */
+	/**
+	 * Holds the instance of the table
+	 *
+	 * @var mixed|null
+	 */
 	public $Article = null;
 
-/**
- * Fixtures
- *
- * @var array
- */
+	/**
+	 * Fixtures
+	 *
+	 * @var array
+	 */
 	public $fixtures = [];
 
-/**
- * startTest
- *
- * @return void
- */
+	/**
+	 * startTest
+	 *
+	 * @return void
+	 */
 	public function setUp() {
 		$this->Table = new VoidUploadModel();
 //		$this->Table->addBehavior('Burzum/FileStorage.UploadValidator', [
@@ -80,30 +81,30 @@ class UploadValidatorBehaviorTest extends FileStorageTestCase {
 		$this->testFilePath = Plugin::path('Burzum/FileStorage') . 'Test' . DS . 'Fixture' . DS . 'File' . DS;
 	}
 
-/**
- * endTest
- *
- * @return void
- */
+	/**
+	 * endTest
+	 *
+	 * @return void
+	 */
 	public function tearDown() {
 		unset($this->Table);
 		TableRegistry::clear();
 	}
 
-/**
- * configureUploadValidation
- *
- * @return void
- */
+	/**
+	 * configureUploadValidation
+	 *
+	 * @return void
+	 */
 	public function testConfigureUploadValidation() {
 		$this->Table->configureUploadValidation();
 	}
 
-/**
- * testRemoveUploadValidationRules
- *
- * @return void
- */
+	/**
+	 * testRemoveUploadValidationRules
+	 *
+	 * @return void
+	 */
 	public function testRemoveUploadValidationRules() {
 		$this->Table->removeUploadValidationRules();
 	}

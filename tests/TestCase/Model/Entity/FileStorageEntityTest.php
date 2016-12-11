@@ -2,10 +2,9 @@
 namespace Burzum\FileStorage\Test\TestCase\Model\Entity;
 
 use Burzum\FileStorage\Storage\Listener\LocalListener;
-use Cake\Event\Event;
+use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
 use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
-use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
 
 /**
  * File Storage Entity Test
@@ -16,20 +15,20 @@ use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
  */
 class FileStorageEntityTest extends FileStorageTestCase {
 
-/**
- * Fixtures
- *
- * @var array
- */
-	public $fixtures = array(
+	/**
+	 * Fixtures
+	 *
+	 * @var array
+	 */
+	public $fixtures = [
 		'plugin.Burzum\FileStorage.FileStorage'
-	);
+	];
 
-/**
- * startTest
- *
- * @return void
- */
+	/**
+	 * startTest
+	 *
+	 * @return void
+	 */
 	public function setUp() {
 		parent::setUp();
 		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
@@ -37,22 +36,22 @@ class FileStorageEntityTest extends FileStorageTestCase {
 		EventManager::instance()->on($listener);
 	}
 
-/**
- * endTest
- *
- * @return void
- */
+	/**
+	 * endTest
+	 *
+	 * @return void
+	 */
 	public function tearDown() {
 		parent::tearDown();
 		unset($this->FileStorage);
 		TableRegistry::clear();
 	}
 
-/**
- * testGetPath
- *
- * @return void
- */
+	/**
+	 * testGetPath
+	 *
+	 * @return void
+	 */
 	public function testGetPath() {
 		$entity = $this->FileStorage->get('file-storage-1');
 		$result = $entity->path();
@@ -62,4 +61,5 @@ class FileStorageEntityTest extends FileStorageTestCase {
 		$result = $entity->url();
 		$this->assertEquals($result, 'Item/14/83/23/filestorage1/filestorage1.png');
 	}
+
 }

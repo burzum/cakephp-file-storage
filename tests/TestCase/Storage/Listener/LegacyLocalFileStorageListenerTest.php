@@ -1,10 +1,9 @@
 <?php
 namespace Burzum\FileStorage\Test\TestCase\Storage\Listener;
 
-use Cake\Event\Event;
-use Cake\Core\Plugin;
 use Cake\Core\Configure;
-use Cake\Core\InstanceConfigTrait;
+use Cake\Core\Plugin;
+use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -15,9 +14,9 @@ class LegacyLocalFileStorageListenerTest extends TestCase {
 	 *
 	 * @var array
 	 */
-	public $fixtures = array(
+	public $fixtures = [
 		'plugin.Burzum\FileStorage.FileStorage'
-	);
+	];
 
 	/**
 	 * setUp
@@ -93,4 +92,5 @@ class LegacyLocalFileStorageListenerTest extends TestCase {
 		$this->listener->afterSave($event, $entity);
 		$this->assertEquals($entity->path, 'files' . DS . '05' . DS . '17' . DS . '68' . DS . '06c0e8e2442411e5a151feff819cdc9f' . DS);
 	}
+
 }

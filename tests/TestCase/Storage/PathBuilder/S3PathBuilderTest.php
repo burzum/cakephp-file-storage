@@ -2,26 +2,25 @@
 namespace Burzum\FileStorage\Test\TestCase\Storage\PathBuilder;
 
 use Burzum\FileStorage\Storage\PathBuilder\S3PathBuilder;
-use Cake\Core\InstanceConfigTrait;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 class S3PathBuilderTest extends TestCase {
 
-/**
- * Fixtures
- *
- * @var array
- */
-	public $fixtures = array(
+	/**
+	 * Fixtures
+	 *
+	 * @var array
+	 */
+	public $fixtures = [
 		'plugin.Burzum\FileStorage.FileStorage'
-	);
+	];
 
-/**
- * setUp
- *
- * @return void
- */
+	/**
+	 * setUp
+	 *
+	 * @return void
+	 */
 	public function setUp() {
 		parent::setUp();
 		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
@@ -41,15 +40,16 @@ class S3PathBuilderTest extends TestCase {
 		$this->entity->accessible('id', true);
 	}
 
-/**
- * testUrl
- *
- * @return void
- * @todo finish me
- */
+	/**
+	 * testUrl
+	 *
+	 * @return void
+	 * @todo finish me
+	 */
 	public function testUrl() {
 		$builder = new S3PathBuilder();
 		$result = $builder->url($this->entity);
 		//debug($result);
 	}
+
 }

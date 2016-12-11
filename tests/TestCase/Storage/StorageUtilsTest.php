@@ -1,10 +1,10 @@
 <?php
 namespace Burzum\FileStorage\Test\TestCase\Lib\Utility;
 
+use Burzum\FileStorage\Storage\StorageUtils;
+use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
-use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
-use Burzum\FileStorage\Storage\StorageUtils;
 
 /**
  * Storage Utils Test
@@ -20,11 +20,11 @@ class StorageUtilsTest extends FileStorageTestCase {
 		$this->fileFixtures = Plugin::path('Burzum/FileStorage') . 'tests' . DS . 'Fixture' . DS . 'File' . DS;
 	}
 
-/**
- * testRandomPath
- *
- * @return void
- */
+	/**
+	 * testRandomPath
+	 *
+	 * @return void
+	 */
 	public function testRandomPath() {
 		$this->skipIf(PHP_INT_SIZE === 8);
 
@@ -35,21 +35,21 @@ class StorageUtilsTest extends FileStorageTestCase {
 		$this->assertEquals($result, '48' . DS . '75' . DS . '05' . DS);
 	}
 
-/**
- * testTrimPath
- *
- * @return void
- */
+	/**
+	 * testTrimPath
+	 *
+	 * @return void
+	 */
 	public function testTrimPath() {
 		$result = StorageUtils::trimPath('foobar/');
 		$this->assertEquals($result, 'foobar');
 	}
 
-/**
- * testNormalizePath
- *
- * @return void
- */
+	/**
+	 * testNormalizePath
+	 *
+	 * @return void
+	 */
 	public function testNormalizePath() {
 		if (DS == '\\') {
 			$result = StorageUtils::normalizePath('/nice/path/test');
@@ -60,40 +60,40 @@ class StorageUtilsTest extends FileStorageTestCase {
 		}
 	}
 
-/**
- * testNormalizeGlobalFilesArray
- *
- * @return void
- */
+	/**
+	 * testNormalizeGlobalFilesArray
+	 *
+	 * @return void
+	 */
 
 	public function testNormalizeGlobalFilesArray() {
-		$data = $_FILES = array(
-			'name' => array
-			(
+		$data = $_FILES = [
+			'name' =>
+			[
 				0 => 'foo.txt',
 				1 => 'bar.txt'
-			),
-			'type' => Array
-			(
+			],
+			'type' =>
+			[
 				0 => 'text/plain',
 				1 => 'text/plain'
-			),
-			'tmp_name' => Array
-			(
+			],
+			'tmp_name' =>
+			[
 				0 => '/tmp/phpYzdqkD',
 				1 => '/tmp/phpeEwEWG'
-			),
-			'error' => Array
-			(
+			],
+			'error' =>
+			[
 				0 => 0,
 				1 => 0
-			),
-			'size' => Array
-			(
+			],
+			'size' =>
+			[
 				0 => 123,
 				1 => 456
-			)
-		);
+			]
+		];
 		$expected = [
 			0 => [
 				'name' => 'foo.txt',
@@ -111,33 +111,33 @@ class StorageUtilsTest extends FileStorageTestCase {
 			]
 		];
 
-		$data = array(
-			'name' => array
-			(
+		$data = [
+			'name' =>
+			[
 				0 => 'foo.txt',
 				1 => 'bar.txt'
-			),
-			'type' => Array
-			(
+			],
+			'type' =>
+			[
 				0 => 'text/plain',
 				1 => 'text/plain'
-			),
-			'tmp_name' => Array
-			(
+			],
+			'tmp_name' =>
+			[
 				0 => '/tmp/phpYzdqkD',
 				1 => '/tmp/phpeEwEWG'
-			),
-			'error' => Array
-			(
+			],
+			'error' =>
+			[
 				0 => 0,
 				1 => 0
-			),
-			'size' => Array
-			(
+			],
+			'size' =>
+			[
 				0 => 123,
 				1 => 456
-			)
-		);
+			]
+		];
 
 		$result = StorageUtils::normalizeGlobalFilesArray($data);
 		$this->assertEquals($result, $expected);
@@ -146,49 +146,49 @@ class StorageUtilsTest extends FileStorageTestCase {
 		$this->assertEquals($result, $expected);
 	}
 
-/**
- * testHashOperations
- *
- * @return void
- */
+	/**
+	 * testHashOperations
+	 *
+	 * @return void
+	 */
 	public function testHashOperations() {
-		$result = StorageUtils::hashOperations(array(
+		$result = StorageUtils::hashOperations([
 			'mode' => 'inbound',
 			'width' => 80,
 			'height' => 80
-		));
+		]);
 		$this->assertEquals($result, '8c70933e');
 	}
 
-/**
- * testGenerateHashes
- *
- * @return void
- */
+	/**
+	 * testGenerateHashes
+	 *
+	 * @return void
+	 */
 	public function testGenerateHashes() {
-		Configure::write('FileStorage.imageSizes', array(
-			'Test' => array(
-				't50' => array(
-					'thumbnail' => array(
+		Configure::write('FileStorage.imageSizes', [
+			'Test' => [
+				't50' => [
+					'thumbnail' => [
 						'mode' => 'outbound',
-						'width' => 50, 'height' => 50)),
-				't150' => array(
-					'thumbnail' => array(
+						'width' => 50, 'height' => 50]],
+				't150' => [
+					'thumbnail' => [
 						'mode' => 'outbound',
 						'width' => 150, 'height' => 150
-					)
-				)
-			),
+					]
+				]
+			],
 			'UserAvatar' => [
-				'small' => array(
-					'thumbnail' => array(
+				'small' => [
+					'thumbnail' => [
 						'mode' => 'inbound',
 						'width' => 80,
 						'height' => 80
-					)
-				)
+					]
+				]
 			]
-		));
+		]);
 
 		$expected = [
 			'Test' => [
@@ -204,21 +204,22 @@ class StorageUtilsTest extends FileStorageTestCase {
 		$this->assertEquals($result, $expected);
 	}
 
-/**
- * testGenerateHashesRuntimeException
- *
- * @expectedException \RuntimeException
- */
+	/**
+	 * testGenerateHashesRuntimeException
+	 *
+	 * @expectedException \RuntimeException
+ * @return void
+	 */
 	public function testGenerateHashesRuntimeException() {
 		Configure::write('FileStorage.imageSizes', null);
 		StorageUtils::generateHashes();
 	}
 
-/**
- * testFileExtension
- *
- * @return void
- */
+	/**
+	 * testFileExtension
+	 *
+	 * @return void
+	 */
 	public function testFileExtension() {
 		$result = StorageUtils::fileExtension($this->fileFixtures . 'titus.jpg', true);
 		$this->assertEquals($result, 'jpg');
@@ -227,11 +228,11 @@ class StorageUtilsTest extends FileStorageTestCase {
 		$this->assertEquals($result, 'else');
 	}
 
-/**
- * testUploadArray
- *
- * @return void
- */
+	/**
+	 * testUploadArray
+	 *
+	 * @return void
+	 */
 	public function testUploadArray() {
 		$expected = [
 			'name' => 'titus.jpg',
@@ -244,11 +245,11 @@ class StorageUtilsTest extends FileStorageTestCase {
 		$this->assertEquals($result, $expected);
 	}
 
-/**
- * testGetFileHash
- *
- * @return void
- */
+	/**
+	 * testGetFileHash
+	 *
+	 * @return void
+	 */
 	public function testGetFileHash() {
 		$result = StorageUtils::getFileHash($this->fileFixtures . 'titus.jpg');
 		$this->assertEquals($result, 'd68da24d79835d70d5d8a544f62616d0e51af191');
@@ -257,12 +258,14 @@ class StorageUtilsTest extends FileStorageTestCase {
 		$this->assertEquals($result, '29574141b2c44cc029828f6c5c6d3cd2');
 	}
 
-/**
- * testGetFileHashInvalidArgumentException
- *
- * @expectedException \InvalidArgumentException
- */
+	/**
+	 * testGetFileHashInvalidArgumentException
+	 *
+	 * @expectedException \InvalidArgumentException
+ * @return void
+	 */
 	public function testGetFileHashInvalidArgumentException() {
 		StorageUtils::getFileHash($this->fileFixtures . 'titus.jpg', 'invalid-hash-method!');
 	}
+
 }

@@ -24,6 +24,7 @@ class TestValidationListener extends ValidationListener {
 
 		return $validator;
 	}
+
 }
 
 class AbstractListenerTest extends TestCase {
@@ -33,9 +34,9 @@ class AbstractListenerTest extends TestCase {
 	 *
 	 * @var array
 	 */
-	public $fixtures = array(
+	public $fixtures = [
 		'plugin.Burzum\FileStorage.FileStorage'
-	);
+	];
 
 	/**
 	 * {@inheritDoc}

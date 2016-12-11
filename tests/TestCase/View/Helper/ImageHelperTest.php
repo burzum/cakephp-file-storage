@@ -3,11 +3,11 @@ namespace Burzum\FileStorage\Test\TestCase\View\Helper;
 
 use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
 use Burzum\FileStorage\View\Helper\ImageHelper;
-use Cake\View\View;
-use Cake\View\Helper\HtmlHelper;
-use Cake\Network\Request;
 use Cake\Core\Configure;
 use Cake\Event\EventManager;
+use Cake\Network\Request;
+use Cake\View\Helper\HtmlHelper;
+use Cake\View\View;
 
 /**
  * ImageHelperTest
@@ -21,14 +21,14 @@ class ImageHelperTest extends FileStorageTestCase {
 	/**
 	 * Image Helper
 	 *
-	 * @var ImageHelper
+	 * @var \Burzum\FileStorage\View\Helper\ImageHelper|null
 	 */
 	public $Image = null;
 
 	/**
 	 * Image Helper
 	 *
-	 * @var \Cake\View\View
+	 * @var \Cake\View\View|null
 	 */
 	public $View = null;
 
@@ -144,4 +144,5 @@ class ImageHelperTest extends FileStorageTestCase {
 		$result = $this->Image->fallbackImage([], [], 't150');
 		$this->assertEquals($result, '');
 	}
+
 }

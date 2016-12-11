@@ -2,8 +2,6 @@
 namespace Burzum\FileStorage\Test\TestCase\Storage\Listener;
 
 use Burzum\FileStorage\Storage\Listener\AbstractListener;
-use Cake\Core\InstanceConfigTrait;
-use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 class TestAbstractListener extends AbstractListener {
@@ -11,6 +9,7 @@ class TestAbstractListener extends AbstractListener {
 	public function implementedEvents() {
 		return [];
 	}
+
 }
 
 class AbstractListenerTest extends TestCase {
@@ -20,9 +19,9 @@ class AbstractListenerTest extends TestCase {
 	 *
 	 * @var array
 	 */
-	public $fixtures = array(
+	public $fixtures = [
 		'plugin.Burzum\FileStorage.FileStorage'
-	);
+	];
 
 	/**
 	 * testPathBuilder
@@ -36,4 +35,5 @@ class AbstractListenerTest extends TestCase {
 		$result = $Listener->pathBuilder();
 		$this->assertInstanceOf('\Burzum\FileStorage\Storage\PathBuilder\BasePathBuilder', $result);
 	}
+
 }

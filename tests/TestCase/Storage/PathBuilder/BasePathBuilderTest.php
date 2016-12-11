@@ -2,7 +2,6 @@
 namespace Burzum\FileStorage\Test\TestCase\Storage\PathBuilder;
 
 use Burzum\FileStorage\Storage\PathBuilder\BasePathBuilder;
-use Cake\Core\InstanceConfigTrait;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -14,6 +13,7 @@ class TestBasePathBuilder extends BasePathBuilder {
 	public function randomPathTestMethod($string) {
 		return $string . 'test';
 	}
+
 }
 
 class BasePathBuilderTest extends TestCase {
@@ -23,9 +23,9 @@ class BasePathBuilderTest extends TestCase {
 	 *
 	 * @var array
 	 */
-	public $fixtures = array(
+	public $fixtures = [
 		'plugin.Burzum\FileStorage.FileStorage'
-	);
+	];
 
 	public function setUp() {
 		parent::setUp();
@@ -151,6 +151,7 @@ class BasePathBuilderTest extends TestCase {
 	 * testEnsureSlashInvalidArgumentException
 	 *
 	 * @expectedException \InvalidArgumentException
+	 * @return void
 	 */
 	public function testEnsureSlashInvalidArgumentException() {
 		$string = 'foo/bar';
@@ -190,4 +191,5 @@ class BasePathBuilderTest extends TestCase {
 		$result = $builder->stripDashes('with-dashes-!');
 		$this->assertEquals($result, 'withdashes!');
 	}
+
 }

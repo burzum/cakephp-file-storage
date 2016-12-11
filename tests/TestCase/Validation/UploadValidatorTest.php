@@ -13,18 +13,18 @@ use Burzum\FileStorage\Validation\UploadValidator;
  */
 class UploadValidatorTest extends FileStorageTestCase {
 
-/**
- * Fixtures
- *
- * @var array
- */
+	/**
+	 * Fixtures
+	 *
+	 * @var array
+	 */
 	public $fixtures = [];
 
-/**
- * startTest
- *
- * @return void
- */
+	/**
+	 * startTest
+	 *
+	 * @return void
+	 */
 	public function setUp() {
 		parent::setUp();
 		$this->Validator = new UploadValidator();
@@ -37,30 +37,30 @@ class UploadValidatorTest extends FileStorageTestCase {
 		];
 	}
 
-/**
- * tearDown
- *
- * @return void
- */
+	/**
+	 * tearDown
+	 *
+	 * @return void
+	 */
 	public function tearDown() {
 		parent::tearDown();
 		unset($this->Validator);
 	}
 
-/**
- * testMimeType
- *
- * @return void
- */
+	/**
+	 * testMimeType
+	 *
+	 * @return void
+	 */
 	public function testFilesize() {
 		$this->assertFalse($this->Validator->mimeType($this->fileUpload, ['image/gif']));
 	}
 
-/**
- * testMimeType
- *
- * @return void
- */
+	/**
+	 * testMimeType
+	 *
+	 * @return void
+	 */
 	public function testMimeType() {
 		$this->assertFalse($this->Validator->mimeType($this->fileUpload, ['image/gif']));
 		$this->assertTrue($this->Validator->mimeType($this->fileUpload, ['image/jpeg']));
@@ -68,11 +68,11 @@ class UploadValidatorTest extends FileStorageTestCase {
 		$this->assertTrue($this->Validator->mimeType($this->fileUpload, 'image/jpeg'));
 	}
 
-/**
- * testImageHeight
- *
- * @return void
- */
+	/**
+	 * testImageHeight
+	 *
+	 * @return void
+	 */
 	public function testExtension() {
 		$this->assertTrue($this->Validator->extension($this->fileUpload, ['jpg', 'gif']));
 		$this->assertTrue($this->Validator->extension($this->fileUpload, 'jpg'));
@@ -80,11 +80,11 @@ class UploadValidatorTest extends FileStorageTestCase {
 		$this->assertFalse($this->Validator->extension($this->fileUpload, 'png'));
 	}
 
-/**
- * testUploadErrors
- *
- * @return void
- */
+	/**
+	 * testUploadErrors
+	 *
+	 * @return void
+	 */
 	public function testUploadErrors() {
 		$this->assertTrue($this->Validator->uploadErrors(['error' => UPLOAD_ERR_OK]));
 		$this->assertFalse($this->Validator->uploadErrors(['error' => UPLOAD_ERR_INI_SIZE]));
@@ -97,33 +97,33 @@ class UploadValidatorTest extends FileStorageTestCase {
 		$this->assertFalse($this->Validator->uploadErrors(['error' => UPLOAD_ERR_EXTENSION]));
 	}
 
-/**
- * testImageHeight
- *
- * @return void
- */
+	/**
+	 * testImageHeight
+	 *
+	 * @return void
+	 */
 	public function testImageHeight() {
 		$this->assertTrue($this->Validator->imageHeight($this->fileUpload, '>', 100));
 		$this->assertTrue($this->Validator->imageHeight($this->fileUpload, '<', 2000));
 		$this->assertTrue($this->Validator->imageHeight($this->fileUpload, '==', 768));
 	}
 
-/**
- * testImageWidth
- *
- * @return void
- */
+	/**
+	 * testImageWidth
+	 *
+	 * @return void
+	 */
 	public function testImageWidth() {
 		$this->assertTrue($this->Validator->imageWidth($this->fileUpload, '>', 100));
 		$this->assertTrue($this->Validator->imageWidth($this->fileUpload, '<', 2000));
 		$this->assertTrue($this->Validator->imageWidth($this->fileUpload, '==', 512));
 	}
 
-/**
- * testIsUploadArray
- *
- * @return void
- */
+	/**
+	 * testIsUploadArray
+	 *
+	 * @return void
+	 */
 	public function testIsUploadArray() {
 		$upload = $this->fileUpload;
 		$this->assertTrue($this->Validator->isUploadArray($upload));

@@ -6,17 +6,16 @@
  */
 namespace Burzum\FileStorage\Test\TestCase\Storage\PathBuilder;
 
-use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
 use Burzum\FileStorage\Storage\Listener\AbstractListener;
 use Burzum\FileStorage\Storage\Listener\ImageProcessingTrait;
-use Cake\Core\InstanceConfigTrait;
+use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
 use Cake\Core\Configure;
-use Cake\ORM\TableRegistry;
-use Cake\TestSuite\TestCase;
 use Cake\Filesystem\Folder;
+use Cake\ORM\TableRegistry;
 
 class TraitTestClass extends AbstractListener {
 	use ImageProcessingTrait;
+
 	public $_defaultConfig = [
 		'pathBuilder' => 'Base',
 		'pathBuilderOptions' => [
@@ -33,18 +32,19 @@ class TraitTestClass extends AbstractListener {
 	public function implementedEvents() {
 		return [];
 	}
+
 }
 
 class ImageProcessingTraitTest extends FileStorageTestCase {
 
-/**
- * Fixtures
- *
- * @var array
- */
-	public $fixtures = array(
+	/**
+	 * Fixtures
+	 *
+	 * @var array
+	 */
+	public $fixtures = [
 		'plugin.Burzum\FileStorage.FileStorage'
-	);
+	];
 
 	public function setUp() {
 		parent::setUp();
@@ -87,11 +87,11 @@ class ImageProcessingTraitTest extends FileStorageTestCase {
 			->getMock();
 	}
 
-/**
- * testCreateImageVersions
- *
- * @return void
- */
+	/**
+	 * testCreateImageVersions
+	 *
+	 * @return void
+	 */
 	public function testCreateImageVersions() {
 		$entity = $this->FileStorage->get('file-storage-3');
 		$listener = new TraitTestClass();
@@ -131,31 +131,33 @@ class ImageProcessingTraitTest extends FileStorageTestCase {
 		$this->assertFileExists($this->testPath . '95' . DS . '61' . DS . '80' . DS . 'filestorage3' . DS . 'titus.41e51a3f.jpg');
 	}
 
-/**
- * testCheckImageVersionsRuntimeExceptionIdentifier
- *
- * @expectedException \RuntimeException
- */
+	/**
+	 * testCheckImageVersionsRuntimeExceptionIdentifier
+	 *
+	 * @expectedException \RuntimeException
+ * @return void
+	 */
 	public function testCheckImageVersionsRuntimeExceptionIdentifier() {
 		$listener = new TraitTestClass();
 		$listener->checkImageVersions('does not exist', []);
 	}
 
-/**
- * testCheckImageVersionsRuntimeExceptionVersion
- *
- * @expectedException \RuntimeException
- */
+	/**
+	 * testCheckImageVersionsRuntimeExceptionVersion
+	 *
+	 * @expectedException \RuntimeException
+ * @return void
+	 */
 	public function testCheckImageVersionsRuntimeExceptionVersion() {
 		$listener = new TraitTestClass();
 		$listener->checkImageVersions('Item', ['does not exist!']);
 	}
 
-/**
- * getAllVersionsKeysForModel
- *
- * @return void
- */
+	/**
+	 * getAllVersionsKeysForModel
+	 *
+	 * @return void
+	 */
 	public function testGetAllVersionsKeysForModel() {
 		$listener = new TraitTestClass();
 		$result = $listener->getAllVersionsKeysForModel('Item');
@@ -165,4 +167,5 @@ class ImageProcessingTraitTest extends FileStorageTestCase {
 		];
 		$this->assertEquals($result, $expected);
 	}
+
 }

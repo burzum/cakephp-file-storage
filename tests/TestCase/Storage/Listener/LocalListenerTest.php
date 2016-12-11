@@ -1,10 +1,9 @@
 <?php
 namespace Burzum\FileStorage\Test\TestCase\Storage\Listener;
 
-use Cake\Event\Event;
-use Cake\Core\Plugin;
 use Cake\Core\Configure;
-use Cake\Core\InstanceConfigTrait;
+use Cake\Core\Plugin;
+use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -15,9 +14,9 @@ class LocalListenerTest extends TestCase {
 	 *
 	 * @var array
 	 */
-	public $fixtures = array(
+	public $fixtures = [
 		'plugin.Burzum\FileStorage.FileStorage'
-	);
+	];
 
 	/**
 	 * setUp
@@ -149,4 +148,5 @@ class LocalListenerTest extends TestCase {
 		$this->listener->afterDelete($event, $entity);
 		$this->assertTrue($event->result);
 	}
+
 }

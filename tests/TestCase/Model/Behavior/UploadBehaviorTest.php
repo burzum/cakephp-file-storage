@@ -2,10 +2,8 @@
 namespace Burzum\FileStorage\Test\TestCase\Model\Behavior;
 
 use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
-use Cake\Event\Event;
-use Cake\ORM\Table;
-use Cake\ORM\TableRegistry;
 use Cake\Core\Plugin;
+use Cake\ORM\TableRegistry;
 
 /**
  * UploadBehaviorTest
@@ -15,7 +13,7 @@ class UploadBehaviorTest extends FileStorageTestCase {
 	/**
 	 * Holds the instance of the table
 	 *
-	 * @var \Cake\ORM\Table
+	 * @var \Cake\ORM\Table|null
 	 */
 	public $Items = null;
 
@@ -62,4 +60,5 @@ class UploadBehaviorTest extends FileStorageTestCase {
 		$result = $this->Items->saveFile($file);
 		//debug($result);
 	}
+
 }

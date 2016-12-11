@@ -12,51 +12,51 @@ use Cake\TestSuite\Fixture\TestFixture;
 
 class FileStorageFixture extends TestFixture {
 
-/**
- * Model name
- *
- * @var string $model
- */
+	/**
+	 * Model name
+	 *
+	 * @var string
+	 */
 	public $name = 'FileStorage';
 
-/**
- * Table name
- *
- * @var string $useTable
- */
+	/**
+	 * Table name
+	 *
+	 * @var string
+	 */
 	public $table = 'file_storage';
 
-/**
- * Fields definition
- *
- * @var array $fields
- */
-	public $fields = array(
-		'id' => array('type' => 'uuid', 'null' => true, 'default' => NULL, 'length' => 36),
-		'user_id' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 36),
-		'foreign_key' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 36),
-		'model' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 64),
-		'filename' => array('type' => 'string', 'null' => false, 'default' => NULL),
-		'filesize' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 16),
-		'mime_type' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 32),
-		'extension' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 5),
-		'hash' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 64),
-		'path' => array('type' => 'string', 'null' => true, 'default' => NULL),
-		'adapter' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 32, 'comment' => 'Gaufrette Storage Adapter Class'),
-		'created' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
-		'modified' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
+	/**
+	 * Fields definition
+	 *
+	 * @var array
+	 */
+	public $fields = [
+		'id' => ['type' => 'uuid', 'null' => true, 'default' => null, 'length' => 36],
+		'user_id' => ['type' => 'string', 'null' => true, 'default' => null, 'length' => 36],
+		'foreign_key' => ['type' => 'string', 'null' => true, 'default' => null, 'length' => 36],
+		'model' => ['type' => 'string', 'null' => true, 'default' => null, 'length' => 64],
+		'filename' => ['type' => 'string', 'null' => false, 'default' => null],
+		'filesize' => ['type' => 'integer', 'null' => true, 'default' => null, 'length' => 16],
+		'mime_type' => ['type' => 'string', 'null' => true, 'default' => null, 'length' => 32],
+		'extension' => ['type' => 'string', 'null' => true, 'default' => null, 'length' => 5],
+		'hash' => ['type' => 'string', 'null' => true, 'default' => null, 'length' => 64],
+		'path' => ['type' => 'string', 'null' => true, 'default' => null],
+		'adapter' => ['type' => 'string', 'null' => true, 'default' => null, 'length' => 32, 'comment' => 'Gaufrette Storage Adapter Class'],
+		'created' => ['type' => 'datetime', 'null' => true, 'default' => null],
+		'modified' => ['type' => 'datetime', 'null' => true, 'default' => null],
 		'_constraints' => [
 			'primary' => ['type' => 'primary', 'columns' => ['id']],
 		]
-	);
+	];
 
-/**
- * Records
- *
- * @var array
- */
-	public $records = array(
-		array(
+	/**
+	 * Records
+	 *
+	 * @var array
+	 */
+	public $records = [
+		[
 			'id' => 'file-storage-1',
 			'user_id' => 'user-1',
 			'foreign_key' => 'item-1',
@@ -70,8 +70,8 @@ class FileStorageFixture extends TestFixture {
 			'adapter' => 'Local',
 			'created' => '2012-01-01 12:00:00',
 			'modified' => '2012-01-01 12:00:00',
-		),
-		array(
+		],
+		[
 			'id' => 'file-storage-2',
 			'user_id' => 'user-1',
 			'foreign_key' => 'item-1',
@@ -85,8 +85,8 @@ class FileStorageFixture extends TestFixture {
 			'adapter' => 'Local',
 			'created' => '2012-01-01 12:00:00',
 			'modified' => '2012-01-01 12:00:00',
-		),
-		array(
+		],
+		[
 			'id' => 'file-storage-3',
 			'user_id' => 'user-1',
 			'foreign_key' => 'item-2',
@@ -100,8 +100,8 @@ class FileStorageFixture extends TestFixture {
 			'adapter' => 'Local',
 			'created' => '2012-01-01 12:00:00',
 			'modified' => '2012-01-01 12:00:00',
-		),
-		array(
+		],
+		[
 			'id' => 'file-storage-4',
 			'user_id' => 'user-1',
 			'foreign_key' => 'item-4',
@@ -115,6 +115,7 @@ class FileStorageFixture extends TestFixture {
 			'adapter' => 'S3',
 			'created' => '2012-01-01 12:00:00',
 			'modified' => '2012-01-01 12:00:00',
-		)
-	);
+		]
+	];
+
 }

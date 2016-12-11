@@ -1,6 +1,8 @@
 <?php
 namespace Burzum\FileStorage\Validation;
 
+use InvalidArgumentException;
+
 trait ImageSizeValidationTrait {
 
 	/**
@@ -12,13 +14,13 @@ trait ImageSizeValidationTrait {
 	 *    array('height' => array('==', 100)) will only be true if the image has a
 	 *    height of exactly 100px. See the CakePHP core class and method
 	 *    Validation::comparison for all operators.
-	 * @return boolean true
+	 * @return bool true
 	 * @see Validation::comparison()
 	 * @throws \InvalidArgumentException
 	 */
 	public function validateImageSize($check, array $options = []) {
 		if (!isset($options['height']) && !isset($options['width'])) {
-			throw new \InvalidArgumentException('Missing image size validation options! You must provide a height and / or width.');
+			throw new InvalidArgumentException('Missing image size validation options! You must provide a height and / or width.');
 		}
 
 		$imageFile = $this->_extractTmpFile($check);

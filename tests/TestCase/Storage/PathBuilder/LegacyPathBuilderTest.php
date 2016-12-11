@@ -2,7 +2,6 @@
 namespace Burzum\FileStorage\Test\TestCase\Storage\PathBuilder;
 
 use Burzum\FileStorage\Storage\PathBuilder\LegacyPathBuilder;
-use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -13,9 +12,9 @@ class LegacyPathBuilderTest extends TestCase {
 	 *
 	 * @var array
 	 */
-	public $fixtures = array(
+	public $fixtures = [
 		'plugin.Burzum\FileStorage.FileStorage'
-	);
+	];
 
 	/**
 	 * setUp
@@ -58,4 +57,5 @@ class LegacyPathBuilderTest extends TestCase {
 		$expected = 'files' . DS . '35' . DS . '20' . DS . '80' . DS . 'filestorage3' . DS . 'filestorage3.jpg';
 		$this->assertEquals($expected, $result);
 	}
+
 }
