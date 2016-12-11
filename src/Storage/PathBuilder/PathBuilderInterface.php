@@ -6,7 +6,7 @@
  */
 namespace Burzum\FileStorage\Storage\PathBuilder;
 
-use \Cake\Datasource\EntityInterface;
+use Cake\Datasource\EntityInterface;
 
 interface PathBuilderInterface {
 
@@ -48,4 +48,5 @@ interface PathBuilderInterface {
 	 * @return string
 	 */
 	public function url(EntityInterface $entity, array $options = []);
+
 }

@@ -8,13 +8,12 @@
  */
 namespace Burzum\FileStorage\Shell;
 
-use Cake\Core\Configure;
+use Burzum\FileStorage\Storage\StorageManager;
 use Cake\Console\Shell;
-use Cake\Datasource\ResultSetDecorator;
+use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
-use Burzum\FileStorage\Storage\StorageManager;
 use Exception;
 
 /**
@@ -28,14 +27,15 @@ class ImageVersionShell extends Shell {
 
 	/**
 	 * Storage Table Object
-	 * @var \Cake\ORM\Table
+	 *
+	 * @var \Cake\ORM\Table|null
 	 */
 	public $Table = null;
 
 	/**
 	 * Limit
 	 *
-	 * @var integer
+	 * @var int
 	 */
 	public $limit = 10;
 
@@ -184,7 +184,7 @@ class ImageVersionShell extends Shell {
 
 		foreach ($operations as $version => $operation) {
 			try {
-				$this->_loop($this->command, $this->args[0], array($version => $operation), $options);
+				$this->_loop($this->command, $this->args[0], [$version => $operation], $options);
 			} catch (Exception $e) {
 				$this->abort($e->getMessage());
 			}
@@ -210,7 +210,7 @@ class ImageVersionShell extends Shell {
 		}
 
 		try {
-			$this->_loop('generate', $model, array($version => $operations), $options);
+			$this->_loop('generate', $model, [$version => $operations], $options);
 		} catch (Exception $e) {
 			$this->abort($e->getMessage());
 		}
@@ -221,6 +221,7 @@ class ImageVersionShell extends Shell {
 	 *
 	 * @param string $model
 	 * @param string $version
+	 * @return void
 	 */
 	public function remove($model, $version) {
 		$operations = Configure::read('FileStorage.imageSizes.' . $model . '.' . $version);
@@ -231,7 +232,7 @@ class ImageVersionShell extends Shell {
 		}
 
 		try {
-			$this->_loop('remove', $model, array($version => $operations));
+			$this->_loop('remove', $model, [$version => $operations]);
 		} catch (Exception $e) {
 			$this->out($e->getMessage());
 			$this->_stop();
@@ -244,9 +245,10 @@ class ImageVersionShell extends Shell {
 	 * @param string $action
 	 * @param $model
 	 * @param array $operations
+	 * @return void
 	 */
 	protected function _loop($action, $model, $operations = [], $options = []) {
-		if (!in_array($action, array('generate', 'remove', 'regenerate'))) {
+		if (!in_array($action, ['generate', 'remove', 'regenerate'])) {
 			$this->_stop();
 		}
 
@@ -270,14 +272,14 @@ class ImageVersionShell extends Shell {
 					if ($Storage === false) {
 						$this->err(__d('file_storage', 'Cant load adapter config {0} for record {1}', $image->adapter, $image->id));
 					} else {
-						$payload = array(
+						$payload = [
 							'entity' => $image,
 							'storage' => $Storage,
 							'operations' => $operations,
 							'versions' => array_keys($operations),
 							'table' => $this->Table,
 							'options' => $options
-						);
+						];
 
 						if ($action == 'generate' || $action == 'regenerate') {
 							$Event = new Event('ImageVersion.createVersion', $this->Table, $payload);
@@ -302,7 +304,7 @@ class ImageVersionShell extends Shell {
 	 *
 	 * @param string $identifier
 	 * @param array $extensions
-	 * @return integer
+	 * @return int
 	 */
 	protected function _getCount($identifier, array $extensions = ['jpg', 'png', 'jpeg']) {
 		return $this->Table
@@ -319,7 +321,7 @@ class ImageVersionShell extends Shell {
 	 * @param int $limit
 	 * @param int $offset
 	 * @param array $extensions
-	 * @return ResultSetDecorator
+	 * @return \Cake\Datasource\ResultSetDecorator
 	 */
 	protected function _getRecords($identifier, $limit, $offset, array $extensions = ['jpg', 'png', 'jpeg']) {
 		return $this->Table
@@ -330,4 +332,5 @@ class ImageVersionShell extends Shell {
 			->offset($offset)
 			->all();
 	}
+
 }

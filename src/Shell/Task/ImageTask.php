@@ -8,8 +8,8 @@
  */
 namespace Burzum\FileStorage\Shell\Task;
 
-use Burzum\FileStorage\Storage\StorageTrait;
 use Burzum\FileStorage\Storage\StorageException;
+use Burzum\FileStorage\Storage\StorageTrait;
 use Cake\Console\Shell;
 use Cake\Event\EventManagerTrait;
 use Cake\ORM\TableRegistry;
@@ -25,8 +25,8 @@ use Cake\ORM\TableRegistry;
  */
 class ImageTask extends Shell {
 
-	use StorageTrait;
 	use EventManagerTrait;
+	use StorageTrait;
 
 	/**
 	 * {@inheritDoc}
@@ -118,8 +118,8 @@ class ImageTask extends Shell {
 	 * Gets the records for the loop.
 	 *
 	 * @param string $identifier
-	 * @param integer $limit
-	 * @param integer $offset
+	 * @param int $limit
+	 * @param int $offset
 	 * @return \Cake\ORM\ResultSet
 	 */
 	public function _getRecords($identifier, $limit, $offset) {
@@ -135,7 +135,7 @@ class ImageTask extends Shell {
 	 * Gets the amount of records for an identifier in the DB.
 	 *
 	 * @param string $identifier
-	 * @return integer
+	 * @return int
 	 */
 	protected function _getCount($identifier) {
 		$count = $this->_getCountQuery($identifier)->count();
@@ -187,4 +187,5 @@ class ImageTask extends Shell {
 		]);
 		return $parser;
 	}
+
 }

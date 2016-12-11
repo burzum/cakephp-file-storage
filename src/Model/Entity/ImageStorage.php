@@ -2,6 +2,7 @@
 namespace Burzum\FileStorage\Model\Entity;
 
 use Cake\Core\Configure;
+use InvalidArgumentException;
 
 /**
  * FileStorage Entity.
@@ -24,9 +25,10 @@ class ImageStorage extends FileStorage {
 		$options['image'] = $this;
 		$options['hash'] = Configure::read('FileStorage.imageHashes.' . $this->_properties['model'] . '.' . $version);
 		if (empty($options['hash'])) {
-			throw new \InvalidArgumentException(sprintf('No valid version key (Identifier: `%s` Key: `%s`) passed!', $this->get('model'), $version));
+			throw new InvalidArgumentException(sprintf('No valid version key (Identifier: `%s` Key: `%s`) passed!', $this->get('model'), $version));
 		}
 		$event = $this->dispatchEvent('ImageVersion.getVersions', $options);
 		return $event->result;
 	}
+
 }

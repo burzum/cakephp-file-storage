@@ -16,7 +16,7 @@ class StorageException extends Exception {
 	/**
 	 * Entity
 	 *
-	 * @var \Cake\Datasource\EntityInterface $entity Entity object.
+	 * @var \Cake\Datasource\EntityInterface Entity object.
 	 */
 	protected $_entity;
 
@@ -38,4 +38,5 @@ class StorageException extends Exception {
 	public function getEntity() {
 		return $this->_entity;
 	}
+
 }

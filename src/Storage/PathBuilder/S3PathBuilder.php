@@ -39,8 +39,8 @@ class S3PathBuilder extends BasePathBuilder {
 	 * Builds the cloud base URL for the given bucket and location.
 	 *
 	 * @param string $bucket
-	 * @param string $bucketPrefix
-	 * @param string $cfDist
+	 * @param string|null $bucketPrefix
+	 * @param string|null $cfDist
 	 * @return string
 	 */
 	protected function _buildCloudUrl($bucket, $bucketPrefix = null, $cfDist = null) {
@@ -75,4 +75,5 @@ class S3PathBuilder extends BasePathBuilder {
 
 		return $pathPrefix . $path . $this->filename($entity, $options);
 	}
+
 }

@@ -6,6 +6,7 @@
  */
 namespace Burzum\FileStorage\Storage\Listener;
 
+use BadMethodCallException;
 use Burzum\FileStorage\Event\EventFilterTrait;
 use Burzum\FileStorage\Storage\PathBuilder\PathBuilderTrait;
 use Burzum\FileStorage\Storage\StorageException;
@@ -20,6 +21,7 @@ use Cake\Log\LogTrait;
 use Cake\ORM\Table;
 use Cake\Utility\MergeVariablesTrait;
 use Psr\Log\LogLevel;
+use RuntimeException;
 
 /**
  * AbstractListener
@@ -44,6 +46,7 @@ abstract class AbstractListener implements EventListenerInterface {
 	use StorageTrait;
 
 	/**
+	 * @var null
 	 * The adapter class
 	 *
 	 * @param null|string
@@ -147,7 +150,7 @@ abstract class AbstractListener implements EventListenerInterface {
 	 * Check if the event is of a type or subject object of type model we want to
 	 * process with this listener.
 	 *
-	 * @param Event $event
+	 * @param \Cake\Event\Event $event
 	 * @return bool
 	 * @throws \Burzum\FileStorage\Storage\StorageException
 	 */
@@ -159,7 +162,7 @@ abstract class AbstractListener implements EventListenerInterface {
 			throw new StorageException(sprintf($message, get_class($this), $className));
 		}
 
-		return ($event->subject() instanceof Table && $this->_modelFilter($event));
+		return $event->subject() instanceof Table && $this->_modelFilter($event);
 	}
 
 	public function _modelFilter() {
@@ -169,8 +172,8 @@ abstract class AbstractListener implements EventListenerInterface {
 	/**
 	 * Detects if an entities model field has name of one of the allowed models set.
 	 *
-	 * @param Event $event
-	 * @return boolean
+	 * @param \Cake\Event\Event $event
+	 * @return bool
 	 */
 	protected function _identifierFilter(Event $event) {
 		if (is_array($this->_config['identifiers'])) {
@@ -186,7 +189,7 @@ abstract class AbstractListener implements EventListenerInterface {
 	 * Gets the adapter class name from the adapter config
 	 *
 	 * @param string $configName Name of the configuration
-	 * @return boolean|string False if the config is not present
+	 * @return bool|string False if the config is not present
 	 */
 	protected function _getAdapterClassFromConfig($configName) {
 		$config = $this->storageConfig($configName);
@@ -229,7 +232,7 @@ abstract class AbstractListener implements EventListenerInterface {
 	 *
 	 * @param Adapter $Storage Storage adapter
 	 * @param string $path Path / key of the storage adapter file
-	 * @param string $tmpFolder
+	 * @param string|null $tmpFolder
 	 * @throws \Burzum\FileStorage\Storage\StorageException
 	 * @return string
 	 */
@@ -293,8 +296,8 @@ abstract class AbstractListener implements EventListenerInterface {
 	 * conflicts. By default the tmp file is generated using cakes TMP constant +
 	 * folder if passed and a uuid as filename.
 	 *
-	 * @param string $folder
-	 * @param boolean $checkAndCreatePath
+	 * @param string|null $folder
+	 * @param bool|bool $checkAndCreatePath
 	 * @return string For example /var/www/app/tmp/<uuid> or /var/www/app/tmp/<my-folder>/<uuid>
 	 */
 	public function createTmpFile($folder = null, $checkAndCreatePath = true) {
@@ -311,9 +314,8 @@ abstract class AbstractListener implements EventListenerInterface {
 		$pathBuilder = $this->pathBuilder();
 		$method = $event->data['method'];
 		if (!method_exists($pathBuilder, $event->data['method'])) {
-			throw new \BadMethodCallException(sprintf('`%s` does not implement the `%s` method!', get_class($pathBuilder), $method));
-		}
-;
+			throw new BadMethodCallException(sprintf('`%s` does not implement the `%s` method!', get_class($pathBuilder), $method));
+		};
 		$event = $this->dispatchEvent('FileStorage.beforeGetPath', [
 			'entity' => $event->data['entity'],
 			'storageAdapter' => $this->getStorageAdapter($event->data['entity']['adapter']),
@@ -328,7 +330,7 @@ abstract class AbstractListener implements EventListenerInterface {
 			$event->data['entity'];
 		}
 		if (empty($event->data['entity'])) {
-			throw new \RuntimeException('No entity present!');
+			throw new RuntimeException('No entity present!');
 		}
 
 		$path = $pathBuilder->{$method}($event->data['entity'], $event->data);
@@ -366,9 +368,9 @@ abstract class AbstractListener implements EventListenerInterface {
 			$Storage = $this->getStorageAdapter($entity['adapter']);
 			$Storage->write($entity['path'], file_get_contents($entity[$fileField]['tmp_name']), true);
 
-			$event->result = $event->subject()->save($entity, array(
+			$event->result = $event->subject()->save($entity, [
 				'checkRules' => false
-			));
+			]);
 
 			$this->_afterStoreFile($event);
 			if ($event->isStopped()) {
@@ -478,4 +480,5 @@ abstract class AbstractListener implements EventListenerInterface {
 			'adapter' => $this->getStorageAdapter($event->data['entity']['adapter'])
 		]);
 	}
+
 }

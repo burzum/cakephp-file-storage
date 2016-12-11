@@ -8,9 +8,9 @@
  */
 namespace Burzum\FileStorage\Shell;
 
-use Cake\Console\Shell;
-use Burzum\FileStorage\Storage\StorageUtils;
 use Burzum\FileStorage\Storage\StorageManager;
+use Burzum\FileStorage\Storage\StorageUtils;
+use Cake\Console\Shell;
 
 class StorageShell extends Shell {
 
@@ -24,12 +24,12 @@ class StorageShell extends Shell {
 	];
 
 	/**
-	 * @inheritdoc
+	 * @inheritDoc
 	 */
 	public function main() {}
 
 	/**
-	 * @inheritdoc
+	 * @inheritDoc
 	 */
 	public function getOptionParser() {
 		$parser = parent::getOptionParser();
@@ -101,4 +101,5 @@ class StorageShell extends Shell {
 			$this->error('Failed to save the file.');
 		}
 	}
+
 }

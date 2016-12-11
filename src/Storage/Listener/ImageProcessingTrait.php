@@ -10,7 +10,7 @@ use Burzum\FileStorage\Storage\StorageUtils;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\Log\LogTrait;
-use Exception;
+use InvalidArgumentException;
 use Psr\Log\LogLevel;
 use RuntimeException;
 
@@ -24,9 +24,13 @@ trait ImageProcessingTrait {
 	use LogTrait;
 
 	protected $_imageProcessorClass = 'Burzum\Imagine\Lib\ImageProcessor';
+
 	protected $_imageProcessor = null;
+
 	protected $_imageVersions = [];
+
 	protected $_imageVersionHashes = [];
+
 	protected $_defaultOutput = [];
 
 	/**
@@ -44,7 +48,7 @@ trait ImageProcessingTrait {
 	 */
 	public function autoProcessImageVersions(EntityInterface $entity, $action) {
 		if (!in_array($action, ['create', 'remove'])) {
-			throw new \InvalidArgumentException(sprintf('Action was `%s` but must be `create` or `remove`', $action));
+			throw new InvalidArgumentException(sprintf('Action was `%s` but must be `create` or `remove`', $action));
 		}
 		$this->_loadImageProcessingFromConfig();
 		if (!isset($this->_imageVersions[$entity->get('model')])) {
@@ -100,7 +104,7 @@ trait ImageProcessingTrait {
 	/**
 	 * Check that the image versions exist before doing something with them.
 	 *
-	 * @throws RuntimeException
+	 * @throws \RuntimeException
 	 * @param string $identifier
 	 * @param array $versions
 	 * @return void
@@ -250,7 +254,7 @@ trait ImageProcessingTrait {
 	 * Gets all image version config keys for a specific identifier.
 	 *
 	 * @param string $identifier
-	 * @throws RuntimeException
+	 * @throws \RuntimeException
 	 * @return array
 	 */
 	public function getAllVersionsKeysForModel($identifier) {
@@ -304,9 +308,9 @@ trait ImageProcessingTrait {
 			// Temporary fix for GH #116, this should be fixed in the helper and by
 			// introducing getting an URL by event as well in the long run.
 			return $this->pathBuilder()->url($entity, $options);
-		} else {
-			$hash = $this->getImageVersionHash($entity->get('model'), $version);
 		}
+
+		$hash = $this->getImageVersionHash($entity->get('model'), $version);
 
 		$output = $this->_defaultOutput + ['format' => $entity->extension];
 		$operations = $this->_imageVersions[$entity->get('model')][$version];
@@ -321,4 +325,5 @@ trait ImageProcessingTrait {
 
 		return $this->pathBuilder()->{$type}($entity, $options);
 	}
+
 }

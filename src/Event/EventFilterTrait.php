@@ -79,19 +79,18 @@ trait EventFilterTrait {
 	 * @return bool;
 	 */
 	public function filterEvent(Event $event) {
-		return (
+		return
 			$this->filterBySubject($event) &&
 			$this->filterByAdaperConfig($event) &&
 			$this->filterByAdapterClass($event) &&
-			$this->filterByModel($event)
-		);
+			$this->filterByModel($event);
 	}
 
 	/**
 	 * Gets the adapter class name from the adapter config
 	 *
 	 * @param string $configName Name of the configuration
-	 * @return boolean|string False if the config is not present
+	 * @return bool|string False if the config is not present
 	 */
 	protected function _getAdapterClassFromConfig($configName) {
 		$config = StorageManager::config($configName);
@@ -100,4 +99,5 @@ trait EventFilterTrait {
 		}
 		return false;
 	}
+
 }

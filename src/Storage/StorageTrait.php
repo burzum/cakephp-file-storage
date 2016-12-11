@@ -49,4 +49,5 @@ trait StorageTrait {
 	public function getStorageManager() {
 		return StorageManager::getInstance();
 	}
+
 }

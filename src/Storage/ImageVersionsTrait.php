@@ -3,8 +3,8 @@ namespace Burzum\FileStorage\Storage;
 
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
-use Cake\Event\EventManager;
 use Cake\Event\Event;
+use Cake\Event\EventManager;
 
 trait ImageVersionsTrait {
 
@@ -61,4 +61,5 @@ trait ImageVersionsTrait {
 		$versionData['original'] = isset($options['originalVersion']) ? $options['originalVersion'] : 'original';
 		return $versionData;
 	}
+
 }

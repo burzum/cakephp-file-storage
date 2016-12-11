@@ -14,6 +14,7 @@ namespace Burzum\FileStorage\Storage\PathBuilder;
 class LegacyPathBuilder extends BasePathBuilder {
 
 	/**
+	 * @var array
 	 * Overriding the defaults to get the matching legacy config.
 	 *
 	 * @inheritDoc
@@ -33,4 +34,5 @@ class LegacyPathBuilder extends BasePathBuilder {
 		$string = str_replace('-', '', $string);
 		return parent::randomPath($string, $level, $method);
 	}
+
 }

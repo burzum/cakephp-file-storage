@@ -18,6 +18,7 @@ class FileStorage extends Entity {
 	use PathBuilderTrait;
 
 	/**
+	 * @var array
 	 * {@inheritdoc}
 	 */
 	protected $_virtual = [
@@ -26,6 +27,7 @@ class FileStorage extends Entity {
 	];
 
 	/**
+	 * @var null
 	 * Path Builder Class.
 	 *
 	 * This is named $_pathBuilderClass because $_pathBuilder is already used by
@@ -36,6 +38,7 @@ class FileStorage extends Entity {
 	protected $_pathBuilderClass = null;
 
 	/**
+	 * @var array
 	 * Path Builder options
 	 *
 	 * @param array
@@ -150,4 +153,5 @@ class FileStorage extends Entity {
 		$event = $this->dispatchEvent('FileStorage.path', $options);
 		return $event->result;
 	}
+
 }

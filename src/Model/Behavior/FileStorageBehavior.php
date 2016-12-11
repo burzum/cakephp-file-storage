@@ -13,8 +13,8 @@ use Burzum\FileStorage\Storage\StorageTrait;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
-use Cake\ORM\Behavior;
 use Cake\Filesystem\File;
+use Cake\ORM\Behavior;
 
 /**
  * Storage Behavior
@@ -72,7 +72,7 @@ class FileStorageBehavior extends Behavior {
 	 * beforeMarshal callback
 	 *
 	 * @param \Cake\Event\Event $event
-	 * @param ArrayAccess $data
+	 * @param \ArrayAccess $data
 	 * @return void
 	 */
 	public function beforeMarshal(Event $event, ArrayAccess $data) {
@@ -144,7 +144,7 @@ class FileStorageBehavior extends Behavior {
 	 * @param \Cake\Event\Event $event
 	 * @param \Cake\Datasource\EntityInterface $entity
 	 * @param array $options
-	 * @return boolean
+	 * @return bool
 	 */
 	public function afterDelete(Event $event, EntityInterface $entity, $options) {
 		$this->dispatchEvent('FileStorage.afterDelete', [
@@ -165,7 +165,7 @@ class FileStorageBehavior extends Behavior {
 	 *
 	 * @param \Cake\Datasource\EntityInterface $entity
 	 * @param string $oldIdField Name of the field in the data that holds the old id.
-	 * @return boolean Returns true if the old record was deleted
+	 * @return bool Returns true if the old record was deleted
 	 */
 	public function deleteOldFileOnSave(EntityInterface $entity, $oldIdField = 'old_file_id') {
 		if (!empty($entity->get($oldIdField)) && $entity->get('model')) {
@@ -231,4 +231,5 @@ class FileStorageBehavior extends Behavior {
 
 		return $results->count();
 	}
+
 }

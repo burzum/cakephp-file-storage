@@ -14,16 +14,22 @@ use Burzum\FileStorage\Storage\StorageUtils;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
+use InvalidArgumentException;
+use RuntimeException;
 
 class ImageProcessor implements EventListenerInterface {
 
-	use StorageTrait;
 	use PathBuilderTrait;
+	use StorageTrait;
 
 	protected $_imageProcessorClass = 'Burzum\Imagine\Lib\ImageProcessor';
+
 	protected $_imageProcessor = null;
+
 	protected $_imageVersions = [];
+
 	protected $_imageVersionHashes = [];
+
 	protected $_defaultOutput = [];
 
 	public function __construct(array $config = []) {
@@ -50,7 +56,8 @@ class ImageProcessor implements EventListenerInterface {
 	 */
 	public function afterStore(Event $event) {
 		$this->pathBuilder($event->subject()->pathBuilder());
-		$this->subject = $event->subject();;
+		$this->subject = $event->subject();
+
 		$this->autoProcessImageVersions($event->data['entity'], 'create');
 	}
 
@@ -81,7 +88,7 @@ class ImageProcessor implements EventListenerInterface {
 	 */
 	public function autoProcessImageVersions(EntityInterface $entity, $action) {
 		if (!in_array($action, ['create', 'remove'])) {
-			throw new \InvalidArgumentException(sprintf('Action was `%s` but must be `create` or `remove`', $action));
+			throw new InvalidArgumentException(sprintf('Action was `%s` but must be `create` or `remove`', $action));
 		}
 		$this->_loadImageProcessingFromConfig();
 		if (!isset($this->_imageVersions[$entity->model])) {
@@ -127,7 +134,7 @@ class ImageProcessor implements EventListenerInterface {
 	 */
 	public function getImageVersionHash($model, $version) {
 		if (empty($this->_imageVersionHashes[$model][$version])) {
-			throw new \RuntimeException(sprintf('Version "%s" for identifier "%s" does not exist!', $version, $model));
+			throw new RuntimeException(sprintf('Version "%s" for identifier "%s" does not exist!', $version, $model));
 		}
 		return $this->_imageVersionHashes[$model][$version];
 	}
@@ -142,11 +149,11 @@ class ImageProcessor implements EventListenerInterface {
 	 */
 	protected function _checkImageVersions($identifier, array $versions) {
 		if (!isset($this->_imageVersions[$identifier])) {
-			throw new \RuntimeException(sprintf('No image version config found for identifier "%s"!', $identifier));
+			throw new RuntimeException(sprintf('No image version config found for identifier "%s"!', $identifier));
 		}
 		foreach ($versions as $version) {
 			if (!isset($this->_imageVersions[$identifier][$version])) {
-				throw new \RuntimeException(sprintf('Invalid version "%s" for identifier "%s"!', $identifier, $version));
+				throw new RuntimeException(sprintf('Invalid version "%s" for identifier "%s"!', $identifier, $version));
 			}
 		}
 	}
@@ -250,7 +257,7 @@ class ImageProcessor implements EventListenerInterface {
 	 */
 	public function getAllVersionsKeysForModel($identifier) {
 		if (!isset($this->_imageVersions[$identifier])) {
-			throw new \RuntimeException(sprintf('No image config present for identifier "%s"!', $identifier));
+			throw new RuntimeException(sprintf('No image config present for identifier "%s"!', $identifier));
 		}
 		return array_keys($this->_imageVersions[$identifier]);
 	}
@@ -297,9 +304,9 @@ class ImageProcessor implements EventListenerInterface {
 			// Temporary fix for GH #116, this should be fixed in the helper and by
 			// introducing getting an URL by event as well in the long run.
 			return $this->pathBuilder()->url($entity, $options);
-		} else {
-			$hash = $this->getImageVersionHash($entity->model, $version);
 		}
+
+		$hash = $this->getImageVersionHash($entity->model, $version);
 
 		$output = $this->_defaultOutput + ['format' => $entity->extension];
 		$operations = $this->_imageVersions[$entity->model][$version];

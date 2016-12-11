@@ -61,4 +61,5 @@ class LegacyLocalFileStorageListener extends LocalListener {
 		];
 		return parent::imageVersionPath($entity, $version, $type, $options);
 	}
+
 }

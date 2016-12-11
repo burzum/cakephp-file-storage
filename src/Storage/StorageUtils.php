@@ -21,7 +21,7 @@ class StorageUtils {
 	 * Return file extension from a given filename.
 	 *
 	 * @param string $name
-	 * @param boolean $realFile
+	 * @param bool|bool $realFile
 	 * @link http://php.net/manual/en/function.pathinfo.php
 	 * @return false|string string or false
 	 */
@@ -45,14 +45,14 @@ class StorageUtils {
 	 * @deprecated Use the randomPath() method from the BasePathBuilder instead.
 	 * @link http://php.net/manual/en/function.crc32.php
 	 * @link https://www.box.com/blog/crc32-checksums-the-good-the-bad-and-the-ugly/
-	 * @throws InvalidArgumentException
+	 * @throws \InvalidArgumentException
 	 * @param mixed $string
-	 * @param integer $level 1 to 5
+	 * @param int|int $level 1 to 5
 	 * @return null|string
 	 */
 	public static function randomPath($string, $level = 3) {
 		if (!$string) {
-			throw new \InvalidArgumentException('First argument is not a string!');
+			throw new InvalidArgumentException('First argument is not a string!');
 		}
 
 		return (new BasePathBuilder())->randomPath($string, $level, 'crc32');
@@ -81,16 +81,16 @@ class StorageUtils {
 	public static function normalizePath($string) {
 		if (DS == '\\') {
 			return str_replace('/', '\\', $string);
-		} else {
-			return str_replace('\\', '/', $string);
 		}
+
+		return str_replace('\\', '/', $string);
 	}
 
 	/**
 	 * Method to normalize the annoying inconsistency of the $_FILE array structure
 	 *
 	 * @link http://de2.php.net/manual/en/features.file-upload.multiple.php#53240
-	 * @param array $files
+	 * @param array|null $files
 	 * @return array Empty array if $_FILE is empty, if not normalize array of Filedata.{n}
 	 */
 	public static function normalizeGlobalFilesArray($files = null) {
@@ -98,7 +98,7 @@ class StorageUtils {
 			$files = $_FILES;
 		}
 
-		$array = array();
+		$array = [];
 		$fileCount = count($files['name']);
 		$fileKeys = array_keys($files);
 
@@ -117,7 +117,7 @@ class StorageUtils {
 	 * @return string
 	 */
 	public static function hashOperations($operations) {
-		self::ksortRecursive($operations);
+		static::ksortRecursive($operations);
 		return substr(md5(serialize($operations)), 0, 8);
 	}
 
@@ -133,14 +133,14 @@ class StorageUtils {
 		} else {
 			$imageSizes = Configure::read($configPath . '.imageSizes');
 		}
-		if (is_null($imageSizes)) {
+		if ($imageSizes === null) {
 			throw new RuntimeException(sprintf('Image processing configuration in "%s" is missing!', $configPath . '.imageSizes'));
 		}
 
-		self::ksortRecursive($imageSizes);
+		static::ksortRecursive($imageSizes);
 		foreach ($imageSizes as $model => $version) {
 			foreach ($version as $name => $operations) {
-				Configure::write($configPath . '.imageHashes.' . $model . '.' . $name, self::hashOperations($operations));
+				Configure::write($configPath . '.imageHashes.' . $model . '.' . $name, static::hashOperations($operations));
 			}
 		}
 
@@ -151,8 +151,8 @@ class StorageUtils {
 	 * Recursive ksort() implementation
 	 *
 	 * @param array $array
-	 * @param integer
-	 * @return boolean
+	 * @param int
+	 * @return bool
 	 * @link https://gist.github.com/601849
 	 */
 	public static function ksortRecursive(&$array, $sortFlags = SORT_REGULAR) {
@@ -162,7 +162,7 @@ class StorageUtils {
 
 		ksort($array, $sortFlags);
 		foreach ($array as &$arr) {
-			self::ksortRecursive($arr, $sortFlags);
+			static::ksortRecursive($arr, $sortFlags);
 		}
 
 		return true;
@@ -172,7 +172,7 @@ class StorageUtils {
 	 * Returns an array that matches the structure of a regular upload for a local file
 	 *
 	 * @param $file The file you want to get an upload array for.
-	 * @param string Name of the file to use in the upload array.
+	 * @param string|null Name of the file to use in the upload array.
 	 * @return array Array that matches the structure of a regular upload
 	 */
 	public static function fileToUploadArray($file, $filename = null) {
@@ -198,12 +198,12 @@ class StorageUtils {
 	 * conflicts. By default the tmp file is generated using cakes TMP constant +
 	 * folder if passed and a uuid as filename.
 	 *
-	 * @param string $folder
-	 * @param boolean $checkAndCreatePath
+	 * @param string|null $folder
+	 * @param bool|bool $checkAndCreatePath
 	 * @return string For example /var/www/app/tmp/<uuid> or /var/www/app/tmp/<my-folder>/<uuid>
 	 */
 	public static function createTmpFile($folder = null, $checkAndCreatePath = true) {
-		if (is_null($folder)) {
+		if ($folder === null) {
 			$folder = TMP;
 		}
 		if ($checkAndCreatePath === true && !is_dir($folder)) {
@@ -216,11 +216,11 @@ class StorageUtils {
 	 * Convenience alias for fileToUploadArray
 	 *
 	 * @param $file
-	 * @param string File with path
+	 * @param string|null File with path
 	 * @return array Array that matches the structure of a regular upload
 	 */
 	public static function uploadArray($file, $filename = null) {
-		return self::fileToUploadArray($file, $filename);
+		return static::fileToUploadArray($file, $filename);
 	}
 
 	/**
@@ -246,4 +246,5 @@ class StorageUtils {
 
 		throw new InvalidArgumentException(sprintf('Invalid hash method "%s" provided!', $method));
 	}
+
 }

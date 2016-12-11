@@ -32,4 +32,5 @@ class LocalListener extends BaseListener {
 	public $_adapterClasses = [
 		'\Gaufrette\Adapter\Local'
 	];
+
 }

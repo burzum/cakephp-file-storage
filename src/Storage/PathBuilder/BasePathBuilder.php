@@ -26,7 +26,7 @@ class BasePathBuilder implements PathBuilderInterface {
 	 *
 	 * @var array
 	 */
-	protected $_defaultConfig = array(
+	protected $_defaultConfig = [
 		'stripUuid' => true,
 		'pathPrefix' => '',
 		'pathSuffix' => '',
@@ -39,7 +39,7 @@ class BasePathBuilder implements PathBuilderInterface {
 		'randomPath' => 'sha1',
 		'modelFolder' => false,
 		'sanitizeFilename' => false,
-	);
+	];
 
 	/**
 	 * Constructor
@@ -141,12 +141,12 @@ class BasePathBuilder implements PathBuilderInterface {
 	 * key conditionally. Overload _pathSuffix() and _pathPrefix() for your custom
 	 * implementation instead of touching this methods.
 	 *
-	 * @see BasePathBuilder::_pathSuffix()
-	 * @see BasePathBuilder::_pathPrefix()
+	 * @see \Array\BasePathBuilder::_pathSuffix()
+	 * @see \Array\BasePathBuilder::_pathPrefix()
 	 * @param \Cake\Datasource\EntityInterface $entity
 	 * @param $path string
 	 * @param $config array
-	 * @param $type string
+	 * @param $type|string string
 	 * @return string
 	 */
 	protected function _pathPreAndSuffix(EntityInterface $entity, $path, array $config, $type = 'suffix') {
@@ -169,7 +169,7 @@ class BasePathBuilder implements PathBuilderInterface {
 	 * Splits the filename in name and extension.
 	 *
 	 * @param string $filename Filename to split in name and extension.
-	 * @param boolean $keepDot Keeps the dot in front of the extension.
+	 * @param bool|bool $keepDot Keeps the dot in front of the extension.
 	 * @return array
 	 */
 	public function splitFilename($filename, $keepDot = false) {
@@ -311,7 +311,7 @@ class BasePathBuilder implements PathBuilderInterface {
 		if (method_exists($this, $method)) {
 			return $this->{$method}($string, $level);
 		}
-		throw new \InvalidArgumentException(sprintf('BasepathBuilder::randomPath() invalid hash `%s` method provided!', $method));
+		throw new InvalidArgumentException(sprintf('BasepathBuilder::randomPath() invalid hash `%s` method provided!', $method));
 	}
 
 	/**
@@ -333,7 +333,7 @@ class BasePathBuilder implements PathBuilderInterface {
 		$path = null;
 		for ($i = 0; $i < $level; $i++) {
 			$decrement = $decrement - 2;
-			$path .= sprintf("%02d" . DS, substr(str_pad('', 2 * $level, '0') . $string, $decrement, 2));
+			$path .= sprintf('%02d' . DS, substr(str_pad('', 2 * $level, '0') . $string, $decrement, 2));
 		}
 
 		return $path;
@@ -365,7 +365,7 @@ class BasePathBuilder implements PathBuilderInterface {
 	 *
 	 * @param string $string
 	 * @param string $position Can be `before`, `after` or `both`
-	 * @param string $ds Directory separator should be / or \, if not set the DS constant is used.
+	 * @param string|null $ds Directory separator should be / or \, if not set the DS constant is used.
 	 * @throws \InvalidArgumentException
 	 * @return string
 	 */
@@ -374,7 +374,7 @@ class BasePathBuilder implements PathBuilderInterface {
 			$method = get_class($this) . '::ensureSlash(): ';
 			throw new InvalidArgumentException(sprintf($method . 'Invalid position `%s`!', $position));
 		}
-		if (is_null($ds)) {
+		if ($ds === null) {
 			$ds = DS;
 		}
 		if ($position === 'before' || $position === 'both') {
@@ -390,4 +390,5 @@ class BasePathBuilder implements PathBuilderInterface {
 
 		return $string;
 	}
+
 }

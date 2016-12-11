@@ -4,16 +4,15 @@ namespace Burzum\FileStorage\Storage\Listener;
 use Burzum\FileStorage\Storage\PathBuilder\PathBuilderTrait;
 use Burzum\FileStorage\Storage\StorageTrait;
 use Cake\Core\Configure;
-use Cake\Event\Event;
 use Cake\Datasource\EntityInterface;
+use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
-use Cake\Log\LogTrait;
 
 class ImageProcessingListener implements EventListenerInterface {
 
-	use StorageTrait;
 	use ImageProcessingTrait;
 	use PathBuilderTrait;
+	use StorageTrait;
 
 	/**
 	 * Returns a list of events this object is implementing. When the class is registered
@@ -71,4 +70,5 @@ class ImageProcessingListener implements EventListenerInterface {
 
 		$this->removeAllImageVersions();
 	}
+
 }

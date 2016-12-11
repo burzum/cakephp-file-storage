@@ -16,7 +16,7 @@ trait PathBuilderTrait {
 	/**
 	 * Local PathBuilderInterface instance.
 	 *
-	 * @var \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
+	 * @var \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface|null
 	 */
 	protected $_pathBuilder = null;
 
@@ -48,7 +48,7 @@ trait PathBuilderTrait {
 	/**
 	 * Getter and setter for the local PathBuilderInterface instance.
 	 *
-	 * @param string|\Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface $name
+	 * @param string|\Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface|null $name
 	 * @param array $options
 	 * @return \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
 	 */
@@ -93,4 +93,5 @@ trait PathBuilderTrait {
 
 		$this->_pathBuilder = $pathBuilder;
 	}
+
 }

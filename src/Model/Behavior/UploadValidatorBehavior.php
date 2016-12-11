@@ -1,13 +1,10 @@
 <?php
 namespace Burzum\FileStorage\Model\Behavior;
 
+use Burzum\FileStorage\Validation\UploadValidator;
 use Cake\Core\Configure;
-use Cake\Event\Event;
-use Cake\Event\EventManager;
-use Cake\ORM\Table;
 use Cake\ORM\Behavior;
-use Cake\Utility\File;
-use Cake\Utility\Number;
+use Cake\ORM\Table;
 use Cake\Utility\Hash;
 
 /**
@@ -32,7 +29,7 @@ class UploadValidatorBehavior extends Behavior {
 	 *
 	 * @var array
 	 */
-	protected $_defaultConfig = array(
+	protected $_defaultConfig = [
 		'fileField' => 'file',
 		'validate' => true,
 		'validator' => 'default',
@@ -44,7 +41,7 @@ class UploadValidatorBehavior extends Behavior {
 		'allowedMime' => [],
 		'allowedExtensions' => [],
 		'localFile' => false
-	);
+	];
 
 	/**
 	 * Constructor
@@ -69,7 +66,7 @@ class UploadValidatorBehavior extends Behavior {
 	 * @return void
 	 */
 	public function configureUploadValidation($validatorName = 'default', $config = []) {
-		$uploadValidator = new \Burzum\FileStorage\Validation\UploadValidator();
+		$uploadValidator = new UploadValidator();
 		$validator = $this->_table->validator($validatorName);
 		$validator->provider('UploadValidator', $uploadValidator);
 
@@ -164,4 +161,5 @@ class UploadValidatorBehavior extends Behavior {
 			$validator->remove($fieldName, $rule);
 		}
 	}
+
 }

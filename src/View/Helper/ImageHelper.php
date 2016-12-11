@@ -1,10 +1,10 @@
 <?php
 namespace Burzum\FileStorage\View\Helper;
 
+use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\Core\Configure;
-use Cake\View\Helper;
+use InvalidArgumentException;
 
 /**
  * ImageHelper
@@ -22,19 +22,19 @@ class ImageHelper extends StorageHelper {
 	 *
 	 * @var array
 	 */
-	public $helpers = array(
+	public $helpers = [
 		'Html'
-	);
+	];
 
 	/**
 	 * Generates an image url based on the image record data and the used Gaufrette adapter to store it
 	 *
 	 * @param array $image FileStorage array record or whatever else table that matches this helpers needs without the model, we just want the record fields
-	 * @param string $version Image version string
+	 * @param string|null $version Image version string
 	 * @param array $options HtmlHelper::image(), 2nd arg options array
 	 * @return string
 	 */
-	public function display($image, $version = null, $options = array()) {
+	public function display($image, $version = null, $options = []) {
 		$url = $this->imageUrl($image, $version, $options);
 		if ($url !== false) {
 			return $this->Html->image($url, $options);
@@ -53,7 +53,7 @@ class ImageHelper extends StorageHelper {
 		if (!empty($version)) {
 			$hash = Configure::read('FileStorage.imageHashes.' . $image['model'] . '.' . $version);
 			if (empty($hash)) {
-				throw new \InvalidArgumentException(sprintf('No valid version key (Identifier: `%s` Key: `%s`) passed!', @$image['model'], $version));
+				throw new InvalidArgumentException(sprintf('No valid version key (Identifier: `%s` Key: `%s`) passed!', @$image['model'], $version));
 			}
 			return $hash;
 		}
@@ -64,9 +64,9 @@ class ImageHelper extends StorageHelper {
 	 * URL
 	 *
 	 * @param array $image FileStorage array record or whatever else table that matches this helpers needs without the model, we just want the record fields
-	 * @param string $version Image version string
+	 * @param string|null $version Image version string
 	 * @param array $options HtmlHelper::image(), 2nd arg options array
-	 * @throws InvalidArgumentException
+	 * @throws \InvalidArgumentException
 	 * @return string
 	 */
 	public function imageUrl($image, $version = null, $options = []) {
@@ -95,7 +95,7 @@ class ImageHelper extends StorageHelper {
 	 *
 	 * @param array $options
 	 * @param array $image
-	 * @param string $version
+	 * @param string|null $version
 	 * @return string
 	 */
 	public function fallbackImage($options = [], $image = [], $version = null) {
@@ -120,4 +120,5 @@ class ImageHelper extends StorageHelper {
 	public function normalizePath($path) {
 		return str_replace('\\', '/', $path);
 	}
+
 }

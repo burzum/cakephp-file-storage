@@ -2,8 +2,8 @@
 namespace Burzum\FileStorage\View\Helper;
 
 use Burzum\FileStorage\Storage\PathBuilder\PathBuilderTrait;
-use Cake\View\View;
 use Cake\View\Helper;
+use Cake\View\View;
 
 /**
  * Storage Helper
@@ -20,6 +20,7 @@ class StorageHelper extends Helper {
 	use PathBuilderTrait;
 
 	/**
+	 * @var array
 	 * Default configuration
 	 */
 	protected $_defaultConfig = [
@@ -56,4 +57,5 @@ class StorageHelper extends Helper {
 			return call_user_func_array([$this->_pathBuilder, $method], $args);
 		}
 	}
+
 }

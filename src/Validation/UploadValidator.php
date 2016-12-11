@@ -2,72 +2,73 @@
 namespace Burzum\FileStorage\Validation;
 
 use Cake\Filesystem\File;
-use Cake\Validation\Validator;
-use Cake\Validation\Validation;
 use Cake\I18n\Number;
+use Cake\Validation\Validation;
+use Cake\Validation\Validator;
+use InvalidArgumentException;
 
 class UploadValidator extends Validator {
 
-/**
- * Upload error message after validation.
- *
- * @var string
- */
+	/**
+	 * Upload error message after validation.
+	 *
+	 * @var string
+	 */
 	protected $_uploadError = '';
 
-/**
- * Upload error message after validation.
- *
- * @var string
- */
+	/**
+	 * Upload error message after validation.
+	 *
+	 * @var string
+	 */
 	protected $_mimeType = '';
 
-/**
- * Upload extension after validation.
- *
- * @var string
- */
+	/**
+	 * Upload extension after validation.
+	 *
+	 * @var string
+	 */
 	protected $_extension = '';
 
-/**
- * Upload file size after validation.
- *
- * @var string
- */
+	/**
+	 * Upload file size after validation.
+	 *
+	 * @var int
+	 */
 	protected $_filesize = 0;
 
-/**
- * Upload error message.
- *
- * @var string
- */
+	/**
+	 * Upload error message.
+	 *
+	 * @var string
+	 */
 	public function __construct() {
 		$this->provider('UploadValidator', $this);
 	}
 
-/**
- * Checks if the file was uploaded via HTTP POST.
- *
- * Note that calling this function before move_uploaded_file() is not necessary,
- * as it does the exact same checks already. It provides no extra security.
- * Only when you're trying to use an uploaded file for something other than
- * moving it to a new location.
- *
- * @link http://php.net/manual/en/function.is-uploaded-file.php
- * @param array $value
- * @return boolean Returns TRUE if the file named by filename was uploaded via HTTP POST.
- */
+	/**
+	 * Checks if the file was uploaded via HTTP POST.
+	 *
+	 * Note that calling this function before move_uploaded_file() is not necessary,
+	 * as it does the exact same checks already. It provides no extra security.
+	 * Only when you're trying to use an uploaded file for something other than
+	 * moving it to a new location.
+	 *
+	 * @link http://php.net/manual/en/function.is-uploaded-file.php
+	 * @param array $value
+	 * @return bool Returns TRUE if the file named by filename was uploaded via HTTP POST.
+	 */
 	public function isUploadedFile($value) {
 		return is_uploaded_file($value['tmp_name']);
 	}
 
-/**
- * Validates that a set field / property is a valid upload array.
- *
- * @deprecated Use \Cake\Utility\Validation::uploadedFile() instead.
- * @param mixed $value
- * @return boolean
- */
+	/**
+	 * Validates that a set field / property is a valid upload array.
+	 *
+	 * @deprecated Use \Cake\Utility\Validation::uploadedFile() instead.
+	 * @param mixed $value
+	 * @return bool
+	 */
 	public function isUploadArray($value) {
 		if (!is_array($value)) {
 			return false;
@@ -82,28 +83,28 @@ class UploadValidator extends Validator {
 		return true;
 	}
 
-/**
- * Validates the filesize.
- *
- * @deprecated Use \Cake\Utility\Validation::fileSize() instead.
- * @param array $value.
- * @param int $size.
- * @param array $context.
- * @param string $operator.
- * @return bool
- */
+	/**
+	 * Validates the filesize.
+	 *
+	 * @deprecated Use \Cake\Utility\Validation::fileSize() instead.
+	 * @param array $value.
+	 * @param int $size.
+	 * @param array|null $context.
+	 * @param string $operator.
+	 * @return bool
+	 */
 	public function fileSize($value, $size, $context = null, $operator = '<') {
 		$this->_filesize = $value['size'];
 		return Validation::fileSize($value, $operator, $size);
 	}
 
-/**
- * Validates extensions.
- *
- * @param array $value.
- * @param array $extensions.
- * @return boolean
- */
+	/**
+	 * Validates extensions.
+	 *
+	 * @param array $value.
+	 * @param array $extensions.
+	 * @return bool
+	 */
 	public function extension($value, $extensions) {
 		if (is_string($extensions)) {
 			$extensions = [$extensions];
@@ -118,14 +119,14 @@ class UploadValidator extends Validator {
 		return true;
 	}
 
-/**
- * Validates mime types.
- *
- * @deprecated Use \Cake\Utility\Validation::mimeType() instead.
- * @param array $value.
- * @param array $mimeTypes.
- * @return boolean
- */
+	/**
+	 * Validates mime types.
+	 *
+	 * @deprecated Use \Cake\Utility\Validation::mimeType() instead.
+	 * @param array $value.
+	 * @param array $mimeTypes.
+	 * @return bool
+	 */
 	public function mimeType($value, $mimeTypes) {
 		if (is_string($mimeTypes)) {
 			$mimeTypes = [$mimeTypes];
@@ -140,16 +141,16 @@ class UploadValidator extends Validator {
 		return true;
 	}
 
-/**
- * Validates the image size.
- *
- * @param array $value
- * @param array $options
- * @return boolean
- */
+	/**
+	 * Validates the image size.
+	 *
+	 * @param array $value
+	 * @param array $options
+	 * @return bool
+	 */
 	public function imageSize($value, $options) {
 		if (!isset($options['height']) && !isset($options['width'])) {
-			throw new \InvalidArgumentException(__d('file_storage', 'Invalid image size validation parameters!'));
+			throw new InvalidArgumentException(__d('file_storage', 'Invalid image size validation parameters!'));
 		}
 		list($width, $height) = getimagesize($value['tmp_name']);
 		if (isset($options['height'])) {
@@ -159,7 +160,7 @@ class UploadValidator extends Validator {
 			$validWidth = Validation::comparison($width, $options['width'][1], $options['width'][0]);
 		}
 		if (isset($validHeight) && isset($validWidth)) {
-			return ($validHeight && $validWidth);
+			return $validHeight && $validWidth;
 		}
 		if (isset($validHeight)) {
 			return $validHeight;
@@ -167,17 +168,17 @@ class UploadValidator extends Validator {
 		if (isset($validWidth)) {
 			return $validWidth;
 		}
-		throw new \InvalidArgumentException('The 2nd argument is missing one or more configuration keyes.');
+		throw new InvalidArgumentException('The 2nd argument is missing one or more configuration keyes.');
 	}
 
-/**
- * Validates the image width.
- *
- * @param array $value
- * @param string $operator
- * @param integer $width
- * @return boolean
- */
+	/**
+	 * Validates the image width.
+	 *
+	 * @param array $value
+	 * @param string $operator
+	 * @param int $width
+	 * @return bool
+	 */
 	public function imageWidth($value, $operator, $width) {
 		return $this->imageSize($value, [
 			'width' => [
@@ -187,14 +188,14 @@ class UploadValidator extends Validator {
 		]);
 	}
 
-/**
- * Validates the image width.
- *
- * @param array $value
- * @param string $operator
- * @param integer $height
- * @return boolean
- */
+	/**
+	 * Validates the image width.
+	 *
+	 * @param array $value
+	 * @param string $operator
+	 * @param int $height
+	 * @return bool
+	 */
 	public function imageHeight($value, $operator, $height) {
 		return $this->imageSize($value, [
 			'height' => [
@@ -204,14 +205,14 @@ class UploadValidator extends Validator {
 		]);
 	}
 
-/**
- * Validates the error value that comes with the file input file.
- *
- * @param array $value
- * @param array $options.
- * @return boolean True on success, if false the error message is set to the models field and also set in $this->_uploadError
- */
-	public function uploadErrors($value, $options = array()) {
+	/**
+	 * Validates the error value that comes with the file input file.
+	 *
+	 * @param array $value
+	 * @param array $options.
+	 * @return bool True on success, if false the error message is set to the models field and also set in $this->_uploadError
+	 */
+	public function uploadErrors($value, $options = []) {
 		$defaults = [
 			'allowNoFileError' => true
 		];
@@ -220,7 +221,7 @@ class UploadValidator extends Validator {
 		} else {
 			$options = $defaults;
 		}
-		if (isset($value['error']) && !is_null($value['error'])) {
+		if (isset($value['error']) && ($value['error'] !== null)) {
 			switch ($value['error']) {
 				case UPLOAD_ERR_OK:
 					return true;
@@ -257,4 +258,5 @@ class UploadValidator extends Validator {
 		$this->_uploadError = '';
 		return true;
 	}
+
 }

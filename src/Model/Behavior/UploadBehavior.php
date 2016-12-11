@@ -150,4 +150,5 @@ class UploadBehavior extends Behavior {
 		$model->save($entity);
 		return $entity;
 	}
+
 }

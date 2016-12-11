@@ -8,6 +8,7 @@ namespace Burzum\FileStorage\Storage\Listener;
 
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
+use InvalidArgumentException;
 
 /**
  * Base FileStorage Event Listener for the CakePHP FileStorage plugin
@@ -133,7 +134,7 @@ class BaseListener extends AbstractListener {
 		$type = $data['pathType'];
 
 		if (!$entity) {
-			throw new \InvalidArgumentException('No image entity provided.');
+			throw new InvalidArgumentException('No image entity provided.');
 		}
 
 		$this->_loadImageProcessingFromConfig();
@@ -165,6 +166,7 @@ class BaseListener extends AbstractListener {
 	 * @param \Cake\Event\Event $event
 	 * @param string $method
 	 * return void
+	 * @return void
 	 */
 	protected function _processImages(Event $event, $method) {
 		if ($this->config('imageProcessing') !== true) {
@@ -192,8 +194,7 @@ class BaseListener extends AbstractListener {
 	 * @param \Cake\Event\Event $event
 	 * @return array
 	 */
-	protected function _getVersionData($event)
-	{
+	protected function _getVersionData($event) {
 		if (isset($event->data['versions'])) {
 			$versions = $event->data['versions'];
 		} elseif (isset($event->data['operations'])) {
@@ -204,4 +205,5 @@ class BaseListener extends AbstractListener {
 
 		return $versions;
 	}
+
 }
