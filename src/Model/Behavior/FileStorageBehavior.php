@@ -1,4 +1,11 @@
 <?php
+/**
+ * File Storage Plugin for CakePHP
+ *
+ * @author Florian Krämer
+ * @copyright 2012 - 2016 Florian Krämer
+ * @license MIT
+ */
 namespace Burzum\FileStorage\Model\Behavior;
 
 use ArrayAccess;

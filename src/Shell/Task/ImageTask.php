@@ -1,5 +1,7 @@
 <?php
 /**
+ * File Storage Plugin for CakePHP
+ *
  * @author Florian Krämer
  * @copyright 2012 - 2016 Florian Krämer
  * @license MIT
@@ -10,7 +12,6 @@ use Burzum\FileStorage\Storage\StorageTrait;
 use Burzum\FileStorage\Storage\StorageException;
 use Cake\Console\Shell;
 use Cake\Event\EventManagerTrait;
-use Cake\ORM\ResultSet;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -27,7 +28,11 @@ class ImageTask extends Shell {
 	use StorageTrait;
 	use EventManagerTrait;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function initialize() {
+		parent::initialize();
 		$this->Table = TableRegistry::get('Burzum/FileStorage.ImageStorage');
 	}
 

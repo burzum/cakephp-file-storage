@@ -105,7 +105,10 @@ class UploadBehavior extends Behavior {
 	}
 
 	/**
+	 * @param array|string $file
+	 * @param \Cake\ORM\Table $table
 	 * @param array $options
+	 * @return \Cake\Datasource\EntityInterface
 	 */
 	protected function _composeEntity($file, $table, $options) {
 		if (isset($options['validate']) && is_callable($options['validate'])) {

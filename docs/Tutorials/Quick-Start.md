@@ -1,7 +1,7 @@
 Quick-Start Tutorial
 ====================
 
-It is required that you have at least a basic understanding of how the event system of CakePHP work works. If you're unsure it is recommended to read about it first! It is expected that you take the time to try to actually *understand* what you're doing instead of just copy and pasting the code.
+It is required that you have at least a basic understanding of how the event system of CakePHP work works. If you're unsure it is recommended to read about it first. It is expected that you take the time to try to actually *understand* what you're doing instead of just copy and pasting the code. Understanding OOP and namespaces in php is required for this tutorial.
 
 This tutorial will assume that we're going to add an avatar image upload for our users.
 
@@ -94,6 +94,7 @@ Your users controller `edit()` method:
  * - FlashComponent
  */
 class UsersController extends AppController {
+
 	public function edit() {
 		$userId = $this->Auth->user('id');
 		$user = $this->Users->get($userId);

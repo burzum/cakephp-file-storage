@@ -1,12 +1,21 @@
 <?php
+/**
+ * File Storage Plugin for CakePHP
+ *
+ * @author Florian Krämer
+ * @copyright 2012 - 2016 Florian Krämer
+ * @license MIT
+ */
 namespace Burzum\FileStorage\Shell;
 
 use Cake\Core\Configure;
 use Cake\Console\Shell;
+use Cake\Datasource\ResultSetDecorator;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
 use Burzum\FileStorage\Storage\StorageManager;
+use Exception;
 
 /**
  * ImageShell
@@ -129,6 +138,7 @@ class ImageVersionShell extends Shell {
 				],
 			],
 		]);
+
 		return $parser;
 	}
 
@@ -145,14 +155,13 @@ class ImageVersionShell extends Shell {
 
 		try {
 			$this->Table = TableRegistry::get($storageTable);
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			$this->abort($e->getMessage());
 		}
 
 		if (isset($this->params['limit'])) {
 			if (!is_numeric($this->params['limit'])) {
-				$this->out(__d('file_storage', '--limit must be an integer!'));
-				$this->_stop();
+				$this->abort(__d('file_storage', '--limit must be an integer!'));
 			}
 			$this->limit = $this->params['limit'];
 		}
@@ -161,6 +170,7 @@ class ImageVersionShell extends Shell {
 	/**
 	 * Generate all image versions.
 	 *
+	 * @return void
 	 */
 	public function regenerate() {
 		$operations = Configure::read('FileStorage.imageSizes.' . $this->args[0]);
@@ -169,16 +179,14 @@ class ImageVersionShell extends Shell {
 		];
 
 		if (empty($operations)) {
-			$this->out(__d('file_storage', 'Invalid table or version.'));
-			$this->_stop();
+			$this->abort(__d('file_storage', 'Invalid table or version.'));
 		}
 
 		foreach ($operations as $version => $operation) {
 			try {
 				$this->_loop($this->command, $this->args[0], array($version => $operation), $options);
-			} catch (\Exception $e) {
-				$this->out($e->getMessage());
-				$this->_stop();
+			} catch (Exception $e) {
+				$this->abort($e->getMessage());
 			}
 		}
 	}
@@ -188,6 +196,7 @@ class ImageVersionShell extends Shell {
 	 *
 	 * @param string $model
 	 * @param string $version
+	 * @return void
 	 */
 	public function generate($model, $version) {
 		$operations = Configure::read('FileStorage.imageSizes.' . $model . '.' . $version);
@@ -202,9 +211,8 @@ class ImageVersionShell extends Shell {
 
 		try {
 			$this->_loop('generate', $model, array($version => $operations), $options);
-		} catch (\Exception $e) {
-			$this->out($e->getMessage());
-			$this->_stop();
+		} catch (Exception $e) {
+			$this->abort($e->getMessage());
 		}
 	}
 
@@ -224,7 +232,7 @@ class ImageVersionShell extends Shell {
 
 		try {
 			$this->_loop('remove', $model, array($version => $operations));
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			$this->out($e->getMessage());
 			$this->_stop();
 		}
@@ -260,7 +268,7 @@ class ImageVersionShell extends Shell {
 				foreach ($images as $image) {
 					$Storage = StorageManager::get($image->adapter);
 					if ($Storage === false) {
-						$this->out(__d('file_storage', 'Cant load adapter config {0} for record {1}', $image->adapter, $image->id));
+						$this->err(__d('file_storage', 'Cant load adapter config {0} for record {1}', $image->adapter, $image->id));
 					} else {
 						$payload = array(
 							'entity' => $image,
@@ -289,13 +297,13 @@ class ImageVersionShell extends Shell {
 		} while ($images->count() > 0);
 	}
 
-/**
- * Gets the amount of images for a model in the DB.
- *
- * @param string $identifier
- * @param array $extensions
- * @return integer
- */
+	/**
+	 * Gets the amount of images for a model in the DB.
+	 *
+	 * @param string $identifier
+	 * @param array $extensions
+	 * @return integer
+	 */
 	protected function _getCount($identifier, array $extensions = ['jpg', 'png', 'jpeg']) {
 		return $this->Table
 			->find()
@@ -304,6 +312,15 @@ class ImageVersionShell extends Shell {
 			->count();
 	}
 
+	/**
+	 * Gets the chunk of records for the image processing
+	 *
+	 * @param string $identifier
+	 * @param int $limit
+	 * @param int $offset
+	 * @param array $extensions
+	 * @return ResultSetDecorator
+	 */
 	protected function _getRecords($identifier, $limit, $offset, array $extensions = ['jpg', 'png', 'jpeg']) {
 		return $this->Table
 			->find()
