@@ -48,39 +48,6 @@ class UploadValidatorTest extends FileStorageTestCase {
 	}
 
 	/**
-	 * testMimeType
-	 *
-	 * @return void
-	 */
-	public function testFilesize() {
-		$this->assertFalse($this->Validator->mimeType($this->fileUpload, ['image/gif']));
-	}
-
-	/**
-	 * testMimeType
-	 *
-	 * @return void
-	 */
-	public function testMimeType() {
-		$this->assertFalse($this->Validator->mimeType($this->fileUpload, ['image/gif']));
-		$this->assertTrue($this->Validator->mimeType($this->fileUpload, ['image/jpeg']));
-		$this->assertTrue($this->Validator->mimeType($this->fileUpload, ['image/jpeg', 'image/png']));
-		$this->assertTrue($this->Validator->mimeType($this->fileUpload, 'image/jpeg'));
-	}
-
-	/**
-	 * testImageHeight
-	 *
-	 * @return void
-	 */
-	public function testExtension() {
-		$this->assertTrue($this->Validator->extension($this->fileUpload, ['jpg', 'gif']));
-		$this->assertTrue($this->Validator->extension($this->fileUpload, 'jpg'));
-		$this->assertFalse($this->Validator->extension($this->fileUpload, ['png']));
-		$this->assertFalse($this->Validator->extension($this->fileUpload, 'png'));
-	}
-
-	/**
 	 * testUploadErrors
 	 *
 	 * @return void
@@ -95,28 +62,6 @@ class UploadValidatorTest extends FileStorageTestCase {
 		$this->assertFalse($this->Validator->uploadErrors(['error' => UPLOAD_ERR_NO_TMP_DIR]));
 		$this->assertFalse($this->Validator->uploadErrors(['error' => UPLOAD_ERR_CANT_WRITE]));
 		$this->assertFalse($this->Validator->uploadErrors(['error' => UPLOAD_ERR_EXTENSION]));
-	}
-
-	/**
-	 * testImageHeight
-	 *
-	 * @return void
-	 */
-	public function testImageHeight() {
-		$this->assertTrue($this->Validator->imageHeight($this->fileUpload, '>', 100));
-		$this->assertTrue($this->Validator->imageHeight($this->fileUpload, '<', 2000));
-		$this->assertTrue($this->Validator->imageHeight($this->fileUpload, '==', 768));
-	}
-
-	/**
-	 * testImageWidth
-	 *
-	 * @return void
-	 */
-	public function testImageWidth() {
-		$this->assertTrue($this->Validator->imageWidth($this->fileUpload, '>', 100));
-		$this->assertTrue($this->Validator->imageWidth($this->fileUpload, '<', 2000));
-		$this->assertTrue($this->Validator->imageWidth($this->fileUpload, '==', 512));
 	}
 
 	/**
