@@ -6,8 +6,6 @@
  */
 namespace Burzum\FileStorage\Storage;
 
-use Burzum\FileStorage\Storage\StorageManager;
-
 /**
  * Use the StorageTrait for convenient access to the storage adapters in any class.
  */

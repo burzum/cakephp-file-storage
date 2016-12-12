@@ -42,7 +42,7 @@ trait PathBuilderTrait {
 			throw new RuntimeException(sprintf('Path builder class "%s" does not implement the PathBuilderInterface interface!', $name));
 		}
 
-		return $pathBuilder;
+		return $this->_pathBuilder = $pathBuilder;
 	}
 
 	/**
@@ -68,10 +68,10 @@ trait PathBuilderTrait {
 	/**
 	 * Gets the path builder.
 	 *
-	 * @return \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
+	 * @return \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface|null
 	 */
-	public function getPathBuilder($name) {
-		$this->pathBuilder($name);
+	public function getPathBuilder() {
+		return $this->_pathBuilder;
 	}
 
 	/**
@@ -88,7 +88,7 @@ trait PathBuilderTrait {
 		}
 
 		if (!$pathBuilder instanceof PathBuilderInterface) {
-			throw new InvalidArgumentException('The first arg does not implement PathBuilderInterface');
+			throw new InvalidArgumentException(sprintf('The first arg does not implement %s', PathBuilderInterface::class));
 		}
 
 		$this->_pathBuilder = $pathBuilder;

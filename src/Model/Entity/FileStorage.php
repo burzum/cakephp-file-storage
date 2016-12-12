@@ -95,6 +95,24 @@ class FileStorage extends Entity {
 //	}
 
 	/**
+	 * Legacy proxy method
+	 *
+	 * @return string|null
+	 */
+//	protected function _getAdapter() {
+//		return $this->get('storage_config');
+//	}
+
+	/**
+	 * Legacy proxy method
+	 *
+	 * @param string $value Model field value
+	 */
+//	public function _setAdapter($value) {
+//		$this->_properties['storage_config'] = $value;
+//	}
+
+	/**
 	 * Accessor to get the *real* path on disk / backend + filename.
 	 *
 	 * @link http://book.cakephp.org/3.0/en/orm/entities.html#accessors-mutators

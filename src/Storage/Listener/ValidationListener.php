@@ -25,9 +25,13 @@ class ValidationListener {
 		if (!isset($config['passDefaultValidator'])) {
 			$config['passDefaultValidator'] = false;
 		}
-		if (!isset($config['model'])) {
-			$config['model'] = [FileStorageTable::class];
+
+		if (!isset($config['tableClass'])) {
+			$config['tableClass'] = [FileStorageTable::class];
+		} elseif (is_string($config['tableClass'])) {
+			$config['tableClass'] = [$config['tableClass']];
 		}
+
 		$this->config = $config;
 	}
 
@@ -50,17 +54,22 @@ class ValidationListener {
 	 */
 	public function initialize(Event $event) {
 		$table = $event->subject();
-		foreach ($this->config['model'] as $modelClassName) {
-			if (!$table instanceof $modelClassName) {
-				return;
-			}
+		if (!in_array(get_class($table), $this->config['tableClass'])) {
+			return;
 		}
 
 		$this->_setValidators($table);
 	}
 
+	/**
+	 * Sets the configured validators to the table instance
+	 *
+	 * @param \Cake\ORM\Table $table
+	 * @return void
+	 */
 	protected function _setValidators(Table $table) {
 		$methods = get_class_methods($this);
+
 		foreach ($methods as $method) {
 			if (substr($method, 0, 10) === 'validation') {
 				if ($this->config['passDefaultValidator']) {

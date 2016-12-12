@@ -49,6 +49,7 @@ class FileStorageBehavior extends Behavior {
 		'defaultStorageConfig' => 'Local',
 		'ignoreEmptyFile' => true,
 		'fileField' => 'file',
+		'getFileHash' => false,
 	];
 
 	/**
@@ -134,6 +135,14 @@ class FileStorageBehavior extends Behavior {
 
 			if (!$entity->has('adapter')) {
 				$entity->set('adapter', $this->config('defaultStorageConfig'));
+			}
+
+			$fileHashMethod = $this->config('getFileHash');
+			if ($fileHashMethod) {
+				if ($fileHashMethod === true) {
+					$fileHashMethod = 'sha1';
+				}
+				$entity->set('hash', StorageUtils::getFileHash($entity->get('file')['tmp_name'], $fileHashMethod));
 			}
 		}
 	}

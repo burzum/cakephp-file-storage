@@ -1,8 +1,10 @@
 <?php
 namespace Burzum\FileStorage\Test\TestCase\Storage;
 
+use Burzum\FileStorage\Storage\StorageManager;
 use Burzum\FileStorage\Storage\StorageTrait;
 use Cake\TestSuite\TestCase;
+use Gaufrette\Filesystem;
 
 class TestStorageTrait {
 	use StorageTrait;
@@ -37,7 +39,7 @@ class BasePathBuilderTest extends TestCase {
 	 */
 	public function teststorageAdapter() {
 		$result = $this->StorageTrait->getStorageAdapter('Local');
-		$this->assertTrue(is_a($result, '\Gaufrette\Filesystem'));
+		$this->assertInstanceOf(Filesystem::class, $result);
 	}
 
 	/**
@@ -46,8 +48,8 @@ class BasePathBuilderTest extends TestCase {
 	 * @return void
 	 */
 	public function testGetStorageManagerInstance() {
-		$result = $this->StorageTrait->storageManager();
-		$this->assertTrue(is_a($result, '\Burzum\FileStorage\Storage\StorageManager'));
+		$result = $this->StorageTrait->getStorageManager();
+		$this->assertInstanceOf(StorageManager::class, $result);
 	}
 
 }

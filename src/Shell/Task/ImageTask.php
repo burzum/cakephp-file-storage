@@ -143,6 +143,7 @@ class ImageTask extends Shell {
 			$this->out(__d('file_storage', 'No records for identifier "{0}" found.', $identifier));
 			$this->_stop();
 		}
+
 		return $count;
 	}
 
@@ -155,9 +156,14 @@ class ImageTask extends Shell {
 	protected function _getCountQuery($identifier) {
 		return $this->Table
 			->find()
-			->where([$this->Table->alias() . '.model' => $identifier]);
+			->where([
+				$this->Table->alias() . '.model' => $identifier
+			]);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function getOptionParser() {
 		$parser = parent::getOptionParser();
 		$parser->addOption('model', [
@@ -165,11 +171,13 @@ class ImageTask extends Shell {
 			'help' => __('The model to use.'),
 			'default' => 'Burzum/FileStorage.ImageStorage'
 		]);
+
 		$parser->addOption('limit', [
 			'short' => 'l',
 			'help' => __('The limit of records to process in a batch.'),
 			'default' => 50
 		]);
+
 		$parser->addOption('versions', [
 			'short' => 's',
 			'help' => __('The model to use.'),
@@ -181,10 +189,12 @@ class ImageTask extends Shell {
 		->addSubcommand('generate', [
 			'remove' => 'Generate image versions.'
 		]);
+
 		$parser->addArguments([
 			'identifier' => ['help' => 'The identifier to process', 'required' => true],
 			'versions' => ['help' => 'The identifier to process', 'required' => true],
 		]);
+
 		return $parser;
 	}
 

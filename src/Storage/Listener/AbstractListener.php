@@ -7,7 +7,6 @@
 namespace Burzum\FileStorage\Storage\Listener;
 
 use BadMethodCallException;
-use Burzum\FileStorage\Event\EventFilterTrait;
 use Burzum\FileStorage\Storage\PathBuilder\PathBuilderTrait;
 use Burzum\FileStorage\Storage\StorageException;
 use Burzum\FileStorage\Storage\StorageTrait;
@@ -46,7 +45,6 @@ abstract class AbstractListener implements EventListenerInterface {
 	use StorageTrait;
 
 	/**
-	 * @var null
 	 * The adapter class
 	 *
 	 * @param null|string
@@ -247,45 +245,15 @@ abstract class AbstractListener implements EventListenerInterface {
 		}
 	}
 
-	public function tmpFile($Storage, $path, $tmpFolder = null) {
-		return $this->_tmpFile($Storage, $path, $tmpFolder);
-	}
-
 	/**
-	 * Calculates the hash of a file.
-	 *
-	 * You can use this to compare if you got two times the same file uploaded.
-	 *
-	 * @param string $file Path to the file on your local machine.
-	 * @param string $method 'md5' or 'sha1'
-	 * @throws \InvalidArgumentException
-	 * @link http://php.net/manual/en/function.md5-file.php
-	 * @link http://php.net/manual/en/function.sha1-file.php
-	 * @link http://php.net/manual/en/function.sha1-file.php#104748
+	 * @param Adapter $Storage Storage adapter
+	 * @param string $path Path / key of the storage adapter file
+	 * @param string|null $tmpFolder
+	 * @throws \Burzum\FileStorage\Storage\StorageException
 	 * @return string
 	 */
-	public function calculateFileHash($file, $method = 'sha1') {
-		return StorageUtils::getFileHash($file, $method);
-	}
-
-	/**
-	 * Gets the hash for a file storage entity that is going to be stored.
-	 *
-	 * It first checks if hashing is enabled, if it is enabled it uses the the
-	 * configured hashMethod to generate the hash and returns that hash.
-	 *
-	 * @param \Cake\Datasource\EntityInterface
-	 * @param string $fileField
-	 * @return null|string
-	 */
-	public function getFileHash(EntityInterface $entity, $fileField) {
-		if ($this->config('fileHash') !== false) {
-			return $this->calculateFileHash(
-				$entity[$fileField]['tmp_name'],
-				$this->config('fileHash')
-			);
-		}
-		return null;
+	public function tmpFile($Storage, $path, $tmpFolder = null) {
+		return $this->_tmpFile($Storage, $path, $tmpFolder);
 	}
 
 	/**
