@@ -115,7 +115,6 @@ class FileStorageTestCase extends TestCase {
 		]);
 
 		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
-		$this->ImageStorage = TableRegistry::get('Burzum/FileStorage.ImageStorage');
 	}
 
 	/**

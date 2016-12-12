@@ -77,13 +77,6 @@ class FileStorageTableTest extends FileStorageTestCase {
 			]
 		], ['accessibleFields' => ['*' => true]]);
 
-		$this->FileStorage->configureUploadValidation([
-			'allowedExtensions' => ['jpg'],
-			'validateUploadArray' => true,
-			'localFile' => true,
-			'validateUploadErrors' => true
-		]);
-
 		$this->FileStorage->save($entity);
 		$this->assertEquals($entity->errors(), []);
 

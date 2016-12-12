@@ -9,24 +9,24 @@ use Cake\ORM\TableRegistry;
 
 class FileStorageTestTable extends Table {
 
-		/**
-				 * Initialize
-				 *
-				 * @param array $config
-				 * @return void
-				 */
-		public function initialize(array $config) {
-			parent::initialize($config);
-			$this->table('file_storage');
-			$this->addBehavior('Burzum/FileStorage.FileStorage');
-		}
+	/**
+	 * Initialize
+	 *
+	 * @param array $config
+	 * @return void
+	 */
+	public function initialize(array $config) {
+		parent::initialize($config);
+		$this->table('file_storage');
+		$this->addBehavior('Burzum/FileStorage.FileStorage');
+	}
 
 }
 
 /**
  * StorageBehaviorTest
  */
-class StorageBehaviorTest extends FileStorageTestCase {
+class FileStorageBehaviorTest extends FileStorageTestCase {
 
 	/**
 	 * Holds the instance of the table
@@ -104,7 +104,8 @@ class StorageBehaviorTest extends FileStorageTestCase {
 			'entity' => $entity,
 			'adapter' => 'Local'
 		]);
-		$this->FileStorage->behaviors()->Storage->afterDelete($event, $entity, []);
+
+		$this->FileStorage->behaviors()->FileStorage->afterDelete($event, $entity, []);
 
 		// Testing the case the file does not exist
 //		$entity = $this->FileStorage->get('file-storage-1');
@@ -114,7 +115,7 @@ class StorageBehaviorTest extends FileStorageTestCase {
 //			'entity' => $entity,
 //			'adapter' => 'Local'
 //		]);
-//		$this->FileStorage->behaviors()->Storage->afterDelete($event, $entity, []);
+//		$this->FileStorage->behaviors()->FileStorage->afterDelete($event, $entity, []);
 	}
 
 	/**
@@ -134,7 +135,7 @@ class StorageBehaviorTest extends FileStorageTestCase {
 			'entity' => $entity,
 		]);
 
-		$this->FileStorage->behaviors()->Storage->beforeSave($event, $entity);
+		$this->FileStorage->behaviors()->FileStorage->beforeSave($event, $entity);
 
 		$this->assertEquals($entity->adapter, 'Local');
 		$this->assertEquals($entity->filesize, 332643);

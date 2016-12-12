@@ -27,7 +27,7 @@ class TestValidationListener extends ValidationListener {
 
 }
 
-class AbstractListenerTest extends TestCase {
+class ValidationListenerTest extends TestCase {
 
 	/**
 	 * Fixtures

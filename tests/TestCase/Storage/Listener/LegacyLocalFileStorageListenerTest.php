@@ -6,6 +6,7 @@ use Cake\Core\Plugin;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Gaufrette\Adapter\Local;
 
 class LegacyLocalFileStorageListenerTest extends TestCase {
 
@@ -40,7 +41,8 @@ class LegacyLocalFileStorageListenerTest extends TestCase {
 			])
 			->getMock();
 
-		$this->adapterMock = $this->getMock('\Gaufrette\Adapter\Local', [], ['']);
+		$this->adapterMock = $this->getMock(Local::class, [], ['']);
+		$this->adapterMock = $this->getMock(Local::class, [], ['']);
 
 		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
 	}
@@ -76,9 +78,10 @@ class LegacyLocalFileStorageListenerTest extends TestCase {
 			]
 		], ['accessibleFields' => ['*' => true]]);
 
+		return;
 		$event = new Event('FileStorage.afterSave', $this->FileStorage, [
 			'entity' => $entity,
-			'table' => $this->FileStorage
+			'storageAdapter' => $this->$this->adapterMock
 		]);
 
 		$this->listener->expects($this->any())

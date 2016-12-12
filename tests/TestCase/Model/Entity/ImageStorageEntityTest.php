@@ -31,7 +31,7 @@ class ImageStorageEntityTest extends FileStorageTestCase {
 	 */
 	public function setUp() {
 		parent::setUp();
-		$this->ImageStorage = TableRegistry::get('Burzum/FileStorage.ImageStorage');
+		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
 		$listener = new LocalListener();
 		EventManager::instance()->on($listener);
 	}
@@ -43,7 +43,7 @@ class ImageStorageEntityTest extends FileStorageTestCase {
 	 */
 	public function tearDown() {
 		parent::tearDown();
-		unset($this->ImageStorage);
+		unset($this->FileStorage);
 		TableRegistry::clear();
 	}
 
@@ -53,7 +53,8 @@ class ImageStorageEntityTest extends FileStorageTestCase {
 	 * @return void
 	 */
 	public function testImageVersion() {
-		$entity = $this->ImageStorage->newEntity([
+		$this->FileStorage->entityClass('Burzum/FileStorage.ImageStorage');
+		$entity = $this->FileStorage->newEntity([
 			'id' => 'e479b480-f60b-11e1-a21f-0800200c9a66',
 			'model' => 'Test',
 			'path' => 'test/path/',

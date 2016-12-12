@@ -64,7 +64,7 @@ class ImageHelperTest extends FileStorageTestCase {
 	 * @return void
 	 */
 	public function testImage() {
-		$image = $this->ImageStorage->newEntity([
+		$image = $this->FileStorage->newEntity([
 			'id' => 'e479b480-f60b-11e1-a21f-0800200c9a66',
 			'filename' => 'testimage.jpg',
 			'model' => 'Test',
@@ -116,7 +116,7 @@ class ImageHelperTest extends FileStorageTestCase {
 	 * @return void
 	 */
 	public function testImageUrlInvalidArgumentException() {
-		$image = $this->ImageStorage->newEntity([
+		$image = $this->FileStorage->newEntity([
 			'id' => 'e479b480-f60b-11e1-a21f-0800200c9a66',
 			'filename' => 'testimage.jpg',
 			'model' => 'Test',
