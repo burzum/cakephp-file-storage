@@ -41,8 +41,9 @@ class LegacyLocalFileStorageListenerTest extends TestCase {
 			])
 			->getMock();
 
-		$this->adapterMock = $this->getMock(Local::class, [], ['']);
-		$this->adapterMock = $this->getMock(Local::class, [], ['']);
+		$this->adapterMock = $this->getMockBuilder(Local::class)
+			->disableOriginalConstructor()
+			->getMock();
 
 		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
 	}

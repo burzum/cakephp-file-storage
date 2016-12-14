@@ -51,7 +51,6 @@ class PathBuilderTraitTest extends TestCase {
 	 */
 	public function testPathBuilder() {
 		$object = $this->getObjectForTrait(PathBuilderTrait::class);
-		$pathBuilder = $this->getMock('Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface');
 		$result = $object->pathBuilder('Base');
 		$this->assertSame($result, $object->pathBuilder());
 	}

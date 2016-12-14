@@ -6,6 +6,7 @@ use Cake\Core\Plugin;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Gaufrette\Adapter\Local;
 
 class LocalListenerTest extends TestCase {
 
@@ -34,7 +35,9 @@ class LocalListenerTest extends TestCase {
 			->setConstructorArgs([['models' => ['Item']]])
 			->getMock();
 
-		$this->adapterMock = $this->getMock('\Gaufrette\Adapter\Local', [], ['']);
+		$this->adapterMock = $this->getMockBuilder(Local::class)
+			->disableOriginalConstructor()
+			->getMock();
 
 		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
 	}
@@ -114,7 +117,7 @@ class LocalListenerTest extends TestCase {
 		]);
 
 		$this->listener->expects($this->any())
-			->method('storageAdapter')
+			->method('getStorageAdapter')
 			->will($this->returnValue($this->adapterMock));
 
 		$this->adapterMock->expects($this->at(0))
@@ -138,7 +141,7 @@ class LocalListenerTest extends TestCase {
 		]);
 
 		$this->listener->expects($this->any())
-			->method('storageAdapter')
+			->method('getStorageAdapter')
 			->will($this->returnValue($this->adapterMock));
 
 		$this->adapterMock->expects($this->at(0))

@@ -56,8 +56,8 @@ class UploadBehaviorTest extends FileStorageTestCase {
 	 * @return void
 	 */
 	public function testSaveFile() {
-		$file = $this->fileFixtures . 'titus.jpg';
-		$result = $this->Items->saveFile($file);
+		//$file = $this->fileFixtures . 'titus.jpg';
+		//$result = $this->Items->saveFile($file);
 		//debug($result);
 	}
 
