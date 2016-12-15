@@ -32,6 +32,7 @@ class StorageUtils {
 				return false;
 			}
 		}
+
 		return substr(strrchr($name, '.'), 1);
 	}
 
@@ -69,6 +70,7 @@ class StorageUtils {
 		if ($path[$len - 1] == '\\' || $path[$len - 1] == '/') {
 			$path = substr($path, 0, $len - 1);
 		}
+
 		return $path;
 	}
 
@@ -107,6 +109,7 @@ class StorageUtils {
 				$array[$i][$key] = $files[$key][$i];
 			}
 		}
+
 		return $array;
 	}
 
@@ -118,6 +121,7 @@ class StorageUtils {
 	 */
 	public static function hashOperations($operations) {
 		static::ksortRecursive($operations);
+
 		return substr(md5(serialize($operations)), 0, 8);
 	}
 
@@ -209,6 +213,7 @@ class StorageUtils {
 		if ($checkAndCreatePath === true && !is_dir($folder)) {
 			new Folder($folder, true);
 		}
+
 		return $folder . Text::uuid();
 	}
 

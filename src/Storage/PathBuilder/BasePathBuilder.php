@@ -141,8 +141,8 @@ class BasePathBuilder implements PathBuilderInterface {
 	 * key conditionally. Overload _pathSuffix() and _pathPrefix() for your custom
 	 * implementation instead of touching this methods.
 	 *
-	 * @see \Array\BasePathBuilder::_pathSuffix()
-	 * @see \Array\BasePathBuilder::_pathPrefix()
+	 * @see BasePathBuilder::_pathSuffix()
+	 * @see BasePathBuilder::_pathPrefix()
 	 * @param \Cake\Datasource\EntityInterface $entity
 	 * @param $path string
 	 * @param $config array

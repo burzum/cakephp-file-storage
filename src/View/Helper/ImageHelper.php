@@ -57,6 +57,7 @@ class ImageHelper extends StorageHelper {
 			}
 			return $hash;
 		}
+
 		return null;
 	}
 
@@ -84,9 +85,11 @@ class ImageHelper extends StorageHelper {
 
 		$event = new Event('ImageVersion.getVersions', $this, $eventOptions);
 		EventManager::instance()->dispatch($event);
+
 		if ($event->isStopped()) {
 			return $this->normalizePath($event->data['path']);
 		}
+
 		return false;
 	}
 
@@ -108,6 +111,7 @@ class ImageHelper extends StorageHelper {
 			unset($options['fallback']);
 			return $this->Html->image($imageFile, $options);
 		}
+
 		return '';
 	}
 

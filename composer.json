@@ -21,7 +21,8 @@
 	"require-dev": {
 		"phpunit/phpunit": "5.6.*",
 		"burzum/cakephp-imagine-plugin": "2.*",
-		"fig-r/psr2r-sniffer": "dev-master"
+		"fig-r/psr2r-sniffer": "dev-master",
+		"scrutinizer/ocular": "^1.3"
 	},
 	"autoload": {
 		"psr-4": {

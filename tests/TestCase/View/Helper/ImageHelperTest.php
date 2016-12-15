@@ -74,6 +74,9 @@ class ImageHelperTest extends FileStorageTestCase {
 		], ['accessibleFields' => ['*' => true]]);
 
 		// Testing the old deprecated listener
+		$this->_removeListeners();
+		EventManager::instance()->on($this->listeners['LegacyImageProcessingListener']);
+
 		$result = $this->Image->display($image, 't150');
 		$this->assertEquals($result, '<img src="/test/path/e479b480f60b11e1a21f0800200c9a66.c3f33c2a.jpg" alt=""/>');
 
@@ -82,7 +85,7 @@ class ImageHelperTest extends FileStorageTestCase {
 
 		// Testing the LegacyLocalFileStorageListener
 		$this->_removeListeners();
-		EventManager::instance()->on($this->listeners['LegacyLocalFileStorageListener']);
+		EventManager::instance()->on($this->listeners['LegacyLocalListenerImageProcessing']);
 
 		$result = $this->Image->display($image, 't150');
 		if (PHP_INT_SIZE === 8) {

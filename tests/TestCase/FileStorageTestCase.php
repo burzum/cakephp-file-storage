@@ -1,6 +1,7 @@
 <?php
 namespace Burzum\FileStorage\Test\TestCase;
 
+use Burzum\FileStorage\Storage\Listener\LegacyImageProcessingListener;
 use Burzum\FileStorage\Storage\Listener\LegacyLocalFileStorageListener;
 use Burzum\FileStorage\Storage\Listener\LocalListener;
 use Burzum\FileStorage\Storage\StorageManager;
@@ -128,14 +129,18 @@ class FileStorageTestCase extends TestCase {
 			'imageProcessing' => true
 		]);
 
-		$this->listeners['LegacyLocalListener'] = new LegacyLocalFileStorageListener();
-		$this->listeners['LegacyLocalListenerImageProcessing'] = new LegacyLocalFileStorageListener([
-			'imageProcessing' => true
+		$this->listeners['LegacyLocalListener'] = new LegacyLocalFileStorageListener([
+			'disableDeprecationWarning' => true
 		]);
 
-		$this->listeners['LegacyLocalFileStorageListener'] = new LegacyLocalFileStorageListener();
-		EventManager::instance()->on($this->listeners['LocalListenerImageProcessing']);
-		//EventManager::instance()->on($this->listeners['LegacyLocalFileStorageListener']);
+		$this->listeners['LegacyLocalListenerImageProcessing'] = new LegacyLocalFileStorageListener([
+			'imageProcessing' => true,
+			'disableDeprecationWarning' => true
+		]);
+
+		$this->listeners['LegacyImageProcessingListener'] = new LegacyImageProcessingListener([
+			'disableDeprecationWarning' => true
+		]);
 	}
 
 	/**
@@ -150,7 +155,7 @@ class FileStorageTestCase extends TestCase {
 
 		TableRegistry::clear();
 		$Folder = new Folder($this->testPath);
-		//$Folder->delete();
+		$Folder->delete();
 	}
 
 	/**
@@ -164,6 +169,12 @@ class FileStorageTestCase extends TestCase {
 		}
 	}
 
+	/**
+	 * Creates a file
+	 *
+	 * @string $file File path and name, relative to FileStorageTestCase::$testPath
+	 * @return void
+	 */
 	protected function _createMockFile($file) {
 		if (DS === '/') {
 			$file = str_replace('\\', DS, $file);

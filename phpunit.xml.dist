@@ -35,7 +35,7 @@
 		En/disable the log as needed.
 	-->
 	<logging>
-		<!--<log type="coverage-html" target="./tmp/tests/report" lowUpperBound="35" highLowerBound="70"/>-->
+		<log type="coverage-html" target="./tmp/tests/report" lowUpperBound="35" highLowerBound="70"/>
 		<!--<log type="coverage-clover" target="./tmp/tests/coverage.xml"/>-->
 		<!--<log type="coverage-php" target="/tmp/coverage.serialized"/>-->
 		<!--<log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>-->

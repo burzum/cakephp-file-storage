@@ -30,8 +30,20 @@ class LegacyLocalFileStorageListener extends LocalListener {
 			'modelFolder' => false,
 			'preserveFilename' => false,
 			'randomPath' => 'crc32'
-		]
+		],
+		'disableDeprecationWarning' => false
 	];
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function __construct(array $config = []) {
+		parent::__construct($config);
+
+		if ($this->config('disableDeprecationWarning') !== true) {
+			user_error('LegacyLocalFileStorageListener is deprecated! Please migrate to another listener! Or set the disableDeprecationWarning option to true.', E_USER_DEPRECATED);
+		}
+	}
 
 	/**
 	 * Save the file to the storage backend after the record was created.
