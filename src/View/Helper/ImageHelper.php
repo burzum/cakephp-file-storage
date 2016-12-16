@@ -1,9 +1,9 @@
 <?php
 namespace Burzum\FileStorage\View\Helper;
 
+use Burzum\FileStorage\Storage\StorageUtils;
 use Cake\Core\Configure;
-use Cake\Event\Event;
-use Cake\Event\EventManager;
+use Cake\View\View;
 use InvalidArgumentException;
 
 /**
@@ -27,6 +27,19 @@ class ImageHelper extends StorageHelper {
 	];
 
 	/**
+	 * Constructor
+	 *
+	 * @param \Cake\View\View
+	 * @param array $config
+	 */
+	public function __construct(View $view, array $config = []) {
+		$this->_defaultConfig['pathPrefix'] = '';
+		StorageUtils::generateHashes();
+
+		parent::__construct($view, $config);
+	}
+
+	/**
 	 * Generates an image url based on the image record data and the used Gaufrette adapter to store it
 	 *
 	 * @param array $image FileStorage array record or whatever else table that matches this helpers needs without the model, we just want the record fields
@@ -35,10 +48,15 @@ class ImageHelper extends StorageHelper {
 	 * @return string
 	 */
 	public function display($image, $version = null, $options = []) {
+		if (empty($image)) {
+			return $this->fallbackImage($options, $image, $version);
+		}
+
 		$url = $this->imageUrl($image, $version, $options);
 		if ($url !== false) {
 			return $this->Html->image($url, $options);
 		}
+
 		return $this->fallbackImage($options, $image, $version);
 	}
 
@@ -55,6 +73,7 @@ class ImageHelper extends StorageHelper {
 			if (empty($hash)) {
 				throw new InvalidArgumentException(sprintf('No valid version key (Identifier: `%s` Key: `%s`) passed!', @$image['model'], $version));
 			}
+
 			return $hash;
 		}
 
@@ -71,26 +90,24 @@ class ImageHelper extends StorageHelper {
 	 * @return string
 	 */
 	public function imageUrl($image, $version = null, $options = []) {
-		if (empty($image) || empty($image['id'])) {
-			return false;
+		$fileInfo = pathinfo($image['path']);
+		$hash = $this->_getHash($version, $image);
+		$version = $fileInfo['dirname'] . DS . $fileInfo['filename'] . '.' . $hash;
+
+		if (!empty($fileInfo['extension'])) {
+			$version .= '.' . $fileInfo['extension'];
 		}
 
-		$eventOptions = [
-			'hash' => $this->_getHash($version, $image),
-			'image' => $image,
-			'version' => $version,
-			'options' => $options,
-			'pathType' => 'url'
-		];
-
-		$event = new Event('ImageVersion.getVersions', $this, $eventOptions);
-		EventManager::instance()->dispatch($event);
-
-		if ($event->isStopped()) {
-			return $this->normalizePath($event->data['path']);
+		if (!empty($options['pathPrefix'])) {
+			return $this->normalizePath($options['pathPrefix'] . $version);
 		}
 
-		return false;
+		$pathPrefix = $this->config('pathPrefix');
+		if (!empty($pathPrefix)) {
+			return $this->normalizePath($pathPrefix . $version);
+		}
+
+		return $this->normalizePath($version);
 	}
 
 	/**
@@ -109,6 +126,7 @@ class ImageHelper extends StorageHelper {
 				$imageFile = $options['fallback'];
 			}
 			unset($options['fallback']);
+
 			return $this->Html->image($imageFile, $options);
 		}
 

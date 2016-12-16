@@ -131,7 +131,12 @@ class StorageUtils {
 	 * @param string|array $configPath
 	 * @return array
 	 */
-	public static function generateHashes($configPath = 'FileStorage') {
+	public static function generateHashes($configPath = 'FileStorage', $enforceReload = false) {
+		$hashes = (array)Configure::read($configPath . '.imageHashes');
+		if (!empty($hashes) && $enforceReload === false) {
+			return $hashes;
+		}
+
 		if (is_array($configPath)) {
 			$imageSizes = $configPath;
 		} else {

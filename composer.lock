@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "ef30339b6ef898b55b4711c8aaf9195f",
+    "hash": "b87f5c95e738c6396556fdd755f3efa9",
     "content-hash": "f034de91edd948b7101fb3f534cf8b16",
     "packages": [
         {
@@ -2849,12 +2849,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "b1ebcc82316b44f99bc99d5586ff077b421bd86c"
+                "reference": "6d3a03aa1e823fe6bfd16ef8f267133e790c4610"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/b1ebcc82316b44f99bc99d5586ff077b421bd86c",
-                "reference": "b1ebcc82316b44f99bc99d5586ff077b421bd86c",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/6d3a03aa1e823fe6bfd16ef8f267133e790c4610",
+                "reference": "6d3a03aa1e823fe6bfd16ef8f267133e790c4610",
                 "shasum": ""
             },
             "require": {
@@ -2919,7 +2919,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2016-12-13 23:32:17"
+            "time": "2016-12-15 00:26:17"
         },
         {
             "name": "symfony/event-dispatcher",
