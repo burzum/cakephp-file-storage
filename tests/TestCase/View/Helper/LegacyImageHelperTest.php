@@ -2,7 +2,7 @@
 namespace Burzum\FileStorage\Test\TestCase\View\Helper;
 
 use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
-use Burzum\FileStorage\View\Helper\ImageHelper;
+use Burzum\FileStorage\View\Helper\LegacyImageHelper;
 use Cake\Core\Configure;
 use Cake\Event\EventManager;
 use Cake\Network\Request;
@@ -16,7 +16,7 @@ use Cake\View\View;
  * @copy 2012 - 2016 Florian Krämer
  * @license MIT
  */
-class ImageHelperTest extends FileStorageTestCase {
+class LegacyImageHelperTest extends FileStorageTestCase {
 
 	/**
 	 * Image Helper
@@ -41,7 +41,7 @@ class ImageHelperTest extends FileStorageTestCase {
 		parent::setUp();
 		$null = null;
 		$this->View = new View($null);
-		$this->Image = new ImageHelper($this->View);
+		$this->Image = new LegacyImageHelper($this->View);
 		$this->Image->Html = new HtmlHelper($this->View);
 		$this->Image->Html->request = new Request('contacts/add', false);
 		$this->Image->Html->request->webroot = '/';
