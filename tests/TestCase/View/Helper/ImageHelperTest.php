@@ -57,6 +57,11 @@ class ImageHelperTest extends FileStorageTestCase {
 		unset($this->Image);
 	}
 
+	/**
+	 * testImageUrl
+	 *
+	 * @return void
+	 */
 	public function testImageUrl() {
 		$image = $this->FileStorage->newEntity([
 			'id' => 'e479b480-f60b-11e1-a21f-0800200c9a66',
@@ -68,7 +73,7 @@ class ImageHelperTest extends FileStorageTestCase {
 		], ['accessibleFields' => ['*' => true]]);
 
 		$result = $this->Image->imageUrl($image, 't150', ['pathPrefix' => '/src/']);
-		debug($result);
+		$this->assertEquals('/src/test/path/testimage.c3f33c2a.jpg', $result);
 	}
 
 	/**
