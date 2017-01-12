@@ -148,6 +148,7 @@ class UploadBehavior extends Behavior {
 		$entity = $this->_composeEntity($file, $model, $options);
 
 		$model->save($entity);
+
 		return $entity;
 	}
 

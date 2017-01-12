@@ -1,6 +1,7 @@
 <?php
 namespace Burzum\FileStorage\Test\TestCase\Storage\Listener;
 
+use Burzum\FileStorage\Storage\Listener\LegacyLocalFileStorageListener;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Event\Event;
@@ -30,12 +31,13 @@ class LegacyLocalFileStorageListenerTest extends TestCase {
 		Configure::write('FileStorage.imageSizes', []);
 		$this->fileFixtures = Plugin::path('Burzum/FileStorage') . 'tests' . DS . 'Fixture' . DS . 'File' . DS;
 
-		$this->listener = $this->getMockBuilder('Burzum\FileStorage\Storage\Listener\LegacyLocalFileStorageListener')
+		$this->listener = $this->getMockBuilder(LegacyLocalFileStorageListener::class)
 			->setMethods([
 				'storageAdapter'
 			])
 			->setConstructorArgs([
 				[
+					'disableDeprecationWarning' => true,
 					'models' => ['Item']
 				]
 			])

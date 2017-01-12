@@ -33,7 +33,7 @@ class ImageProcessor implements EventListenerInterface {
 	protected $_defaultOutput = [];
 
 	public function __construct(array $config = []) {
-		$this->_loadImageProcessingFromConfig();
+		$this->loadImageProcessingFromConfig();
 	}
 
 	/**
@@ -90,7 +90,7 @@ class ImageProcessor implements EventListenerInterface {
 		if (!in_array($action, ['create', 'remove'])) {
 			throw new InvalidArgumentException(sprintf('Action was `%s` but must be `create` or `remove`', $action));
 		}
-		$this->_loadImageProcessingFromConfig();
+		$this->loadImageProcessingFromConfig();
 		if (!isset($this->_imageVersions[$entity->model])) {
 			return false;
 		}
@@ -103,9 +103,9 @@ class ImageProcessor implements EventListenerInterface {
 	 *
 	 * @return void
 	 */
-	protected function _loadImageProcessingFromConfig() {
+	protected function loadImageProcessingFromConfig() {
 		$this->_imageVersions = (array)Configure::read('FileStorage.imageSizes');
-		$this->_imageVersionHashes = StorageUtils::generateHashes();
+		$this->_imageVersionHashes = StorageUtils::generateHashes('FileStorage');
 		$this->_defaultOutput = (array)Configure::read('FileStorage.defaultOutput');
 	}
 
@@ -119,7 +119,7 @@ class ImageProcessor implements EventListenerInterface {
 		if (!empty($this->_imageProcessor) && $renew === false) {
 			return $this->_imageProcessor;
 		}
-		$this->_loadImageProcessingFromConfig();
+		$this->loadImageProcessingFromConfig();
 		$class = $this->_imageProcessorClass;
 		$this->_imageProcessor = new $class($config);
 		return $this->_imageProcessor;

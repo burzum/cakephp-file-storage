@@ -131,19 +131,14 @@ class StorageUtils {
 	 * @param string|array $configPath
 	 * @return array
 	 */
-	public static function generateHashes($configPath = 'FileStorage', $enforceReload = false) {
-		$hashes = (array)Configure::read($configPath . '.imageHashes');
-		if (!empty($hashes) && $enforceReload === false) {
-			return $hashes;
-		}
-
+	public static function generateHashes($configPath = 'FileStorage') {
 		if (is_array($configPath)) {
 			$imageSizes = $configPath;
 		} else {
 			$imageSizes = Configure::read($configPath . '.imageSizes');
 		}
 		if ($imageSizes === null) {
-			throw new RuntimeException(sprintf('Image processing configuration in "%s" is missing!', $configPath . '.imageSizes'));
+			throw new RuntimeException(sprintf('Image processing configuration in `%s` is missing!', $configPath . '.imageSizes'));
 		}
 
 		static::ksortRecursive($imageSizes);

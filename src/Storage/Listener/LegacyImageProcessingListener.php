@@ -173,8 +173,8 @@ class LegacyImageProcessingListener extends AbstractListener {
 	public function createVersions(Event $Event) {
 		if ($this->_checkEvent($Event)) {
 			$table = $Event->subject();
-			$record = $Event->data['record'];
-			$this->_createVersions($table, $record, $Event->data['operations']);
+			$record = $Event->data('record');
+			$this->_createVersions($table, $record, $Event->data('operations'));
 			$Event->stopPropagation();
 		}
 	}
@@ -196,9 +196,11 @@ class LegacyImageProcessingListener extends AbstractListener {
 	 */
 	protected function _removeVersions(Event $Event) {
 		if ($this->_checkEvent($Event)) {
-			$Storage = $Event->data['storage'];
-			$record = $Event->data['record'];
-			foreach ($Event->data['operations'] as $version => $operations) {
+			$data = $Event->data();
+
+			$Storage = $data['storage'];
+			$record = $data['record'];
+			foreach ($data['operations'] as $version => $operations) {
 				$hash = StorageUtils::hashOperations($operations);
 				$string = $this->_buildPath($record, true, $hash);
 				if ($this->adapterClass === 'AmazonS3' || $this->adapterClass === 'AwsS3') {
@@ -262,9 +264,11 @@ class LegacyImageProcessingListener extends AbstractListener {
 	 */
 	public function beforeSave(Event $Event) {
 		if ($this->_checkEvent($Event)) {
-			if (in_array($Event->data['record']['model'], (array)$this->config('autoRotate'))) {
-				$imageFile = $Event->data['record']['file']['tmp_name'];
-				$format = StorageUtils::fileExtension($Event->data['record']['file']['name']);
+			$data = $Event->data();
+
+			if (in_array($data['record']['model'], (array)$this->config('autoRotate'))) {
+				$imageFile = $data['record']['file']['tmp_name'];
+				$format = StorageUtils::fileExtension($data['record']['file']['name']);
 				$this->_autoRotate($imageFile, $format);
 			}
 		}
@@ -279,7 +283,7 @@ class LegacyImageProcessingListener extends AbstractListener {
 	public function afterSave(Event $Event) {
 		if ($this->_checkEvent($Event)) {
 			$table = $Event->subject();
-			$record = $Event->data['record'];
+			$record = $Event->data('record');
 			$Storage = StorageManager::adapter($record->adapter);
 			try {
 				$id = $record->{$table->primaryKey()};
@@ -323,13 +327,14 @@ class LegacyImageProcessingListener extends AbstractListener {
 	 * @return void
 	 */
 	public function imagePath(Event $Event) {
-		extract($Event->data);
+		$data = $Event->data();
+		extract($data);
 
-		if (!isset($Event->data['image']['adapter'])) {
+		if (!isset($data['image']['adapter'])) {
 			throw new \RuntimeException(__d('file_storage', 'No adapter config key passed!'));
 		}
 
-		$adapterClass = $this->getAdapterClassName($Event->data['image']['adapter']);
+		$adapterClass = $this->getAdapterClassName($data['image']['adapter']);
 		$buildMethod = '_build' . $adapterClass . 'Path';
 
 		if (method_exists($this, $buildMethod)) {
@@ -346,9 +351,11 @@ class LegacyImageProcessingListener extends AbstractListener {
 	 * @return void
 	 */
 	protected function _buildLocalPath(Event $Event) {
-		extract($Event->data);
+		$data = $Event->data();
+		extract($data);
+
 		$path = $this->_buildPath($image, true, $hash);
-		$Event->data['path'] = $Event->result = '/' . $path;
+		$Event->setData('path', $Event->result = '/' . $path);
 		$Event->stopPropagation();
 	}
 
@@ -371,7 +378,8 @@ class LegacyImageProcessingListener extends AbstractListener {
 	 * @return void
 	 */
 	protected function _buildAmazonS3Path(Event $Event) {
-		extract($Event->data);
+		$data = $Event->data();
+		extract($data);
 
 		$path = '/' . $this->_buildPath($image, true, $hash);
 

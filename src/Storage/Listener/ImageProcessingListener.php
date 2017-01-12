@@ -46,7 +46,7 @@ class ImageProcessingListener implements EventListenerInterface {
 	}
 
 	public function afterStoreFile(Event $event, EntityInterface $entity) {
-		$this->_loadImageProcessingFromConfig();
+		$this->loadImageProcessingFromConfig();
 
 		$imageVersions = (array)Configure::read('FileStorage.imageSizes');
 		$identifiers = array_keys($imageVersions);
@@ -59,7 +59,7 @@ class ImageProcessingListener implements EventListenerInterface {
 	}
 
 	public function afterDeleteFile(Event $event, EntityInterface $entity) {
-		$this->_loadImageProcessingFromConfig();
+		$this->loadImageProcessingFromConfig();
 
 		$imageVersions = (array)Configure::read('FileStorage.imageSizes');
 		$identifiers = array_keys($imageVersions);

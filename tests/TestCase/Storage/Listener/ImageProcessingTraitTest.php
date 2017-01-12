@@ -24,7 +24,7 @@ class TraitTestClass extends AbstractListener {
 	];
 	public function __construct(array $config = []) {
 		parent::__construct($config);
-		$this->_loadImageProcessingFromConfig();
+		$this->loadImageProcessingFromConfig();
 	}
 	public function checkImageVersions($identifier, array $versions) {
 		return $this->_checkImageVersions($identifier, $versions);
@@ -62,6 +62,7 @@ class ImageProcessingTraitTest extends FileStorageTestCase {
 			'path' => '',
 			'adapter' => 'Local',
 		], ['accessibleFields' => ['*' => true]]);
+
 		$this->entity->accessible('id', true);
 
 		Configure::write('FileStorage.imageSizes', [
@@ -95,6 +96,8 @@ class ImageProcessingTraitTest extends FileStorageTestCase {
 	public function testCreateImageVersions() {
 		$entity = $this->FileStorage->get('file-storage-3');
 		$listener = new TraitTestClass();
+		$listener->loadImageProcessingFromConfig();
+
 		$path = $listener->pathBuilder()->path($entity);
 
 		new Folder($this->testPath . $path, true);

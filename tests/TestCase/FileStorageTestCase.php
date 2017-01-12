@@ -73,6 +73,7 @@ class FileStorageTestCase extends TestCase {
 	 */
 	public function setUp() {
 		parent::setUp();
+
 		$this->_setupListeners();
 
 		$this->testPath = TMP . 'file-storage-test' . DS;

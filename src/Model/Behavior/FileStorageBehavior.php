@@ -130,7 +130,6 @@ class FileStorageBehavior extends Behavior {
 		if ($entity->isNew()) {
 			if (!$entity->has('model')) {
 				$entity->set('model', $this->_table->table());
-				$entity->set('identifier', $this->_table->table());
 			}
 
 			if (!$entity->has('adapter')) {

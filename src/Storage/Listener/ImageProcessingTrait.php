@@ -50,7 +50,7 @@ trait ImageProcessingTrait {
 		if (!in_array($action, ['create', 'remove'])) {
 			throw new InvalidArgumentException(sprintf('Action was `%s` but must be `create` or `remove`', $action));
 		}
-		$this->_loadImageProcessingFromConfig();
+		$this->loadImageProcessingFromConfig();
 		if (!isset($this->_imageVersions[$entity->get('model')])) {
 			return false;
 		}
@@ -63,9 +63,9 @@ trait ImageProcessingTrait {
 	 *
 	 * @return void
 	 */
-	protected function _loadImageProcessingFromConfig() {
+	public function loadImageProcessingFromConfig() {
 		$this->_imageVersions = (array)Configure::read('FileStorage.imageSizes');
-		$this->_imageVersionHashes = StorageUtils::generateHashes();
+		$this->_imageVersionHashes = StorageUtils::generateHashes('FileStorage', true);
 		$this->_defaultOutput = (array)Configure::read('FileStorage.defaultOutput');
 	}
 
@@ -79,7 +79,7 @@ trait ImageProcessingTrait {
 		if (!empty($this->_imageProcessor) && $renew === false) {
 			return $this->_imageProcessor;
 		}
-		$this->_loadImageProcessingFromConfig();
+		$this->loadImageProcessingFromConfig();
 		$class = $this->_imageProcessorClass;
 		$this->_imageProcessor = new $class($config);
 
@@ -95,7 +95,7 @@ trait ImageProcessingTrait {
 	 */
 	public function getImageVersionHash($model, $version) {
 		if (empty($this->_imageVersionHashes[$model][$version])) {
-			throw new RuntimeException(sprintf('Version "%s" for identifier "%s" does not exist!', $version, $model));
+			throw new RuntimeException(sprintf('!Version "%s" for identifier "%s" does not exist!', $version, $model));
 		}
 
 		return $this->_imageVersionHashes[$model][$version];

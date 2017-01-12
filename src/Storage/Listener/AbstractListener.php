@@ -364,20 +364,22 @@ abstract class AbstractListener implements EventListenerInterface {
 	protected function _deleteFile(Event $event) {
 		try {
 			$this->_beforeDeleteFile($event);
-			$entity = $event->data['entity'];
+			$entity = $event->data('entity');
 			$path = $this->pathBuilder()->fullPath($entity);
 
 			if ($this->getStorageAdapter($entity->adapter)->delete($path)) {
 				$event->result = true;
-				$event->data['path'] = $path;
-				$event->data['entity'] = $entity;
+				$event->setData('path', $path);
+				$event->setData('entity', $entity);
 				$this->_afterDeleteFile($event);
+
 				return true;
 			}
 		} catch (\Exception $e) {
 			$this->log($e->getMessage(), LogLevel::ERROR, ['scope' => ['storage']]);
 			throw new StorageException($e->getMessage(), $e->getCode(), $e);
 		}
+
 		return false;
 	}
 
