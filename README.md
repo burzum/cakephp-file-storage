@@ -14,11 +14,6 @@ The **File Storage** plugin is giving you the possibility to upload and store fi
 
 Storage adapters are an unified interface that allow you to store file data to your local file system, in memory, in a database or into a zip file and remote systems. There is a database table keeping track of what you stored where. You can always write your own adapter or extend and overload existing ones.
 
-[Please donate if you like it!](https://pledgie.com/campaigns/29682)
-------------------------------
-
-Already thought of how many hours development time this plugin saved you already? It would be *awesome* if you don't mind sharing some of your success by donating a small amount! Thank you.
-
 How it works
 ------------
 
@@ -48,11 +43,10 @@ List of supported Adapters
 Requirements
 ------------
 
- * PHP 5.6+
  * CakePHP 3.0
- * Gaufrette Library (included as composer dependency)
+ * Gaufrette Storage Library
 
-Optional but required for image processing:
+Optional but required if you want image processing out of the box:
 
  * The [Imagine Image processing plugin](https://github.com/burzum/cakephp-imagine-plugin) if you want to process and store images.
  

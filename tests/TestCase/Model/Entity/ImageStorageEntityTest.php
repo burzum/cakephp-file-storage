@@ -31,9 +31,11 @@ class ImageStorageEntityTest extends FileStorageTestCase {
 	 */
 	public function setUp() {
 		parent::setUp();
+
+		$this->_removeListeners();
+		EventManager::instance()->on($this->listeners['LegacyImageProcessingListener']);
+
 		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
-		$listener = new LocalListener();
-		EventManager::instance()->on($listener);
 	}
 
 	/**
@@ -54,13 +56,17 @@ class ImageStorageEntityTest extends FileStorageTestCase {
 	 */
 	public function testImageVersion() {
 		$this->FileStorage->entityClass('Burzum/FileStorage.ImageStorage');
+
 		$entity = $this->FileStorage->newEntity([
 			'id' => 'e479b480-f60b-11e1-a21f-0800200c9a66',
 			'model' => 'Test',
 			'path' => 'test/path/',
 			'extension' => 'jpg',
 			'adapter' => 'Local'
-		], ['accessibleFields' => ['*' => true]]);
+		], [
+			'accessibleFields' => ['*' => true]
+		]);
+
 		$result = $entity->imageVersion('t150');
 		$this->assertEquals($result, '/test/path/e479b480f60b11e1a21f0800200c9a66.c3f33c2a.jpg');
 	}
