@@ -401,7 +401,16 @@ abstract class AbstractListener implements EventListenerInterface {
 	 * @return void
 	 */
 	protected function _handleLegacyEvent(Event &$event) {
-		if (isset($event->data['record'])) {
+		if (method_exists($event, 'setData')) {
+			$data = $event->getData();
+			if (isset($data['record'])) {
+				$data['entity'] = $data['record'];
+			}
+			$event->setData($data);
+			return;
+		}
+
+		if ($event->data['record']) {
 			$event->data['entity'] = $event->data['record'];
 		}
 	}
