@@ -91,6 +91,7 @@ class ImageProcessingListenerTest extends FileStorageTestCase {
 			'path' => '/xx/xx/xx/uuid/',
 			'extension' => 'jpg'
 		), true, '5gh2hf');
+
 		$this->assertEquals($result, '/xx/xx/xx/uuid/foobar.5gh2hf.jpg');
 	}
 
@@ -123,11 +124,11 @@ class ImageProcessingListenerTest extends FileStorageTestCase {
 		$expected = 'http://s3.amazonaws.com/bucket1/titus.abc.jpg';
 
 		$this->Listener->buildAwsS3Path($event);
-		$this->assertEquals($expected, $event->data['path']);
+		$this->assertEquals($expected, $event->getData('path'));
 
 		// Make sure it returns same path if called more than once
 		$this->Listener->buildAwsS3Path($event);
-		$this->assertEquals($expected, $event->data['path']);
+		$this->assertEquals($expected, $event->getData('path'));
 
 		// Make sure it doesn't change path property
 		$this->assertNull($image->get('path'));
