@@ -35,7 +35,9 @@ class LocalListenerTest extends TestCase {
 			->setConstructorArgs([['models' => ['Item']]])
 			->getMock();
 
-		$this->adapterMock = $this->getMock('\Gaufrette\Adapter\Local', [], ['']);
+		$this->adapterMock = $this->getMockBuilder('\Gaufrette\Adapter\Local')
+			->disableOriginalConstructor()
+			->getMock();
 
 		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
 	}
