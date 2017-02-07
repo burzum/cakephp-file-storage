@@ -89,9 +89,9 @@ class ImageHelper extends StorageHelper {
 		EventManager::instance()->dispatch($event2);
 
 		if ($event1->isStopped()) {
-			return $this->normalizePath($event1->data['path']);
+			return $this->normalizePath($event1->getData('path'));
 		} elseif ($event2->isStopped()) {
-			return $this->normalizePath($event2->data['path']);
+			return $this->normalizePath($event2->getData('path'));
 		}
 		return false;
 	}

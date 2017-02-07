@@ -151,8 +151,8 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 	public function createVersions(Event $Event) {
 		if ($this->_checkEvent($Event)) {
 			$table = $Event->subject();
-			$record = $Event->data['record'];
-			$this->_createVersions($table, $record, $Event->data['operations']);
+			$record = $Event->getData('record');
+			$this->_createVersions($table, $record, $Event->getData('operations'));
 			$Event->stopPropagation();
 		}
 	}
@@ -174,9 +174,9 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 	 */
 	protected function _removeVersions(Event $Event) {
 		if ($this->_checkEvent($Event)) {
-			$Storage = $Event->data['storage'];
-			$record = $Event->data['record'];
-			foreach ($Event->data['operations'] as $version => $operations) {
+			$Storage = $Event->getData('storage');
+			$record = $Event->getData('record');
+			foreach ((array)$Event->getData('operations') as $version => $operations) {
 				$hash = StorageUtils::hashOperations($operations);
 				$string = $this->_buildPath($record, true, $hash);
 				if ($this->adapterClass === 'AmazonS3' || $this->adapterClass === 'AwsS3') {
@@ -202,11 +202,12 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 	 */
 	public function afterDelete(Event $Event) {
 		if ($this->_checkEvent($Event)) {
-			$record = $Event->data['record'];
+			$record = $Event->getData('record');
 			$string = $this->_buildPath($record, true, null);
 			if ($this->adapterClass === 'AmazonS3' || $this->adapterClass === 'AwsS3') {
 				$string = str_replace('\\', '/', $string);
 			}
+
 			try {
 				$Storage = StorageManager::adapter($record['adapter']);
 				if (!$Storage->has($string)) {
@@ -221,13 +222,16 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 				$Event->result = false;
 				return false;
 			}
+
 			$operations = Configure::read('FileStorage.imageSizes.' . $record['model']);
 			if (!empty($operations)) {
-				$Event->data['operations'] = $operations;
+				$Event->setData('operations', $operations);
 				$this->_removeVersions($Event);
 			}
+
 			$Event->stopPropagation();
 			$Event->result = true;
+
 			return true;
 		}
 	}
@@ -240,9 +244,13 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 	 */
 	public function beforeSave(Event $Event) {
 		if ($this->_checkEvent($Event)) {
-			if (in_array($Event->data['record']['model'], (array)$this->config('autoRotate'))) {
-				$imageFile = $Event->data['record']['file']['tmp_name'];
-				$format = StorageUtils::fileExtension($Event->data['record']['file']['name']);
+			$record = $Event->getData('record');
+			if (empty($record['model'])) {
+				return;
+			}
+			if (in_array($record['model'], (array)$this->getConfig('autoRotate'))) {
+				$imageFile = $record['file']['tmp_name'];
+				$format = StorageUtils::fileExtension($record['file']['name']);
 				$this->_autoRotate($imageFile, $format);
 			}
 		}
@@ -257,7 +265,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 	public function afterSave(Event $Event) {
 		if ($this->_checkEvent($Event)) {
 			$table = $Event->subject();
-			$record = $Event->data['record'];
+			$record = $Event->getData('record');
 			$Storage = StorageManager::adapter($record->adapter);
 			try {
 				$id = $record->{$table->primaryKey()};
@@ -301,7 +309,8 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 	 * @return void
 	 */
 	public function imagePath(Event $Event) {
-		extract($Event->data);
+		$data = $Event->getData();
+		extract($data);
 
 		if (!isset($Event->data['image']['adapter'])) {
 			throw new \RuntimeException(__d('file_storage', 'No adapter config key passed!'));
@@ -324,9 +333,11 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 	 * @return void
 	 */
 	protected function _buildLocalPath(Event $Event) {
-		extract($Event->data);
+		$data = $Event->getData();
+		extract($data);
 		$path = $this->_buildPath($image, true, $hash);
-		$Event->data['path'] = $Event->result = '/' . $path;
+		$data['path'] = $Event->result = '/' . $path;
+		$Event->setData($data);
 		$Event->stopPropagation();
 	}
 
@@ -349,7 +360,8 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 	 * @return void
 	 */
 	protected function _buildAmazonS3Path(Event $Event) {
-		extract($Event->data);
+		$data = $Event->getData();
+		extract($data);
 
 		$path = '/' . $this->_buildPath($image, true, $hash);
 
@@ -362,14 +374,16 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 		}
 
 		$http = 'http';
-		if (!empty($Event->data['options']['ssl']) && $Event->data['options']['ssl'] === true) {
+		if (!empty($data['options']['ssl']) && $data['options']['ssl'] === true) {
 			$http = 'https';
 		}
 
 		$path = str_replace('\\', '/', $path);
-		$bucketPrefix = !empty($Event->data['options']['bucketPrefix']) && $Event->data['options']['bucketPrefix'] === true;
+		$bucketPrefix = !empty($data['options']['bucketPrefix']) && $data['options']['bucketPrefix'] === true;
 
-		$Event->data['path'] = $Event->result = $this->_buildCloudFrontDistributionUrl($http, $path, $bucket, $bucketPrefix, $cfDist);
+		$data['path'] = $Event->result = $this->_buildCloudFrontDistributionUrl($http, $path, $bucket, $bucketPrefix, $cfDist);
+
+		$Event->setData($data);
 		$Event->stopPropagation();
 	}
 

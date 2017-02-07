@@ -340,16 +340,18 @@ abstract class AbstractListener implements EventListenerInterface {
 				if ($this->_config['imageProcessing'] === true) {
 					$this->autoProcessImageVersions($entity, 'remove');
 				}
-				$event->result = true;
-				$event->data['path'] = $path;
-				$event->data['entity'] = $entity;
+				$event->setResult(true);
+				$event->setData('path', $path);
+				$event->setData('entity', $entity);
 				$this->_afterDeleteFile($event);
+
 				return true;
 			}
 		} catch (\Exception $e) {
 			$this->log($e->getMessage(), LogLevel::ERROR, ['scope' => ['storage']]);
 			throw new StorageException($e->getMessage(), $e->getCode(), $e);
 		}
+
 		return false;
 	}
 

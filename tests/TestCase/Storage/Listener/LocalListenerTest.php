@@ -35,7 +35,9 @@ class LocalListenerTest extends TestCase {
 			->setConstructorArgs([['models' => ['Item']]])
 			->getMock();
 
-		$this->adapterMock = $this->getMock('\Gaufrette\Adapter\Local', [], ['']);
+		$this->adapterMock = $this->getMockBuilder('\Gaufrette\Adapter\Local')
+			->disableOriginalConstructor()
+			->getMock();
 
 		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
 	}
@@ -93,8 +95,9 @@ class LocalListenerTest extends TestCase {
 
 		$expected = 'Test' . DS . '5c' . DS . '39' . DS . '33' . DS . 'e479b480f60b11e1a21f0800200c9a66' . DS . 'e479b480f60b11e1a21f0800200c9a66.c3f33c2a.jpg';
 		$this->listener->imagePath($event);
-		$this->assertEquals($event->data['path'], $expected);
-		$this->assertEquals($event->result, $expected);
+
+		$this->assertEquals($expected, $event->getData('path'));
+		$this->assertEquals($expected, $event->result);
 	}
 
 	/**

@@ -8,6 +8,7 @@ namespace Burzum\FileStorage\Storage\Listener;
 
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
+use InvalidArgumentException;
 
 /**
  * Base FileStorage Event Listener for the CakePHP FileStorage plugin
@@ -118,7 +119,9 @@ class BaseListener extends AbstractListener {
 	 * @return void
 	 */
 	public function imagePath(Event $event) {
-		$data = $event->data + [
+		$data = $event->getData();
+
+		$data = $data + [
 			'image' => null,
 			'version' => null,
 			'options' => [],
@@ -126,7 +129,7 @@ class BaseListener extends AbstractListener {
 		];
 
 		if ($event->subject() instanceof EntityInterface) {
-			$data['image'] = $event->subject();
+			$data['image'] = $event->getSubject();
 		}
 
 		$entity = $data['image'];
@@ -135,11 +138,14 @@ class BaseListener extends AbstractListener {
 		$type = $data['pathType'];
 
 		if (!$entity) {
-			throw new \InvalidArgumentException('No image entity provided.');
+			throw new InvalidArgumentException('No image entity provided.');
 		}
 
 		$this->_loadImageProcessingFromConfig();
-		$event->data['path'] = $event->result = $this->imageVersionPath($entity, $version, $type, $options);
+		$data['path'] = $this->imageVersionPath($entity, $version, $type, $options);
+
+		$event->setData($data);
+		$event->setResult($data['path']);
 		$event->stopPropagation();
 	}
 
@@ -169,19 +175,21 @@ class BaseListener extends AbstractListener {
 	 * return void
 	 */
 	protected function _processImages(Event $event, $method) {
-		if ($this->config('imageProcessing') !== true) {
+		if ($this->getConfig('imageProcessing') !== true) {
 			return;
 		}
 
+		$options = $event->getData('options');
 		$versions = $this->_getVersionData($event);
-		$options = isset($event->data['options']) ? $event->data['options'] : [];
+		$options = !empty($options) ? $options : [];
 
 		$this->_loadImageProcessingFromConfig();
-		$event->result = $this->{$method}(
-			$event->data['record'],
+
+		$event->setResult($this->{$method}(
+			$event->getData('record'),
 			$versions,
 			$options
-		);
+		));
 	}
 
 	/**
@@ -196,10 +204,12 @@ class BaseListener extends AbstractListener {
 	 */
 	protected function _getVersionData($event)
 	{
-		if (isset($event->data['versions'])) {
-			$versions = $event->data['versions'];
-		} elseif (isset($event->data['operations'])) {
-			$versions = array_keys($event->data['operations']);
+		$data = $event->data['versions'];
+
+		if (isset($data['versions'])) {
+			$versions = $data['versions'];
+		} elseif (isset($data['operations'])) {
+			$versions = array_keys($data['operations']);
 		} else {
 			$versions = [];
 		}

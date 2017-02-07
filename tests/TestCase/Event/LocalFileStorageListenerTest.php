@@ -6,7 +6,6 @@ use Cake\Filesystem\Folder;
 use Cake\ORM\TableRegistry;
 use Burzum\FileStorage\TestSuite\FileStorageTestCase;
 use Burzum\FileStorage\Event\LocalFileStorageListener;
-use Burzum\FileStorage\Model\Table\FileStorageTable;
 
 /**
  * LocalImageProcessingListener Test
