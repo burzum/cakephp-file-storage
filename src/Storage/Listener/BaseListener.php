@@ -144,6 +144,7 @@ class BaseListener extends AbstractListener {
 		$this->_loadImageProcessingFromConfig();
 		$data['path'] = $this->imageVersionPath($entity, $version, $type, $options);
 
+		$event->setData($data);
 		$event->setResult($data['path']);
 		$event->stopPropagation();
 	}
@@ -174,19 +175,21 @@ class BaseListener extends AbstractListener {
 	 * return void
 	 */
 	protected function _processImages(Event $event, $method) {
-		if ($this->config('imageProcessing') !== true) {
+		if ($this->getConfig('imageProcessing') !== true) {
 			return;
 		}
 
+		$options = $event->getData('options');
 		$versions = $this->_getVersionData($event);
-		$options = isset($event->data['options']) ? $event->data['options'] : [];
+		$options = !empty($options) ? $options : [];
 
 		$this->_loadImageProcessingFromConfig();
-		$event->result = $this->{$method}(
-			$event->data['record'],
+
+		$event->setResult($this->{$method}(
+			$event->getData('record'),
 			$versions,
 			$options
-		);
+		));
 	}
 
 	/**
@@ -201,10 +204,12 @@ class BaseListener extends AbstractListener {
 	 */
 	protected function _getVersionData($event)
 	{
-		if (isset($event->data['versions'])) {
-			$versions = $event->data['versions'];
-		} elseif (isset($event->data['operations'])) {
-			$versions = array_keys($event->data['operations']);
+		$data = $event->data['versions'];
+
+		if (isset($data['versions'])) {
+			$versions = $data['versions'];
+		} elseif (isset($data['operations'])) {
+			$versions = array_keys($data['operations']);
 		} else {
 			$versions = [];
 		}

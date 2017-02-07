@@ -93,8 +93,9 @@ class LocalListenerTest extends TestCase {
 
 		$expected = 'Test' . DS . '5c' . DS . '39' . DS . '33' . DS . 'e479b480f60b11e1a21f0800200c9a66' . DS . 'e479b480f60b11e1a21f0800200c9a66.c3f33c2a.jpg';
 		$this->listener->imagePath($event);
-		$this->assertEquals($event->getData('path'), $expected);
-		$this->assertEquals($event->result, $expected);
+
+		$this->assertEquals($expected, $event->getData('path'));
+		$this->assertEquals($expected, $event->result);
 	}
 
 	/**
