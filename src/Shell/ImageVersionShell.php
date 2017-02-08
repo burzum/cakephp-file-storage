@@ -12,7 +12,7 @@ use Burzum\FileStorage\Storage\StorageManager;
  * ImageShell
  *
  * @author Florian Krämer
- * @copyright 2012 - 2016 Florian Krämer
+ * @copyright 2012 - 2017 Florian Krämer
  * @license MIT
  */
 class ImageVersionShell extends Shell {

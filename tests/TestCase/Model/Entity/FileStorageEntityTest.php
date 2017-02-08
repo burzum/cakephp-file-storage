@@ -11,7 +11,7 @@ use Burzum\FileStorage\TestSuite\FileStorageTestCase;
  * File Storage Entity Test
  *
  * @author Florian Kr�mer
- * @copyright 2012 - 2016 Florian Kr�mer
+ * @copyright 2012 - 2017 Florian Kr�mer
  * @license MIT
  */
 class FileStorageEntityTest extends FileStorageTestCase {
