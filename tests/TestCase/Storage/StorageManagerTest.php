@@ -42,6 +42,7 @@ class StorageManagerTest extends FileStorageTestCase {
 			'adapterClass' => '\Gaufrette\Adapter\Local',
 			'class' => '\Gaufrette\Filesystem'
 		];
+
 		$this->assertEquals($result, $expected);
 		$this->assertFalse(StorageManager::config('Does not exist'));
 	}

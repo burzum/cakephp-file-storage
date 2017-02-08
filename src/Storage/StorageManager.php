@@ -1,6 +1,9 @@
 <?php
 namespace Burzum\FileStorage\Storage;
 
+use InvalidArgumentException;
+use RuntimeException;
+
 /**
  * StorageManager - manages and instantiates Gaufrette storage engine instances
  *
@@ -33,6 +36,7 @@ class StorageManager {
 		if (!$instance) {
 			$instance[0] = new StorageManager();
 		}
+
 		return $instance[0];
 	}
 
@@ -42,19 +46,47 @@ class StorageManager {
 	 * @param string $adapter
 	 * @param array $options
 	 * @return mixed
+	 * @deprecated Use StorageManager::getConfig() and setConfig()
 	 */
 	public static function config($adapter, $options = array()) {
+		if (!empty($adapter) && !empty($options)) {
+			self::setConfig($adapter, $options);
+			$options;
+		}
+
+		try {
+			return self::getConfig($adapter);
+		} catch (RuntimeException $e) {
+			return false;
+		}
+	}
+
+	/**
+	 * Sets an adapter config
+	 *
+	 * @param string $configName Config name
+	 * @param array $configOptions Options
+	 * @return null
+	 */
+	public static function setConfig($configName, array $configOptions) {
+		$_this = StorageManager::getInstance();
+		$_this->_adapterConfig[$configName] = $configOptions;
+	}
+
+	/**
+	 * Get an adapter config
+	 *
+	 * @param string $configName Configuration name
+	 * @return array
+	 */
+	public static function getConfig($configName) {
 		$_this = StorageManager::getInstance();
 
-		if (!empty($adapter) && !empty($options)) {
-			return $_this->_adapterConfig[$adapter] = $options;
+		if (!isset($_this->_adapterConfig[$configName])) {
+			throw new RuntimeException(sprintf('Storage adapter config `%s` does not exist', $configName));
 		}
 
-		if (isset($_this->_adapterConfig[$adapter])) {
-			return $_this->_adapterConfig[$adapter];
-		}
-
-		return false;
+		return $_this->_adapterConfig[$configName];
 	}
 
 	/**
@@ -83,6 +115,18 @@ class StorageManager {
 	 * @return \Gaufrette\Filesystem
 	 */
 	public static function adapter($adapterName, $renewObject = false) {
+		return self::getAdapter($adapterName, $renewObject);
+	}
+
+	/**
+	 * Gets a configured instance of a storage adapter.
+	 *
+	 * @param mixed $adapterName string of adapter configuration or array of settings
+	 * @param boolean $renewObject Creates a new instance of the given adapter in the configuration
+	 * @throws \RuntimeException
+	 * @return \Gaufrette\Filesystem
+	 */
+	public static function getAdapter($adapterName, $renewObject = false) {
 		$_this = StorageManager::getInstance();
 
 		$isConfigured = true;
@@ -90,7 +134,7 @@ class StorageManager {
 			if (!empty($_this->_adapterConfig[$adapterName])) {
 				$adapter = $_this->_adapterConfig[$adapterName];
 			} else {
-				throw new \RuntimeException(sprintf('Invalid Storage Adapter %s!', $adapterName));
+				throw new RuntimeException(sprintf('Invalid Storage Adapter %s!', $adapterName));
 			}
 
 			if (!empty($_this->_adapterConfig[$adapterName]['object']) && $renewObject === false) {
@@ -106,13 +150,15 @@ class StorageManager {
 		$class = $adapter['adapterClass'];
 		$Reflection = new \ReflectionClass($class);
 		if (!is_array($adapter['adapterOptions'])) {
-			throw new \InvalidArgumentException(sprintf('%s: The adapter options must be an array!', $adapterName));
+			throw new InvalidArgumentException(sprintf('%s: The adapter options must be an array!', $adapterName));
 		}
+
 		$adapterObject = $Reflection->newInstanceArgs($adapter['adapterOptions']);
 		$engineObject = new $adapter['class']($adapterObject);
 		if ($isConfigured) {
 			$_this->_adapterConfig[$adapterName]['object'] = &$engineObject;
 		}
+
 		return $engineObject;
 	}
 }
