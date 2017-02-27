@@ -97,8 +97,8 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 		}
 		$processor = new ImageProcessor();
 		$image = $processor->open($imageFile);
-		$processor->rotate($image, ['degree' => $degree]);
-		$image->save(['format' => $format]);
+		$processor->rotate(['degree' => $degree]);
+		$image->save($imageFile, ['format' => $format]);
 		return true;
 	}
 
