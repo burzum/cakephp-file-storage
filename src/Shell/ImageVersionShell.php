@@ -266,17 +266,20 @@ class ImageVersionShell extends Shell {
 							'options' => $options
 						);
 
-						if ($action == 'generate' || $action == 'regenerate') {
+						if ($action === 'generate' || $action === 'regenerate') {
 							$Event = new Event('ImageVersion.createVersion', $this->Table, $payload);
 							EventManager::instance()->dispatch($Event);
 						}
 
-						if ($action == 'remove') {
+						if ($action === 'remove') {
 							$Event = new Event('ImageVersion.removeVersion', $this->Table, $payload);
 							EventManager::instance()->dispatch($Event);
 						}
 
-						$this->out(__('{0} processed', $image->id));
+						$this->out(__('{0} processed', $image->get('id')));
+						$this->verbose('Path: ' . $image->get('path'));
+						$this->verbose('Adapter Config: ' . $image->get('adapter'));
+						$this->verbose($this->nl());
 					}
 				}
 			}

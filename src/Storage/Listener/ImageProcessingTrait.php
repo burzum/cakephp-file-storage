@@ -7,8 +7,11 @@
 namespace Burzum\FileStorage\Storage\Listener;
 
 use Burzum\FileStorage\Storage\StorageUtils;
+use Cake\Console\Shell;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
+use Exception;
+use RuntimeException;
 
 /**
  * ImageProcessingTrait
@@ -84,7 +87,7 @@ trait ImageProcessingTrait {
 	 */
 	public function getImageVersionHash($model, $version) {
 		if (empty($this->_imageVersionHashes[$model][$version])) {
-			throw new \RuntimeException(sprintf('Version "%s" for identifier "%s" does not exist!', $version, $model));
+			throw new RuntimeException(sprintf('Version "%s" for identifier "%s" does not exist!', $version, $model));
 		}
 		return $this->_imageVersionHashes[$model][$version];
 	}
@@ -99,11 +102,11 @@ trait ImageProcessingTrait {
 	 */
 	protected function _checkImageVersions($identifier, array $versions) {
 		if (!isset($this->_imageVersions[$identifier])) {
-			throw new \RuntimeException(sprintf('No image version config found for identifier "%s"!', $identifier));
+			throw new RuntimeException(sprintf('No image version config found for identifier "%s"!', $identifier));
 		}
 		foreach ($versions as $version) {
 			if (!isset($this->_imageVersions[$identifier][$version])) {
-				throw new \RuntimeException(sprintf('Invalid version "%s" for identifier "%s"!', $identifier, $version));
+				throw new RuntimeException(sprintf('Invalid version "%s" for identifier "%s"!', $identifier, $version));
 			}
 		}
 	}
@@ -117,18 +120,27 @@ trait ImageProcessingTrait {
 	 * @return array
 	 */
 	public function createImageVersions(EntityInterface $entity, array $versions, array $options = []) {
-		$this->_checkImageVersions($entity->model, $versions);
+		$this->_checkImageVersions($entity->get('model'), $versions);
 
 		$options += $this->_defaultOutput + [
 			'overwrite' => true
 		];
 
 		$result = [];
-		$storage = $this->storageAdapter($entity->adapter);
-		foreach ($this->_imageVersions[$entity->model] as $version => $operations) {
+		$storage = $this->storageAdapter($entity->get('adapter'));
+
+		foreach ($this->_imageVersions[$entity->get('model')] as $version => $operations) {
 			if (!in_array($version, $versions)) {
+				if ($this instanceof Shell) {
+					$this->warn(sprintf(
+						'Version `%s` for identifier `%s` not found',
+						$version,
+						$entity->get('model')
+					));
+				}
 				continue;
 			}
+
 			$saveOptions = $options + ['format' => $entity->extension];
 			if (isset($operations['_output'])) {
 				$saveOptions = $operations['_output'] + $saveOptions;
@@ -155,7 +167,7 @@ trait ImageProcessingTrait {
 					'path' => $path,
 					'hash' => $this->getImageVersionHash($entity->model, $version)
 				];
-			} catch (\Exception $e) {
+			} catch (Exception $e) {
 				$result[$version] = [
 					'status' => 'error',
 					'error' => $e->getMessage(),
@@ -207,7 +219,7 @@ trait ImageProcessingTrait {
 	 */
 	public function getAllVersionsKeysForModel($identifier) {
 		if (!isset($this->_imageVersions[$identifier])) {
-			throw new \RuntimeException(sprintf('No image config present for identifier "%s"!', $identifier));
+			throw new RuntimeException(sprintf('No image config present for identifier "%s"!', $identifier));
 		}
 		return array_keys($this->_imageVersions[$identifier]);
 	}

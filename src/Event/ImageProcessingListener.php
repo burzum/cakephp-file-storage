@@ -8,6 +8,7 @@ use Cake\Core\Configure;
 use Cake\ORM\Table;
 use Burzum\FileStorage\Storage\StorageManager;
 use Burzum\FileStorage\Storage\StorageUtils;
+use RuntimeException;
 
 /**
  * @author Florian Krämer
@@ -113,7 +114,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 	 * @return false|null
 	 */
 	protected function _createVersions(Table $table, $entity, array $operations) {
-		$Storage = StorageManager::adapter($entity['adapter']);
+		$Storage = StorageManager::getAdapter($entity['adapter']);
 		$path = $this->_buildPath($entity, true);
 		$tmpFile = $this->_tmpFile($Storage, $path, TMP . 'image-processing');
 
@@ -266,7 +267,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 		if ($this->_checkEvent($Event)) {
 			$table = $Event->subject();
 			$record = $Event->getData('record');
-			$Storage = StorageManager::adapter($record->adapter);
+			$Storage = StorageManager::getAdapter($record->get('adapter'));
 			try {
 				$id = $record->{$table->primaryKey()};
 				$filename = $this->stripDashes($id);
@@ -313,7 +314,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 		extract($data);
 
 		if (!isset($Event->data['image']['adapter'])) {
-			throw new \RuntimeException(__d('file_storage', 'No adapter config key passed!'));
+			throw new RuntimeException(__d('file_storage', 'No adapter config key passed!'));
 		}
 
 		$adapterClass = $this->getAdapterClassName($Event->data['image']['adapter']);
@@ -323,7 +324,7 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 			return $this->$buildMethod($Event);
 		}
 
-		throw new \RuntimeException(__d('file_storage', 'No callback image url callback implemented for adapter %s', $adapterClass));
+		throw new RuntimeException(__d('file_storage', 'No callback image url callback implemented for adapter %s', $adapterClass));
 	}
 
 	/**

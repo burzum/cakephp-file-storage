@@ -185,7 +185,7 @@ class BaseListener extends AbstractListener {
 
 		$this->_loadImageProcessingFromConfig();
 
-		$event->setResult($this->{$method}(
+		$event->setResult($this->{$method} (
 			$event->getData('record'),
 			$versions,
 			$options
@@ -204,7 +204,7 @@ class BaseListener extends AbstractListener {
 	 */
 	protected function _getVersionData($event)
 	{
-		$data = $event->data['versions'];
+		$data = $event->getData();
 
 		if (isset($data['versions'])) {
 			$versions = $data['versions'];
