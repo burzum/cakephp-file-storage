@@ -7,9 +7,10 @@ use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
 use Burzum\FileStorage\Storage\StorageManager;
+use Exception;
 
 /**
- * ImageShell
+ * Image Version Shell
  *
  * @author Florian Krämer
  * @copyright 2012 - 2017 Florian Krämer
@@ -17,22 +18,23 @@ use Burzum\FileStorage\Storage\StorageManager;
  */
 class ImageVersionShell extends Shell {
 
-/**
- * Storage Table Object
- * @var \Cake\ORM\Table
- */
+	/**
+	 * Storage Table Object
+	 *
+	 * @var \Cake\ORM\Table
+	 */
 	public $Table = null;
 
-/**
- * Limit
- *
- * @var integer
- */
+	/**
+	 * Limit
+	 *
+	 * @var int
+	 */
 	public $limit = 10;
 
-/**
- * @inheritDoc
- */
+	/**
+	 * @inheritDoc
+	 */
 	public function getOptionParser() {
 		$parser = parent::getOptionParser();
 		$parser->description([
@@ -129,12 +131,13 @@ class ImageVersionShell extends Shell {
 				],
 			],
 		]);
+
 		return $parser;
 	}
 
-/**
- * @inheritDoc
- */
+	/**
+	 * @inheritDoc
+	 */
 	public function startup() {
 		parent::startup();
 
@@ -147,17 +150,17 @@ class ImageVersionShell extends Shell {
 
 		if (isset($this->params['limit'])) {
 			if (!is_numeric($this->params['limit'])) {
-				$this->out(__d('file_storage', '--limit must be an integer!'));
-				$this->_stop();
+				$this->abort(__d('file_storage', '--limit must be an integer!'));
 			}
 			$this->limit = $this->params['limit'];
 		}
 	}
 
-/**
- * Generate all image versions.
- *
- */
+	/**
+	 * Regenerate image versions
+	 *
+	 * @return void
+	 */
 	public function regenerate() {
 		$operations = Configure::read('FileStorage.imageSizes.' . $this->args[0]);
 		$options = [
@@ -165,26 +168,25 @@ class ImageVersionShell extends Shell {
 		];
 
 		if (empty($operations)) {
-			$this->out(__d('file_storage', 'Invalid table or version.'));
-			$this->_stop();
+			$this->abort(__d('file_storage', 'Invalid table or version.'));
 		}
 
 		foreach ($operations as $version => $operation) {
 			try {
 				$this->_loop($this->command, $this->args[0], array($version => $operation), $options);
-			} catch (\Exception $e) {
-				$this->out($e->getMessage());
-				$this->_stop();
+			} catch (Exception $e) {
+				$this->abort($e->getMessage());
 			}
 		}
 	}
 
-/**
- * Generate a given image version.
- *
- * @param string $model
- * @param string $version
- */
+	/**
+	 * Generate a given image version.
+	 *
+	 * @param string $model
+	 * @param string $version
+	 * @return void
+	 */
 	public function generate($model, $version) {
 		$operations = Configure::read('FileStorage.imageSizes.' . $model . '.' . $version);
 		$options = [
@@ -192,57 +194,54 @@ class ImageVersionShell extends Shell {
 		];
 
 		if (empty($operations)) {
-			$this->out(__d('file_storage', 'Invalid table or version.'));
-			$this->_stop();
+			$this->abort(__d('file_storage', 'Invalid table or version.'));
 		}
 
 		try {
 			$this->_loop('generate', $model, array($version => $operations), $options);
-		} catch (\Exception $e) {
-			$this->out($e->getMessage());
-			$this->_stop();
+		} catch (Exception $e) {
+			$this->abort($e->getMessage());
 		}
 	}
 
-/**
- * Remove a given image version.
- *
- * @param string $model
- * @param string $version
- */
+	/**
+	 * Remove a given image version.
+	 *
+	 * @param string $model
+	 * @param string $version
+	 * @return void
+	 */
 	public function remove($model, $version) {
 		$operations = Configure::read('FileStorage.imageSizes.' . $model . '.' . $version);
 
 		if (empty($operations)) {
-			$this->out(__d('file_storage', 'Invalid table or version.'));
-			$this->_stop();
+			$this->abort(__d('file_storage', 'Invalid table or version.'));
 		}
 
 		try {
 			$this->_loop('remove', $model, array($version => $operations));
-		} catch (\Exception $e) {
-			$this->out($e->getMessage());
-			$this->_stop();
+		} catch (Exception $e) {
+			$this->abort($e->getMessage());
 		}
 	}
 
-/**
- * Loops through image records and performs requested operation on them.
- *
- * @param string $action
- * @param $model
- * @param array $operations
- */
+	/**
+	 * Loops through image records and performs requested operation on them.
+	 *
+	 * @param string $action
+	 * @param $model
+	 * @param array $operations
+	 * @return void
+	 */
 	protected function _loop($action, $model, $operations = [], $options = []) {
 		if (!in_array($action, array('generate', 'remove', 'regenerate'))) {
-			$this->_stop();
+			$this->abort('Invalid action');
 		}
 
 		$totalImageCount = $this->_getCount($model);
 
 		if ($totalImageCount === 0) {
-			$this->out(__d('file_storage', 'No Images for model {0} found', $model));
-			$this->_stop();
+			$this->abort(__d('file_storage', 'No Images for model {0} found', $model));
 		}
 
 		$this->out(__d('file_storage', '{0} image file(s) will be processed' . "\n", $totalImageCount));
@@ -254,9 +253,9 @@ class ImageVersionShell extends Shell {
 			$images = $this->_getRecords($model, $limit, $offset);
 			if (!empty($images)) {
 				foreach ($images as $image) {
-					$Storage = StorageManager::adapter($image->adapter);
+					$Storage = StorageManager::getAdapter($image->adapter);
 					if ($Storage === false) {
-						$this->out(__d('file_storage', 'Cant load adapter config {0} for record {1}', $image->adapter, $image->id));
+						$this->warn(__d('file_storage', 'Cant load adapter config {0} for record {1}', $image->adapter, $image->id));
 					} else {
 						$payload = array(
 							'record' => $image,
@@ -285,13 +284,13 @@ class ImageVersionShell extends Shell {
 		} while ($images->count() > 0);
 	}
 
-/**
- * Gets the amount of images for a model in the DB.
- *
- * @param string $identifier
- * @param array $extensions
- * @return integer
- */
+	/**
+	 * Gets the amount of images for a model in the DB.
+	 *
+	 * @param string $identifier
+	 * @param array $extensions
+	 * @return int
+	 */
 	protected function _getCount($identifier, array $extensions = ['jpg', 'png', 'jpeg']) {
 		return $this->Table
 			->find()

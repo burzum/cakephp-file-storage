@@ -1,5 +1,7 @@
 <?php
 /**
+ * Storage Shell
+ *
  * @author Florian Krämer
  * @copyright 2012 - 2017 Florian Krämer
  * @license MIT
@@ -63,16 +65,16 @@ class StorageShell extends Shell {
 	 */
 	protected function _storePrecheck() {
 		if (empty($this->args[0])) {
-			$this->error('No file provided!');
+			$this->abort('No file provided!');
 		}
 
 		if (!file_exists($this->args[0])) {
-			$this->error('The file does not exist!');
+			$this->abort('The file does not exist!');
 		}
 
 		$adapterConfig = StorageManager::config($this->params['adapter']);
 		if (empty($adapterConfig)) {
-			$this->error(sprintf('Invalid adapter config `%s` provided!', $this->params['adapter']));
+			$this->abort(sprintf('Invalid adapter config `%s` provided!', $this->params['adapter']));
 		}
 	}
 
@@ -85,6 +87,7 @@ class StorageShell extends Shell {
 		$this->_storePrecheck();
 		$model = $this->loadModel($this->params['model']);
 		$fileData = StorageUtils::fileToUploadArray($this->args[0]);
+
 		$entity = $model->newEntity([
 			'adapter' => $this->params['adapter'],
 			'file' => $fileData,
@@ -96,7 +99,7 @@ class StorageShell extends Shell {
 			$this->out('UUID: ' . $entity->id);
 			$this->out('Path: ' . $entity->path());
 		} else {
-			$this->error('Failed to save the file.');
+			$this->abort('Failed to save the file.');
 		}
 	}
 }
