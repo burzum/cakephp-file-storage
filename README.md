@@ -12,11 +12,6 @@ The **File Storage** plugin is giving you the possibility to upload and store fi
 
 Storage adapters are an unified interface that allow you to store file data to your local file system, in memory, in a database or into a zip file and remote systems. There is a database table keeping track of what you stored where. You can always write your own adapter or extend and overload existing ones.
 
-[Please donate if you like it!](https://pledgie.com/campaigns/29682)
-------------------------------
-
-Already thought of how many hours development time this plugin saved you already? It would be *awesome* if you don't mind sharing some of your success by donating a small amount! Thank you.
-
 How it works
 ------------
 
@@ -33,24 +28,23 @@ List of supported Adapters
  * Azure
  * Doctrine DBAL
  * Dropbox
- * Ftp
+ * FTP
  * Grid FS
  * In Memory
  * Local File System
  * MogileFS
  * Open Cloud
  * Rackspace Cloudfiles
- * Sftp
+ * SFTP
  * Zip File
 
 Requirements
 ------------
 
- * PHP 5.4+
- * CakePHP 3.0
+ * CakePHP 3.4
  * Gaufrette Library (included as composer dependency)
 
-Optional but required for image processing:
+Optional but *required for image processing*:
 
  * The [Imagine Image processing plugin](https://github.com/burzum/cakephp-imagine-plugin) if you want to process and storag images.
 
@@ -76,7 +70,7 @@ To contribute to this plugin please follow a few basic rules.
 License
 -------
 
-Copyright 2012 - 2016, Florian Krämer
+Copyright 2012 - 2017, Florian Krämer
 
 Licensed under The MIT License
 Redistributions of files must retain the above copyright notice.
