@@ -6,6 +6,8 @@
  */
 namespace Burzum\FileStorage\Storage;
 
+use InvalidArgumentException;
+
 /**
  * Use the StorageTrait for convenient access to the storage adapters in any class.
  */
@@ -16,15 +18,17 @@ trait StorageTrait {
 	 *
 	 * Makes it easy to mock the adapter in tests.
 	 *
-	 * @throws \InvalidArgumentException
+	 * @throws InvalidArgumentException
 	 * @param string $configName
 	 * @return array
 	 */
 	public function storageConfig($configName) {
 		if (empty($configName) || !is_string($configName)) {
-			throw new \InvalidArgumentException('First arg must be a non empty string!');
+			throw new InvalidArgumentException(
+				__METHOD__ . '() First arg must be a non empty string!'
+			);
 		}
-		return StorageManager::config($configName);
+		return StorageManager::getConfig($configName);
 	}
 
 	/**
@@ -32,13 +36,15 @@ trait StorageTrait {
 	 *
 	 * Makes it easy to mock the adapter in tests.
 	 *
-	 * @throws \InvalidArgumentException
+	 * @throws InvalidArgumentException
 	 * @param string $configName
 	 * @return array
 	 */
 	public function storageAdapter($configName, $renewObject = false) {
 		if (empty($configName) || !is_string($configName)) {
-			throw new \InvalidArgumentException('First arg must be a non empty string!');
+			throw new InvalidArgumentException(
+				__METHOD__ . '() First arg must be a non empty string!'
+			);
 		}
 		return StorageManager::adapter($configName, $renewObject);
 	}

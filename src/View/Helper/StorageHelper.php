@@ -39,8 +39,8 @@ class StorageHelper extends Helper {
 		parent::__construct($view, $config);
 
 		$this->pathBuilder(
-			$this->config('pathBuilder'),
-			$this->config('pathBuilderOptions')
+			$this->getConfig('pathBuilder'),
+			$this->getConfig('pathBuilderOptions')
 		);
 	}
 

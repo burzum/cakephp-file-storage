@@ -4,7 +4,7 @@ namespace Burzum\FileStorage\View\Helper;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Core\Configure;
-use Cake\View\Helper;
+use InvalidArgumentException
 
 /**
  * ImageHelper
@@ -61,7 +61,7 @@ class ImageHelper extends StorageHelper {
 	}
 
 	/**
-	 * URL
+	 * Generates the URL to the image
 	 *
 	 * @param array $image FileStorage array record or whatever else table that matches this helpers needs without the model, we just want the record fields
 	 * @param string $version Image version string
@@ -82,6 +82,7 @@ class ImageHelper extends StorageHelper {
 			'pathType' => 'url'
 		];
 
+		// Need to dispatch two events for legacy reasons :(
 		$event1 = new Event('ImageVersion.getVersions', $this, $eventOptions);
 		$event2 = new Event('FileStorage.ImageHelper.imagePath', $this, $eventOptions);
 
@@ -93,6 +94,7 @@ class ImageHelper extends StorageHelper {
 		} elseif ($event2->isStopped()) {
 			return $this->normalizePath($event2->getData('path'));
 		}
+
 		return false;
 	}
 
