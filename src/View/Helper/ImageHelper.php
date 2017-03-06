@@ -4,7 +4,7 @@ namespace Burzum\FileStorage\View\Helper;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Core\Configure;
-use InvalidArgumentException
+use InvalidArgumentException;
 
 /**
  * ImageHelper
