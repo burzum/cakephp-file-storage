@@ -77,6 +77,12 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 	 * @return boolean
 	 */
 	protected function _autoRotate($imageFile, $format) {
+		// Auto-rotate applies only to JPEG files (i.e. not to PNG, GIF, etc..)
+		$format = strtolower($format);
+		if($format != 'jpg' && $format != 'jpeg') {
+			return false;
+		}
+
 		$orientation = ImagineUtility::getImageOrientation($imageFile);
 		$degree = 0;
 		if ($orientation === false) {
