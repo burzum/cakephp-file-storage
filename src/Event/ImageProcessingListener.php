@@ -71,12 +71,19 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 
 	/**
 	 * Auto rotates the image if an orientation in the exif data is found that is not 0.
+	 * This applies only to JPEG and TIFF since the intention of this function is to 
+	 * take into account the orientation data saved in the meta data (EXIF) by digital cameras.
 	 *
 	 * @param string $imageFile Path to the image file.
 	 * @param string $format Format of the image to save. Workaround for imagines save(). :(
 	 * @return boolean
 	 */
 	protected function _autoRotate($imageFile, $format) {
+		$format = strtolower($format);
+		if (!in_array($format, ['jpg', 'jpeg', 'tif', 'tiff'])) {
+			return false;
+		}
+		
 		$orientation = ImagineUtility::getImageOrientation($imageFile);
 		$degree = 0;
 		if ($orientation === false) {
