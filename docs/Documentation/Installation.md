@@ -46,6 +46,21 @@ $listener = new ImageProcessingListener();
 EventManager::instance()->on($listener);
 ```
 
+If you are allowing your users to upload photos and if you are creating different versions of them, you may want to consider turning on the automatic rotation option. Some digital cameras (like iPhones) save all the photos in the landscape (horizontal) orientation and save the actual orientation in the metadata (EXIF). This metadata, however, would be stripped when the photos are resized, which results in the photos appearing sideways. Turning on the ```autoRotate``` option in ```ImageProcessingListener``` would solve this problem. Here is an example:
+
+```php
+// For automated image processing you'll have to attach this listener as well
+$listener = new ImageProcessingListener([
+    'autoRotate' => [
+        'ProfilePhotos', // List your own models for which you want autoRotate turned on.
+        'ProductImages'
+    ],
+]);
+EventManager::instance()->on($listener);
+```
+
+
+
 Adapter Specific Configuration
 ------------------------------
 
