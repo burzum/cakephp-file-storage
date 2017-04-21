@@ -83,7 +83,7 @@ class UploadValidatorBehavior extends Behavior {
 					'imageSize',
 					$config['validateImageSize']
 				],
-				'message' => __d('file_storage', 'The image dimensions are to big.')
+				'message' => __d('file_storage', 'The image dimensions are too big.')
 			]);
 		}
 		if (is_int($config['validateFilesize'])) {
@@ -93,7 +93,7 @@ class UploadValidatorBehavior extends Behavior {
 					'filesize',
 					$config['validateFilesize']
 				],
-				'message' => __d('file_storage', 'The file is to big!')
+				'message' => __d('file_storage', 'The file is too big!')
 			]);
 		}
 		if ($config['validateUploadErrors'] === true) {
