@@ -24,7 +24,7 @@ before_script:
   - sh -c "if [ '$COVERALLS' = '1' ]; then mkdir -p build/logs; fi"
 
 script:
-  - phpunit
+  - ./vendor/bin/phpunit
   - sh -c "if [ '$COVERALLS' = '1' ]; then ./vendor/bin/phpunit --stderr --coverage-clover build/logs/clover.xml; fi"
   - sh -c "if [ '$COVERALLS' = '1' ]; then php ./vendor/bin/coveralls -c .coveralls.yml -v; fi"
 
