@@ -37,6 +37,7 @@ class StorageManager {
 		if (!$instance) {
 			$instance[0] = new self();
 		}
+
 		return $instance[0];
 	}
 
@@ -118,11 +119,13 @@ class StorageManager {
 		if (!is_array($adapter['adapterOptions'])) {
 			throw new InvalidArgumentException(sprintf('%s: The adapter options must be an array!', $configName));
 		}
+
 		$adapterObject = $Reflection->newInstanceArgs($adapter['adapterOptions']);
 		$engineObject = new $adapter['class']($adapterObject);
 		if ($isConfigured) {
 			$_this->_adapterConfig[$configName]['object'] = &$engineObject;
 		}
+
 		return $engineObject;
 	}
 

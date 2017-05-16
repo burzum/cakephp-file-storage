@@ -24,7 +24,7 @@ class LocalListener extends BaseListener {
 	 * processed.
 	 *
 	 * The LocalListener will ONLY work with the '\Gaufrette\Adapter\Local'
-	 * adapter for backward compatiblity reasons for now. Use the BaseListener
+	 * adapter for backward compatibility reasons for now. Use the BaseListener
 	 * or extend this one here and add your adapter classes.
 	 *
 	 * @var array

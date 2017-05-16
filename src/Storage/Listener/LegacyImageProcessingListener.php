@@ -13,6 +13,8 @@ use Burzum\FileStorage\Storage\StorageUtils;
  * @author Florian Krämer
  * @copy 2013 - 2015 Florian Krämer
  * @license MIT
+ *
+ * @deprecated This listener class is deprecated
  */
 class LegacyImageProcessingListener extends AbstractListener {
 

@@ -9,7 +9,8 @@ use Cake\Event\EventManager;
 trait ImageVersionsTrait {
 
 	/**
-	 * Gets a list of image versions for a given record.
+	 * Gets a list of image versions for a file storage entity.
+	 *
 	 * Use this method to get a list of ALL versions when needed or to cache all the
 	 * versions somewhere. This method will return all configured versions for an
 	 * image. For example you could store them serialized along with the file data
@@ -22,6 +23,7 @@ trait ImageVersionsTrait {
 	public function getImageVersions(EntityInterface $entity, $options = []) {
 		$versionData = $this->_getImageVersionData($entity, $options);
 		$versions = [];
+
 		foreach ($versionData as $version => $data) {
 			$hash = Configure::read('FileStorage.imageHashes.' . $entity->get('model') . '.' . $version);
 			$eventData = [
@@ -30,6 +32,7 @@ trait ImageVersionsTrait {
 				'version' => $version,
 				'options' => []
 			];
+
 			if (method_exists($this, 'dispatchEvent')) {
 				$event = $this->dispatchEvent('ImageVersion.getVersions', $eventData);
 			} else {
@@ -40,6 +43,7 @@ trait ImageVersionsTrait {
 				$versions[$version] = str_replace('\\', '/', $event->data['path']);
 			}
 		}
+
 		return $versions;
 	}
 
@@ -58,7 +62,9 @@ trait ImageVersionsTrait {
 			Configure::write('FileStorage.imageSizes.' . $entity->get('model') . '.original', []);
 			$versionData['original'] = [];
 		}
+
 		$versionData['original'] = isset($options['originalVersion']) ? $options['originalVersion'] : 'original';
+
 		return $versionData;
 	}
 

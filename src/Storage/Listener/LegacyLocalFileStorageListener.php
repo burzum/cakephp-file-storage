@@ -15,6 +15,8 @@ use Cake\Event\Event;
  * @author Florian Krämer
  * @author Tomenko Yegeny
  * @license MIT
+ *
+ * @deprecated This listener class is deprecated
  */
 class LegacyLocalFileStorageListener extends LocalListener {
 

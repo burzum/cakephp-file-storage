@@ -10,6 +10,8 @@ namespace Burzum\FileStorage\Storage\PathBuilder;
  * Includes bugs and workarounds that could not be removed without backward
  * compatibility breaking changes. Use this path builder for projects that you
  * migrated from the Cake2 version to Cake3.
+ *
+ * DON'T use it if you're not coming from an old version!
  */
 class LegacyPathBuilder extends BasePathBuilder {
 
