@@ -9,7 +9,7 @@ use RuntimeException;
  * StorageManager - manages and instantiates Gaufrette storage engine instances
  *
  * @author Florian Krämer
- * @copyright 2012 - 2016 Florian Krämer
+ * @copyright 2012 - 2017 Florian Krämer
  * @license MIT
  */
 class StorageManager {
@@ -74,6 +74,7 @@ class StorageManager {
 
 		if (isset($_this->_adapterConfig[$name])) {
 			unset($_this->_adapterConfig[$name]);
+
 			return true;
 		}
 

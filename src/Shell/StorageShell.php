@@ -3,7 +3,7 @@
  * File Storage Plugin for CakePHP
  *
  * @author Florian Krämer
- * @copyright 2012 - 2016 Florian Krämer
+ * @copyright 2012 - 2017 Florian Krämer
  * @license MIT
  */
 namespace Burzum\FileStorage\Shell;
@@ -26,7 +26,8 @@ class StorageShell extends Shell {
 	/**
 	 * @inheritDoc
 	 */
-	public function main() {}
+	public function main() {
+	}
 
 	/**
 	 * @inheritDoc
@@ -55,6 +56,7 @@ class StorageShell extends Shell {
 		$parser->addSubcommand('store', [
 			'help' => __('Stores a file in the DB.'),
 		]);
+
 		return $parser;
 	}
 

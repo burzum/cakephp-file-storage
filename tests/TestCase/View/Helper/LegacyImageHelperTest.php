@@ -13,7 +13,7 @@ use Cake\View\View;
  * ImageHelperTest
  *
  * @author Florian Krämer
- * @copy 2012 - 2016 Florian Krämer
+ * @copy 2012 - 2017 Florian Krämer
  * @license MIT
  */
 class LegacyImageHelperTest extends FileStorageTestCase {

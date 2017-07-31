@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Florian Krämer
- * @copyright 2012 - 2016 Florian Krämer
+ * @copyright 2012 - 2017 Florian Krämer
  * @license MIT
  */
 namespace Burzum\FileStorage\Storage\PathBuilder;
@@ -34,6 +34,7 @@ class LegacyPathBuilder extends BasePathBuilder {
 	 */
 	public function randomPath($string, $level = 3, $method = 'sha1') {
 		$string = str_replace('-', '', $string);
+
 		return parent::randomPath($string, $level, $method);
 	}
 

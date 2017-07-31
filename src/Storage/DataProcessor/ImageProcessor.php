@@ -3,7 +3,7 @@
  * File Storage Plugin for CakePHP
  *
  * @author Florian Krämer
- * @copyright 2012 - 2016 Florian Krämer
+ * @copyright 2012 - 2017 Florian Krämer
  * @license MIT
  */
 namespace Burzum\FileStorage\Storage\DataProcessor;
@@ -95,6 +95,7 @@ class ImageProcessor implements EventListenerInterface {
 			return false;
 		}
 		$method = $action . 'AllImageVersions';
+
 		return $this->{$method}($entity);
 	}
 
@@ -122,6 +123,7 @@ class ImageProcessor implements EventListenerInterface {
 		$this->loadImageProcessingFromConfig();
 		$class = $this->_imageProcessorClass;
 		$this->_imageProcessor = new $class($config);
+
 		return $this->_imageProcessor;
 	}
 
@@ -136,6 +138,7 @@ class ImageProcessor implements EventListenerInterface {
 		if (empty($this->_imageVersionHashes[$model][$version])) {
 			throw new RuntimeException(sprintf('Version "%s" for identifier "%s" does not exist!', $version, $model));
 		}
+
 		return $this->_imageVersionHashes[$model][$version];
 	}
 
@@ -214,6 +217,7 @@ class ImageProcessor implements EventListenerInterface {
 				];
 			}
 		}
+
 		return $result;
 	}
 
@@ -222,7 +226,7 @@ class ImageProcessor implements EventListenerInterface {
 	 *
 	 * @param \Cake\Datasource\EntityInterface $entity
 	 * @param array List of image version to remove for that entity.
-	 * @param array $versions
+	 * @param array $options
 	 * @param array $options
 	 * @return array
 	 */
@@ -245,6 +249,7 @@ class ImageProcessor implements EventListenerInterface {
 				$result[$version]['error'] = $e->getMessage();
 			}
 		}
+
 		return $result;
 	}
 
@@ -259,6 +264,7 @@ class ImageProcessor implements EventListenerInterface {
 		if (!isset($this->_imageVersions[$identifier])) {
 			throw new RuntimeException(sprintf('No image config present for identifier "%s"!', $identifier));
 		}
+
 		return array_keys($this->_imageVersions[$identifier]);
 	}
 

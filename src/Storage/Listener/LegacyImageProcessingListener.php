@@ -81,7 +81,7 @@ class LegacyImageProcessingListener extends AbstractListener {
 	 * @return array
 	 */
 	public function implementedEvents() {
-		return array(
+		return [
 			'ImageVersion.createVersion' => 'createVersions',
 			'ImageVersion.removeVersion' => 'removeVersions',
 			'ImageVersion.getVersions' => 'imagePath',
@@ -89,7 +89,7 @@ class LegacyImageProcessingListener extends AbstractListener {
 			'ImageStorage.afterSave' => 'afterSave',
 			'ImageStorage.afterDelete' => 'afterDelete',
 			'FileStorage.ImageHelper.imagePath' => 'imagePath' // Deprecated
-		);
+		];
 	}
 
 	/**
@@ -123,6 +123,7 @@ class LegacyImageProcessingListener extends AbstractListener {
 		$image = $processor->open($imageFile);
 		$processor->rotate($image, ['degree' => $degree]);
 		$image->save(['format' => $format]);
+
 		return true;
 	}
 
@@ -154,7 +155,7 @@ class LegacyImageProcessingListener extends AbstractListener {
 			}
 
 			try {
-				$image = $table->processImage($tmpFile, null, array('format' => $entity['extension']), $imageOperations);
+				$image = $table->processImage($tmpFile, null, ['format' => $entity['extension']], $imageOperations);
 				$Storage->write($string, $image->get($entity['extension']), true);
 			} catch (\Exception $e) {
 				$this->log($e->getMessage());
@@ -238,6 +239,7 @@ class LegacyImageProcessingListener extends AbstractListener {
 				if (!$Storage->has($string)) {
 					$Event->stopPropagation();
 					$Event->result = false;
+
 					return false;
 				}
 				$Storage->delete($string);
@@ -245,6 +247,7 @@ class LegacyImageProcessingListener extends AbstractListener {
 				$this->log($e->getMessage());
 				$Event->stopPropagation();
 				$Event->result = false;
+
 				return false;
 			}
 			$operations = Configure::read('FileStorage.imageSizes.' . $record['model']);
@@ -254,6 +257,7 @@ class LegacyImageProcessingListener extends AbstractListener {
 			}
 			$Event->stopPropagation();
 			$Event->result = true;
+
 			return true;
 		}
 	}
@@ -305,10 +309,10 @@ class LegacyImageProcessingListener extends AbstractListener {
 
 				$Storage->write($path, file_get_contents($file['tmp_name']), true);
 
-				$data = $table->save($record, array(
+				$data = $table->save($record, [
 					'validate' => false,
 					'callbacks' => false
-				));
+				]);
 
 				$operations = Configure::read('FileStorage.imageSizes.' . $record['model']);
 				if (!empty($operations)) {
@@ -413,7 +417,7 @@ class LegacyImageProcessingListener extends AbstractListener {
 	 * @param string $bucket
 	 * @param string null $bucketPrefix
 	 * @param string $cfDist
-	 * @param boolean $bucketPrefix
+	 * @param bool $bucketPrefix
 	 * @return string
 	 */
 	protected function _buildCloudFrontDistributionUrl($protocol, $image, $bucket, $bucketPrefix = null, $cfDist = null) {
@@ -436,7 +440,7 @@ class LegacyImageProcessingListener extends AbstractListener {
 	 * Builds a path to a file
 	 *
 	 * @param array $record
-	 * @param boolean $extension
+	 * @param bool $extension
 	 * @param string $hash
 	 * @return string
 	 */
@@ -476,15 +480,19 @@ class LegacyImageProcessingListener extends AbstractListener {
 		switch ($config['adapterClass']) {
 			case '\Gaufrette\Adapter\Local':
 				$this->adapterClass = 'Local';
+
 				return $this->adapterClass;
 			case '\Gaufrette\Adapter\AwsS3':
 				$this->adapterClass = 'AwsS3';
+
 				return $this->adapterClass;
 			case '\Gaufrette\Adapter\AmazonS3':
 				$this->adapterClass = 'AwsS3';
+
 				return $this->adapterClass;
 			case '\Gaufrette\Adapter\AwsS3':
 				$this->adapterClass = 'AwsS3';
+
 				return $this->adapterClass;
 			default:
 				return false;

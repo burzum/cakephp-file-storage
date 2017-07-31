@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Florian Krämer
- * @copyright 2012 - 2016 Florian Krämer
+ * @copyright 2012 - 2017 Florian Krämer
  * @license MIT
  */
 namespace Burzum\FileStorage\Storage\PathBuilder;
@@ -77,6 +77,7 @@ class BasePathBuilder implements PathBuilderInterface {
 		$path = $this->_pathPrefix($entity, $path, $config);
 		$path = $this->_path($entity, $path, $config);
 		$path = $this->_pathSuffix($entity, $path, $config);
+
 		return $this->ensureSlash($path, 'after');
 	}
 
@@ -116,6 +117,7 @@ class BasePathBuilder implements PathBuilderInterface {
 		if ($config['uuidFolder'] === true || $config['idFolder'] === true) {
 			$path .= $this->stripDashes($entity->id) . DS;
 		}
+
 		return $path;
 	}
 

@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Florian Krämer
- * @copyright 2012 - 2016 Florian Krämer
+ * @copyright 2012 - 2017 Florian Krämer
  * @license MIT
  */
 namespace Burzum\FileStorage\Storage\Listener;
@@ -55,6 +55,7 @@ trait ImageProcessingTrait {
 			return false;
 		}
 		$method = $action . 'AllImageVersions';
+
 		return $this->{$method}($entity);
 	}
 
@@ -139,7 +140,6 @@ trait ImageProcessingTrait {
 		$storage = $this->getStorageAdapter($entity->adapter);
 
 		foreach ($this->_imageVersions[$entity->get('model')] as $version => $operations) {
-
 			if (!in_array($version, $versions)) {
 				continue;
 			}
@@ -224,7 +224,7 @@ trait ImageProcessingTrait {
 	 *
 	 * @param \Cake\Datasource\EntityInterface $entity
 	 * @param array List of image version to remove for that entity.
-	 * @param array $versions
+	 * @param array $options
 	 * @param array $options
 	 * @return array
 	 */
@@ -247,6 +247,7 @@ trait ImageProcessingTrait {
 				$result[$version]['error'] = $e->getMessage();
 			}
 		}
+
 		return $result;
 	}
 

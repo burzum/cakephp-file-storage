@@ -68,11 +68,11 @@ class FileStorageBehaviorTest extends FileStorageTestCase {
 		TableRegistry::clear();
 	}
 
-	/**
-	 * testGetFileInfoFromUpload
-	 *
-	 * @return void
-	 */
+/**
+ * testGetFileInfoFromUpload
+ *
+ * @return void
+ */
 //	public function testGetFileInfoFromUpload() {
 //		$filename = Plugin::path('Burzum/FileStorage') . DS . 'tests' . DS . 'Fixture' . DS . 'File' . DS . 'titus.jpg';
 //

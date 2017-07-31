@@ -10,7 +10,7 @@ use Cake\ORM\TableRegistry;
  * File Storage Entity Test
  *
  * @author Florian Krämer
- * @copyright 2012 - 2016 Florian Krämer
+ * @copyright 2012 - 2017 Florian Krämer
  * @license MIT
  */
 class ImageStorageEntityTest extends FileStorageTestCase {

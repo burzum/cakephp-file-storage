@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Florian Krämer
- * @copyright 2012 - 2016 Florian Krämer
+ * @copyright 2012 - 2017 Florian Krämer
  * @license MIT
  */
 namespace Burzum\FileStorage\Storage\Listener;
@@ -110,7 +110,8 @@ abstract class AbstractListener implements EventListenerInterface {
 	 *
 	 * @return void
 	 */
-	public function initialize($config) {}
+	public function initialize($config) {
+	}
 
 	/**
 	 * implementedEvents
@@ -180,6 +181,7 @@ abstract class AbstractListener implements EventListenerInterface {
 				return false;
 			}
 		}
+
 		return true;
 	}
 
@@ -194,6 +196,7 @@ abstract class AbstractListener implements EventListenerInterface {
 		if (!empty($config['adapterClass'])) {
 			return $config['adapterClass'];
 		}
+
 		return false;
 	}
 
@@ -211,8 +214,10 @@ abstract class AbstractListener implements EventListenerInterface {
 		if (in_array($className, $this->_adapterClasses)) {
 			$position = strripos($className, '\\');
 			$this->_adapterClass = substr($className, $position + 1, strlen($className));
+
 			return $this->_adapterClass;
 		}
+
 		return false;
 	}
 
@@ -238,6 +243,7 @@ abstract class AbstractListener implements EventListenerInterface {
 		try {
 			$tmpFile = $this->createTmpFile($tmpFolder);
 			file_put_contents($tmpFile, $Storage->read($path));
+
 			return $tmpFile;
 		} catch (\Exception $e) {
 			$this->log($e->getMessage());

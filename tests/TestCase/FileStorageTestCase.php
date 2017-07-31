@@ -17,7 +17,7 @@ use Cake\TestSuite\TestCase;
  * FileStorageTestCase
  *
  * @author Florian Krämer
- * @copyright 2012 - 2016 Florian Krämer
+ * @copyright 2012 - 2017 Florian Krämer
  * @license MIT
  */
 class FileStorageTestCase extends TestCase {

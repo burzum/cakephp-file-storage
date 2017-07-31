@@ -35,6 +35,7 @@ trait EventFilterTrait {
 				return true;
 			}
 		}
+
 		return false;
 	}
 
@@ -45,6 +46,7 @@ trait EventFilterTrait {
 		if (isset($event->data['entity']['adapter']) && in_array($event->data['entity']['adapter'], $this->_eventFilters['model'])) {
 			return true;
 		}
+
 		return false;
 	}
 
@@ -55,6 +57,7 @@ trait EventFilterTrait {
 		if (isset($event->data['entity']['adapter']) && in_array($event->data['entity']['adapter'], $this->_eventFilters['adapterConfig'])) {
 			return true;
 		}
+
 		return false;
 	}
 
@@ -69,8 +72,10 @@ trait EventFilterTrait {
 					return true;
 				}
 			}
+
 			return true;
 		}
+
 		return false;
 	}
 
@@ -97,6 +102,7 @@ trait EventFilterTrait {
 		if (!empty($config['adapterClass'])) {
 			return $config['adapterClass'];
 		}
+
 		return false;
 	}
 

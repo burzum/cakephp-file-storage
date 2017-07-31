@@ -80,6 +80,7 @@ class UploadValidator extends Validator {
 				return false;
 			}
 		}
+
 		return true;
 	}
 
@@ -87,7 +88,7 @@ class UploadValidator extends Validator {
 	 * Validates the error value that comes with the file input file.
 	 *
 	 * @param array $value
-	 * @param array $options.
+	 * @param array $options
 	 * @return bool True on success, if false the error message is set to the models field and also set in $this->_uploadError
 	 */
 	public function uploadErrors($value, $options = []) {
@@ -105,35 +106,46 @@ class UploadValidator extends Validator {
 					return true;
 				case UPLOAD_ERR_INI_SIZE:
 					$this->_uploadError = __d('file_storage', 'The uploaded file exceeds limit of %s.', Number::toReadableSize(ini_get('upload_max_filesize')));
+
 					return false;
 				case UPLOAD_ERR_FORM_SIZE:
 					$this->_uploadError = __d('file_storage', 'The uploaded file is to big, please choose a smaller file or try to compress it.');
+
 					return false;
 				case UPLOAD_ERR_PARTIAL:
 					$this->_uploadError = __d('file_storage', 'The uploaded file was only partially uploaded.');
+
 					return false;
 				case UPLOAD_ERR_NO_FILE:
 					if ($options['allowNoFileError'] === false) {
 						$this->_uploadError = __d('file_storage', 'No file was uploaded.');
+
 						return false;
 					}
+
 					return true;
 				case UPLOAD_ERR_NO_TMP_DIR:
 					$this->_uploadError = __d('file_storage', 'The remote server has no temporary folder for file uploads. Please contact the site admin.');
+
 					return false;
 				case UPLOAD_ERR_CANT_WRITE:
 					$this->_uploadError = __d('file_storage', 'Failed to write file to disk. Please contact the site admin.');
+
 					return false;
 				case UPLOAD_ERR_EXTENSION:
 					$this->_uploadError = __d('file_storage', 'File upload stopped by extension. Please contact the site admin.');
+
 					return false;
 				default:
 					$this->_uploadError = __d('file_storage', 'Unknown File Error. Please contact the site admin.');
+
 					return false;
 			}
+
 			return false;
 		}
 		$this->_uploadError = '';
+
 		return true;
 	}
 

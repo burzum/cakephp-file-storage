@@ -2,7 +2,7 @@
 /**
  * @author Florian Krämer
  * @author Robert Pustułka
- * @copyright 2012 - 2016 Florian Krämer
+ * @copyright 2012 - 2017 Florian Krämer
  * @license MIT
  */
 namespace Burzum\FileStorage\Storage\PathBuilder;
@@ -55,6 +55,7 @@ trait PathBuilderTrait {
 	public function pathBuilder($name = null, array $options = []) {
 		if ($name instanceof PathBuilderInterface) {
 			$this->_pathBuilder = $name;
+
 			return $this->_pathBuilder;
 		}
 
@@ -84,6 +85,7 @@ trait PathBuilderTrait {
 	public function setPathBuilder($pathBuilder, array $options = []) {
 		if (is_string($pathBuilder)) {
 			$this->_pathBuilder = $this->createPathBuilder($pathBuilder, $options);
+
 			return;
 		}
 

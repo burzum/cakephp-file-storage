@@ -8,7 +8,7 @@ use Cake\Event\EventManager;
  * LegacyImageHelper
  *
  * @author Florian Krämer
- * @copyright 2012 - 2016 Florian Krämer
+ * @copyright 2012 - 2017 Florian Krämer
  * @license MIT
  *
  * @property \Cake\View\Helper\HtmlHelper $Html

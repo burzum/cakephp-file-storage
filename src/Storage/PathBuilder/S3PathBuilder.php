@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Florian Krämer
- * @copyright 2012 - 2016 Florian Krämer
+ * @copyright 2012 - 2017 Florian Krämer
  * @license MIT
  */
 namespace Burzum\FileStorage\Storage\PathBuilder;
@@ -32,6 +32,7 @@ class S3PathBuilder extends BasePathBuilder {
 	 */
 	protected function _getBucket($adapter) {
 		$config = StorageManager::config($adapter);
+
 		return $config['adapterOptions'][1];
 	}
 
@@ -44,7 +45,7 @@ class S3PathBuilder extends BasePathBuilder {
 	 * @return string
 	 */
 	protected function _buildCloudUrl($bucket, $bucketPrefix = null, $cfDist = null) {
-		$path = $this->config('https') === true ? 'https://' : 'http://';
+		$path = $this->getConfig('https') === true ? 'https://' : 'http://';
 		if ($cfDist) {
 			$path .= $cfDist;
 		} else {
@@ -54,6 +55,7 @@ class S3PathBuilder extends BasePathBuilder {
 				$path .= $this->_config['s3Url'] . '/' . $bucket;
 			}
 		}
+
 		return $path;
 	}
 

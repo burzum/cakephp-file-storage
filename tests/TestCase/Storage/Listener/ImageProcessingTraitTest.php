@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Florian Krämer
- * @copyright 2012 - 2016 Florian Krämer
+ * @copyright 2012 - 2017 Florian Krämer
  * @license MIT
  */
 namespace Burzum\FileStorage\Test\TestCase\Storage\PathBuilder;
@@ -138,7 +138,7 @@ class ImageProcessingTraitTest extends FileStorageTestCase {
 	 * testCheckImageVersionsRuntimeExceptionIdentifier
 	 *
 	 * @expectedException \RuntimeException
- * @return void
+	 * @return void
 	 */
 	public function testCheckImageVersionsRuntimeExceptionIdentifier() {
 		$listener = new TraitTestClass();
@@ -149,7 +149,7 @@ class ImageProcessingTraitTest extends FileStorageTestCase {
 	 * testCheckImageVersionsRuntimeExceptionVersion
 	 *
 	 * @expectedException \RuntimeException
- * @return void
+	 * @return void
 	 */
 	public function testCheckImageVersionsRuntimeExceptionVersion() {
 		$listener = new TraitTestClass();

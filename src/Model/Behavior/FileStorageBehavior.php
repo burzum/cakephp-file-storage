@@ -3,7 +3,7 @@
  * File Storage Plugin for CakePHP
  *
  * @author Florian Krämer
- * @copyright 2012 - 2016 Florian Krämer
+ * @copyright 2012 - 2017 Florian Krämer
  * @license MIT
  */
 namespace Burzum\FileStorage\Model\Behavior;
@@ -94,6 +94,7 @@ class FileStorageBehavior extends Behavior {
 	public function beforeSave(Event $event, EntityInterface $entity) {
 		if (!$this->_isFileUploadPresent($entity)) {
 			$event->stopPropagation();
+
 			return;
 		}
 

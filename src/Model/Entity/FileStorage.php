@@ -9,7 +9,7 @@ use Cake\ORM\Entity;
  * FileStorage Entity.
  *
  * @author Florian Krämer
- * @copyright 2012 - 2016 Florian Krämer
+ * @copyright 2012 - 2017 Florian Krämer
  * @license MIT
  */
 class FileStorage extends Entity {
@@ -106,6 +106,7 @@ class FileStorage extends Entity {
 		if (empty($options['method'])) {
 			$options['method'] = 'fullPath';
 		}
+
 		return $this->_path($options);
 	}
 
@@ -117,6 +118,7 @@ class FileStorage extends Entity {
 	 */
 	public function url(array $options = []) {
 		$options['method'] = 'url';
+
 		return $this->_path($options);
 	}
 
@@ -133,6 +135,7 @@ class FileStorage extends Entity {
 
 		$options['entity'] = $this;
 		$event = $this->dispatchEvent('FileStorage.path', $options);
+
 		return $event->result;
 	}
 

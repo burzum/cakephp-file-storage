@@ -18,7 +18,7 @@ use Cake\ORM\Table;
  * Behavior that is attached to this table.
  *
  * @author Florian Krämer
- * @copyright 2012 - 2016 Florian Krämer
+ * @copyright 2012 - 2017 Florian Krämer
  * @license MIT
  */
 class FileStorageTable extends Table {
@@ -50,9 +50,9 @@ class FileStorageTable extends Table {
 //		$this->addBehavior('Burzum/FileStorage.UploadValidator', $options);
 //	}
 
-	/**
-	 * REMOVED, just keeping the code for reference until refactor is done
-	 */
+/**
+ * REMOVED, just keeping the code for reference until refactor is done
+ */
 //	public function afterSave(Event $event, EntityInterface $entity, $options) {
 //		$this->dispatchEvent('FileStorage.afterSave', [
 //			'entity' => $entity,
@@ -63,14 +63,14 @@ class FileStorageTable extends Table {
 //		return true;
 //	}
 
-	/**
-	 * afterSave callback
-	 *
-	 * @param \Cake\Event\Event $event
-	 * @param \Cake\Datasource\EntityInterface $entity
-	 * @param array $options
-	 * @return boolean
-	 */
+/**
+ * afterSave callback
+ *
+ * @param \Cake\Event\Event $event
+ * @param \Cake\Datasource\EntityInterface $entity
+ * @param array $options
+ * @return boolean
+ */
 //	public function afterSave(Event $event, EntityInterface $entity, $options) {
 //		$this->dispatchEvent('FileStorage.afterSave', [
 //			'record' => $entity,
@@ -81,16 +81,16 @@ class FileStorageTable extends Table {
 //		return true;
 //	}
 
-	/**
-	 * Deletes an old file to replace it with the new one if an old id was passed.
-	 * Thought to be called in Model::afterSave() but can be used from any other
-	 * place as well like Model::beforeSave() as long as the field data is present.
-	 * The old id has to be the UUID of the file_storage record that should be deleted.
-	 *
-	 * @param \Cake\Datasource\EntityInterface $entity
-	 * @param string $oldIdField Name of the field in the data that holds the old id.
-	 * @return boolean Returns true if the old record was deleted
-	 */
+/**
+ * Deletes an old file to replace it with the new one if an old id was passed.
+ * Thought to be called in Model::afterSave() but can be used from any other
+ * place as well like Model::beforeSave() as long as the field data is present.
+ * The old id has to be the UUID of the file_storage record that should be deleted.
+ *
+ * @param \Cake\Datasource\EntityInterface $entity
+ * @param string $oldIdField Name of the field in the data that holds the old id.
+ * @return boolean Returns true if the old record was deleted
+ */
 //	public function deleteOldFileOnSave(EntityInterface $entity, $oldIdField = 'old_file_id') {
 //		if (!empty($entity[$oldIdField]) && $entity['model']) {
 //			$oldEntity = $this->find()

@@ -10,7 +10,7 @@ use Cake\Core\Plugin;
  * Storage Utils Test
  *
  * @author Florian Krämer
- * @copyright 2012 - 2016 Florian Krämer
+ * @copyright 2012 - 2017 Florian Krämer
  * @license MIT
  */
 class StorageUtilsTest extends FileStorageTestCase {
@@ -208,7 +208,7 @@ class StorageUtilsTest extends FileStorageTestCase {
 	 * testGenerateHashesRuntimeException
 	 *
 	 * @expectedException \RuntimeException
- * @return void
+	 * @return void
 	 */
 	public function testGenerateHashesRuntimeException() {
 		Configure::write('FileStorage.imageSizes', null);
@@ -262,7 +262,7 @@ class StorageUtilsTest extends FileStorageTestCase {
 	 * testGetFileHashInvalidArgumentException
 	 *
 	 * @expectedException \InvalidArgumentException
- * @return void
+	 * @return void
 	 */
 	public function testGetFileHashInvalidArgumentException() {
 		StorageUtils::getFileHash($this->fileFixtures . 'titus.jpg', 'invalid-hash-method!');

@@ -7,7 +7,7 @@ use Cake\Datasource\EntityInterface;
  * Storage Exception
  *
  * @author Florian Krämer
- * @copyright 2012 - 2016 Florian Krämer
+ * @copyright 2012 - 2017 Florian Krämer
  * @license MIT
  */
 class StorageException extends Exception {
