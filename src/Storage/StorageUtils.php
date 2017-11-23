@@ -162,7 +162,7 @@ class StorageUtils {
 	 * Returns an array that matches the structure of a regular upload for a local file
 	 *
 	 * @param string $file The file you want to get an upload array for.
-	 * @param string Name of the file to use in the upload array.
+	 * @param string $filename Name of the file to use in the upload array.
 	 * @return array Array that matches the structure of a regular upload
 	 */
 	public static function fileToUploadArray($file, $filename = null) {
@@ -183,7 +183,7 @@ class StorageUtils {
 	 * Convenience alias for fileToUploadArray
 	 *
 	 * @param string $file The file you want to get an upload array for.
-	 * @param string Name of the file to use in the upload array.
+	 * @param string $filename Name of the file to use in the upload array.
 	 * @return array Array that matches the structure of a regular upload
 	 */
 	public static function uploadArray($file, $filename = null) {
