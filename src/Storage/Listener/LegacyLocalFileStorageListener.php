@@ -42,7 +42,7 @@ class LegacyLocalFileStorageListener extends LocalListener {
 	public function __construct(array $config = []) {
 		parent::__construct($config);
 
-		if ($this->config('disableDeprecationWarning') !== true) {
+		if ($this->getConfig('disableDeprecationWarning') !== true) {
 			user_error('LegacyLocalFileStorageListener is deprecated! Please migrate to another listener! Or set the disableDeprecationWarning option to true.', E_USER_DEPRECATED);
 		}
 	}
@@ -56,7 +56,7 @@ class LegacyLocalFileStorageListener extends LocalListener {
 	 */
 	public function afterSave(Event $event, EntityInterface $entity) {
 		if ($this->_checkEvent($event) && $entity->isNew()) {
-			$fileField = $this->config('fileField');
+			$fileField = $this->getConfig('fileField');
 
 			$entity['hash'] = $this->getFileHash($entity, $fileField);
 			$entity['path'] = $this->pathBuilder()->path($entity);

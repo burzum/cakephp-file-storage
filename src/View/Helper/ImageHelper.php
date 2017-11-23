@@ -102,7 +102,7 @@ class ImageHelper extends StorageHelper {
 			return $this->normalizePath($options['pathPrefix'] . $version);
 		}
 
-		$pathPrefix = $this->config('pathPrefix');
+		$pathPrefix = $this->getConfig('pathPrefix');
 		if (!empty($pathPrefix)) {
 			return $this->normalizePath($pathPrefix . $version);
 		}

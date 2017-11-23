@@ -66,8 +66,8 @@ class LegacyImageProcessingListener extends AbstractListener {
 	public function __construct(array $config = []) {
 		parent::__construct($config);
 
-		$this->config('autoRotate', []);
-		$this->config($config);
+		$this->setConfig('autoRotate', []);
+		$this->setConfig($config);
 		$this->_imageProcessor = new ImageProcessor();
 
 		if ($this->_config['disableDeprecationWarning'] !== true) {
@@ -272,7 +272,7 @@ class LegacyImageProcessingListener extends AbstractListener {
 		if ($this->_checkEvent($Event)) {
 			$data = $Event->getData();
 
-			if (in_array($data['record']['model'], (array)$this->config('autoRotate'))) {
+			if (in_array($data['record']['model'], (array)$this->getConfig('autoRotate'))) {
 				$imageFile = $data['record']['file']['tmp_name'];
 				$format = StorageUtils::fileExtension($data['record']['file']['name']);
 				$this->_autoRotate($imageFile, $format);

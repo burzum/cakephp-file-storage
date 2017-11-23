@@ -82,6 +82,17 @@ class StorageManager {
 	}
 
 	/**
+	 * Returns a list of cf the configurations loaded into the manager
+	 *
+	 * @return array
+	 */
+	public static function getConfigList() {
+		$_this = static::getInstance();
+
+		return array_keys($_this->_adapterConfig);
+	}
+
+	/**
 	 * Gets a configured instance of a storage adapter.
 	 *
 	 * @param mixed $configName string of adapter configuration or array of settings

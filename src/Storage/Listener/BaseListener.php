@@ -96,7 +96,7 @@ class BaseListener extends AbstractListener {
 	 */
 	public function afterSave(Event $event, EntityInterface $entity) {
 		if ($this->_checkEvent($event) && $entity->isNew()) {
-			$fileField = $this->config('fileField');
+			$fileField = $this->getConfig('fileField');
 
 			$hash = StorageUtils::getFileHash($entity->get($fileField)['tmp_name']);
 			$path = $this->pathBuilder()->fullPath($entity);
@@ -176,7 +176,7 @@ class BaseListener extends AbstractListener {
 	 * @return void
 	 */
 	protected function _processImages(Event $event, $method) {
-		if ($this->config('imageProcessing') !== true) {
+		if ($this->getConfig('imageProcessing') !== true) {
 			return;
 		}
 

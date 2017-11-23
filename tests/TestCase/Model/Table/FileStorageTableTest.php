@@ -1,6 +1,7 @@
 <?php
 namespace Burzum\FileStorage\Test\TestCase\Model\Table;
 
+use Burzum\FileStorage\Storage\StorageManager;
 use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
 use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
@@ -65,7 +66,7 @@ class FileStorageTableTest extends FileStorageTestCase {
 		$this->_removeListeners();
 
 		EventManager::instance()->on($this->listeners['LocalListener']);
-
+//dd(StorageManager::getConfigs());
 		$entity = $this->FileStorage->newEntity([
 			'model' => 'Document',
 			'adapter' => 'Local',
@@ -79,8 +80,8 @@ class FileStorageTableTest extends FileStorageTestCase {
 		], ['accessibleFields' => ['*' => true]]);
 
 		$this->FileStorage->save($entity);
-		$this->assertEquals($entity->errors(), []);
-//
+		$this->assertEquals($entity->getErrors(), []);
+
 //		$result = $this->FileStorage->delete($entity);
 //		$this->assertTrue($result);
 	}

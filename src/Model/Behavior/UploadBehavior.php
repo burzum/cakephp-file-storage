@@ -80,7 +80,7 @@ class UploadBehavior extends Behavior {
 	protected function _handleFiles(EntityInterface $entity) {
 		$files = $this->getConfig('file');
 		if (is_string($files)) {
-			$files = [$files => $this->config('defaults')];
+			$files = [$files => $this->getConfig('defaults')];
 		}
 
 		$results = [];
