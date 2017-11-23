@@ -167,7 +167,7 @@ class StorageUtils {
 	 */
 	public static function fileToUploadArray($file, $filename = null) {
 		$File = new File($file);
-		if (empty($fileName)) {
+		if (empty($filename)) {
 			$filename = basename($file);
 		}
 		return [
