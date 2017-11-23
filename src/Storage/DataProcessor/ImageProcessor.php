@@ -14,6 +14,7 @@ use Burzum\FileStorage\Storage\StorageUtils;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
+use Cake\Datasource\EntityInterface;
 use InvalidArgumentException;
 use RuntimeException;
 
@@ -55,10 +56,10 @@ class ImageProcessor implements EventListenerInterface {
 	 * @return void
 	 */
 	public function afterStore(Event $event) {
-		$this->pathBuilder($event->subject()->pathBuilder());
-		$this->subject = $event->subject();
+		$this->pathBuilder($event->getSubject()->pathBuilder());
+		$this->subject = $event->getSubject();
 
-		$this->autoProcessImageVersions($event->data['entity'], 'create');
+		$this->autoProcessImageVersions($event->getData('entity'), 'create');
 	}
 
 	/**
@@ -68,9 +69,9 @@ class ImageProcessor implements EventListenerInterface {
 	 * @return void
 	 */
 	public function afterDelete(Event $event) {
-		$this->pathBuilder($event->subject()->pathBuilder());
-		$this->subject = $event->subject();
-		$this->autoProcessImageVersions($event->data['entity'], 'remove');
+		$this->pathBuilder($event->getSubject()->pathBuilder());
+		$this->subject = $event->getSubject();
+		$this->autoProcessImageVersions($event->getData('entity'), 'remove');
 	}
 
 	/**
@@ -82,8 +83,8 @@ class ImageProcessor implements EventListenerInterface {
 	 * image versions use the other methods from this trait to implement the checks
 	 * and behavior you need.
 	 *
-	 * @param \Cake\Datasource\EntityInterface
-	 * @param string $action `create` or `remove`
+	 * @param \Cake\Datasource\EntityInterface $entity Entity
+	 * @param string $action `create` or `remove` $action Action
 	 * @return array
 	 */
 	public function autoProcessImageVersions(EntityInterface $entity, $action) {

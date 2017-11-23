@@ -40,7 +40,7 @@ trait ImageVersionsTrait {
 				EventManager::instance()->dispatch($event);
 			}
 			if ($event->isStopped()) {
-				$versions[$version] = str_replace('\\', '/', $event->data['path']);
+				$versions[$version] = str_replace('\\', '/', $event->getData('path'));
 			}
 		}
 

@@ -128,8 +128,8 @@ class BaseListener extends AbstractListener {
 			'pathType' => 'fullPath'
 		];
 
-		if ($event->subject() instanceof EntityInterface) {
-			$data['image'] = $event->subject();
+		if ($event->getSubject() instanceof EntityInterface) {
+			$data['image'] = $event->getSubject();
 		}
 
 		$entity = $data['image'];

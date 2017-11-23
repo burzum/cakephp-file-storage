@@ -20,7 +20,7 @@ class StorageUtils {
 	/**
 	 * Return file extension from a given filename.
 	 *
-	 * @param string $name
+	 * @param string $name File name
 	 * @param bool|bool $realFile
 	 * @link http://php.net/manual/en/function.pathinfo.php
 	 * @return false|string string or false
@@ -77,7 +77,7 @@ class StorageUtils {
 	/**
 	 * Converts windows to linux paths and vice versa
 	 *
-	 * @param string
+	 * @param string Path
 	 * @return string
 	 */
 	public static function normalizePath($string) {
@@ -92,7 +92,7 @@ class StorageUtils {
 	 * Method to normalize the annoying inconsistency of the $_FILE array structure
 	 *
 	 * @link http://de2.php.net/manual/en/features.file-upload.multiple.php#53240
-	 * @param array|null $files
+	 * @param array|null $files Files array
 	 * @return array Empty array if $_FILE is empty, if not normalize array of Filedata.{n}
 	 */
 	public static function normalizeGlobalFilesArray($files = null) {
@@ -154,8 +154,8 @@ class StorageUtils {
 	/**
 	 * Recursive ksort() implementation
 	 *
-	 * @param array $array
-	 * @param int
+	 * @param array $array Array
+	 * @param int Sort flags
 	 * @return bool
 	 * @link https://gist.github.com/601849
 	 */
@@ -175,7 +175,7 @@ class StorageUtils {
 	/**
 	 * Returns an array that matches the structure of a regular upload for a local file
 	 *
-	 * @param $file The file you want to get an upload array for.
+	 * @param string $file The file you want to get an upload array for.
 	 * @param string|null Name of the file to use in the upload array.
 	 * @return array Array that matches the structure of a regular upload
 	 */

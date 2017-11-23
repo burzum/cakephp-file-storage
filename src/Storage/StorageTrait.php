@@ -21,6 +21,10 @@ trait StorageTrait {
 	 * @return array
 	 */
 	public function storageConfig($configName) {
+		$this->getStorageConfig($configName);
+	}
+
+	public function getStorageConfig($configName) {
 		return StorageManager::config($configName);
 	}
 

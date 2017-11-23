@@ -55,12 +55,12 @@ class FileStorageBehavior extends Behavior {
 	/**
 	 * Checks if a file upload is present.
 	 *
-	 * @param \Cake\Datasource\EntityInterface|array
-	 * @€turn boolean
+	 * @param \Cake\Datasource\EntityInterface|array $entity
+	 * @return bool
 	 */
 	protected function _isFileUploadPresent($entity) {
-		$field = $this->config('fileField');
-		if ($this->config('ignoreEmptyFile') === true) {
+		$field = $this->getConfig('fileField');
+		if ($this->getConfig('ignoreEmptyFile') === true) {
 			if (!isset($entity[$field]['error']) || $entity[$field]['error'] === UPLOAD_ERR_NO_FILE) {
 				return false;
 			}
@@ -134,10 +134,10 @@ class FileStorageBehavior extends Behavior {
 			}
 
 			if (!$entity->has('adapter')) {
-				$entity->set('adapter', $this->config('defaultStorageConfig'));
+				$entity->set('adapter', $this->getConfig('defaultStorageConfig'));
 			}
 
-			$fileHashMethod = $this->config('getFileHash');
+			$fileHashMethod = $this->getConfig('getFileHash');
 			if ($fileHashMethod) {
 				if ($fileHashMethod === true) {
 					$fileHashMethod = 'sha1';

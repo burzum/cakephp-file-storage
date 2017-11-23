@@ -41,7 +41,7 @@ class LegacyImageHelper extends ImageHelper {
 		EventManager::instance()->dispatch($event);
 
 		if ($event->isStopped()) {
-			return $this->normalizePath($event->data['path']);
+			return $this->normalizePath($event->getData('path'));
 		}
 
 		return false;

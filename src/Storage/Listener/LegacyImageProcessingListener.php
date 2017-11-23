@@ -175,8 +175,8 @@ class LegacyImageProcessingListener extends AbstractListener {
 	 */
 	public function createVersions(Event $Event) {
 		if ($this->_checkEvent($Event)) {
-			$table = $Event->subject();
-			$record = $Event->data('record');
+			$table = $Event->getSubject();
+			$record = $Event->getData('record');
 			$this->_createVersions($table, $record, $Event->data('operations'));
 			$Event->stopPropagation();
 		}
@@ -199,7 +199,7 @@ class LegacyImageProcessingListener extends AbstractListener {
 	 */
 	protected function _removeVersions(Event $Event) {
 		if ($this->_checkEvent($Event)) {
-			$data = $Event->data();
+			$data = $Event->getData();
 
 			$Storage = $data['storage'];
 			$record = $data['record'];
@@ -270,7 +270,7 @@ class LegacyImageProcessingListener extends AbstractListener {
 	 */
 	public function beforeSave(Event $Event) {
 		if ($this->_checkEvent($Event)) {
-			$data = $Event->data();
+			$data = $Event->getData();
 
 			if (in_array($data['record']['model'], (array)$this->config('autoRotate'))) {
 				$imageFile = $data['record']['file']['tmp_name'];
@@ -288,8 +288,8 @@ class LegacyImageProcessingListener extends AbstractListener {
 	 */
 	public function afterSave(Event $Event) {
 		if ($this->_checkEvent($Event)) {
-			$table = $Event->subject();
-			$record = $Event->data('record');
+			$table = $Event->getSubject();
+			$record = $Event->getData('record');
 			$Storage = StorageManager::adapter($record->adapter);
 			try {
 				$id = $record->{$table->primaryKey()};
@@ -333,7 +333,7 @@ class LegacyImageProcessingListener extends AbstractListener {
 	 * @return void
 	 */
 	public function imagePath(Event $Event) {
-		$data = $Event->data();
+		$data = $Event->getData();
 		extract($data);
 
 		if (!isset($data['image']['adapter'])) {
@@ -357,7 +357,7 @@ class LegacyImageProcessingListener extends AbstractListener {
 	 * @return void
 	 */
 	protected function _buildLocalPath(Event $Event) {
-		$data = $Event->data();
+		$data = $Event->getData();
 		extract($data);
 
 		$path = $this->_buildPath($image, true, $hash);
@@ -384,12 +384,12 @@ class LegacyImageProcessingListener extends AbstractListener {
 	 * @return void
 	 */
 	protected function _buildAmazonS3Path(Event $Event) {
-		$data = $Event->data();
+		$data = $Event->getData();
 		extract($data);
 
 		$path = '/' . $this->_buildPath($image, true, $hash);
 
-		$config = StorageManager::config($Event->data['image']['adapter']);
+		$config = StorageManager::config($Event->getData('image.adapter'));
 		$bucket = $config['adapterOptions'][1];
 		if (!empty($config['cloudFrontUrl'])) {
 			$cfDist = $config['cloudFrontUrl'];

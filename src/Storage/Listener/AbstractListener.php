@@ -83,7 +83,7 @@ abstract class AbstractListener implements EventListenerInterface {
 	 */
 	public function __construct(array $config = []) {
 		$this->_mergeListenerVars();
-		$this->config($config);
+		$this->setConfig($config);
 		$this->pathBuilder(
 			$this->_config['pathBuilder'],
 			$this->_config['pathBuilderOptions']
@@ -142,7 +142,7 @@ abstract class AbstractListener implements EventListenerInterface {
 
 		$className = App::className($objectName, 'Storage/DataProcessor', 'Processor');
 		$dataProcessor = new $className($config);
-		$this->eventManager()->on($dataProcessor);
+		$this->getEventManager()->on($dataProcessor);
 	}
 
 	/**
@@ -154,14 +154,19 @@ abstract class AbstractListener implements EventListenerInterface {
 	 * @throws \Burzum\FileStorage\Storage\StorageException
 	 */
 	protected function _checkEvent(Event $event) {
-		$className = $this->_getAdapterClassFromConfig($event->data['entity']['adapter']);
+		$className = $this->_getAdapterClassFromConfig($event->getData('entity')['adapter']);
 		$classes = $this->_adapterClasses;
+
 		if (!empty($classes) && !in_array($className, $classes)) {
 			$message = 'The listener `%s` doesn\'t allow the `%s` adapter class! Probably because it can\'t work with it.';
-			throw new StorageException(sprintf($message, get_class($this), $className));
+			throw new StorageException(sprintf(
+				$message,
+				get_class($this),
+				$className)
+			);
 		}
 
-		return $event->subject() instanceof Table && $this->_modelFilter($event);
+		return $event->getSubject() instanceof Table && $this->_modelFilter($event);
 	}
 
 	public function _modelFilter() {
@@ -176,7 +181,7 @@ abstract class AbstractListener implements EventListenerInterface {
 	 */
 	protected function _identifierFilter(Event $event) {
 		if (is_array($this->_config['identifiers'])) {
-			$identifier = $event->data['entity']['model'];
+			$identifier = $event->getData('entity.model');
 			if (!in_array($identifier, $this->_config['identifiers'])) {
 				return false;
 			}
@@ -286,13 +291,14 @@ abstract class AbstractListener implements EventListenerInterface {
 	 */
 	public function getPath(Event $event) {
 		$pathBuilder = $this->pathBuilder();
-		$method = $event->data['method'];
-		if (!method_exists($pathBuilder, $event->data['method'])) {
+		$method = $event->getData('method');
+		if (!method_exists($pathBuilder, $event->getData('method'))) {
 			throw new BadMethodCallException(sprintf('`%s` does not implement the `%s` method!', get_class($pathBuilder), $method));
 		};
+
 		$event = $this->dispatchEvent('FileStorage.beforeGetPath', [
-			'entity' => $event->data['entity'],
-			'storageAdapter' => $this->getStorageAdapter($event->data['entity']['adapter']),
+			'entity' => $event->getData('entity'),
+			'storageAdapter' => $this->getStorageAdapter($event->getData('entity')->get('adapter')),
 			'pathBuilder' => $pathBuilder
 		]);
 
@@ -300,24 +306,26 @@ abstract class AbstractListener implements EventListenerInterface {
 			return $event->result;
 		}
 
-		if ($event->subject() instanceof EntityInterface) {
-			$event->data['entity'];
+		if ($event->getSubject() instanceof EntityInterface) {
+			$event->getData('entity');
 		}
-		if (empty($event->data['entity'])) {
+
+		if (empty($event->getData('entity'))) {
 			throw new RuntimeException('No entity present!');
 		}
 
-		$path = $pathBuilder->{$method}($event->data['entity'], $event->data);
+		$path = $pathBuilder->{$method}($event->getData('entity'), $event->getData());
 
+		$entity = $event->getData('entity');
 		$event = $this->dispatchEvent('FileStorage.afterGetPath', [
-			'entity' => $event->data['entity'],
-			'storageAdapter' => $this->getStorageAdapter($event->data['entity']['adapter']),
+			'entity' => $entity,
+			'storageAdapter' => $this->getStorageAdapter($entity->get('adapter')),
 			'pathBuilder' => $pathBuilder,
 			'path' => $path
 		]);
 
 		if ($event->isStopped()) {
-			return $event->result;
+			return $event->getResult();
 		}
 
 		return $path;
@@ -338,11 +346,11 @@ abstract class AbstractListener implements EventListenerInterface {
 			}
 
 			$fileField = $this->config('fileField');
-			$entity = $event->data['entity'];
+			$entity = $event->getData('entity');
 			$Storage = $this->getStorageAdapter($entity['adapter']);
 			$Storage->write($entity['path'], file_get_contents($entity[$fileField]['tmp_name']), true);
 
-			$event->result = $event->subject()->save($entity, [
+			$event->result = $event->getSubject()->save($entity, [
 				'checkRules' => false
 			]);
 
@@ -370,7 +378,7 @@ abstract class AbstractListener implements EventListenerInterface {
 	protected function _deleteFile(Event $event) {
 		try {
 			$this->_beforeDeleteFile($event);
-			$entity = $event->data('entity');
+			$entity = $event->getData('entity');
 			$path = $this->pathBuilder()->fullPath($entity);
 
 			if ($this->getStorageAdapter($entity->adapter)->delete($path)) {
@@ -397,8 +405,8 @@ abstract class AbstractListener implements EventListenerInterface {
 	 */
 	protected function _beforeStoreFile(Event $event) {
 		return $this->dispatchEvent('FileStorage.beforeStoreFile', [
-			'entity' => $event->data['entity'],
-			'adapter' => $this->getStorageAdapter($event->data['entity']['adapter'])
+			'entity' => $event->getData('entity'),
+			'adapter' => $this->getStorageAdapter($event->getData('entity.adapter'))
 		]);
 	}
 
@@ -418,8 +426,8 @@ abstract class AbstractListener implements EventListenerInterface {
 	 */
 	protected function _afterStoreFile(Event $event) {
 		return $this->dispatchEvent('FileStorage.afterStoreFile', [
-			'entity' => $event->data['entity'],
-			'adapter' => $this->getStorageAdapter($event->data['entity']['adapter'])
+			'entity' => $event->getData('entity'),
+			'adapter' => $this->getStorageAdapter($event->getData('entity.adapter'))
 		]);
 	}
 
@@ -435,8 +443,8 @@ abstract class AbstractListener implements EventListenerInterface {
 	 */
 	protected function _beforeDeleteFile(Event $event) {
 		return $this->dispatchEvent('FileStorage.beforeDeleteFile', [
-			'entity' => $event->data['entity'],
-			'adapter' => $this->getStorageAdapter($event->data['entity']['adapter'])
+			'entity' => $event->getData('entity'),
+			'adapter' => $this->getStorageAdapter($event->getData('entity.adapter'))
 		]);
 	}
 
@@ -452,8 +460,8 @@ abstract class AbstractListener implements EventListenerInterface {
 	 */
 	protected function _afterDeleteFile(Event $event) {
 		return $this->dispatchEvent('FileStorage.afterDeleteFile', [
-			'entity' => $event->data['entity'],
-			'adapter' => $this->getStorageAdapter($event->data['entity']['adapter'])
+			'entity' => $event->getData('entity'),
+			'adapter' => $this->getStorageAdapter($event->getData('entity.adapter'))
 		]);
 	}
 

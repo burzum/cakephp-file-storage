@@ -1,8 +1,18 @@
 <?php
+/**
+ * File Storage Plugin for CakePHP
+ *
+ * @author Florian Krämer
+ * @copyright 2012 - 2017 Florian Krämer
+ * @license MIT
+ */
+declare(strict_types = 1);
+
 namespace Burzum\FileStorage\Model\Behavior;
 
 use Burzum\FileStorage\Storage\StorageUtils;
 use Cake\Datasource\EntityInterface;
+use Cake\Event\Event;
 use Cake\ORM\Behavior;
 use Cake\ORM\TableRegistry;
 
@@ -38,12 +48,12 @@ class UploadBehavior extends Behavior {
 	/**
 	 * After save callback.
 	 *
-	 * @param \Cake\Event\Event $event
-	 * @param \Cake\Datasource\EntityInterface $entity
+	 * @param \Cake\Event\Event $event Event
+	 * @param \Cake\Datasource\EntityInterface $entity Entity
 	 * @return void
 	 */
 	public function afterSave(Event $event, EntityInterface $entity) {
-		if ($this->config('uploadOn') === 'afterSave') {
+		if ($this->getConfig('uploadOn') === 'afterSave') {
 			$this->_handleFiles($entity);
 		}
 	}
@@ -56,7 +66,7 @@ class UploadBehavior extends Behavior {
 	 * @return void
 	 */
 	public function beforeSave(Event $event, EntityInterface $entity) {
-		if ($this->config('uploadOn') === 'beforeSave') {
+		if ($this->getConfig('uploadOn') === 'beforeSave') {
 			$this->_handleFiles($entity);
 		}
 	}
@@ -68,7 +78,7 @@ class UploadBehavior extends Behavior {
 	 * @return array
 	 */
 	protected function _handleFiles(EntityInterface $entity) {
-		$files = $this->config('file');
+		$files = $this->getConfig('file');
 		if (is_string($files)) {
 			$files = [$files => $this->config('defaults')];
 		}
@@ -77,12 +87,12 @@ class UploadBehavior extends Behavior {
 		foreach ($files as $key => $file) {
 			if (is_string($key)) {
 				$field = $key;
-				$options = $this->config('defaults');
+				$options = $this->getConfig('defaults');
 				$options += $file;
 			}
 			if (is_string($file)) {
 				$field = $file;
-				$options = $this->config('defaults');
+				$options = $this->getConfig('defaults');
 			}
 			$results[$field] = $this->saveFile($entity->{$field}, $options);
 		}
@@ -134,9 +144,10 @@ class UploadBehavior extends Behavior {
 	 *
 	 * @param array|string $file
 	 * @param array $options
+	 * @return \Cake\Datasource\EntityInterface
 	 */
 	public function saveFile($file, $options = []) {
-		$defaults = $this->config('defaults');
+		$defaults = $this->getConfig('defaults');
 		$defaults += $options;
 		$options = $defaults;
 

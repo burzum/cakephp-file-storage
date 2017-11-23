@@ -136,7 +136,7 @@ class FileStorage extends Entity {
 		$options['entity'] = $this;
 		$event = $this->dispatchEvent('FileStorage.path', $options);
 
-		return $event->result;
+		return $event->getResult();
 	}
 
 }

@@ -53,7 +53,7 @@ class ValidationListener {
 	 * @return void
 	 */
 	public function initialize(Event $event) {
-		$table = $event->subject();
+		$table = $event->getSubject();
 		if (!in_array(get_class($table), $this->config['tableClass'])) {
 			return;
 		}
