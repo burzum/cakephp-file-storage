@@ -22,7 +22,8 @@
 	"require-dev": {
 		"phpunit/phpunit": "5.*",
 		"burzum/cakephp-imagine-plugin": "2.*",
-		"cakephp/cakephp-codesniffer": "dev-master"
+		"cakephp/cakephp-codesniffer": "dev-master",
+		"league/flysystem": "*"
 	},
 	"autoload": {
 		"psr-4": {

@@ -1,4 +1,9 @@
 <?php
+namespace Burzum\FileStorage\Test\TestCase\Lib;
+
+use Burzum\FileStorage\Storage\StorageManager;
+use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
+
 /**
  * StorageManagerTest
  *
@@ -6,11 +11,6 @@
  * @copyright 2012 - 2017 Florian Krämer
  * @license MIT
  */
-namespace Burzum\FileStorage\Test\TestCase\Lib;
-
-use Burzum\FileStorage\Storage\StorageManager;
-use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
-
 class StorageManagerTest extends FileStorageTestCase {
 
 	/**
@@ -21,6 +21,15 @@ class StorageManagerTest extends FileStorageTestCase {
 	public function testAdapter() {
 		$result = StorageManager::get('Local');
 		$this->assertEquals(get_class($result), 'Gaufrette\Filesystem');
+
+		StorageManager::config('LocalFlysystem', [
+			'adapterOptions' => [$this->testPath],
+			'engine' => StorageManager::FLYSYSTEM_ENGINE,
+			'adapterClass' => 'Local',
+		]);
+
+		$result = StorageManager::get('LocalFlysystem');
+		$this->assertEquals(get_class($result), 'League\Flysystem\Adapter\Local');
 
 		try {
 			StorageManager::get('Does Not Exist');
