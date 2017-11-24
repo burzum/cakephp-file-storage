@@ -98,7 +98,7 @@ class StorageManager {
 	/**
 	 * Gets a configured instance of a storage adapter.
 	 *
-	 * @param mixed $configName string of adapter configuration or array of settings
+	 * @param string $configName string of adapter configuration or array of settings
 	 * @param bool|bool $renewObject Creates a new instance of the given adapter in the configuration
 	 * @throws \RuntimeException
 	 * @throws \InvalidArgumentException
@@ -112,21 +112,15 @@ class StorageManager {
 		$_this = static::getInstance();
 
 		$isConfigured = true;
-		if (is_string($configName)) {
-			if (!empty($_this->_adapterConfig[$configName])) {
-				$adapter = $_this->_adapterConfig[$configName];
-			} else {
-				throw new RuntimeException(sprintf('Invalid Storage Adapter %s!', $configName));
-			}
 
-			if (!empty($_this->_adapterConfig[$configName]['object']) && $renewObject === false) {
-				return $_this->_adapterConfig[$configName]['object'];
-			}
+		if (!empty($_this->_adapterConfig[$configName])) {
+			$adapter = $_this->_adapterConfig[$configName];
+		} else {
+			throw new RuntimeException(sprintf('Invalid Storage Adapter %s!', $configName));
 		}
 
-		if (is_array($configName)) {
-			$adapter = $configName;
-			$isConfigured = false;
+		if (!empty($_this->_adapterConfig[$configName]['object']) && $renewObject === false) {
+			return $_this->_adapterConfig[$configName]['object'];
 		}
 
 		$engineObject = $_this->_factory($adapter);
