@@ -310,7 +310,9 @@ abstract class AbstractListener implements EventListenerInterface {
 			$fileField = $this->config('fileField');
 			$entity = $event->data['entity'];
 			$Storage = $this->storageAdapter($entity['adapter']);
-			$Storage->write($entity['path'], file_get_contents($entity[$fileField]['tmp_name']), true);
+			$fileHandle = fopen($entity[$fileField]['tmp_name'], 'r');
+			$Storage->write($entity['path'], $fileHandle, true);
+			fclose($fileHandle);
 			$event->result = $event->data['table']->save($entity, array(
 				'checkRules' => false
 			));
