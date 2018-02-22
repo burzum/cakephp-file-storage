@@ -38,7 +38,8 @@
 		}
 	},
 	"suggest": {
-		"burzum/cakephp-imagine-plugin": "Required if you want to use the image processing feature of FileStorage"
+		"burzum/cakephp-imagine-plugin": "Required if you want to use the image processing feature of FileStorage",
+		"league/flysystem": "Alternative for Gaufrette, see the docs how to configure it."
 	},
 	"scripts": {
 		"post-autoload-dump": "Cake\\Composer\\Installer\\PluginInstaller::postAutoloadDump"

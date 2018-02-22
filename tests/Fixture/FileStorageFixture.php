@@ -39,7 +39,7 @@ class FileStorageFixture extends TestFixture {
 		'filename' => ['type' => 'string', 'null' => false, 'default' => null],
 		'filesize' => ['type' => 'integer', 'null' => true, 'default' => null, 'length' => 16],
 		'mime_type' => ['type' => 'string', 'null' => true, 'default' => null, 'length' => 32],
-		'extension' => ['type' => 'string', 'null' => true, 'default' => null, 'length' => 5],
+		'extension' => ['type' => 'string', 'null' => true, 'default' => null, 'length' => 32],
 		'hash' => ['type' => 'string', 'null' => true, 'default' => null, 'length' => 64],
 		'path' => ['type' => 'string', 'null' => true, 'default' => null],
 		'adapter' => ['type' => 'string', 'null' => true, 'default' => null, 'length' => 32, 'comment' => 'Gaufrette Storage Adapter Class'],
