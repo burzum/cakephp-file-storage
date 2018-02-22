@@ -146,3 +146,31 @@ StorageManager::config('AzureBlobStorage', [
     'class' => '\Gaufrette\Filesystem'
 ]);
 ```
+
+FTP
+-----
+
+This does require the FTP Adapter to be included via Composer. ```composer require gaufrette/ftp-adapter```
+
+```php
+$directory = '/some/remote/directory/';
+$host = 'some.remote.ftp.host';
+
+StorageManager::setConfig('Ftp', [
+    'adapterOptions' => [
+        $directory,
+        $host,
+        [
+            'port'     => 21,
+            'username' => 'someuser',
+            'password' => 'password',
+            'passive'  => true,
+            'create'   => true,
+            'mode'     => FTP_BINARY,
+            'ssl'      => true,
+        ]
+    ],
+    'adapterClass' => '\Gaufrette\Adapter\Ftp',
+    'class' => '\Gaufrette\Filesystem'
+]);
+```
