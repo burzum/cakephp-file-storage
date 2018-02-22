@@ -124,7 +124,7 @@ class UploadBehavior extends Behavior {
 		if (isset($options['validate']) && is_callable($options['validate'])) {
 			$validator = $table->validationDefault();
 			$validator = $options['validate']($validator);
-			$table->validator('_fileUploadValidator', $validator);
+			$table->setValidator('_fileUploadValidator', $validator);
 		}
 
 		$entity = $table->newEntity([

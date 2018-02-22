@@ -12,6 +12,13 @@ namespace Burzum\FileStorage\Storage;
 trait StorageTrait {
 
 	/**
+	 * @deprecated Use getStorageConfig
+	 */
+	public function storageConfig($configName) {
+		$this->getStorageConfig($configName);
+	}
+
+	/**
 	 * Wrapper around the singleton call to StorageManager::config()
 	 *
 	 * Makes it easy to mock the adapter in tests.
@@ -20,10 +27,6 @@ trait StorageTrait {
 	 * @param string $configName
 	 * @return array
 	 */
-	public function storageConfig($configName) {
-		$this->getStorageConfig($configName);
-	}
-
 	public function getStorageConfig($configName) {
 		return StorageManager::config($configName);
 	}
