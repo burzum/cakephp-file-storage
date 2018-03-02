@@ -250,15 +250,17 @@ class BasePathBuilder implements PathBuilderInterface {
 		if (!empty($options['filePrefix']) && is_callable($options['filePrefix'])) {
 			$filename = $options['filePrefix']($entity, $filename);
 		}
-		if (!empty($options['fileSuffix']) && is_string($options['fileSuffix'])) {
+		if (!empty($options['fileSuffix'])) {
 			$split = $this->splitFilename($filename, true);
-			$filename = $split['filename'] . $options['fileSuffix'];
+			if (is_string($options['fileSuffix'])) {
+				$filename = $split['filename'] . $options['fileSuffix'];
+			}
+			if (is_callable($options['fileSuffix'])) {
+				$filename = $options['fileSuffix']($entity, $split['filename']);
+			}
 			if ($options['preserveExtension'] === true) {
 				$filename .= $split['extension'];
 			}
-		}
-		if (!empty($options['fileSuffix']) && is_callable($options['fileSuffix'])) {
-			$filename = $options['fileSuffix']($entity, $filename);
 		}
 		return $filename;
 	}
