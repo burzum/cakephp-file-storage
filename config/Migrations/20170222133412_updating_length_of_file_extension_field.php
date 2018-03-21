@@ -38,7 +38,7 @@ class UpdatingLengthOfFileExtensionField extends AbstractMigration {
 	 */
 	public function change() {
 		$this->table('file_storage', ['id' => false, 'primary_key' => 'id'])
-			->changeColumn('ext', 'string', ['limit' => 32, 'null' => true, 'default' => null])
+			->changeColumn('extension', 'string', ['limit' => 32, 'null' => true, 'default' => null])
 			->update();
 	}
 }
