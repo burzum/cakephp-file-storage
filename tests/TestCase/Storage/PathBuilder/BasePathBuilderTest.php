@@ -53,7 +53,7 @@ class BasePathBuilderTest extends TestCase {
 	 */
 	public function testPathbuilding() {
 		$builder = new BasePathBuilder();
-		$config = $builder->getConfig();
+		$config = $builder->config();
 
 		$result = $builder->filename($this->entity);
 		$this->assertEquals($result, 'filestorage1.png');
@@ -64,38 +64,38 @@ class BasePathBuilderTest extends TestCase {
 		$result = $builder->fullPath($this->entity);
 		$this->assertEquals($result, '14' . DS . '83' . DS . '23' . DS . 'filestorage1' . DS . 'filestorage1.png');
 
-		$builder->setConfig('pathPrefix', 'files');
+		$builder->config('pathPrefix', 'files');
 		$result = $builder->path($this->entity);
 		$this->assertEquals($result, 'files' . DS . '14' . DS . '83' . DS . '23' . DS . 'filestorage1' . DS);
 		$result = $builder->path($this->entity, ['pathPrefix' => 'images']);
 		$this->assertEquals($result, 'images' . DS . '14' . DS . '83' . DS . '23' . DS . 'filestorage1' . DS);
 
-		$builder->setConfig('pathPrefix', 'files');
+		$builder->config('pathPrefix', 'files');
 		$result = $builder->filename($this->entity);
 		$this->assertEquals($result, 'filestorage1.png');
 
-		$builder->setConfig('preserveFilename', true);
+		$builder->config('preserveFilename', true);
 		$result = $builder->filename($this->entity);
 		$this->assertEquals($result, 'cake.icon.png');
 
-		$builder->setConfig($config);
-		$builder->setConfig('filePrefix', '2018_');
-		$builder->setConfig('fileSuffix', '_final');
+		$builder->config($config);
+		$builder->config('filePrefix', '2018_');
+		$builder->config('fileSuffix', '_final');
 		$result = $builder->filename($this->entity);
 		$this->assertEquals($result, '2018_filestorage1_final.png');
 
-		$builder->setConfig('preserveFilename', true);
+		$builder->config('preserveFilename', true);
 		$result = $builder->filename($this->entity);
 		$this->assertEquals($result, '2018_cake.icon_final.png');
 
-		$builder->setConfig($config);
-		$builder->setConfig(
+		$builder->config($config);
+		$builder->config(
 			'filePrefix',
 			function ($entity, $filename) {
 				return $entity->model . '_' . $filename;
 			}
 		);
-		$builder->setConfig(
+		$builder->config(
 			'fileSuffix',
 			function ($entity, $filename) {
 				return $filename . '_' . $entity->user_id;
@@ -104,21 +104,21 @@ class BasePathBuilderTest extends TestCase {
 		$result = $builder->filename($this->entity);
 		$this->assertEquals($result, 'Item_filestorage1_user-1.png');
 
-		$builder->setConfig('preserveFilename', true);
+		$builder->config('preserveFilename', true);
 		$result = $builder->filename($this->entity);
 		$this->assertEquals($result, 'Item_cake.icon_user-1.png');
 
-		$builder->setConfig($config);
-		$builder->setConfig('pathSuffix', 'files');
+		$builder->config($config);
+		$builder->config('pathSuffix', 'files');
 		$result = $builder->path($this->entity);
 		$this->assertEquals($result, '14' . DS . '83' . DS . '23' . DS . 'filestorage1' . DS . 'files' . DS);
 
-		$builder->setConfig($config);
-		$builder->setConfig('pathPrefix', 'files');
+		$builder->config($config);
+		$builder->config('pathPrefix', 'files');
 		$result = $builder->path($this->entity);
 		$this->assertEquals($result, 'files' . DS . '14' . DS . '83' . DS . '23' . DS . 'filestorage1' . DS);
 
-		$builder->setConfig($config);
+		$builder->config($config);
 		$result = $builder->url($this->entity);
 		$expected = '14/83/23/filestorage1/filestorage1.png';
 		$this->assertEquals($result, $expected);
