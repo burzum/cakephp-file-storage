@@ -79,6 +79,36 @@ class BasePathBuilderTest extends TestCase {
 		$this->assertEquals($result, 'cake.icon.png');
 
 		$builder->config($config);
+		$builder->config('filePrefix', '2018_');
+		$builder->config('fileSuffix', '_final');
+		$result = $builder->filename($this->entity);
+		$this->assertEquals($result, '2018_filestorage1_final.png');
+
+		$builder->config('preserveFilename', true);
+		$result = $builder->filename($this->entity);
+		$this->assertEquals($result, '2018_cake.icon_final.png');
+
+		$builder->config($config);
+		$builder->config(
+			'filePrefix',
+			function ($entity, $filename) {
+				return $entity->model . '_' . $filename;
+			}
+		);
+		$builder->config(
+			'fileSuffix',
+			function ($entity, $filename) {
+				return $filename . '_' . $entity->user_id;
+			}
+		);
+		$result = $builder->filename($this->entity);
+		$this->assertEquals($result, 'Item_filestorage1_user-1.png');
+
+		$builder->config('preserveFilename', true);
+		$result = $builder->filename($this->entity);
+		$this->assertEquals($result, 'Item_cake.icon_user-1.png');
+
+		$builder->config($config);
 		$builder->config('pathSuffix', 'files');
 		$result = $builder->path($this->entity);
 		$this->assertEquals($result, '14' . DS . '83' . DS . '23' . DS . 'filestorage1' . DS . 'files' . DS);

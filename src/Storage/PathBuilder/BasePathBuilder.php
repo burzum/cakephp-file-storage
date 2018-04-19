@@ -215,14 +215,20 @@ class BasePathBuilder implements PathBuilderInterface {
 		if ($options['stripUuid'] === true) {
 			$filename = $this->stripDashes($filename);
 		}
-		if (!empty($options['fileSuffix'])) {
+		if (!empty($options['fileSuffix']) && is_string($options['fileSuffix'])) {
 			$filename = $filename . $options['fileSuffix'];
+		}
+		if (!empty($options['fileSuffix']) && is_callable($options['fileSuffix'])) {
+			$filename = $options['fileSuffix']($entity, $filename);
 		}
 		if ($options['preserveExtension'] === true) {
 			$filename = $filename . '.' . $entity['extension'];
 		}
-		if (!empty($options['filePrefix'])) {
+		if (!empty($options['filePrefix']) && is_string($options['filePrefix'])) {
 			$filename = $options['filePrefix'] . $filename;
+		}
+		if (!empty($options['filePrefix']) && is_callable($options['filePrefix'])) {
+			$filename = $options['filePrefix']($entity, $filename);
 		}
 		return $filename;
 	}
@@ -238,12 +244,20 @@ class BasePathBuilder implements PathBuilderInterface {
 	 */
 	protected function _preserveFilename(EntityInterface $entity, array $options = []) {
 		$filename = $entity['filename'];
-		if (!empty($options['filePrefix'])) {
+		if (!empty($options['filePrefix']) && is_string($options['filePrefix'])) {
 			$filename = $options['filePrefix'] . $entity['filename'];
+		}
+		if (!empty($options['filePrefix']) && is_callable($options['filePrefix'])) {
+			$filename = $options['filePrefix']($entity, $filename);
 		}
 		if (!empty($options['fileSuffix'])) {
 			$split = $this->splitFilename($filename, true);
-			$filename = $split['filename'] . $options['fileSuffix'];
+			if (is_string($options['fileSuffix'])) {
+				$filename = $split['filename'] . $options['fileSuffix'];
+			}
+			if (is_callable($options['fileSuffix'])) {
+				$filename = $options['fileSuffix']($entity, $split['filename']);
+			}
 			if ($options['preserveExtension'] === true) {
 				$filename .= $split['extension'];
 			}
