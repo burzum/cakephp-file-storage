@@ -54,10 +54,10 @@ class FileStorageTable extends Table {
 	 */
 	public function initialize(array $config) {
 		parent::initialize($config);
-		$this->primaryKey('id');
+		$this->setPrimaryKey('id');
 		$this->addBehavior('Timestamp');
-		$this->displayField('filename');
-		$this->table('file_storage');
+		$this->setDisplayField('filename');
+		$this->setTable('file_storage');
 	}
 
 	/**
@@ -154,7 +154,7 @@ class FileStorageTable extends Table {
 	public function afterSave(Event $event, EntityInterface $entity, $options) {
 		$this->dispatchEvent('FileStorage.afterSave', [
 			'record' => $entity,
-			'created' => $event->data['entity']->isNew(),
+			'created' => $event->getData('entity')->isNew(),
 			'storage' => $this->storageAdapter($entity['adapter'])
 		]);
 		$this->deleteOldFileOnSave($entity);
@@ -172,7 +172,7 @@ class FileStorageTable extends Table {
 		$this->record = $this->find()
 			->contain([])
 			->where([
-				$this->alias() . '.' . $this->primaryKey() => $entity->{$this->primaryKey()}
+				$this->alias() . '.' . $this->getPrimaryKey() => $entity->{$this->getPrimaryKey()}
 			])
 			->first();
 
@@ -224,7 +224,7 @@ class FileStorageTable extends Table {
 			$oldEntity = $this->find()
 				->contain([])
 				->where([
-					$this->alias() . '.' . $this->primaryKey() => $entity[$oldIdField], 'model' => $entity['model']
+					$this->alias() . '.' . $this->getPrimaryKey() => $entity[$oldIdField], 'model' => $entity['model']
 				])
 				->first();
 

@@ -47,8 +47,8 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 	 * @param array $config
 	 */
 	public function __construct(array $config = []) {
-		$this->config('autoRotate', []);
-		$this->config($config);
+		$this->setConfig('autoRotate', []);
+		$this->setConfig($config);
 		$this->_imageProcessor = new ImageProcessor();
 	}
 
@@ -480,5 +480,4 @@ class ImageProcessingListener extends AbstractStorageEventListener {
 				return false;
 		}
 	}
-
 }
