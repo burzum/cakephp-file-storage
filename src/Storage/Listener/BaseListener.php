@@ -121,12 +121,12 @@ class BaseListener extends AbstractListener {
 	 * @return void
 	 */
 	public function imagePath(Event $event) {
-		$data = $event->data + [
+		$data = $event->setData($event->getData()+ [
 			'image' => null,
 			'version' => null,
 			'options' => [],
 			'pathType' => 'fullPath'
-		];
+		]);
 
 		if ($event->getSubject() instanceof EntityInterface) {
 			$data['image'] = $event->getSubject();
@@ -181,11 +181,11 @@ class BaseListener extends AbstractListener {
 		}
 
 		$versions = $this->_getVersionData($event);
-		$options = isset($event->data['options']) ? $event->data['options'] : [];
+		$options = (array)$event->getData('options') ;
 
 		$this->loadImageProcessingFromConfig();
 		$event->result = $this->{$method}(
-			$event->data['entity'],
+			$event->getData('entity'),
 			$versions,
 			$options
 		);

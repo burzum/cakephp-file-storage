@@ -177,7 +177,7 @@ class LegacyImageProcessingListener extends AbstractListener {
 		if ($this->_checkEvent($Event)) {
 			$table = $Event->getSubject();
 			$record = $Event->getData('record');
-			$this->_createVersions($table, $record, $Event->data('operations'));
+			$this->_createVersions($table, $record, $Event->getData('operations'));
 			$Event->stopPropagation();
 		}
 	}
