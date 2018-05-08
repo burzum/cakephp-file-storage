@@ -15,75 +15,75 @@ use Cake\ORM\TableRegistry;
  */
 class FileStorageTableTest extends FileStorageTestCase {
 
-	/**
-	 * Fixtures
-	 *
-	 * @var array
-	 */
-	public $fixtures = [
-		'plugin.Burzum\FileStorage.FileStorage'
-	];
+    /**
+     * Fixtures
+     *
+     * @var array
+     */
+    public $fixtures = [
+        'plugin.Burzum\FileStorage.FileStorage'
+    ];
 
-	/**
-	 * startTest
-	 *
-	 * @return void
-	 */
-	public function setUp() {
-		parent::setUp();
-		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
-	}
+    /**
+     * startTest
+     *
+     * @return void
+     */
+    public function setUp() {
+        parent::setUp();
+        $this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
+    }
 
-	/**
-	 * endTest
-	 *
-	 * @return void
-	 */
-	public function tearDown() {
-		parent::tearDown();
-		unset($this->FileStorage);
-		unset($this->FileStorageBehavior);
-		TableRegistry::clear();
-	}
+    /**
+     * endTest
+     *
+     * @return void
+     */
+    public function tearDown() {
+        parent::tearDown();
+        unset($this->FileStorage);
+        unset($this->FileStorageBehavior);
+        TableRegistry::clear();
+    }
 
-	/**
-	 * testInitialization
-	 *
-	 * @return void
-	 */
-	public function testInitialize() {
-		$this->assertEquals($this->FileStorage->table(), 'file_storage');
-		$this->assertEquals($this->FileStorage->displayField(), 'filename');
-	}
+    /**
+     * testInitialization
+     *
+     * @return void
+     */
+    public function testInitialize() {
+        $this->assertEquals($this->FileStorage->getTable(), 'file_storage');
+        $this->assertEquals($this->FileStorage->getDisplayField(), 'filename');
+    }
 
-	/**
-	 * Testing a complete save call
-	 *
-	 * @link https://github.com/burzum/cakephp-file-storage/issues/85
-	 * @return void
-	 */
-	public function testFileSaving() {
-		$this->_removeListeners();
+    /**
+     * Testing a complete save call
+     *
+     * @link https://github.com/burzum/cakephp-file-storage/issues/85
+     * @return void
+     */
+    public function testFileSaving() {
+        $this->_removeListeners();
 
-		EventManager::instance()->on($this->listeners['LocalListener']);
+        EventManager::instance()->on($this->listeners['LocalListener']);
 //dd(StorageManager::getConfigs());
-		$entity = $this->FileStorage->newEntity([
-			'model' => 'Document',
-			'adapter' => 'Local',
-			'file' => [
-				'error' => UPLOAD_ERR_OK,
-				'size' => filesize($this->fileFixtures . 'titus.jpg'),
-				'type' => 'image/jpeg',
-				'name' => 'tituts.jpg',
-				'tmp_name' => $this->fileFixtures . 'titus.jpg'
-			]
-		], ['accessibleFields' => ['*' => true]]);
+        $entity = $this->FileStorage->newEntity([
+            'model' => 'Document',
+            'adapter' => 'Local',
+            'file' => [
+                'error' => UPLOAD_ERR_OK,
+                'size' => filesize($this->fileFixtures . 'titus.jpg'),
+                'type' => 'image/jpeg',
+                'name' => 'tituts.jpg',
+                'tmp_name' => $this->fileFixtures . 'titus.jpg'
+            ]
+        ], ['accessibleFields' => ['*' => true]]);
 
-		$this->FileStorage->save($entity);
-		$this->assertEquals($entity->getErrors(), []);
+        $this->FileStorage->save($entity);
+        $this->assertEquals($entity->getErrors(), []);
 
-//		$result = $this->FileStorage->delete($entity);
-//		$this->assertTrue($result);
-	}
+//        $result = $this->FileStorage->delete($entity);
+//        $this->assertTrue($result);
+    }
 
 }

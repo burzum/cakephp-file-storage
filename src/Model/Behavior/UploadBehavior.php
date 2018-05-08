@@ -30,137 +30,137 @@ use Cake\ORM\TableRegistry;
  */
 class UploadBehavior extends Behavior {
 
-	/**
-	 * Default config
-	 *
-	 * @var array
-	 */
-	protected $_defaultConfig = [
-		'defaults' => [
-			'adapterConfig' => 'Local',
-			'model' => 'Burzum/FileStorage.FileStorage',
-			'association' => null,
-		],
-		'files' => 'file',
-		'uploadOn' => 'afterSave'
-	];
+    /**
+     * Default config
+     *
+     * @var array
+     */
+    protected $_defaultConfig = [
+        'defaults' => [
+            'adapterConfig' => 'Local',
+            'model' => 'Burzum/FileStorage.FileStorage',
+            'association' => null,
+        ],
+        'files' => 'file',
+        'uploadOn' => 'afterSave'
+    ];
 
-	/**
-	 * After save callback.
-	 *
-	 * @param \Cake\Event\Event $event Event
-	 * @param \Cake\Datasource\EntityInterface $entity Entity
-	 * @return void
-	 */
-	public function afterSave(Event $event, EntityInterface $entity) {
-		if ($this->getConfig('uploadOn') === 'afterSave') {
-			$this->_handleFiles($entity);
-		}
-	}
+    /**
+     * After save callback.
+     *
+     * @param \Cake\Event\Event $event Event
+     * @param \Cake\Datasource\EntityInterface $entity Entity
+     * @return void
+     */
+    public function afterSave(Event $event, EntityInterface $entity) {
+        if ($this->getConfig('uploadOn') === 'afterSave') {
+            $this->_handleFiles($entity);
+        }
+    }
 
-	/**
-	 * Before save callback.
-	 *
-	 * @param \Cake\Event\Event $event
-	 * @param \Cake\Datasource\EntityInterface $entity
-	 * @return void
-	 */
-	public function beforeSave(Event $event, EntityInterface $entity) {
-		if ($this->getConfig('uploadOn') === 'beforeSave') {
-			$this->_handleFiles($entity);
-		}
-	}
+    /**
+     * Before save callback.
+     *
+     * @param \Cake\Event\Event $event
+     * @param \Cake\Datasource\EntityInterface $entity
+     * @return void
+     */
+    public function beforeSave(Event $event, EntityInterface $entity) {
+        if ($this->getConfig('uploadOn') === 'beforeSave') {
+            $this->_handleFiles($entity);
+        }
+    }
 
-	/**
-	 * This method is looking for the actual file upload fields and processes them.
-	 *
-	 * @param \Cake\Datasource\EntityInterface
-	 * @return array
-	 */
-	protected function _handleFiles(EntityInterface $entity) {
-		$files = $this->getConfig('file');
-		if (is_string($files)) {
-			$files = [$files => $this->getConfig('defaults')];
-		}
+    /**
+     * This method is looking for the actual file upload fields and processes them.
+     *
+     * @param \Cake\Datasource\EntityInterface
+     * @return array
+     */
+    protected function _handleFiles(EntityInterface $entity) {
+        $files = $this->getConfig('file');
+        if (is_string($files)) {
+            $files = [$files => $this->getConfig('defaults')];
+        }
 
-		$results = [];
-		foreach ($files as $key => $file) {
-			if (is_string($key)) {
-				$field = $key;
-				$options = $this->getConfig('defaults');
-				$options += $file;
-			}
-			if (is_string($file)) {
-				$field = $file;
-				$options = $this->getConfig('defaults');
-			}
-			$results[$field] = $this->saveFile($entity->{$field}, $options);
-		}
+        $results = [];
+        foreach ($files as $key => $file) {
+            if (is_string($key)) {
+                $field = $key;
+                $options = $this->getConfig('defaults');
+                $options += $file;
+            }
+            if (is_string($file)) {
+                $field = $file;
+                $options = $this->getConfig('defaults');
+            }
+            $results[$field] = $this->saveFile($entity->{$field}, $options);
+        }
 
-		return $results;
-	}
+        return $results;
+    }
 
-	/**
-	 * Gets the storage table instance.
-	 *
-	 * @param array $options Options.
-	 * @return \Cake\ORM\Table
-	 */
-	protected function _getStorageModel($options) {
-		if (!empty($options['association'])) {
-			return $this->{$options['association']};
-		}
+    /**
+     * Gets the storage table instance.
+     *
+     * @param array $options Options.
+     * @return \Cake\ORM\Table
+     */
+    protected function _getStorageModel($options) {
+        if (!empty($options['association'])) {
+            return $this->{$options['association']};
+        }
 
-		return TableRegistry::get($options['model']);
-	}
+        return TableRegistry::get($options['model']);
+    }
 
-	/**
-	 * @param array|string $file
-	 * @param \Cake\ORM\Table $table
-	 * @param array $options
-	 * @return \Cake\Datasource\EntityInterface
-	 */
-	protected function _composeEntity($file, $table, $options) {
-		if (isset($options['validate']) && is_callable($options['validate'])) {
-			$validator = $table->validationDefault();
-			$validator = $options['validate']($validator);
-			$table->setValidator('_fileUploadValidator', $validator);
-		}
+    /**
+     * @param array|string $file
+     * @param \Cake\ORM\Table $table
+     * @param array $options
+     * @return \Cake\Datasource\EntityInterface
+     */
+    protected function _composeEntity($file, $table, $options) {
+        if (isset($options['validate']) && is_callable($options['validate'])) {
+            $validator = $table->validationDefault();
+            $validator = $options['validate']($validator);
+            $table->setValidator('_fileUploadValidator', $validator);
+        }
 
-		$entity = $table->newEntity([
-			'file' => $file,
-			'adapter' => $options['adapterConfig']
-		]);
+        $entity = $table->newEntity([
+            'file' => $file,
+            'adapter' => $options['adapterConfig']
+        ]);
 
-		if (!empty($options['data'])) {
-			$entity = $table->patchEntity($entity, $options['data']);
-		}
+        if (!empty($options['data'])) {
+            $entity = $table->patchEntity($entity, $options['data']);
+        }
 
-		return $entity;
-	}
+        return $entity;
+    }
 
-	/**
-	 * Save a file.
-	 *
-	 * @param array|string $file
-	 * @param array $options
-	 * @return \Cake\Datasource\EntityInterface
-	 */
-	public function saveFile($file, $options = []) {
-		$defaults = $this->getConfig('defaults');
-		$defaults += $options;
-		$options = $defaults;
+    /**
+     * Save a file.
+     *
+     * @param array|string $file
+     * @param array $options
+     * @return \Cake\Datasource\EntityInterface
+     */
+    public function saveFile($file, $options = []) {
+        $defaults = $this->getConfig('defaults');
+        $defaults += $options;
+        $options = $defaults;
 
-		if (is_string($file)) {
-			$file = StorageUtils::fileToUploadArray($file);
-		}
+        if (is_string($file)) {
+            $file = StorageUtils::fileToUploadArray($file);
+        }
 
-		$model = $this->_getStorageModel($options);
-		$entity = $this->_composeEntity($file, $model, $options);
+        $model = $this->_getStorageModel($options);
+        $entity = $this->_composeEntity($file, $model, $options);
 
-		$model->save($entity);
+        $model->save($entity);
 
-		return $entity;
-	}
+        return $entity;
+    }
 
 }

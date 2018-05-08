@@ -15,60 +15,60 @@ use Cake\ORM\TableRegistry;
  */
 class ImageStorageEntityTest extends FileStorageTestCase {
 
-	/**
-	 * Fixtures
-	 *
-	 * @var array
-	 */
-	public $fixtures = [
-		'plugin.Burzum\FileStorage.FileStorage'
-	];
+    /**
+     * Fixtures
+     *
+     * @var array
+     */
+    public $fixtures = [
+        'plugin.Burzum\FileStorage.FileStorage'
+    ];
 
-	/**
-	 * startTest
-	 *
-	 * @return void
-	 */
-	public function setUp() {
-		parent::setUp();
+    /**
+     * startTest
+     *
+     * @return void
+     */
+    public function setUp() {
+        parent::setUp();
 
-		$this->_removeListeners();
-		EventManager::instance()->on($this->listeners['LegacyImageProcessingListener']);
+        $this->_removeListeners();
+        EventManager::instance()->on($this->listeners['LegacyImageProcessingListener']);
 
-		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
-	}
+        $this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
+    }
 
-	/**
-	 * endTest
-	 *
-	 * @return void
-	 */
-	public function tearDown() {
-		parent::tearDown();
-		unset($this->FileStorage);
-		TableRegistry::clear();
-	}
+    /**
+     * endTest
+     *
+     * @return void
+     */
+    public function tearDown() {
+        parent::tearDown();
+        unset($this->FileStorage);
+        TableRegistry::clear();
+    }
 
-	/**
-	 * testGetPath
-	 *
-	 * @return void
-	 */
-	public function testImageVersion() {
-		$this->FileStorage->entityClass('Burzum/FileStorage.ImageStorage');
+    /**
+     * testGetPath
+     *
+     * @return void
+     */
+    public function testImageVersion() {
+        $this->FileStorage->setEntityClass('Burzum/FileStorage.ImageStorage');
 
-		$entity = $this->FileStorage->newEntity([
-			'id' => 'e479b480-f60b-11e1-a21f-0800200c9a66',
-			'model' => 'Test',
-			'path' => 'test/path/',
-			'extension' => 'jpg',
-			'adapter' => 'Local'
-		], [
-			'accessibleFields' => ['*' => true]
-		]);
+        $entity = $this->FileStorage->newEntity([
+            'id' => 'e479b480-f60b-11e1-a21f-0800200c9a66',
+            'model' => 'Test',
+            'path' => 'test/path/',
+            'extension' => 'jpg',
+            'adapter' => 'Local'
+        ], [
+            'accessibleFields' => ['*' => true]
+        ]);
 
-		$result = $entity->imageVersion('t150');
-		$this->assertEquals($result, '/test/path/e479b480f60b11e1a21f0800200c9a66.c3f33c2a.jpg');
-	}
+        $result = $entity->imageVersion('t150');
+        $this->assertEquals($result, '/test/path/e479b480f60b11e1a21f0800200c9a66.c3f33c2a.jpg');
+    }
 
 }

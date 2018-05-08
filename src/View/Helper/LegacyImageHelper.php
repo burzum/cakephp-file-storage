@@ -15,36 +15,36 @@ use Cake\Event\EventManager;
  */
 class LegacyImageHelper extends ImageHelper {
 
-	/**
-	 * URL
-	 *
-	 * @param array $image FileStorage array record or whatever else table that matches this helpers needs without the model, we just want the record fields
-	 * @param string|null $version Image version string
-	 * @param array $options HtmlHelper::image(), 2nd arg options array
-	 * @throws \InvalidArgumentException
-	 * @return string
-	 */
-	public function imageUrl($image, $version = null, $options = []) {
-		if (empty($image) || empty($image['id'])) {
-			return false;
-		}
+    /**
+     * URL
+     *
+     * @param array $image FileStorage array record or whatever else table that matches this helpers needs without the model, we just want the record fields
+     * @param string|null $version Image version string
+     * @param array $options HtmlHelper::image(), 2nd arg options array
+     * @throws \InvalidArgumentException
+     * @return string
+     */
+    public function imageUrl($image, $version = null, $options = []) {
+        if (empty($image) || empty($image['id'])) {
+            return false;
+        }
 
-		$eventOptions = [
-			'hash' => $this->_getHash($version, $image),
-			'image' => $image,
-			'version' => $version,
-			'options' => $options,
-			'pathType' => 'url'
-		];
+        $eventOptions = [
+            'hash' => $this->_getHash($version, $image),
+            'image' => $image,
+            'version' => $version,
+            'options' => $options,
+            'pathType' => 'url'
+        ];
 
-		$event = new Event('ImageVersion.getVersions', $this, $eventOptions);
-		EventManager::instance()->dispatch($event);
+        $event = new Event('ImageVersion.getVersions', $this, $eventOptions);
+        EventManager::instance()->dispatch($event);
 
-		if ($event->isStopped()) {
-			return $this->normalizePath($event->getData('path'));
-		}
+        if ($event->isStopped()) {
+            return $this->normalizePath($event->getData('path'));
+        }
 
-		return false;
-	}
+        return false;
+    }
 
 }

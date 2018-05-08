@@ -10,10 +10,10 @@ EventManager::instance()->on($listener);
 $listener = new ImageProcessingListener();
 EventManager::instance()->on($listener);
 
-Log::config('FileStorage', [
-	'className' => 'File',
-	'path' => LOGS,
-	'levels' => [],
-	'scopes' => ['fileStorage'],
-	'file' => 'fileStorage.log',
+Log::setConfig('FileStorage', [
+    'className' => 'File',
+    'path' => LOGS,
+    'levels' => [],
+    'scopes' => ['fileStorage'],
+    'file' => 'fileStorage.log',
 ]);
