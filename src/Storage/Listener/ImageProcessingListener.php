@@ -68,7 +68,7 @@ class ImageProcessingListener implements EventListenerInterface {
 			return;
 		}
 
-		$this->removeAllImageVersions();
+		$this->removeAllImageVersions($entity);
 	}
 
 }
