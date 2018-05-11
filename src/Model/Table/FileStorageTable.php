@@ -23,21 +23,21 @@ use Cake\ORM\Table;
  */
 class FileStorageTable extends Table {
 
-	/**
-	 * Initialize
-	 *
-	 * @param array $config
-	 * @return void
-	 */
-	public function initialize(array $config) {
-		parent::initialize($config);
+    /**
+     * Initialize
+     *
+     * @param array $config
+     * @return void
+     */
+    public function initialize(array $config) {
+        parent::initialize($config);
 
-		$this->setTable('file_storage');
-		$this->setPrimaryKey('id');
-		$this->setDisplayField('filename');
+        $this->setTable('file_storage');
+        $this->setPrimaryKey('id');
+        $this->setDisplayField('filename');
 
-		$this->addBehavior('Timestamp');
-		$this->addBehavior('Burzum/FileStorage.FileStorage');
-	}
+        $this->addBehavior('Timestamp');
+        $this->addBehavior('Burzum/FileStorage.FileStorage');
+    }
 
 }

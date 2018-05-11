@@ -15,22 +15,22 @@ namespace Burzum\FileStorage\Storage\Listener;
  */
 class LocalListener extends BaseListener {
 
-	/**
-	 * List of adapter classes the event listener can work with.
-	 *
-	 * It is used in FileStorageEventListenerBase::getAdapterClassName to get the
-	 * class, to detect if an event passed to this listener should be processed or
-	 * not. Only events with an adapter class present in this array will be
-	 * processed.
-	 *
-	 * The LocalListener will ONLY work with the '\Gaufrette\Adapter\Local'
-	 * adapter for backward compatibility reasons for now. Use the BaseListener
-	 * or extend this one here and add your adapter classes.
-	 *
-	 * @var array
-	 */
-	public $_adapterClasses = [
-		'\Gaufrette\Adapter\Local'
-	];
+    /**
+     * List of adapter classes the event listener can work with.
+     *
+     * It is used in FileStorageEventListenerBase::getAdapterClassName to get the
+     * class, to detect if an event passed to this listener should be processed or
+     * not. Only events with an adapter class present in this array will be
+     * processed.
+     *
+     * The LocalListener will ONLY work with the '\Gaufrette\Adapter\Local'
+     * adapter for backward compatibility reasons for now. Use the BaseListener
+     * or extend this one here and add your adapter classes.
+     *
+     * @var array
+     */
+    public $_adapterClasses = [
+        '\Gaufrette\Adapter\Local'
+    ];
 
 }

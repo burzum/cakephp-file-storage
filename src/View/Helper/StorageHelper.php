@@ -17,45 +17,45 @@ use Cake\View\View;
  */
 class StorageHelper extends Helper {
 
-	use PathBuilderTrait;
+    use PathBuilderTrait;
 
-	/**
-	 * @var array
-	 * Default configuration
-	 */
-	protected $_defaultConfig = [
-		'pathBuilder' => 'Base',
-		'pathBuilderOptions' => [
-			'modelFolder' => true
-		]
-	];
+    /**
+     * @var array
+     * Default configuration
+     */
+    protected $_defaultConfig = [
+        'pathBuilder' => 'Base',
+        'pathBuilderOptions' => [
+            'modelFolder' => true
+        ]
+    ];
 
-	/**
-	 * Constructor
-	 *
-	 * @param \Cake\View\View
-	 * @param array $config
-	 */
-	public function __construct(View $view, array $config = []) {
-		parent::__construct($view, $config);
+    /**
+     * Constructor
+     *
+     * @param \Cake\View\View
+     * @param array $config
+     */
+    public function __construct(View $view, array $config = []) {
+        parent::__construct($view, $config);
 
-		$this->pathBuilder(
-			$this->getConfig('pathBuilder'),
-			$this->getConfig('pathBuilderOptions')
-		);
-	}
+        $this->pathBuilder(
+            $this->getConfig('pathBuilder'),
+            $this->getConfig('pathBuilderOptions')
+        );
+    }
 
-	/**
-	 * Proxy to the configured path builder methods.
-	 *
-	 * @param string $method
-	 * @param array $args
-	 * @return mixed
-	 */
-	public function __call($method, $args) {
-		if (method_exists($this->_pathBuilder, $method)) {
-			return call_user_func_array([$this->_pathBuilder, $method], $args);
-		}
-	}
+    /**
+     * Proxy to the configured path builder methods.
+     *
+     * @param string $method
+     * @param array $args
+     * @return mixed
+     */
+    public function __call($method, $args) {
+        if (method_exists($this->_pathBuilder, $method)) {
+            return call_user_func_array([$this->_pathBuilder, $method], $args);
+        }
+    }
 
 }

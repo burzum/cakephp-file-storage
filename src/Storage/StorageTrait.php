@@ -11,48 +11,48 @@ namespace Burzum\FileStorage\Storage;
  */
 trait StorageTrait {
 
-	/**
-	 * @deprecated Use getStorageConfig
-	 */
-	public function storageConfig($configName) {
-		$this->getStorageConfig($configName);
-	}
+    /**
+     * @deprecated Use getStorageConfig
+     */
+    public function storageConfig($configName) {
+        $this->getStorageConfig($configName);
+    }
 
-	/**
-	 * Wrapper around the singleton call to StorageManager::config()
-	 *
-	 * Makes it easy to mock the adapter in tests.
-	 *
-	 * @throws \InvalidArgumentException
-	 * @param string $configName
-	 * @return array
-	 */
-	public function getStorageConfig($configName) {
-		return StorageManager::config($configName);
-	}
+    /**
+     * Wrapper around the singleton call to StorageManager::config()
+     *
+     * Makes it easy to mock the adapter in tests.
+     *
+     * @throws \InvalidArgumentException
+     * @param string $configName
+     * @return array
+     */
+    public function getStorageConfig($configName) {
+        return StorageManager::config($configName);
+    }
 
-	/**
-	 * Wrapper around the singleton call to StorageManager::get()
-	 *
-	 * Makes it easy to mock the adapter in tests.
-	 *
-	 * @throws \InvalidArgumentException
-	 * @param string $configName
-	 * @return array
-	 */
-	public function getStorageAdapter($configName, $renewObject = false) {
-		return StorageManager::get($configName, $renewObject);
-	}
+    /**
+     * Wrapper around the singleton call to StorageManager::get()
+     *
+     * Makes it easy to mock the adapter in tests.
+     *
+     * @throws \InvalidArgumentException
+     * @param string $configName
+     * @return array
+     */
+    public function getStorageAdapter($configName, $renewObject = false) {
+        return StorageManager::get($configName, $renewObject);
+    }
 
-	/**
-	 * Wrapper around the singleton call to StorageManager::getInstance()
-	 *
-	 * Makes it easy to mock the adapter in tests.
-	 *
-	 * @return mixed
-	 */
-	public function getStorageManager() {
-		return StorageManager::getInstance();
-	}
+    /**
+     * Wrapper around the singleton call to StorageManager::getInstance()
+     *
+     * Makes it easy to mock the adapter in tests.
+     *
+     * @return mixed
+     */
+    public function getStorageManager() {
+        return StorageManager::getInstance();
+    }
 
 }
