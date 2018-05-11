@@ -4,6 +4,7 @@ namespace Burzum\FileStorage\Test\TestCase\Model\Table;
 use Burzum\FileStorage\Storage\StorageManager;
 use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
 use Cake\Event\EventManager;
+use Cake\ORM\Locator\TableLocator;
 use Cake\ORM\TableRegistry;
 
 /**

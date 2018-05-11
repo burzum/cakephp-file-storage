@@ -167,20 +167,20 @@ class LegacyImageProcessingListener extends AbstractListener {
         unlink($tmpFile);
     }
 
-    /**
-     * Creates versions for a given image record
-     *
-     * @param Event $Event
-     * @return void
-     */
-    public function createVersions(Event $Event) {
-        if ($this->_checkEvent($Event)) {
-            $table = $Event->getSubject();
-            $record = $Event->getData('record');
-            $this->_createVersions($table, $record, $Event->data('operations'));
-            $Event->stopPropagation();
-        }
-    }
+	/**
+	 * Creates versions for a given image record
+	 *
+	 * @param Event $Event
+	 * @return void
+	 */
+	public function createVersions(Event $Event) {
+		if ($this->_checkEvent($Event)) {
+			$table = $Event->getSubject();
+			$record = $Event->getData('record');
+			$this->_createVersions($table, $record, $Event->getData('operations'));
+			$Event->stopPropagation();
+		}
+	}
 
     /**
      * Removes versions for a given image record

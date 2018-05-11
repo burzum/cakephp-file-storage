@@ -2,13 +2,13 @@ FileStorage Plugin for CakePHP
 ==============================
 
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.txt)
-[![Build Status](https://img.shields.io/travis/burzum/cakephp-file-storage/1.1.svg?style=flat-square)](https://travis-ci.org/burzum/cakephp-file-storage)
-[![Coverage Status](https://img.shields.io/coveralls/burzum/cakephp-file-storage/1.1.svg?style=flat-square)](https://coveralls.io/r/burzum/cakephp-file-storage)
-[![Code Quality](https://img.shields.io/scrutinizer/g/burzum/cakephp-file-storage/1.1.svg?style=flat-square)](https://coveralls.io/r/burzum/cakephp-file-storage)
+[![Build Status](https://img.shields.io/travis/burzum/cakephp-file-storage/2.0.svg?style=flat-square)](https://travis-ci.org/burzum/cakephp-file-storage)
+[![Coverage Status](https://img.shields.io/coveralls/burzum/cakephp-file-storage/2.0.svg?style=flat-square)](https://coveralls.io/r/burzum/cakephp-file-storage)
+[![Code Quality](https://img.shields.io/scrutinizer/g/burzum/cakephp-file-storage/2.0.svg?style=flat-square)](https://coveralls.io/r/burzum/cakephp-file-storage)
 
 **If you're upgrading from CakePHP 2.x please read [the migration guide](docs/Documentation/Migrating-from-CakePHP-2.md).**
 
-The **File Storage** plugin is giving you the possibility to upload and store files in virtually any kind of storage backend. This plugin is wrapping the [Gaufrette](https://github.com/KnpLabs/Gaufrette) library in a CakePHP fashion and provides a simple way to use the storage adapters through the [StorageManager](src/Storage/StorageManager.php) class.
+The **File Storage** plugin is giving you the possibility to upload and store files in virtually any kind of storage backend. The plugin features the [Gaufrette](https://github.com/KnpLabs/Gaufrette) **and** [FlySystem](https://github.com/thephpleague/flysystem) library in a CakePHP fashion and provides a simple way to use the storage adapters through the [StorageManager](src/Storage/StorageManager.php) class.
 
 Storage adapters are an unified interface that allow you to store file data to your local file system, in memory, in a database or into a zip file and remote systems. There is a database table keeping track of what you stored where. You can always write your own adapter or extend and overload existing ones.
 
@@ -41,12 +41,13 @@ List of supported Adapters
 Requirements
 ------------
 
- * CakePHP 3.0
+ * CakePHP 3.6
  * Gaufrette Storage Library
 
 Optional but required if you want image processing out of the box:
 
  * The [Imagine Image processing plugin](https://github.com/burzum/cakephp-imagine-plugin) if you want to process and store images.
+ * [FlySystem](https://github.com/thephpleague/flysystem) as alternative library over Gaufrette
  
 You can still implement whatever file processing you want very easy. It's not tied to Imagine. 
 
@@ -72,7 +73,7 @@ To contribute to this plugin please follow a few basic rules.
 License
 -------
 
-Copyright 2012 - 2016, Florian Krämer
+Copyright 2012 - 2018, Florian Krämer
 
 Licensed under The MIT License
 Redistributions of files must retain the above copyright notice.

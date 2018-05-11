@@ -113,20 +113,20 @@ class BaseListener extends AbstractListener {
         }
     }
 
-    /**
-     * Generates the path the image url / path for viewing it in a browser depending on the storage adapter
-     *
-     * @param \Cake\Event\Event $event
-     * @throws \InvalidArgumentException
-     * @return void
-     */
-    public function imagePath(Event $event) {
-        $data = $event->getData() + [
-            'image' => null,
-            'version' => null,
-            'options' => [],
-            'pathType' => 'fullPath'
-        ];
+	/**
+	 * Generates the path the image url / path for viewing it in a browser depending on the storage adapter
+	 *
+	 * @param \Cake\Event\Event $event
+	 * @throws \InvalidArgumentException
+	 * @return void
+	 */
+	public function imagePath(Event $event) {
+		$data = $event->setData($event->getData()+ [
+			'image' => null,
+			'version' => null,
+			'options' => [],
+			'pathType' => 'fullPath'
+		]);
 
         if ($event->getSubject() instanceof EntityInterface) {
             $data['image'] = $event->getSubject();
@@ -180,16 +180,16 @@ class BaseListener extends AbstractListener {
             return;
         }
 
-        $versions = $this->_getVersionData($event);
-        $options = $event->getData('options') ? $event->getData('options') : [];
+		$versions = $this->_getVersionData($event);
+		$options = (array)$event->getData('options') ;
 
-        $this->loadImageProcessingFromConfig();
-        $event->result = $this->{$method}(
-            $event->data['entity'],
-            $versions,
-            $options
-        );
-    }
+		$this->loadImageProcessingFromConfig();
+		$event->result = $this->{$method}(
+			$event->getData('entity'),
+			$versions,
+			$options
+		);
+	}
 
     /**
      * This method retrieves version names from event data.
