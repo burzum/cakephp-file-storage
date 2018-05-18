@@ -1,4 +1,4 @@
-Specific Addapter Configuration
+Specific Adapter Configuration
 ===============================
 
 Gaufrette does not come with a lot detail about what exactly some adapters expect so here is a list to help you with that.
