@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a6fb2f64480529dbe55b6b161691eb83",
+    "content-hash": "eb76cffa9b32a4f5a9bfaadc021f71c0",
     "packages": [
         {
             "name": "aura/intl",
@@ -1070,7 +1070,7 @@
         },
         {
             "name": "cakephp/cakephp-codesniffer",
-            "version": "dev-master",
+            "version": "3.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/cakephp-codesniffer.git",
@@ -2769,8 +2769,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "burzum/cakephp-imagine-plugin": 20,
-        "cakephp/cakephp-codesniffer": 20
+        "burzum/cakephp-imagine-plugin": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
