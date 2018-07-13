@@ -9,6 +9,11 @@
 		{
 			"name": "Florian Krämer",
 			"homepage": "http://florian-kraemer.net"
+		},
+		{
+			"name": "Other contributors",
+			"homepage": "https://github.com/burzum/cakephp-file-storage/graphs/contributors",
+			"role": "Contributors"
 		}
 	],
 	"prefer-stable": true,

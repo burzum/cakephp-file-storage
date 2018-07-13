@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
     "content-hash": "b04e6efe7557a91ab688bd135de6bda2",
@@ -955,12 +955,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/burzum/cakephp-imagine-plugin.git",
-                "reference": "74e9b30976902f0ea6608544338dac708b3752c9"
+                "reference": "8dfec6a88db18d69fc70680e94450f2099490d17"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/burzum/cakephp-imagine-plugin/zipball/74e9b30976902f0ea6608544338dac708b3752c9",
-                "reference": "74e9b30976902f0ea6608544338dac708b3752c9",
+                "url": "https://api.github.com/repos/burzum/cakephp-imagine-plugin/zipball/8dfec6a88db18d69fc70680e94450f2099490d17",
+                "reference": "8dfec6a88db18d69fc70680e94450f2099490d17",
                 "shasum": ""
             },
             "require": {
@@ -997,7 +997,7 @@
                 "image-processing",
                 "media"
             ],
-            "time": "2018-05-07T22:41:08+00:00"
+            "time": "2018-05-07T22:44:12+00:00"
         },
         {
             "name": "cakephp/cakephp-codesniffer",
@@ -1005,12 +1005,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/cakephp-codesniffer.git",
-                "reference": "289daa03d4225933776d7bff7d0501f59b0a4ff9"
+                "reference": "7f467fee00fd016b62cf8c85a57750ab2a895e81"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/cakephp-codesniffer/zipball/289daa03d4225933776d7bff7d0501f59b0a4ff9",
-                "reference": "289daa03d4225933776d7bff7d0501f59b0a4ff9",
+                "url": "https://api.github.com/repos/cakephp/cakephp-codesniffer/zipball/7f467fee00fd016b62cf8c85a57750ab2a895e81",
+                "reference": "7f467fee00fd016b62cf8c85a57750ab2a895e81",
                 "shasum": ""
             },
             "require": {
@@ -1042,7 +1042,7 @@
                 "codesniffer",
                 "framework"
             ],
-            "time": "2018-01-23T15:40:37+00:00"
+            "time": "2018-06-09T16:01:01+00:00"
         },
         {
             "name": "doctrine/instantiator",
