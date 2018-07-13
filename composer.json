@@ -17,7 +17,7 @@
 		}
 	],
 	"prefer-stable": true,
-	"minimum-stability": "dev",
+	"minimum-stability": "stable",
 	"require": {
 		"cakephp/cakephp": "~3.6",
 		"cakephp/plugin-installer": "*",
