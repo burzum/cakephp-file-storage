@@ -5,6 +5,9 @@ use Burzum\FileStorage\Storage\StorageException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
+/**
+ * Storage Exception Test
+ */
 class StorageExceptionTest extends TestCase {
 
 	/**
@@ -13,7 +16,7 @@ class StorageExceptionTest extends TestCase {
 	 * @return void
 	 */
 	public function testSetAndGetEntity() {
-		$FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
+		$FileStorage = TableRegistry::getTableLocator()->get('Burzum/FileStorage.FileStorage');
 		$entity = $FileStorage->newEntity([], ['accessibleFields' => ['*' => true]]);
 		$exception = new StorageException();
 		$exception->setEntity($entity);

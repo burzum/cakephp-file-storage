@@ -13,6 +13,9 @@ use Cake\Core\Configure;
 use Cake\Filesystem\Folder;
 use Cake\ORM\TableRegistry;
 
+/**
+ * TraitTestClass
+ */
 class TraitTestClass extends AbstractListener {
 	use ImageProcessingTrait;
 
@@ -35,6 +38,9 @@ class TraitTestClass extends AbstractListener {
 
 }
 
+/**
+ * ImageProcessingTraitTest
+ */
 class ImageProcessingTraitTest extends FileStorageTestCase {
 
 	/**
@@ -48,7 +54,7 @@ class ImageProcessingTraitTest extends FileStorageTestCase {
 
 	public function setUp() {
 		parent::setUp();
-		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
+		$this->FileStorage = TableRegistry::getTableLocator()->get('Burzum/FileStorage.FileStorage');
 		$this->entity = $this->FileStorage->newEntity([
 			'id' => 'file-storage-1',
 			'user_id' => 'user-1',
@@ -63,7 +69,7 @@ class ImageProcessingTraitTest extends FileStorageTestCase {
 			'adapter' => 'Local',
 		], ['accessibleFields' => ['*' => true]]);
 
-		$this->entity->setAccessible('id', true);
+		$this->entity->setAccess('id', true);
 
 		Configure::write('FileStorage.imageSizes', [
 			'Item' => [

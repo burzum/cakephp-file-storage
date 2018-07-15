@@ -111,7 +111,7 @@ class UploadBehavior extends Behavior {
 			return $this->{$options['association']};
 		}
 
-		return TableRegistry::get($options['model']);
+		return TableRegistry::getTableLocator()->get($options['model']);
 	}
 
 	/**

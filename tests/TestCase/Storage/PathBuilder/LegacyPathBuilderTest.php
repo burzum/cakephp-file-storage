@@ -5,6 +5,9 @@ use Burzum\FileStorage\Storage\PathBuilder\LegacyPathBuilder;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
+/**
+ * LegacyPathBuilderTest
+ */
 class LegacyPathBuilderTest extends TestCase {
 
 	/**
@@ -17,13 +20,20 @@ class LegacyPathBuilderTest extends TestCase {
 	];
 
 	/**
+	 * File Storage Table
+	 *
+	 * @var \Burzum\FileStorage\Model\Table\FileStorageTable
+	 */
+	public $FileStorage;
+
+	/**
 	 * setUp
 	 *
 	 * @return void
 	 */
 	public function setUp() {
 		parent::setUp();
-		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
+		$this->FileStorage = TableRegistry::getTableLocator()->get('Burzum/FileStorage.FileStorage');
 		$this->entity = $this->FileStorage->newEntity([
 			'id' => 'file-storage-3',
 			'user_id' => 'user-1',
@@ -39,7 +49,7 @@ class LegacyPathBuilderTest extends TestCase {
 			'created' => '2012-01-01 12:00:00',
 			'modified' => '2012-01-01 12:00:00',
 		], ['accessibleFields' => ['*' => true]]);
-		$this->entity->accessible('id', true);
+		$this->entity->setAccess('id', true);
 	}
 
 	/**

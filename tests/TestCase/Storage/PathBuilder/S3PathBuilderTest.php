@@ -5,6 +5,9 @@ use Burzum\FileStorage\Storage\PathBuilder\S3PathBuilder;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
+/**
+ * S3PathBuilderTest
+ */
 class S3PathBuilderTest extends TestCase {
 
 	/**
@@ -17,13 +20,20 @@ class S3PathBuilderTest extends TestCase {
 	];
 
 	/**
+	 * File Storage Table
+	 *
+	 * @var \Burzum\FileStorage\Model\Table\FileStorageTable
+	 */
+	public $FileStorage;
+
+	/**
 	 * setUp
 	 *
 	 * @return void
 	 */
 	public function setUp() {
 		parent::setUp();
-		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
+		$this->FileStorage = TableRegistry::getTableLocator()->get('Burzum/FileStorage.FileStorage');
 		$this->entity = $this->FileStorage->newEntity([
 			'id' => 'file-storage-1',
 			'user_id' => 'user-1',
@@ -37,7 +47,7 @@ class S3PathBuilderTest extends TestCase {
 			'path' => '',
 			'adapter' => 'S3',
 		], ['accessibleFields' => ['*' => true]]);
-		$this->entity->accessible('id', true);
+		$this->entity->setAccess('id', true);
 	}
 
 	/**

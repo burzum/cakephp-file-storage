@@ -154,7 +154,7 @@ class ImageVersionShell extends Shell {
 		}
 
 		try {
-			$this->Table = TableRegistry::get($storageTable);
+			$this->Table = TableRegistry::getTableLocator()->get($storageTable);
 		} catch (Exception $e) {
 			$this->abort($e->getMessage());
 		}

@@ -27,6 +27,9 @@ class TestValidationListener extends ValidationListener {
 
 }
 
+/**
+ * ValidationListenerTest
+ */
 class ValidationListenerTest extends TestCase {
 
 	/**
@@ -39,11 +42,18 @@ class ValidationListenerTest extends TestCase {
 	];
 
 	/**
+	 * File Storage Table
+	 *
+	 * @var \Burzum\FileStorage\Model\Table\FileStorageTable
+	 */
+	public $FileStorage;
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public function setUp() {
 		parent::setUp();
-		$this->table = TableRegistry::get('Burzum/FileStorage.FileStorage');
+		$this->FileStorage = TableRegistry::getTableLocator()->get('Burzum/FileStorage.FileStorage');
 	}
 
 	/**
@@ -55,13 +65,13 @@ class ValidationListenerTest extends TestCase {
 		$entity = new FileStorage([
 			'model' => 'Avatar'
 		]);
-		$event = new Event('Model.initialize', $this->table, [
+		$event = new Event('Model.initialize', $this->FileStorage, [
 			'entity' => $entity
 		]);
 		$listener = new TestValidationListener();
 		$listener->initialize($event);
 
-		$result = $this->table->validator('avatar');
+		$result = $this->FileStorage->getValidator('avatar');
 		$this->assertInstanceOf(Validator::class, $result);
 
 		$mockListener = $this->getMockBuilder(TestValidationListener::class)

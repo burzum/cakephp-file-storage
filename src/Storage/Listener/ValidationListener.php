@@ -7,6 +7,9 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 use RuntimeException;
 
+/**
+ * Validation Listener
+ */
 class ValidationListener {
 
 	/**
@@ -73,7 +76,7 @@ class ValidationListener {
 		foreach ($methods as $method) {
 			if (substr($method, 0, 10) === 'validation') {
 				if ($this->config['passDefaultValidator']) {
-					$validator = $table->validator('default');
+					$validator = $table->getValidator('default');
 				} else {
 					$validator = new Validator();
 				}
@@ -83,7 +86,7 @@ class ValidationListener {
 					throw new RuntimeException('Object must be of type ' . Validator::class . '. Method ' . $method . ' returned ' . get_class($validator));
 				}
 
-				$table->validator(lcfirst(substr($method, 10)), $validator);
+				$table->setValidator(lcfirst(substr($method, 10)), $validator);
 			}
 		}
 	}

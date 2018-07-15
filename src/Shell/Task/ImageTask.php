@@ -33,7 +33,7 @@ class ImageTask extends Shell {
 	 */
 	public function initialize() {
 		parent::initialize();
-		$this->Table = TableRegistry::get('Burzum/FileStorage.ImageStorage');
+		$this->Table = TableRegistry::getTableLocator()->get('Burzum/FileStorage.ImageStorage');
 	}
 
 	/**

@@ -43,7 +43,7 @@ class UploadValidator extends Validator {
 	 * @var string
 	 */
 	public function __construct() {
-		$this->provider('UploadValidator', $this);
+		$this->setProvider('UploadValidator', $this);
 	}
 
 	/**

@@ -17,7 +17,7 @@ class FileStorageTestTable extends Table {
 	 */
 	public function initialize(array $config) {
 		parent::initialize($config);
-		$this->table('file_storage');
+		$this->setTable('file_storage');
 		$this->addBehavior('Burzum/FileStorage.FileStorage');
 	}
 
@@ -52,7 +52,7 @@ class FileStorageBehaviorTest extends FileStorageTestCase {
 	public function setUp() {
 		parent::setUp();
 		$this->FileStorage = new FileStorageTestTable();
-		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
+		$this->FileStorage = TableRegistry::getTableLocator()->get('Burzum/FileStorage.FileStorage');
 		$this->FileStorage->addBehavior('Burzum/FileStorage.FileStorage');
 		$this->testFilePath = Plugin::path('Burzum/FileStorage') . 'Test' . DS . 'Fixture' . DS . 'File' . DS;
 	}
@@ -65,7 +65,7 @@ class FileStorageBehaviorTest extends FileStorageTestCase {
 	public function tearDown() {
 		parent::tearDown();
 		unset($this->FileStorage);
-		TableRegistry::clear();
+		TableRegistry::getTableLocator()->clear();
 	}
 
 /**

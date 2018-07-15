@@ -1,7 +1,6 @@
 <?php
 namespace Burzum\FileStorage\Test\TestCase\Model\Entity;
 
-use Burzum\FileStorage\Storage\Listener\LocalListener;
 use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
 use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
@@ -35,7 +34,7 @@ class ImageStorageEntityTest extends FileStorageTestCase {
 		$this->_removeListeners();
 		EventManager::instance()->on($this->listeners['LegacyImageProcessingListener']);
 
-		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
+		$this->FileStorage = TableRegistry::getTableLocator()->get('Burzum/FileStorage.FileStorage');
 	}
 
 	/**
@@ -46,7 +45,7 @@ class ImageStorageEntityTest extends FileStorageTestCase {
 	public function tearDown() {
 		parent::tearDown();
 		unset($this->FileStorage);
-		TableRegistry::clear();
+		TableRegistry::getTableLocator()->clear();
 	}
 
 	/**
@@ -55,7 +54,7 @@ class ImageStorageEntityTest extends FileStorageTestCase {
 	 * @return void
 	 */
 	public function testImageVersion() {
-		$this->FileStorage->entityClass('Burzum/FileStorage.ImageStorage');
+		$this->FileStorage->getEntityClass('Burzum/FileStorage.ImageStorage');
 
 		$entity = $this->FileStorage->newEntity([
 			'id' => 'e479b480-f60b-11e1-a21f-0800200c9a66',

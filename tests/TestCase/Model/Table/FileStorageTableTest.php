@@ -1,10 +1,8 @@
 <?php
 namespace Burzum\FileStorage\Test\TestCase\Model\Table;
 
-use Burzum\FileStorage\Storage\StorageManager;
 use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
 use Cake\Event\EventManager;
-use Cake\ORM\Locator\TableLocator;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -32,7 +30,7 @@ class FileStorageTableTest extends FileStorageTestCase {
 	 */
 	public function setUp() {
 		parent::setUp();
-		$this->FileStorage = TableLocator::get('Burzum/FileStorage.FileStorage');
+		$this->FileStorage = TableRegistry::getTableLocator()->get('Burzum/FileStorage.FileStorage');
 	}
 
 	/**
@@ -44,7 +42,7 @@ class FileStorageTableTest extends FileStorageTestCase {
 		parent::tearDown();
 		unset($this->FileStorage);
 		unset($this->FileStorageBehavior);
-		TableLocator::clear();
+		TableRegistry::getTableLocator()->clear();
 	}
 
 	/**
@@ -53,8 +51,8 @@ class FileStorageTableTest extends FileStorageTestCase {
 	 * @return void
 	 */
 	public function testInitialize() {
-		$this->assertEquals($this->FileStorage->table(), 'file_storage');
-		$this->assertEquals($this->FileStorage->displayField(), 'filename');
+		$this->assertEquals($this->FileStorage->getTable(), 'file_storage');
+		$this->assertEquals($this->FileStorage->getDisplayField(), 'filename');
 	}
 
 	/**
