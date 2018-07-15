@@ -9,21 +9,27 @@
 		{
 			"name": "Florian Krämer",
 			"homepage": "http://florian-kraemer.net"
+		},
+		{
+			"name": "Other contributors",
+			"homepage": "https://github.com/burzum/cakephp-file-storage/graphs/contributors",
+			"role": "Contributors"
 		}
 	],
 	"prefer-stable": true,
-	"minimum-stability": "dev",
+	"minimum-stability": "stable",
 	"require": {
-		"cakephp/cakephp": "~3.6",
-		"cakephp/plugin-installer": "*",
-		"cakephp/migrations": "~1.0",
-		"knplabs/gaufrette": "*"
+		"php": ">=5.6.0",
+		"cakephp/cakephp": "^3.6.0",
+		"cakephp/plugin-installer": "^1.0.0",
+		"cakephp/migrations": "^1.8.0",
+		"knplabs/gaufrette": "^0.6.0"
 	},
 	"require-dev": {
-		"phpunit/phpunit": "6.*",
+		"phpunit/phpunit": "^5.7.14|^6.0",
 		"burzum/cakephp-imagine-plugin": "3.x-dev",
-		"cakephp/cakephp-codesniffer": "dev-master",
-		"league/flysystem": "*"
+		"cakephp/cakephp-codesniffer": "^3.0.0",
+		"league/flysystem": "^1.0.0"
 	},
 	"autoload": {
 		"psr-4": {
@@ -42,6 +48,8 @@
 		"league/flysystem": "Alternative for Gaufrette, see the docs how to configure it."
 	},
 	"scripts": {
-		"post-autoload-dump": "Cake\\Composer\\Installer\\PluginInstaller::postAutoloadDump"
+		"post-autoload-dump": "Cake\\Composer\\Installer\\PluginInstaller::postAutoloadDump",
+		"test": "phpunit",
+		"test-coverage": "phpunit --coverage-clover=clover.xml"
 	}
 }
