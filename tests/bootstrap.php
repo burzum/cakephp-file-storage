@@ -1,9 +1,6 @@
 <?php
 use Cake\Core\Plugin;
 
-// Temporarily disable E_USER_DEPRECATED errors for CakePHP 3.6
-error_reporting(E_ALL ^ E_USER_DEPRECATED);
-
 $findRoot = function ($root) {
 	do {
 		$lastRoot = $root;
