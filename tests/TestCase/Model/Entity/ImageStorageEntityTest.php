@@ -54,7 +54,7 @@ class ImageStorageEntityTest extends FileStorageTestCase {
 	 * @return void
 	 */
 	public function testImageVersion() {
-		$this->FileStorage->getEntityClass('Burzum/FileStorage.ImageStorage');
+		$this->FileStorage->setEntityClass('Burzum/FileStorage.ImageStorage');
 
 		$entity = $this->FileStorage->newEntity([
 			'id' => 'e479b480-f60b-11e1-a21f-0800200c9a66',
