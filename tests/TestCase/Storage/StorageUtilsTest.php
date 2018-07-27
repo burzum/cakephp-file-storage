@@ -1,6 +1,7 @@
 <?php
 namespace Burzum\FileStorage\Test\TestCase\Lib\Utility;
 
+use Burzum\FileStorage\Storage\PathBuilder\BasePathBuilder;
 use Burzum\FileStorage\Storage\StorageUtils;
 use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
 use Cake\Core\Configure;
@@ -28,10 +29,10 @@ class StorageUtilsTest extends FileStorageTestCase {
 	public function testRandomPath() {
 		$this->skipIf(PHP_INT_SIZE === 8);
 
-		$result = StorageUtils::randomPath('someteststring');
+		$result = (new BasePathBuilder())->randomPath('someteststring', 3, 'crc32');
 		$this->assertEquals($result, '38' . DS . '88' . DS . '98' . DS);
 
-		$result = StorageUtils::randomPath('file-storage-3');
+		$result = (new BasePathBuilder())->randomPath('file-storage-3', 3, 'crc32');
 		$this->assertEquals($result, '48' . DS . '75' . DS . '05' . DS);
 	}
 

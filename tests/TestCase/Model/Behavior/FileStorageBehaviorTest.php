@@ -51,7 +51,6 @@ class FileStorageBehaviorTest extends FileStorageTestCase {
 	 */
 	public function setUp() {
 		parent::setUp();
-		$this->FileStorage = new FileStorageTestTable();
 		$this->FileStorage = TableRegistry::getTableLocator()->get('Burzum/FileStorage.FileStorage');
 		$this->FileStorage->addBehavior('Burzum/FileStorage.FileStorage');
 		$this->testFilePath = Plugin::path('Burzum/FileStorage') . 'Test' . DS . 'Fixture' . DS . 'File' . DS;

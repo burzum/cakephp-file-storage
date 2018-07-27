@@ -116,7 +116,7 @@ class FileStorageTestCase extends TestCase {
 			'class' => '\Gaufrette\Filesystem'
 		]);
 
-		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
+		$this->FileStorage = TableRegistry::getTableLocator()->get('Burzum/FileStorage.FileStorage');
 	}
 
 	/**
@@ -154,7 +154,7 @@ class FileStorageTestCase extends TestCase {
 
 		$this->_removeListeners();
 
-		TableRegistry::clear();
+		TableRegistry::getTableLocator()->clear();
 		$Folder = new Folder($this->testPath);
 		$Folder->delete();
 	}

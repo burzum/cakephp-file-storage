@@ -39,7 +39,7 @@ class LocalListenerTest extends TestCase {
 			->disableOriginalConstructor()
 			->getMock();
 
-		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
+		$this->FileStorage = TableRegistry::getTableLocator()->get('Burzum/FileStorage.FileStorage');
 	}
 
 	/**
