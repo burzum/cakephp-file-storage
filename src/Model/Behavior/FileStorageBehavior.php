@@ -181,7 +181,7 @@ class FileStorageBehavior extends Behavior {
 			$oldEntity = $this->_table->find()
 				->contain([])
 				->where([
-					$this->_table->alias() . '.' . $this->_table->primaryKey() => $entity->get($oldIdField),
+					$this->_table->getAlias() . '.' . $this->_table->getPrimaryKey() => $entity->get($oldIdField),
 					'model' => $entity->get('model')
 				])
 				->first();

@@ -31,7 +31,7 @@ class FileStorageEntityTest extends FileStorageTestCase {
 	 */
 	public function setUp() {
 		parent::setUp();
-		$this->FileStorage = TableRegistry::get('Burzum/FileStorage.FileStorage');
+		$this->FileStorage = TableRegistry::getTableLocator()->get('Burzum/FileStorage.FileStorage');
 		$listener = new LocalListener();
 		EventManager::instance()->on($listener);
 	}
@@ -44,7 +44,7 @@ class FileStorageEntityTest extends FileStorageTestCase {
 	public function tearDown() {
 		parent::tearDown();
 		unset($this->FileStorage);
-		TableRegistry::clear();
+		TableRegistry::getTableLocator()->clear();
 	}
 
 	/**

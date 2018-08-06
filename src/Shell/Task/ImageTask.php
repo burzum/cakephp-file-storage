@@ -11,7 +11,9 @@ namespace Burzum\FileStorage\Shell\Task;
 use Burzum\FileStorage\Storage\StorageException;
 use Burzum\FileStorage\Storage\StorageTrait;
 use Cake\Console\Shell;
-use Cake\Event\EventManagerTrait;
+use Cake\Event\Event;
+use Cake\Event\EventDispatcherTrait;
+use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -25,7 +27,7 @@ use Cake\ORM\TableRegistry;
  */
 class ImageTask extends Shell {
 
-	use EventManagerTrait;
+	use EventDispatcherTrait;
 	use StorageTrait;
 
 	/**

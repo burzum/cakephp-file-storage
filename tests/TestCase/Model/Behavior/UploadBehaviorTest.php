@@ -34,7 +34,7 @@ class UploadBehaviorTest extends FileStorageTestCase {
 	 */
 	public function setUp() {
 		parent::setUp();
-		$this->Items = TableRegistry::get('Items');
+		$this->Items = TableRegistry::getTableLocator()->get('Items');
 		$this->Items->addBehavior('Burzum/FileStorage.Upload');
 		$this->testFilePath = Plugin::path('Burzum/FileStorage') . 'Test' . DS . 'Fixture' . DS . 'File' . DS;
 	}
@@ -47,7 +47,7 @@ class UploadBehaviorTest extends FileStorageTestCase {
 	public function tearDown() {
 		parent::tearDown();
 		unset($this->Items);
-		TableRegistry::clear();
+		TableRegistry::getTableLocator()->clear();
 	}
 
 	/**
@@ -56,6 +56,7 @@ class UploadBehaviorTest extends FileStorageTestCase {
 	 * @return void
 	 */
 	public function testSaveFile() {
+		$this->markTestIncomplete();
 		//$file = $this->fileFixtures . 'titus.jpg';
 		//$result = $this->Items->saveFile($file);
 		//debug($result);

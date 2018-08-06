@@ -44,7 +44,7 @@ class ImageVersionShell extends Shell {
 	 */
 	public function getOptionParser() {
 		$parser = parent::getOptionParser();
-		$parser->description([
+		$parser->setDescription([
 			__d('file_storage', 'Shell command for generating and removing image versions.')
 		]);
 		$parser->addOption('storageTable', [
