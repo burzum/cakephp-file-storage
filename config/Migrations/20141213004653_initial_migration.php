@@ -1,5 +1,5 @@
 <?php
-use Phinx\Migration\AbstractMigration;
+use Migrations\AbstractMigration;
 
 class InitialMigration extends AbstractMigration {
 

@@ -1,6 +1,6 @@
 <?php
 
-use Phinx\Migration\AbstractMigration;
+use Migrations\AbstractMigration;
 
 /**
  * https://github.com/burzum/cakephp-file-storage/issues/126
