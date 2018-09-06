@@ -41,6 +41,7 @@ List of supported Adapters
 Requirements
 ------------
 
+ * PHP 7.0+
  * CakePHP 3.6
  * Gaufrette Storage Library
 

@@ -19,7 +19,7 @@
 	"prefer-stable": true,
 	"minimum-stability": "stable",
 	"require": {
-		"php": ">=5.6.0",
+		"php": ">=7.0.0",
 		"cakephp/cakephp": "^3.6.0",
 		"cakephp/plugin-installer": "^1.0.0",
 		"cakephp/migrations": "^2.0.0",
