@@ -43,7 +43,7 @@ Requirements
 
  * PHP 7.0+
  * CakePHP 3.6
- * Gaufrette Storage Library
+ * Gaufrette Storage Library 0.7.x
 
 Optional but required if you want image processing out of the box:
 
