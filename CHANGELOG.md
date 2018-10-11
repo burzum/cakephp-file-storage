@@ -22,9 +22,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.0.0-beta2](https://github.com/burzum/cakephp-file-storage/releases/tag/2.0.0-beta2) - 2018-09-07
 ### Changed
+- Improved documentation
+- Updated dependencies
 - Upgraded to CakePHP 3.6
 - Removed upload validation methods as they are part of the CakePHP core
 - Increased the length of the extension field in the DB #157
+- Updated Travis CI configuration, remove PHP 5.6, add PHP 7.1, 7.2 & nightly
+
+### Fixed
+- Fixed Travis CI builds
 
 ## [2.0.0-beta1](https://github.com/burzum/cakephp-file-storage/releases/tag/2.0.0-beta1) - 2017-11-25
 ### Added
