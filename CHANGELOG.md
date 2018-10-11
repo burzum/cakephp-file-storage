@@ -14,7 +14,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.0.0](https://github.com/burzum/cakephp-file-storage/releases/tag/2.0.0) - 2018-09-07
 ### Changed
 - Added this change log
-- Updated dependencies
 - Improved documentation
 
 ## [2.0.0-rc1](https://github.com/burzum/cakephp-file-storage/releases/tag/2.0.0-rc1) - 2018-09-07
