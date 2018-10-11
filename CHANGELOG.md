@@ -12,26 +12,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ## [2.0.0](https://github.com/burzum/cakephp-file-storage/releases/tag/2.0.0) - 2018-09-07
+### Changed
+- Added this change log
+- Improved documentation
+
+## [2.0.0-rc1](https://github.com/burzum/cakephp-file-storage/releases/tag/2.0.0-rc1) - 2018-09-07
+### Changed
+- Updated dependencies
+
+## [2.0.0-beta2](https://github.com/burzum/cakephp-file-storage/releases/tag/2.0.0-beta2) - 2018-09-07
+### Changed
+- Improved documentation
+- Updated dependencies
+- Upgraded to CakePHP 3.6
+- Removed upload validation methods as they are part of the CakePHP core
+- Increased the length of the extension field in the DB #157
+- Updated Travis CI configuration, remove PHP 5.6, add PHP 7.1, 7.2 & nightly
+
+### Fixed
+- Fixed Travis CI builds
+
+## [2.0.0-beta1](https://github.com/burzum/cakephp-file-storage/releases/tag/2.0.0-beta1) - 2017-11-25
 ### Added
 - Added Flysystem support to StorageManager
 - Added pre- and post processing callbacks for image processing
 
 ### Changed
-- Upgraded to CakePHP 3.6
+- Updated CI
 - Updated dependencies
-- Removed deprecated method calls
-- Refactored image processing
+- Improved documentation
+- Removed `UploadValidationBehavior`
 - Removed the `ImageStorageTable` class
 - Removed the `ImageStorage.beforeSave` event
 - Removed the `ImageStorage.afterSave` event
 - Removed the `ImageStorage.beforeDelete` event
 - Removed the `ImageStorage.afterDelete` event
+- Removed deprecated method calls
 - `FileStorage::deleteOldFileOnSave()` is no longer called automatically in the `FileStorage::afterSave()` callback
 - Renamed the DB field `file_storage.model` to `file_storage.identifier`
 - Renamed The DB field `file_storage.adapter` to `file_storage.adapter_config`
-- Removed upload validation methods as they are part of the CakePHP core
-- Removed `UploadValidationBehavior`
-- Increased the length of the extension field in the DB #157
+- Refactored image processing
+
+### Fixed
+ - Fixing a bug in StorageManager
+ - Fixed tests
 
 ## [1.2.1](https://github.com/burzum/cakephp-file-storage/releases/tag/1.2.1) - 2017-02-28
 ### Changed
