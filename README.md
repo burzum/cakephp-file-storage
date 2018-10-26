@@ -3,8 +3,8 @@ FileStorage Plugin for CakePHP
 
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.txt)
 [![Build Status](https://img.shields.io/travis/burzum/cakephp-file-storage/2.0.svg?style=flat-square)](https://travis-ci.org/burzum/cakephp-file-storage)
-[![Coverage Status](https://img.shields.io/coveralls/burzum/cakephp-file-storage/2.0.svg?style=flat-square)](https://coveralls.io/r/burzum/cakephp-file-storage)
-[![Code Quality](https://img.shields.io/scrutinizer/g/burzum/cakephp-file-storage/2.0.svg?style=flat-square)](https://coveralls.io/r/burzum/cakephp-file-storage)
+[![Coverage Status](https://img.shields.io/coveralls/burzum/cakephp-file-storage.svg?branch=2.0.svg?style=flat-square)](https://coveralls.io/r/burzum/cakephp-file-storage)
+[![Code Quality](https://img.shields.io/scrutinizer/g/burzum/cakephp-file-storage.svg?branch=2.0?style=flat-square)](https://coveralls.io/r/burzum/cakephp-file-storage)
 
 **If you're upgrading from CakePHP 2.x please read [the migration guide](docs/Documentation/Migrating-from-CakePHP-2.md).**
 
