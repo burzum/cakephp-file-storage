@@ -8,7 +8,7 @@ use Cake\Log\Log;
 $listener = new LocalListener();
 EventManager::instance()->on($listener);
 
-if (Plugin::loaded('Burzum/Imagine')) {
+if (Plugin::isLoaded('Burzum/Imagine')) {
 	$listener = new ImageProcessingListener();
 	EventManager::instance()->on($listener);
 }

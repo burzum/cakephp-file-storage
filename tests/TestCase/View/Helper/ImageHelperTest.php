@@ -43,11 +43,11 @@ class ImageHelperTest extends FileStorageTestCase {
 		$this->Image = new ImageHelper($this->View);
 		$this->Image->Html = new HtmlHelper($this->View);
 
-		$request = (new Request('contacts/add', false))
+		$request = (new Request(['url' => 'contacts/add']))
 			->withAttribute('webroot', '/')
 			->withAttribute('base', '/');
 
-		$this->Image->Html->request = $request;
+		$this->Image->Html->getView()->setRequest($request);
 	}
 
 	/**
