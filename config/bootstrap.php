@@ -13,10 +13,12 @@ if (Plugin::isLoaded('Burzum/Imagine')) {
 	EventManager::instance()->on($listener);
 }
 
-Log::setConfig('FileStorage', [
-	'className' => 'File',
-	'path' => LOGS,
-	'levels' => [],
-	'scopes' => ['fileStorage'],
-	'file' => 'fileStorage.log',
-]);
+if (Log::getConfig('FileStorage') === null) {
+    Log::setConfig('FileStorage', [
+        'className' => 'File',
+        'path' => LOGS,
+        'levels' => [],
+        'scopes' => ['fileStorage'],
+        'file' => 'fileStorage.log',
+    ]);
+}
