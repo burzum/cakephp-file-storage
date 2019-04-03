@@ -47,7 +47,11 @@ class ImageHelperTest extends FileStorageTestCase {
 			->withAttribute('webroot', '/')
 			->withAttribute('base', '/');
 
-		$this->Image->Html->getView()->setRequest($request);
+		if (\version_compare(Configure::version(), '3.7.0', 'ge')) {
+			$this->Image->Html->getView()->setRequest($request);
+		} else {
+			$this->Image->Html->request = $request;
+		}
 	}
 
 	/**
