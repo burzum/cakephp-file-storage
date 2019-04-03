@@ -230,7 +230,7 @@ class LegacyImageProcessingListener extends AbstractListener {
      */
 	public function afterDelete(Event $Event) {
 		if ($this->_checkEvent($Event)) {
-			$record =  $Event->getData('record');
+			$record = $Event->getData('record');
 			$string = $this->_buildPath($record, true, null);
 			if ($this->adapterClass === 'AmazonS3' || $this->adapterClass === 'AwsS3') {
 				$string = str_replace('\\', '/', $string);
