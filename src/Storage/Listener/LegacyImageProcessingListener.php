@@ -221,13 +221,13 @@ class LegacyImageProcessingListener extends AbstractListener {
 		}
 	}
 
-    /**
-     * afterDelete
-     *
-     * @param Event $Event
-     * @return boolean|null
-     * @throws \Burzum\FileStorage\Storage\StorageException
-     */
+	/**
+	 * afterDelete
+	 *
+	 * @param Event $Event
+	 * @return boolean|null
+	 * @throws \Burzum\FileStorage\Storage\StorageException
+	 */
 	public function afterDelete(Event $Event) {
 		if ($this->_checkEvent($Event)) {
 			$record = $Event->getData('record');
@@ -253,7 +253,7 @@ class LegacyImageProcessingListener extends AbstractListener {
 			}
 			$operations = Configure::read('FileStorage.imageSizes.' . $record['model']);
 			if (!empty($operations)) {
-                $Event->setData('operations', $operations);
+				$Event->setData('operations', $operations);
 				$this->_removeVersions($Event);
 			}
 			$Event->stopPropagation();
@@ -263,13 +263,13 @@ class LegacyImageProcessingListener extends AbstractListener {
 		}
 	}
 
-    /**
-     * beforeSave
-     *
-     * @param Event $Event
-     * @return void
-     * @throws \Burzum\FileStorage\Storage\StorageException
-     */
+	/**
+	 * beforeSave
+	 *
+	 * @param Event $Event
+	 * @return void
+	 * @throws \Burzum\FileStorage\Storage\StorageException
+	 */
 	public function beforeSave(Event $Event) {
 		if ($this->_checkEvent($Event)) {
 			$data = $Event->getData();
@@ -282,13 +282,13 @@ class LegacyImageProcessingListener extends AbstractListener {
 		}
 	}
 
-    /**
-     * afterSave
-     *
-     * @param Event $Event
-     * @return void
-     * @throws \Burzum\FileStorage\Storage\StorageException
-     */
+	/**
+	 * afterSave
+	 *
+	 * @param Event $Event
+	 * @return void
+	 * @throws \Burzum\FileStorage\Storage\StorageException
+	 */
 	public function afterSave(Event $Event) {
 		if ($this->_checkEvent($Event)) {
 			$table = $Event->getSubject();
@@ -408,7 +408,7 @@ class LegacyImageProcessingListener extends AbstractListener {
 
 		$path = str_replace('\\', '/', $path);
 		$bucketPrefix = !empty($data['options']['bucketPrefix']) && $data['options']['bucketPrefix'] === true;
-        $Event->result = $this->_buildCloudFrontDistributionUrl($http, $path, $bucket, $bucketPrefix, $cfDist);
+		$Event->result = $this->_buildCloudFrontDistributionUrl($http, $path, $bucket, $bucketPrefix, $cfDist);
 		$Event->setData('path', $Event->result);
 		$Event->stopPropagation();
 	}

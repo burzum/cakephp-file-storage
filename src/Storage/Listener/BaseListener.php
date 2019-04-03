@@ -121,14 +121,14 @@ class BaseListener extends AbstractListener {
 	 * @return void
 	 */
 	public function imagePath(Event $event) {
-		$event->setData($event->getData()+ [
+		$event->setData($event->getData() + [
 			'image' => null,
 			'version' => null,
 			'options' => [],
 			'pathType' => 'fullPath'
 		]);
 
-		$data = $event->getData()+ [
+		$data = $event->getData() + [
 				'image' => null,
 				'version' => null,
 				'options' => [],
@@ -188,7 +188,7 @@ class BaseListener extends AbstractListener {
 		}
 
 		$versions = $this->_getVersionData($event);
-		$options = (array)$event->getData('options') ;
+		$options = (array)$event->getData('options');
 
 		$this->loadImageProcessingFromConfig();
 		$event->result = $this->{$method}(
@@ -209,7 +209,7 @@ class BaseListener extends AbstractListener {
 	 * @return array
 	 */
 	protected function _getVersionData($event) {
-	    $data = $event->getData();
+		$data = $event->getData();
 		if (isset($data['versions'])) {
 			$versions = $data['versions'];
 		} elseif (isset($data['operations'])) {

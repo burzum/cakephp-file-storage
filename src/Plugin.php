@@ -7,6 +7,5 @@ use Cake\Core\BasePlugin;
 /**
  * FileStorage Plugin for CakePHP
  */
-class Plugin extends BasePlugin
-{
+class Plugin extends BasePlugin {
 }

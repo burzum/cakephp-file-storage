@@ -1,7 +1,7 @@
 <?php
 namespace Burzum\FileStorage\Storage\Listener;
-use Burzum\FileStorage\Storage\StorageManager;
 
+use Burzum\FileStorage\Storage\StorageManager;
 use Cake\Event\Event;
 
 /**
@@ -41,7 +41,7 @@ trait EventFilterTrait {
 	}
 
 	public function filterByModel(Event $event) {
-	    $data = $event->getData();
+		$data = $event->getData();
 		if (empty($this->_eventFilters['model'])) {
 			return true;
 		}
@@ -53,7 +53,7 @@ trait EventFilterTrait {
 	}
 
 	public function filterByAdaperConfig(Event $event) {
-        $data = $event->getData();
+		$data = $event->getData();
 		if (empty($this->_eventFilters['adapterConfig'])) {
 			return true;
 		}
@@ -65,7 +65,7 @@ trait EventFilterTrait {
 	}
 
 	public function filterByAdapterClass(Event $event) {
-        $data = $event->getData();
+		$data = $event->getData();
 		if (empty($this->_eventFilters['adapterClass'])) {
 			return true;
 		}
