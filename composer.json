@@ -1,7 +1,7 @@
 {
 	"name": "burzum/cakephp-file-storage",
 	"type": "cakephp-plugin",
-	"description": "This plugin is giving you the possibility to store files in virtually and kind of storage backend. This plugin is wrapping the Gaufrette library (https://github.com/KnpLabs/Gaufrette) library in a CakePHP fashion and provides a simple way to use the storage adapters through the StorageManager class.",
+	"description": "This plugin is giving you the possibility to store files in virtually any kind of storage backend. This plugin is wrapping the Gaufrette library (https://github.com/KnpLabs/Gaufrette) library in a CakePHP fashion and provides a simple way to use the storage adapters through the StorageManager class.",
 	"keywords": ["file", "filesystem", "media", "abstraction", "upload", "cakephp", "storage"],
 	"homepage": "http://github.com/burzum/cakephp-file-storage-plugin",
 	"license": "MIT",
@@ -23,7 +23,7 @@
 		"cakephp/cakephp": "^3.6.0",
 		"cakephp/plugin-installer": "^1.0.0",
 		"cakephp/migrations": "^2.0.0",
-		"knplabs/gaufrette": "^0.7.0"
+		"knplabs/gaufrette": "^0.7.0|^0.8.0"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "^5.7.14|^6.0",

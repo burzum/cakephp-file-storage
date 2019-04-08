@@ -1,6 +1,7 @@
 <?php
 namespace Burzum\FileStorage\Storage\Listener;
 
+use Burzum\FileStorage\Storage\StorageManager;
 use Cake\Event\Event;
 
 /**
@@ -40,10 +41,11 @@ trait EventFilterTrait {
 	}
 
 	public function filterByModel(Event $event) {
+		$data = $event->getData();
 		if (empty($this->_eventFilters['model'])) {
 			return true;
 		}
-		if (isset($event->data['entity']['adapter']) && in_array($event->data['entity']['adapter'], $this->_eventFilters['model'])) {
+		if (isset($data['entity']['adapter']) && in_array($data['entity']['adapter'], $this->_eventFilters['model'])) {
 			return true;
 		}
 
@@ -51,10 +53,11 @@ trait EventFilterTrait {
 	}
 
 	public function filterByAdaperConfig(Event $event) {
+		$data = $event->getData();
 		if (empty($this->_eventFilters['adapterConfig'])) {
 			return true;
 		}
-		if (isset($event->data['entity']['adapter']) && in_array($event->data['entity']['adapter'], $this->_eventFilters['adapterConfig'])) {
+		if (isset($data['entity']['adapter']) && in_array($data['entity']['adapter'], $this->_eventFilters['adapterConfig'])) {
 			return true;
 		}
 
@@ -62,12 +65,13 @@ trait EventFilterTrait {
 	}
 
 	public function filterByAdapterClass(Event $event) {
+		$data = $event->getData();
 		if (empty($this->_eventFilters['adapterClass'])) {
 			return true;
 		}
-		if (isset($event->data['entity']['adapter'])) {
+		if (isset($data['entity']['adapter'])) {
 			foreach ($this->_eventFilters['adapterClass'] as $adapterClass) {
-				$class = $this->_getAdapterClassFromConfig($event->data['entity']['adapter']);
+				$class = $this->_getAdapterClassFromConfig($data['entity']['adapter']);
 				if ($class === $adapterClass) {
 					return true;
 				}
