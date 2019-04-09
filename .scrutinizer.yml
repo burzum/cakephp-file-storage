@@ -21,10 +21,7 @@ build:
     project_setup:
         before:
             - mysql -e "CREATE DATABASE test"
-            - sudo composer self-update
-            - composer --version
-            - composer global require hirak/prestissimo --no-plugins
-            - composer install --prefer-dist --no-interaction
+
     tests:
         override:
             -

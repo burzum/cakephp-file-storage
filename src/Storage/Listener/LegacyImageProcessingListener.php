@@ -226,10 +226,11 @@ class LegacyImageProcessingListener extends AbstractListener {
 	 *
 	 * @param Event $Event
 	 * @return boolean|null
+	 * @throws \Burzum\FileStorage\Storage\StorageException
 	 */
 	public function afterDelete(Event $Event) {
 		if ($this->_checkEvent($Event)) {
-			$record = $Event->data['record'];
+			$record = $Event->getData('record');
 			$string = $this->_buildPath($record, true, null);
 			if ($this->adapterClass === 'AmazonS3' || $this->adapterClass === 'AwsS3') {
 				$string = str_replace('\\', '/', $string);
@@ -252,7 +253,7 @@ class LegacyImageProcessingListener extends AbstractListener {
 			}
 			$operations = Configure::read('FileStorage.imageSizes.' . $record['model']);
 			if (!empty($operations)) {
-				$Event->data['operations'] = $operations;
+				$Event->setData('operations', $operations);
 				$this->_removeVersions($Event);
 			}
 			$Event->stopPropagation();
@@ -267,6 +268,7 @@ class LegacyImageProcessingListener extends AbstractListener {
 	 *
 	 * @param Event $Event
 	 * @return void
+	 * @throws \Burzum\FileStorage\Storage\StorageException
 	 */
 	public function beforeSave(Event $Event) {
 		if ($this->_checkEvent($Event)) {
@@ -285,6 +287,7 @@ class LegacyImageProcessingListener extends AbstractListener {
 	 *
 	 * @param Event $Event
 	 * @return void
+	 * @throws \Burzum\FileStorage\Storage\StorageException
 	 */
 	public function afterSave(Event $Event) {
 		if ($this->_checkEvent($Event)) {
@@ -398,14 +401,15 @@ class LegacyImageProcessingListener extends AbstractListener {
 		}
 
 		$http = 'http';
-		if (!empty($Event->data['options']['ssl']) && $Event->data['options']['ssl'] === true) {
+		$data = $Event->getData();
+		if (!empty($data['options']['ssl']) && $data['options']['ssl'] === true) {
 			$http = 'https';
 		}
 
 		$path = str_replace('\\', '/', $path);
-		$bucketPrefix = !empty($Event->data['options']['bucketPrefix']) && $Event->data['options']['bucketPrefix'] === true;
-
-		$Event->data['path'] = $Event->result = $this->_buildCloudFrontDistributionUrl($http, $path, $bucket, $bucketPrefix, $cfDist);
+		$bucketPrefix = !empty($data['options']['bucketPrefix']) && $data['options']['bucketPrefix'] === true;
+		$Event->result = $this->_buildCloudFrontDistributionUrl($http, $path, $bucket, $bucketPrefix, $cfDist);
+		$Event->setData('path', $Event->result);
 		$Event->stopPropagation();
 	}
 
