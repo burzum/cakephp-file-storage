@@ -92,7 +92,11 @@ class ImageHelper extends StorageHelper {
 	public function imageUrl($image, $version = null, $options = []) {
 		$fileInfo = pathinfo($image['path']);
 		$hash = $this->_getHash($version, $image);
-		$version = $fileInfo['dirname'] . DS . $fileInfo['filename'] . '.' . $hash;
+		
+		$version = $fileInfo['dirname'] . DS . $fileInfo['filename'];       
+        if ($hash) {
+            $version .= '.' . $hash;
+        }
 
 		if (!empty($fileInfo['extension'])) {
 			$version .= '.' . $fileInfo['extension'];
