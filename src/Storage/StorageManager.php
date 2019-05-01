@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Burzum\FileStorage\Storage;
 
 use InvalidArgumentException;
@@ -12,189 +13,195 @@ use RuntimeException;
  * @copyright 2012 - 2017 Florian Krämer
  * @license MIT
  */
-class StorageManager {
+class StorageManager
+{
+    public const GAUFRETTE_ENGINE = 'Gaufrette';
+    public const FLYSYSTEM_ENGINE = 'Flysystem';
 
-	const GAUFRETTE_ENGINE = 'Gaufrette';
-	const FLYSYSTEM_ENGINE = 'Flysystem';
+    /**
+     * Adapter configurations
+     *
+     * @var array
+     */
+    protected $_adapterConfig = [
+        'Local' => [
+            'adapterOptions' => [TMP, true],
+            'adapterClass' => '\Gaufrette\Adapter\Local',
+            'class' => '\Gaufrette\Filesystem',
+        ],
+    ];
 
-	/**
-	 * Adapter configurations
-	 *
-	 * @var array
-	 */
-	protected $_adapterConfig = [
-		'Local' => [
-			'adapterOptions' => [TMP, true],
-			'adapterClass' => '\Gaufrette\Adapter\Local',
-			'class' => '\Gaufrette\Filesystem'
-		]
-	];
+    /**
+     * Return a singleton instance of the StorageManager.
+     *
+     * @return \Burzum\FileStorage\Storage\StorageManager
+     */
+    public static function &getInstance(): \Burzum\FileStorage\Storage\StorageManager
+    {
+        static $instance = [];
+        if (!$instance) {
+            $instance[0] = new self();
+        }
 
-	/**
-	 * Return a singleton instance of the StorageManager.
-	 *
-	 * @return \Burzum\FileStorage\Storage\StorageManager
-	 */
-	public static function &getInstance() {
-		static $instance = [];
-		if (!$instance) {
-			$instance[0] = new self();
-		}
+        return $instance[0];
+    }
 
-		return $instance[0];
-	}
+    /**
+     * Gets the configuration array for an adapter.
+     *
+     * @param string $adapter
+     * @param array $options
+     * @throws \InvalidArgumentException
+     * @return mixed
+     */
+    public static function config(string $adapter, array $options = [])
+    {
+        $_this = static::getInstance();
+        if (!empty($adapter) && !empty($options)) {
+            return $_this->_adapterConfig[$adapter] = $options;
+        }
 
-	/**
-	 * Gets the configuration array for an adapter.
-	 *
-	 * @param string $adapter
-	 * @param array $options
-	 * @throws \InvalidArgumentException
-	 * @return mixed
-	 */
-	public static function config($adapter, $options = []) {
-		$_this = static::getInstance();
+        if (isset($_this->_adapterConfig[$adapter])) {
+            return $_this->_adapterConfig[$adapter];
+        }
 
-		if (!empty($adapter) && !empty($options)) {
-			return $_this->_adapterConfig[$adapter] = $options;
-		}
+        return null;
+    }
 
-		if (isset($_this->_adapterConfig[$adapter])) {
-			return $_this->_adapterConfig[$adapter];
-		}
+    /**
+     * Flush all or a single adapter from the config.
+     *
+     * @param string|null $name Config name, if none all adapters are flushed.
+     * @return bool True on success.
+     */
+    public static function flush(?string $name = null): bool
+    {
+        $_this = static::getInstance();
 
-		return false;
-	}
+        if (isset($_this->_adapterConfig[$name])) {
+            unset($_this->_adapterConfig[$name]);
 
-	/**
-	 * Flush all or a single adapter from the config.
-	 *
-	 * @param string|null $name Config name, if none all adapters are flushed.
-	 * @return bool True on success.
-	 */
-	public static function flush($name = null) {
-		$_this = static::getInstance();
+            return true;
+        }
 
-		if (isset($_this->_adapterConfig[$name])) {
-			unset($_this->_adapterConfig[$name]);
+        return false;
+    }
 
-			return true;
-		}
+    /**
+     * Returns a list of cf the configurations loaded into the manager
+     *
+     * @return array
+     */
+    public static function getConfigList(): array
+    {
+        $_this = static::getInstance();
 
-		return false;
-	}
+        return array_keys($_this->_adapterConfig);
+    }
 
-	/**
-	 * Returns a list of cf the configurations loaded into the manager
-	 *
-	 * @return array
-	 */
-	public static function getConfigList() {
-		$_this = static::getInstance();
+    /**
+     * Gets a configured instance of a storage adapter.
+     *
+     * @param string $configName string of adapter configuration or array of settings
+     * @param bool|bool $renewObject Creates a new instance of the given adapter in the configuration
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
+     * @return mixed filesystem
+     */
+    public static function get(string $configName, bool $renewObject = false)
+    {
+        if (empty($configName) || !is_string($configName)) {
+            throw new InvalidArgumentException('StorageManager::get() first arg must be a non empty string!');
+        }
 
-		return array_keys($_this->_adapterConfig);
-	}
+        $_this = static::getInstance();
 
-	/**
-	 * Gets a configured instance of a storage adapter.
-	 *
-	 * @param string $configName string of adapter configuration or array of settings
-	 * @param bool|bool $renewObject Creates a new instance of the given adapter in the configuration
-	 * @throws \RuntimeException
-	 * @throws \InvalidArgumentException
-	 * @return \Gaufrette\Filesystem
-	 */
-	public static function get($configName, $renewObject = false) {
-		if (empty($configName) || !is_string($configName)) {
-			throw new InvalidArgumentException('StorageManager::get() first arg must be a non empty string!');
-		}
+        $isConfigured = true;
 
-		$_this = static::getInstance();
+        if (!empty($_this->_adapterConfig[$configName])) {
+            $adapter = $_this->_adapterConfig[$configName];
+        } else {
+            throw new RuntimeException(sprintf('Invalid Storage Adapter %s!', $configName));
+        }
 
-		$isConfigured = true;
+        if (!empty($_this->_adapterConfig[$configName]['object']) && $renewObject === false) {
+            return $_this->_adapterConfig[$configName]['object'];
+        }
 
-		if (!empty($_this->_adapterConfig[$configName])) {
-			$adapter = $_this->_adapterConfig[$configName];
-		} else {
-			throw new RuntimeException(sprintf('Invalid Storage Adapter %s!', $configName));
-		}
+        $engineObject = $_this->_factory($adapter);
 
-		if (!empty($_this->_adapterConfig[$configName]['object']) && $renewObject === false) {
-			return $_this->_adapterConfig[$configName]['object'];
-		}
+        if ($isConfigured) {
+            $_this->_adapterConfig[$configName]['object'] = &$engineObject;
+        }
 
-		$engineObject = $_this->_factory($adapter);
+        return $engineObject;
+    }
 
-		if ($isConfigured) {
-			$_this->_adapterConfig[$configName]['object'] = &$engineObject;
-		}
+    /**
+     * Switches between the engines
+     *
+     * @param array $adapter Adapter config
+     * @return mixed
+     */
+    protected function _factory(array $adapter)
+    {
+        $_this = static::getInstance();
 
-		return $engineObject;
-	}
+        if (!isset($adapter['engine'])) {
+            $adapter['engine'] = 'Gaufrette';
+        }
+        if ($adapter['engine'] === static::GAUFRETTE_ENGINE) {
+            return $_this->gaufretteFactory($adapter);
+        }
+        if ($adapter['engine'] === static::FLYSYSTEM_ENGINE) {
+            return $_this->flysystemFactory($adapter);
+        }
 
-	/**
-	 * Switches between the engines
-	 *
-	 * @param array $adapter Adapter config
-	 * @return mixed
-	 */
-	protected function _factory($adapter) {
-		$_this = static::getInstance();
+        throw new RuntimeException();
+    }
 
-		if (!isset($adapter['engine'])) {
-			$adapter['engine'] = 'Gaufrette';
-		}
-		if ($adapter['engine'] === static::GAUFRETTE_ENGINE) {
-			return $_this->gaufretteFactory($adapter);
-		}
-		if ($adapter['engine'] === static::FLYSYSTEM_ENGINE) {
-			return $_this->flysystemFactory($adapter);
-		}
+    /**
+     * Instantiates Gaufrette adapters.
+     *
+     * @param array $adapter
+     * @return object
+     */
+    public static function gaufretteFactory(array $adapter): object
+    {
+        $class = $adapter['adapterClass'];
+        $Reflection = new ReflectionClass($class);
 
-		throw new RuntimeException();
-	}
+        if (!is_array($adapter['adapterOptions'])) {
+            throw new InvalidArgumentException(sprintf('%s: The adapter options must be an array!', $configName));
+        }
 
-	/**
-	 * Instantiates Gaufrette adapters.
-	 *
-	 * @param array $adapter
-	 * @return object
-	 */
-	public static function gaufretteFactory(array $adapter) {
-		$class = $adapter['adapterClass'];
-		$Reflection = new ReflectionClass($class);
+        $adapterObject = $Reflection->newInstanceArgs($adapter['adapterOptions']);
 
-		if (!is_array($adapter['adapterOptions'])) {
-			throw new InvalidArgumentException(sprintf('%s: The adapter options must be an array!', $configName));
-		}
+        return new $adapter['class']($adapterObject);
+    }
 
-		$adapterObject = $Reflection->newInstanceArgs($adapter['adapterOptions']);
+    /**
+     * Instantiates Flystem adapters.
+     *
+     * @param array $adapter
+     * @return object
+     */
+    public static function flysystemFactory(array $adapter): object
+    {
+        if (class_exists($adapter['adapterClass'])) {
+            return (new ReflectionClass($adapter['adapterClass']))->newInstanceArgs($adapter['adapterOptions']);
+        }
 
-		return new $adapter['class']($adapterObject);
-	}
+        $leagueAdapter = '\\League\\Flysystem\\Adapter\\' . $adapter['adapterClass'];
+        if (class_exists($leagueAdapter)) {
+            return (new ReflectionClass($leagueAdapter))->newInstanceArgs($adapter['adapterOptions']);
+        }
 
-	/**
-	 * Instantiates Flystem adapters.
-	 *
-	 * @param array $adapter
-	 * @return object
-	 */
-	public static function flysystemFactory(array $adapter) {
-		if (class_exists($adapter['adapterClass'])) {
-			return (new ReflectionClass($adapter['adapterClass']))->newInstanceArgs($adapter['adapterOptions']);
-		}
+        $leagueAdapter = '\\League\\Flysystem\\' . $adapter['adapterClass'] . '\\' . $adapter['adapterClass'] . 'Adapter';
+        if (class_exists($leagueAdapter)) {
+            return (new ReflectionClass($leagueAdapter))->newInstanceArgs($adapter['adapterOptions']);
+        }
 
-		$leagueAdapter = '\\League\\Flysystem\\Adapter\\' . $adapter['adapterClass'];
-		if (class_exists($leagueAdapter)) {
-			return (new ReflectionClass($leagueAdapter))->newInstanceArgs($adapter['adapterOptions']);
-		}
-
-		$leagueAdapter = '\\League\\Flysystem\\' . $adapter['adapterClass'] . '\\' . $adapter['adapterClass'] . 'Adapter';
-		if (class_exists($leagueAdapter)) {
-			return (new ReflectionClass($leagueAdapter))->newInstanceArgs($adapter['adapterOptions']);
-		}
-
-		throw new InvalidArgumentException('Unknown adapter');
-	}
-
+        throw new InvalidArgumentException('Unknown adapter');
+    }
 }

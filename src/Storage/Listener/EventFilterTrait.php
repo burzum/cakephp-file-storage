@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Burzum\FileStorage\Storage\Listener;
 
 use Burzum\FileStorage\Storage\StorageManager;
@@ -13,101 +14,105 @@ use Cake\Event\Event;
  * - Filter by adapter class
  * - Filter by adapter config name
  */
-trait EventFilterTrait {
+trait EventFilterTrait
+{
+    /**
+     * Filter settings
+     *
+     * @var array
+     */
+    protected $_eventFilters = [
+        'subject' => [],
+        'adapterConfig' => [],
+        'adapterClass' => [],
+        'model' => [],
+    ];
 
-	/**
-	 * Filter settings
-	 *
-	 * @var array
-	 */
-	protected $_eventFilters = [
-		'subject' => [],
-		'adapterConfig' => [],
-		'adapterClass' => [],
-		'model' => []
-	];
+    public function filterBySubject($subject)
+    {
+        if (empty($this->_eventFilters['subject'])) {
+            return true;
+        }
+        foreach ($this->_eventFilters['subject'] as $class) {
+            if ($subject instanceof $class) {
+                return true;
+            }
+        }
 
-	public function filterBySubject($subject) {
-		if (empty($this->_eventFilters['subject'])) {
-			return true;
-		}
-		foreach ($this->_eventFilters['subject'] as $class) {
-			if ($subject instanceof $class) {
-				return true;
-			}
-		}
+        return false;
+    }
 
-		return false;
-	}
+    public function filterByModel(Event $event)
+    {
+        $data = $event->getData();
+        if (empty($this->_eventFilters['model'])) {
+            return true;
+        }
+        if (isset($data['entity']['adapter']) && in_array($data['entity']['adapter'], $this->_eventFilters['model'])) {
+            return true;
+        }
 
-	public function filterByModel(Event $event) {
-		$data = $event->getData();
-		if (empty($this->_eventFilters['model'])) {
-			return true;
-		}
-		if (isset($data['entity']['adapter']) && in_array($data['entity']['adapter'], $this->_eventFilters['model'])) {
-			return true;
-		}
+        return false;
+    }
 
-		return false;
-	}
+    public function filterByAdaperConfig(Event $event)
+    {
+        $data = $event->getData();
+        if (empty($this->_eventFilters['adapterConfig'])) {
+            return true;
+        }
+        if (isset($data['entity']['adapter']) && in_array($data['entity']['adapter'], $this->_eventFilters['adapterConfig'])) {
+            return true;
+        }
 
-	public function filterByAdaperConfig(Event $event) {
-		$data = $event->getData();
-		if (empty($this->_eventFilters['adapterConfig'])) {
-			return true;
-		}
-		if (isset($data['entity']['adapter']) && in_array($data['entity']['adapter'], $this->_eventFilters['adapterConfig'])) {
-			return true;
-		}
+        return false;
+    }
 
-		return false;
-	}
+    public function filterByAdapterClass(Event $event)
+    {
+        $data = $event->getData();
+        if (empty($this->_eventFilters['adapterClass'])) {
+            return true;
+        }
+        if (isset($data['entity']['adapter'])) {
+            foreach ($this->_eventFilters['adapterClass'] as $adapterClass) {
+                $class = $this->_getAdapterClassFromConfig($data['entity']['adapter']);
+                if ($class === $adapterClass) {
+                    return true;
+                }
+            }
 
-	public function filterByAdapterClass(Event $event) {
-		$data = $event->getData();
-		if (empty($this->_eventFilters['adapterClass'])) {
-			return true;
-		}
-		if (isset($data['entity']['adapter'])) {
-			foreach ($this->_eventFilters['adapterClass'] as $adapterClass) {
-				$class = $this->_getAdapterClassFromConfig($data['entity']['adapter']);
-				if ($class === $adapterClass) {
-					return true;
-				}
-			}
+            return true;
+        }
 
-			return true;
-		}
+        return false;
+    }
 
-		return false;
-	}
+    /**
+     * @param \Cake\Event\Event
+     * @return bool;
+     */
+    public function filterEvent(Event $event): bool
+    {
+        return $this->filterBySubject($event) &&
+            $this->filterByAdaperConfig($event) &&
+            $this->filterByAdapterClass($event) &&
+            $this->filterByModel($event);
+    }
 
-	/**
-	 * @param \Cake\Event\Event
-	 * @return bool;
-	 */
-	public function filterEvent(Event $event) {
-		return
-			$this->filterBySubject($event) &&
-			$this->filterByAdaperConfig($event) &&
-			$this->filterByAdapterClass($event) &&
-			$this->filterByModel($event);
-	}
+    /**
+     * Gets the adapter class name from the adapter config
+     *
+     * @param string $configName Name of the configuration
+     * @return bool|string False if the config is not present
+     */
+    protected function _getAdapterClassFromConfig(string $configName)
+    {
+        $config = StorageManager::config($configName);
+        if (!empty($config['adapterClass'])) {
+            return $config['adapterClass'];
+        }
 
-	/**
-	 * Gets the adapter class name from the adapter config
-	 *
-	 * @param string $configName Name of the configuration
-	 * @return bool|string False if the config is not present
-	 */
-	protected function _getAdapterClassFromConfig($configName) {
-		$config = StorageManager::config($configName);
-		if (!empty($config['adapterClass'])) {
-			return $config['adapterClass'];
-		}
-
-		return false;
-	}
-
+        return false;
+    }
 }

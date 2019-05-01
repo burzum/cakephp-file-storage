@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace Burzum\FileStorage\Model\Table;
 
 use Cake\ORM\Table;
@@ -21,23 +22,23 @@ use Cake\ORM\Table;
  * @copyright 2012 - 2017 Florian Krämer
  * @license MIT
  */
-class FileStorageTable extends Table {
+class FileStorageTable extends Table
+{
+    /**
+     * Initialize
+     *
+     * @param array $config
+     * @return void
+     */
+    public function initialize(array $config): void
+    {
+        parent::initialize($config);
 
-	/**
-	 * Initialize
-	 *
-	 * @param array $config
-	 * @return void
-	 */
-	public function initialize(array $config) {
-		parent::initialize($config);
+        $this->setTable('file_storage');
+        $this->setPrimaryKey('id');
+        $this->setDisplayField('filename');
 
-		$this->setTable('file_storage');
-		$this->setPrimaryKey('id');
-		$this->setDisplayField('filename');
-
-		$this->addBehavior('Timestamp');
-		$this->addBehavior('Burzum/FileStorage.FileStorage');
-	}
-
+        $this->addBehavior('Timestamp');
+        $this->addBehavior('Burzum/FileStorage.FileStorage');
+    }
 }

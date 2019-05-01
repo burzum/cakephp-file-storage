@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @author Florian Krämer
  * @author Robert Pustułka
@@ -11,89 +12,92 @@ use Cake\Core\App;
 use InvalidArgumentException;
 use RuntimeException;
 
-trait PathBuilderTrait {
+trait PathBuilderTrait
+{
+    /**
+     * Local PathBuilderInterface instance.
+     *
+     * @var \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface|null
+     */
+    protected $_pathBuilder = null;
 
-	/**
-	 * Local PathBuilderInterface instance.
-	 *
-	 * @var \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface|null
-	 */
-	protected $_pathBuilder = null;
+    /**
+     * Builds the path builder for given interface.
+     *
+     * @param string $name
+     * @param array $options
+     * @return \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
+     */
+    public function createPathBuilder(string $name, array $options = []): \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
+    {
+        $className = App::className($name, 'Storage/PathBuilder', 'PathBuilder');
+        if ($className === null || !class_exists($className)) {
+            $className = App::className('Burzum/FileStorage.' . $name, 'Storage/PathBuilder', 'PathBuilder');
+        }
 
-	/**
-	 * Builds the path builder for given interface.
-	 *
-	 * @param string $name
-	 * @param array $options
-	 * @return \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
-	 */
-	public function createPathBuilder($name, array $options = []) {
-		$className = App::className($name, 'Storage/PathBuilder', 'PathBuilder');
-		if (!class_exists($className)) {
-			$className = App::className('Burzum/FileStorage.' . $name, 'Storage/PathBuilder', 'PathBuilder');
-		}
+        if ($className === null || !class_exists($className)) {
+            throw new RuntimeException(sprintf('Could not find path builder "%s"!', $name));
+        }
 
-		if (!class_exists($className)) {
-			throw new RuntimeException(sprintf('Could not find path builder "%s"!', $name));
-		}
+        $pathBuilder = new $className($options);
+        if (!$pathBuilder instanceof PathBuilderInterface) {
+            throw new RuntimeException(sprintf('Path builder class "%s" does not implement the PathBuilderInterface interface!', $name));
+        }
 
-		$pathBuilder = new $className($options);
-		if (!$pathBuilder instanceof PathBuilderInterface) {
-			throw new RuntimeException(sprintf('Path builder class "%s" does not implement the PathBuilderInterface interface!', $name));
-		}
+        return $this->_pathBuilder = $pathBuilder;
+    }
 
-		return $this->_pathBuilder = $pathBuilder;
-	}
+    /**
+     * Getter and setter for the local PathBuilderInterface instance.
+     *
+     * @param string|\Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface|null $name
+     * @param array $options
+     * @return \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
+     */
+    public function pathBuilder($name = null, array $options = []): \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
+    {
+        if ($name instanceof PathBuilderInterface) {
+            $this->_pathBuilder = $name;
 
-	/**
-	 * Getter and setter for the local PathBuilderInterface instance.
-	 *
-	 * @param string|\Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface|null $name
-	 * @param array $options
-	 * @return \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
-	 */
-	public function pathBuilder($name = null, array $options = []) {
-		if ($name instanceof PathBuilderInterface) {
-			$this->_pathBuilder = $name;
+            return $this->_pathBuilder;
+        }
 
-			return $this->_pathBuilder;
-		}
+        if ($name !== null) {
+            $this->_pathBuilder = $this->createPathBuilder($name, $options);
+        }
 
-		if ($name !== null) {
-			$this->_pathBuilder = $this->createPathBuilder($name, $options);
-		}
+        return $this->_pathBuilder;
+    }
 
-		return $this->_pathBuilder;
-	}
+    /**
+     * Gets the path builder.
+     *
+     * @return \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface|null
+     */
+    public function getPathBuilder(): ?\Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
+    {
+        return $this->_pathBuilder;
+    }
 
-	/**
-	 * Gets the path builder.
-	 *
-	 * @return \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface|null
-	 */
-	public function getPathBuilder() {
-		return $this->_pathBuilder;
-	}
+    /**
+     * Sets a path builder.
+     *
+     * @param string|\Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface $pathBuilder
+     * @param array Path builder options.
+     * @return void
+     */
+    public function setPathBuilder($pathBuilder, array $options = []): void
+    {
+        if (is_string($pathBuilder)) {
+            $this->_pathBuilder = $this->createPathBuilder($pathBuilder, $options);
 
-	/**
-	 * Sets a path builder.
-	 *
-	 * @param string|\Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface $pathBuilder
-	 * @param array Path builder options.
-	 * @return void
-	 */
-	public function setPathBuilder($pathBuilder, array $options = []) {
-		if (is_string($pathBuilder)) {
-			$this->_pathBuilder = $this->createPathBuilder($pathBuilder, $options);
+            return;
+        }
 
-			return;
-		}
+        if (!$pathBuilder instanceof PathBuilderInterface) {
+            throw new InvalidArgumentException(sprintf('The first arg does not implement %s', PathBuilderInterface::class));
+        }
 
-		if (!$pathBuilder instanceof PathBuilderInterface) {
-			throw new InvalidArgumentException(sprintf('The first arg does not implement %s', PathBuilderInterface::class));
-		}
-
-		$this->_pathBuilder = $pathBuilder;
-	}
-
+        $this->_pathBuilder = $pathBuilder;
+    }
 }

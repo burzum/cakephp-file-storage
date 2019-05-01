@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * @author Florian Krämer
  * @copyright 2012 - 2017 Florian Krämer
@@ -13,29 +14,29 @@ namespace Burzum\FileStorage\Storage\PathBuilder;
  *
  * DON'T use it if you're not coming from an old version!
  */
-class LegacyPathBuilder extends BasePathBuilder {
+class LegacyPathBuilder extends BasePathBuilder
+{
+    /**
+     * @var array
+     * Overriding the defaults to get the matching legacy config.
+     *
+     * @inheritDoc
+     */
+    protected $_defaultConfig = [
+        'pathPrefix' => 'files',
+        'modelFolder' => 'files',
+        'preserveFilename' => false,
+        'idFolder' => true,
+        'randomPath' => 'crc32',
+    ];
 
-	/**
-	 * @var array
-	 * Overriding the defaults to get the matching legacy config.
-	 *
-	 * @inheritDoc
-	 */
-	protected $_defaultConfig = [
-		'pathPrefix' => 'files',
-		'modelFolder' => 'files',
-		'preserveFilename' => false,
-		'idFolder' => true,
-		'randomPath' => 'crc32'
-	];
+    /**
+     * @inheritDoc
+     */
+    public function randomPath(string $string, int $level = 3, string $method = 'sha1'): string
+    {
+        $string = str_replace('-', '', $string);
 
-	/**
-	 * @inheritDoc
-	 */
-	public function randomPath($string, $level = 3, $method = 'sha1') {
-		$string = str_replace('-', '', $string);
-
-		return parent::randomPath($string, $level, $method);
-	}
-
+        return parent::randomPath($string, $level, $method);
+    }
 }
