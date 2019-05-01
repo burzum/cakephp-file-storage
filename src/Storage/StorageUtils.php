@@ -5,6 +5,7 @@ namespace Burzum\FileStorage\Storage;
 use Burzum\FileStorage\Storage\PathBuilder\BasePathBuilder;
 use Cake\Core\Configure;
 use Cake\Filesystem\File;
+use Cake\Filesystem\Folder;
 use Cake\Utility\Text;
 use InvalidArgumentException;
 use RuntimeException;
@@ -169,10 +170,6 @@ class StorageUtils
      */
     public static function ksortRecursive(array &$array, $sortFlags = SORT_REGULAR): bool
     {
-        if (!is_array($array)) {
-            return false;
-        }
-
         ksort($array, $sortFlags);
         foreach ($array as &$arr) {
             if (is_array($arr)) {
@@ -190,15 +187,15 @@ class StorageUtils
      * @param string|null Name of the file to use in the upload array.
      * @return array Array that matches the structure of a regular upload
      */
-    public static function fileToUploadArray(string $file, $filename = null): array
+    public static function fileToUploadArray(string $file, $fileName = null): array
     {
         $File = new File($file);
         if (empty($fileName)) {
-            $filename = basename($file);
+            $fileName = basename($file);
         }
 
         return [
-            'name' => $filename,
+            'name' => $fileName,
             'tmp_name' => $file,
             'error' => 0,
             'type' => $File->mime(),

@@ -31,8 +31,8 @@ class ImageHelper extends StorageHelper
     /**
      * Constructor
      *
-     * @param \Cake\View\View
-     * @param array $config
+     * @param \Cake\View\View $view View instance.
+     * @param array $config Configuration options.
      */
     public function __construct(View $view, array $config = [])
     {
@@ -58,7 +58,7 @@ class ImageHelper extends StorageHelper
         }
 
         $url = $this->imageUrl($image, $version, $options);
-        if ($url !== false) {
+        if ($url !== null) {
             return $this->Html->image($url, $options);
         }
 

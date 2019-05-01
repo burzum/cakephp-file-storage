@@ -97,11 +97,7 @@ class UploadValidator extends Validator
         $defaults = [
             'allowNoFileError' => true,
         ];
-        if (is_array($options)) {
-            $options = array_merge($defaults, $options);
-        } else {
-            $options = $defaults;
-        }
+        $options = array_merge($defaults, $options);
         if (isset($value['error']) && ($value['error'] !== null)) {
             switch ($value['error']) {
                 case UPLOAD_ERR_OK:
