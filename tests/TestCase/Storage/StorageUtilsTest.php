@@ -17,7 +17,7 @@ use Cake\Core\Plugin;
  */
 class StorageUtilsTest extends FileStorageTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->fileFixtures = Plugin::path('Burzum/FileStorage') . 'tests' . DS . 'Fixture' . DS . 'File' . DS;

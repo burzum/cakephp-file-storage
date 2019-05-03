@@ -56,7 +56,7 @@ class ImageProcessingTraitTest extends FileStorageTestCase
         'plugin.Burzum\FileStorage.FileStorage',
     ];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->FileStorage = TableRegistry::getTableLocator()->get('Burzum/FileStorage.FileStorage');

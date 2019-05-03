@@ -29,7 +29,7 @@ class ImageStorageEntityTest extends FileStorageTestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -44,7 +44,7 @@ class ImageStorageEntityTest extends FileStorageTestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         unset($this->FileStorage);

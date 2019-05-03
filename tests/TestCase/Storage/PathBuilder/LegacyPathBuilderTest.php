@@ -32,7 +32,7 @@ class LegacyPathBuilderTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->FileStorage = TableRegistry::getTableLocator()->get('Burzum/FileStorage.FileStorage');

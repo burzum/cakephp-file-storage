@@ -38,7 +38,7 @@ class BasePathBuilderTest extends TestCase
      */
     public $FileStorage;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->FileStorage = TableRegistry::getTableLocator()->get('Burzum/FileStorage.FileStorage');
