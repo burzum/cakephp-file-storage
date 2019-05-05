@@ -45,7 +45,7 @@ class ImageHelper extends StorageHelper
     /**
      * Generates an image url based on the image record data and the used Gaufrette adapter to store it
      *
-     * @param EntityInterface $image FileStorage entity or whatever else table that matches this helpers needs without
+     * @param \Cake\Datasource\EntityInterface $image FileStorage entity or whatever else table that matches this helpers needs without
      * the model, we just want the record fields
      * @param string|null $version Image version string
      * @param array $options HtmlHelper::image(), 2nd arg options array
@@ -69,7 +69,7 @@ class ImageHelper extends StorageHelper
      * Gets a hash.
      *
      * @param string|null $version
-     * @param EntityInterface $image
+     * @param \Cake\Datasource\EntityInterface $image
      * @return string|null
      */
     protected function _getHash(?string $version, EntityInterface $image): ?string
@@ -89,7 +89,7 @@ class ImageHelper extends StorageHelper
     /**
      * URL
      *
-     * @param EntityInterface $image FileStorage entity or whatever else table that matches this helpers needs without
+     * @param \Cake\Datasource\EntityInterface $image FileStorage entity or whatever else table that matches this helpers needs without
      * the model, we just want the record fields
      * @param string|null $version Image version string
      * @param array $options HtmlHelper::image(), 2nd arg options array

@@ -7,6 +7,7 @@ declare(strict_types=1);
  */
 namespace Burzum\FileStorage\Storage\Listener;
 
+use Burzum\FileStorage\Storage\StorageException;
 use Burzum\FileStorage\Storage\StorageUtils;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
@@ -43,18 +44,18 @@ trait ImageProcessingTrait
      * image versions use the other methods from this trait to implement the checks
      * and behavior you need.
      *
-     * @param \Cake\Datasource\EntityInterface
+     * @param \Cake\Datasource\EntityInterface $entity
      * @param string $action `create` or `remove`
-     * @return array
+     * @return array|null
      */
-    public function autoProcessImageVersions(EntityInterface $entity, string $action): array
+    public function autoProcessImageVersions(EntityInterface $entity, string $action)
     {
         if (!in_array($action, ['create', 'remove'])) {
             throw new InvalidArgumentException(sprintf('Action was `%s` but must be `create` or `remove`', $action));
         }
         $this->loadImageProcessingFromConfig();
         if (!isset($this->_imageVersions[$entity->get('model')])) {
-            return false;
+            return null;
         }
         $method = $action . 'AllImageVersions';
 
@@ -69,7 +70,7 @@ trait ImageProcessingTrait
     public function loadImageProcessingFromConfig(): void
     {
         $this->_imageVersions = (array)Configure::read('FileStorage.imageSizes');
-        $this->_imageVersionHashes = StorageUtils::generateHashes('FileStorage', true);
+        $this->_imageVersionHashes = StorageUtils::generateHashes('FileStorage');
         $this->_defaultOutput = (array)Configure::read('FileStorage.defaultOutput');
     }
 
@@ -144,14 +145,14 @@ trait ImageProcessingTrait
         ];
 
         $result = [];
-        $storage = $this->getStorageAdapter($entity->adapter);
+        $storage = $this->getStorageAdapter($entity->get('adapter'));
 
         foreach ($this->_imageVersions[$entity->get('model')] as $version => $operations) {
             if (!in_array($version, $versions)) {
                 continue;
             }
 
-            $saveOptions = $options + ['format' => $entity->extension];
+            $saveOptions = $options + ['format' => $entity->get('extension')];
             $mimeTypeToFileType = [
                 'image/jpg' => 'jpeg',
                 'image/jpeg' => 'jpeg',
@@ -223,7 +224,7 @@ trait ImageProcessingTrait
                 'fileStorage',
             ]);
 
-            throw new StorageException(sprintf('Failed to create the temporary file %s.', $tmpFile), $e->getCode(), $e);
+            throw new StorageException(sprintf('Failed to create the temporary file %s.', $path), $e->getCode(), $e);
         }
     }
 
@@ -231,7 +232,7 @@ trait ImageProcessingTrait
      * Removes image versions of an entity.
      *
      * @param \Cake\Datasource\EntityInterface $entity
-     * @param array List of image version to remove for that entity.
+     * @param array $versions List of image version to remove for that entity.
      * @param array $options
      * @return array
      */
@@ -249,7 +250,7 @@ trait ImageProcessingTrait
                 'path' => $path,
             ];
             try {
-                $this->getStorageAdapter($entity->adapter)->delete($path);
+                $this->getStorageAdapter($entity->get('adapter'))->delete($path);
             } catch (\Exception $e) {
                 $result[$version]['status'] = 'error';
                 $result[$version]['error'] = $e->getMessage();
@@ -278,7 +279,7 @@ trait ImageProcessingTrait
     /**
      * Convenience method to create ALL versions for an entity.
      *
-     * @param \Cake\Datasource\EntityInterface
+     * @param \Cake\Datasource\EntityInterface $entity
      * @param array $options
      * @return array
      */
@@ -294,7 +295,7 @@ trait ImageProcessingTrait
     /**
      * Convenience method to delete ALL versions for an entity.
      *
-     * @param \Cake\Datasource\EntityInterface
+     * @param \Cake\Datasource\EntityInterface $entity
      * @param array $options
      * @return array
      */
@@ -326,7 +327,7 @@ trait ImageProcessingTrait
 
         $hash = $this->getImageVersionHash($entity->get('model'), $version);
 
-        $output = $this->_defaultOutput + ['format' => $entity->extension];
+        $output = $this->_defaultOutput + ['format' => $entity->get('extension')];
         $operations = $this->_imageVersions[$entity->get('model')][$version];
         if (isset($operations['_output'])) {
             $output = $operations['_output'] + $output;

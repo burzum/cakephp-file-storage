@@ -34,9 +34,9 @@ class StorageManager
     /**
      * Return a singleton instance of the StorageManager.
      *
-     * @return \Burzum\FileStorage\Storage\StorageManager
+     * @return self
      */
-    public static function &getInstance(): \Burzum\FileStorage\Storage\StorageManager
+    public static function &getInstance(): self
     {
         static $instance = [];
         if (!$instance) {
@@ -106,6 +106,7 @@ class StorageManager
      * @param bool|bool $renewObject Creates a new instance of the given adapter in the configuration
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
+     * @throws \ReflectionException
      * @return mixed filesystem
      */
     public static function get(string $configName, bool $renewObject = false)
@@ -115,8 +116,6 @@ class StorageManager
         }
 
         $_this = static::getInstance();
-
-        $isConfigured = true;
 
         if (!empty($_this->_adapterConfig[$configName])) {
             $adapter = $_this->_adapterConfig[$configName];
@@ -130,9 +129,7 @@ class StorageManager
 
         $engineObject = $_this->_factory($adapter);
 
-        if ($isConfigured) {
-            $_this->_adapterConfig[$configName]['object'] = &$engineObject;
-        }
+        $_this->_adapterConfig[$configName]['object'] = &$engineObject;
 
         return $engineObject;
     }
@@ -142,6 +139,7 @@ class StorageManager
      *
      * @param array $adapter Adapter config
      * @return mixed
+     * @throws \ReflectionException
      */
     protected function _factory(array $adapter)
     {
@@ -165,14 +163,15 @@ class StorageManager
      *
      * @param array $adapter
      * @return object
+     * @throws \ReflectionException
      */
-    public static function gaufretteFactory(array $adapter): object
+    public static function gaufretteFactory(array $adapter)
     {
         $class = $adapter['adapterClass'];
         $Reflection = new ReflectionClass($class);
 
         if (!is_array($adapter['adapterOptions'])) {
-            throw new InvalidArgumentException(sprintf('%s: The adapter options must be an array!', $configName));
+            throw new InvalidArgumentException('The adapter options must be an array!');
         }
 
         $adapterObject = $Reflection->newInstanceArgs($adapter['adapterOptions']);
@@ -185,8 +184,9 @@ class StorageManager
      *
      * @param array $adapter
      * @return object
+     * @throws \ReflectionException
      */
-    public static function flysystemFactory(array $adapter): object
+    public static function flysystemFactory(array $adapter)
     {
         if (class_exists($adapter['adapterClass'])) {
             return (new ReflectionClass($adapter['adapterClass']))->newInstanceArgs($adapter['adapterOptions']);

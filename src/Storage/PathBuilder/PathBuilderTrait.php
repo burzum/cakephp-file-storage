@@ -28,7 +28,7 @@ trait PathBuilderTrait
      * @param array $options
      * @return \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
      */
-    public function createPathBuilder(string $name, array $options = []): \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
+    public function createPathBuilder(string $name, array $options = []): PathBuilderInterface
     {
         $className = App::className($name, 'Storage/PathBuilder', 'PathBuilder');
         if ($className === null || !class_exists($className)) {
@@ -54,7 +54,7 @@ trait PathBuilderTrait
      * @param array $options
      * @return \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
      */
-    public function pathBuilder($name = null, array $options = []): \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
+    public function pathBuilder($name = null, array $options = []): PathBuilderInterface
     {
         if ($name instanceof PathBuilderInterface) {
             $this->_pathBuilder = $name;
@@ -74,7 +74,7 @@ trait PathBuilderTrait
      *
      * @return \Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface|null
      */
-    public function getPathBuilder(): ?\Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
+    public function getPathBuilder(): ?PathBuilderInterface
     {
         return $this->_pathBuilder;
     }
@@ -83,7 +83,7 @@ trait PathBuilderTrait
      * Sets a path builder.
      *
      * @param string|\Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface $pathBuilder
-     * @param array Path builder options.
+     * @param array $options Path builder options.
      * @return void
      */
     public function setPathBuilder($pathBuilder, array $options = []): void

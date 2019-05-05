@@ -63,11 +63,11 @@ class LegacyPathBuilderTest extends TestCase
     {
         $builder = new LegacyPathBuilder();
         $result = $builder->path($this->entity);
-        $expected = 'files' . DS . '35' . DS . '20' . DS . '80' . DS . 'filestorage3' . DS;
+        $expected = 'files' . DS . '10' . DS . 'd3' . DS . 'b5' . DS . 'filestorage3' . DS;
         $this->assertEquals($expected, $result);
 
         $result = $builder->fullPath($this->entity);
-        $expected = 'files' . DS . '35' . DS . '20' . DS . '80' . DS . 'filestorage3' . DS . 'filestorage3.jpg';
+        $expected = 'files' . DS . '10' . DS . 'd3' . DS . 'b5' . DS . 'filestorage3' . DS . 'filestorage3.jpg';
         $this->assertEquals($expected, $result);
     }
 }

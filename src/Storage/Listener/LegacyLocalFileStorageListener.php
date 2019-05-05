@@ -8,7 +8,7 @@ declare(strict_types=1);
 namespace Burzum\FileStorage\Storage\Listener;
 
 use Cake\Datasource\EntityInterface;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 
 /**
  * Local FileStorage Event Listener for the CakePHP FileStorage plugin
@@ -32,7 +32,7 @@ class LegacyLocalFileStorageListener extends LocalListener
             'pathPrefix' => 'files',
             'modelFolder' => false,
             'preserveFilename' => false,
-            'randomPath' => 'crc32',
+            'randomPath' => 'sha1',
         ],
         'disableDeprecationWarning' => false,
     ];
@@ -52,11 +52,12 @@ class LegacyLocalFileStorageListener extends LocalListener
     /**
      * Save the file to the storage backend after the record was created.
      *
-     * @param \Cake\Event\Event $event
-     * @param \Cake\Datasource\EntityInterface $entity
+     * @param \Cake\Event\EventInterface $event The beforeSave event that was fired
+     * @param \Cake\Datasource\EntityInterface $entity The entity that is going to be saved
      * @return void
+     * @throws \Burzum\FileStorage\Storage\StorageException
      */
-    public function afterSave(Event $event, EntityInterface $entity): void
+    public function afterSave(EventInterface $event, EntityInterface $entity): void
     {
         if ($this->_checkEvent($event) && $entity->isNew()) {
             $fileField = $this->getConfig('fileField');
@@ -72,9 +73,12 @@ class LegacyLocalFileStorageListener extends LocalListener
         }
     }
 
-    public function imageVersionPath(EntityInterface $entity, ?string $version, string $type = 'fullPath',
-        array $options = []): string
-    {
+    public function imageVersionPath(
+        EntityInterface $entity,
+        ?string $version,
+        string $type = 'fullPath',
+        array $options = []
+    ): string {
         $options += [
             'pathPrefix' => 'images',
         ];

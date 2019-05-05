@@ -28,21 +28,17 @@ class FileStorage extends Entity
     ];
 
     /**
-     * @var null
+     * @var array
      * Path Builder Class.
      *
      * This is named $_pathBuilderClass because $_pathBuilder is already used by
      * the trait to store the path builder instance.
-     *
-     * @param array
      */
     protected $_pathBuilderClass = null;
 
     /**
      * @var array
      * Path Builder options
-     *
-     * @param array
      */
     protected $_pathBuilderOptions = [];
 
@@ -84,9 +80,9 @@ class FileStorage extends Entity
      * @link http://book.cakephp.org/3.0/en/orm/entities.html#accessors-mutators
      * @return string
      */
-    protected function _getFullPath(): void
+    protected function _getFullPath(): string
     {
-        $this->path();
+        return $this->path();
     }
 
     /**
@@ -95,9 +91,9 @@ class FileStorage extends Entity
      * @link http://book.cakephp.org/3.0/en/orm/entities.html#accessors-mutators
      * @return string
      */
-    protected function _getUrl(): void
+    protected function _getUrl(): string
     {
-        $this->url();
+        return $this->url();
     }
 
     /**

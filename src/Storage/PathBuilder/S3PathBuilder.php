@@ -29,7 +29,7 @@ class S3PathBuilder extends BasePathBuilder
     /**
      * Gets the bucket from the adapter configuration.
      *
-     * @param string Storage adapter config name.
+     * @param string $adapter Storage adapter config name.
      * @return string|null
      */
     protected function _getBucket($adapter): ?string
@@ -42,9 +42,9 @@ class S3PathBuilder extends BasePathBuilder
     /**
      * Builds the cloud base URL for the given bucket and location.
      *
-     * @param string $bucket
-     * @param string|null $bucketPrefix
-     * @param string|null $cfDist
+     * @param string $bucket Bucket name.
+     * @param string|null $bucketPrefix Bucket prefix.
+     * @param string|null $cfDist Optional param.
      * @return string
      */
     protected function _buildCloudUrl(string $bucket, ?string $bucketPrefix = null, ?string $cfDist = null): string
@@ -69,13 +69,13 @@ class S3PathBuilder extends BasePathBuilder
      * This is for example important for S3 and Dropbox but also the Local adapter
      * if you symlink a folder to your webroot and allow direct access to a file.
      *
-     * @param \Cake\Datasource\EntityInterface $entity
-     * @param array $options
+     * @param \Cake\Datasource\EntityInterface $entity Record entity.
+     * @param array $options Options.
      * @return string
      */
     public function url(EntityInterface $entity, array $options = []): string
     {
-        $bucket = $this->_getBucket($entity->adapter);
+        $bucket = $this->_getBucket($entity->get('adapter'));
         $pathPrefix = $this->ensureSlash($this->_buildCloudUrl($bucket), 'after');
         $path = parent::path($entity);
         $path = str_replace('\\', '/', $path);

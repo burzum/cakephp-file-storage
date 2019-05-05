@@ -34,7 +34,13 @@ class ImageProcessor implements EventListenerInterface
 
     protected $_defaultOutput = [];
 
-    public function __construct(array $config = [])
+    protected $EventSubject;
+
+    /**
+     * ImageProcessor constructor.
+     *
+     */
+    public function __construct()
     {
         $this->loadImageProcessingFromConfig();
     }
@@ -55,13 +61,13 @@ class ImageProcessor implements EventListenerInterface
     /**
      * afterStore
      *
-     * @param \Cake\Event\Event
+     * @param \Cake\Event\Event $event
      * @return void
      */
     public function afterStore(Event $event): void
     {
         $this->pathBuilder($event->getSubject()->pathBuilder());
-        $this->subject = $event->getSubject();
+        $this->EventSubject = $event->getSubject();
 
         $this->autoProcessImageVersions($event->getData('entity'), 'create');
     }
@@ -69,13 +75,13 @@ class ImageProcessor implements EventListenerInterface
     /**
      * afterDelete
      *
-     * @param \Cake\Event\Event
+     * @param \Cake\Event\Event $event
      * @return void
      */
     public function afterDelete(Event $event): void
     {
         $this->pathBuilder($event->getSubject()->pathBuilder());
-        $this->subject = $event->getSubject();
+        $this->EventSubject = $event->getSubject();
         $this->autoProcessImageVersions($event->getData('entity'), 'remove');
     }
 
@@ -90,16 +96,16 @@ class ImageProcessor implements EventListenerInterface
      *
      * @param \Cake\Datasource\EntityInterface $entity Entity
      * @param string $action `create` or `remove` $action Action
-     * @return array
+     * @return array|null
      */
-    public function autoProcessImageVersions(EntityInterface $entity, string $action): bool
+    public function autoProcessImageVersions(EntityInterface $entity, string $action)
     {
         if (!in_array($action, ['create', 'remove'])) {
             throw new InvalidArgumentException(sprintf('Action was `%s` but must be `create` or `remove`', $action));
         }
         $this->loadImageProcessingFromConfig();
-        if (!isset($this->_imageVersions[$entity->model])) {
-            return false;
+        if (!isset($this->_imageVersions[$entity->get('model')])) {
+            return null;
         }
         $method = $action . 'AllImageVersions';
 
@@ -122,6 +128,7 @@ class ImageProcessor implements EventListenerInterface
      * Gets the image processor instance.
      *
      * @param array $config
+     * @param bool $renew
      * @return mixed
      */
     public function imageProcessor(array $config = [], $renew = false)
@@ -182,19 +189,19 @@ class ImageProcessor implements EventListenerInterface
      */
     public function createImageVersions(EntityInterface $entity, array $versions, array $options = []): array
     {
-        $this->_checkImageVersions($entity->model, $versions);
+        $this->_checkImageVersions($entity->get('model'), $versions);
 
         $options += $this->_defaultOutput + [
             'overwrite' => true,
         ];
 
         $result = [];
-        $storage = $this->getStorageAdapter($entity->adapter);
-        foreach ($this->_imageVersions[$entity->model] as $version => $operations) {
+        $storage = $this->getStorageAdapter($entity->get('adapter'));
+        foreach ($this->_imageVersions[$entity->get('model')] as $version => $operations) {
             if (!in_array($version, $versions)) {
                 continue;
             }
-            $saveOptions = $options + ['format' => $entity->extension];
+            $saveOptions = $options + ['format' => $entity->get('extension')];
             if (isset($operations['_output'])) {
                 $saveOptions = $operations['_output'] + $saveOptions;
                 unset($operations['_output']);
@@ -206,8 +213,8 @@ class ImageProcessor implements EventListenerInterface
                 if ($options['overwrite'] || !$storage->has($path)) {
                     unset($saveOptions['overwrite']);
 
-                    $output = $this->subject->createTmpFile();
-                    $tmpFile = $this->subject->tmpFile($storage, $this->pathBuilder()->fullPath($entity));
+                    $output = $this->EventSubject->createTmpFile();
+                    $tmpFile = $this->EventSubject->tmpFile($storage, $this->pathBuilder()->fullPath($entity));
                     $this->imageProcessor()->open($tmpFile);
                     $this->imageProcessor()->batchProcess($output, $operations, $saveOptions);
                     $storage->write($path, file_get_contents($output), true);
@@ -218,7 +225,7 @@ class ImageProcessor implements EventListenerInterface
                 $result[$version] = [
                     'status' => 'success',
                     'path' => $path,
-                    'hash' => $this->getImageVersionHash($entity->model, $version),
+                    'hash' => $this->getImageVersionHash($entity->get('model'), $version),
                 ];
             } catch (\Exception $e) {
                 $result[$version] = [
@@ -237,18 +244,17 @@ class ImageProcessor implements EventListenerInterface
      * Removes image versions of an entity.
      *
      * @param \Cake\Datasource\EntityInterface $entity
-     * @param array List of image version to remove for that entity.
-     * @param array $options
+     * @param array $versions List of image version to remove for that entity.
      * @param array $options
      * @return array
      */
     public function removeImageVersions(EntityInterface $entity, array $versions, array $options = []): array
     {
-        $this->_checkImageVersions($entity->model, $versions);
+        $this->_checkImageVersions($entity->get('model'), $versions);
 
         $result = [];
         foreach ($versions as $version) {
-            $hash = $this->getImageVersionHash($entity->model, $version);
+            $hash = $this->getImageVersionHash($entity->get('model'), $version);
             $path = $this->pathBuilder()->fullPath($entity, ['fileSuffix' => '.' . $hash]);
             $result[$version] = [
                 'status' => 'success',
@@ -256,7 +262,7 @@ class ImageProcessor implements EventListenerInterface
                 'path' => $path,
             ];
             try {
-                $this->getStorageAdapter($entity->adapter)->delete($path);
+                $this->getStorageAdapter($entity->get('adapter'))->delete($path);
             } catch (\Exception $e) {
                 $result[$version]['status'] = 'error';
                 $result[$version]['error'] = $e->getMessage();
@@ -285,14 +291,15 @@ class ImageProcessor implements EventListenerInterface
     /**
      * Convenience method to create ALL versions for an entity.
      *
-     * @param \Cake\Datasource\EntityInterface
+     * @param \Cake\Datasource\EntityInterface $entity
+     * @param array $options
      * @return array
      */
     public function createAllImageVersions(EntityInterface $entity, array $options = []): array
     {
         return $this->createImageVersions(
             $entity,
-            $this->getAllVersionsKeysForModel($entity->model),
+            $this->getAllVersionsKeysForModel($entity->get('model')),
             $options
         );
     }
@@ -300,14 +307,15 @@ class ImageProcessor implements EventListenerInterface
     /**
      * Convenience method to delete ALL versions for an entity.
      *
-     * @param \Cake\Datasource\EntityInterface
+     * @param \Cake\Datasource\EntityInterface $entity
+     * @param array $options
      * @return array
      */
     public function removeAllImageVersions(EntityInterface $entity, array $options = []): array
     {
         return $this->removeImageVersions(
             $entity,
-            $this->getAllVersionsKeysForModel($entity->model),
+            $this->getAllVersionsKeysForModel($entity->get('model')),
             $options
         );
     }
@@ -329,10 +337,10 @@ class ImageProcessor implements EventListenerInterface
             return $this->pathBuilder()->url($entity, $options);
         }
 
-        $hash = $this->getImageVersionHash($entity->model, $version);
+        $hash = $this->getImageVersionHash($entity->get('model'), $version);
 
-        $output = $this->_defaultOutput + ['format' => $entity->extension];
-        $operations = $this->_imageVersions[$entity->model][$version];
+        $output = $this->_defaultOutput + ['format' => $entity->get('extension')];
+        $operations = $this->_imageVersions[$entity->get('model')][$version];
         if (isset($operations['_output'])) {
             $output = $operations['_output'] + $output;
         }

@@ -9,7 +9,7 @@ namespace Burzum\FileStorage\Storage\Listener;
 
 use Burzum\FileStorage\Storage\StorageUtils;
 use Cake\Datasource\EntityInterface;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use InvalidArgumentException;
 
 /**
@@ -78,11 +78,12 @@ class BaseListener extends AbstractListener
      *
      * No need to use an adapter here, just delete the whole folder using cakes Folder class
      *
-     * @param \Cake\Event\Event $event
-     * @param \Cake\Datasource\EntityInterface $entity
+     * @param \Cake\Event\EventInterface $event The beforeSave event that was fired
+     * @param \Cake\Datasource\EntityInterface $entity The entity that is going to be saved
      * @return void
+     * @throws \Burzum\FileStorage\Storage\StorageException
      */
-    public function afterDelete(Event $event, EntityInterface $entity): void
+    public function afterDelete(EventInterface $event, EntityInterface $entity): void
     {
         if ($this->_checkEvent($event)) {
             $event->setResult($this->_deleteFile($event));
@@ -93,11 +94,12 @@ class BaseListener extends AbstractListener
     /**
      * Save the file to the storage backend after the record was created.
      *
-     * @param \Cake\Event\Event $event
-     * @param \Cake\Datasource\EntityInterface $entity
+     * @param \Cake\Event\EventInterface $event The beforeSave event that was fired
+     * @param \Cake\Datasource\EntityInterface $entity The entity that is going to be saved
      * @return void
+     * @throws \Burzum\FileStorage\Storage\StorageException
      */
-    public function afterSave(Event $event, EntityInterface $entity): void
+    public function afterSave(EventInterface $event, EntityInterface $entity): void
     {
         if ($this->_checkEvent($event) && $entity->isNew()) {
             $fileField = $this->getConfig('fileField');
@@ -120,11 +122,11 @@ class BaseListener extends AbstractListener
     /**
      * Generates the path the image url / path for viewing it in a browser depending on the storage adapter
      *
-     * @param \Cake\Event\Event $event
+     * @param \Cake\Event\EventInterface $event
      * @throws \InvalidArgumentException
      * @return void
      */
-    public function imagePath(Event $event): void
+    public function imagePath(EventInterface $event): void
     {
         $event->setData($event->getData() + [
             'image' => null,
@@ -164,10 +166,10 @@ class BaseListener extends AbstractListener
     /**
      * Removes a specific image version.
      *
-     * @param \Cake\Event\Event $event
+     * @param \Cake\Event\EventInterface $event
      * @return void
      */
-    public function removeImageVersion(Event $event): void
+    public function removeImageVersion(EventInterface $event): void
     {
         $this->_processImages($event, 'removeImageVersions');
     }
@@ -175,21 +177,21 @@ class BaseListener extends AbstractListener
     /**
      * Creates the versions for an image.
      *
-     * @param \Cake\Event\Event $event
+     * @param \Cake\Event\EventInterface $event
      * @return void
      */
-    public function createImageVersion(Event $event): void
+    public function createImageVersion(EventInterface $event): void
     {
         $this->_processImages($event, 'createImageVersions');
     }
 
     /**
-     * @param \Cake\Event\Event $event
+     * @param \Cake\Event\EventInterface $event
      * @param string $method
      * return void
      * @return void
      */
-    protected function _processImages(Event $event, string $method): void
+    protected function _processImages(EventInterface $event, string $method): void
     {
         if ($this->getConfig('imageProcessing') !== true) {
             return;
@@ -213,10 +215,10 @@ class BaseListener extends AbstractListener
      * ImageProcessingListener operations were required in event data. ImageProcessingTrait need only
      * version names so operations can be read from the config.
      *
-     * @param \Cake\Event\Event $event
+     * @param \Cake\Event\EventInterface $event
      * @return array
      */
-    protected function _getVersionData(\Cake\Event\Event $event): array
+    protected function _getVersionData(EventInterface $event): array
     {
         $data = $event->getData();
         if (isset($data['versions'])) {

@@ -2,8 +2,6 @@
 declare(strict_types=1);
 namespace Burzum\FileStorage\Test\TestCase\Storage\PathBuilder;
 
-use Burzum\FileStorage\Storage\PathBuilder\S3PathBuilder;
-use Burzum\FileStorage\Storage\StorageManager;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -53,19 +51,19 @@ class S3PathBuilderTest extends TestCase
         $this->entity->setAccess('id', true);
 
 //        $S3Client = \Aws\S3\S3Client::factory([
-//        	'key' => 'YOUR-KEY',
-//        	'secret' => 'YOUR-SECRET'
+//          'key' => 'YOUR-KEY',
+//          'secret' => 'YOUR-SECRET'
 //        ]);
 
 //        StorageManager::config('S3Image', [
-//        	'adapterOptions' => [
-//        		'',
-//        		'YOUR-BUCKET-HERE',
-//        		[],
-//        		true,
-//        	],
-//        	'adapterClass' => '\Gaufrette\Adapter\AwsS3',
-//        	'class' => '\Gaufrette\Filesystem',
+//          'adapterOptions' => [
+//              '',
+//              'YOUR-BUCKET-HERE',
+//              [],
+//              true,
+//          ],
+//          'adapterClass' => '\Gaufrette\Adapter\AwsS3',
+//          'class' => '\Gaufrette\Filesystem',
 //        ]);
     }
 

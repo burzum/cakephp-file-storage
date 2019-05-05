@@ -3,7 +3,7 @@ declare(strict_types=1);
 namespace Burzum\FileStorage\Storage\Listener;
 
 use Burzum\FileStorage\Storage\StorageManager;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 
 /**
  * Filters events and entities to decide if they should be processed or not by
@@ -42,7 +42,11 @@ trait EventFilterTrait
         return false;
     }
 
-    public function filterByModel(Event $event)
+    /**
+     * @param EventInterface $event
+     * @return bool
+     */
+    public function filterByModel(EventInterface $event): bool
     {
         $data = $event->getData();
         if (empty($this->_eventFilters['model'])) {
@@ -55,7 +59,11 @@ trait EventFilterTrait
         return false;
     }
 
-    public function filterByAdaperConfig(Event $event)
+    /**
+     * @param EventInterface $event
+     * @return bool
+     */
+    public function filterByAdapterConfig(EventInterface $event): bool
     {
         $data = $event->getData();
         if (empty($this->_eventFilters['adapterConfig'])) {
@@ -68,7 +76,11 @@ trait EventFilterTrait
         return false;
     }
 
-    public function filterByAdapterClass(Event $event)
+    /**
+     * @param EventInterface $event
+     * @return bool
+     */
+    public function filterByAdapterClass(EventInterface $event): bool
     {
         $data = $event->getData();
         if (empty($this->_eventFilters['adapterClass'])) {
@@ -89,13 +101,13 @@ trait EventFilterTrait
     }
 
     /**
-     * @param \Cake\Event\Event
-     * @return bool;
+     * @param \Cake\Event\EventInterface $event
+     * @return bool
      */
-    public function filterEvent(Event $event): bool
+    public function filterEvent(EventInterface $event): bool
     {
         return $this->filterBySubject($event) &&
-            $this->filterByAdaperConfig($event) &&
+            $this->filterByAdapterConfig($event) &&
             $this->filterByAdapterClass($event) &&
             $this->filterByModel($event);
     }
@@ -104,15 +116,15 @@ trait EventFilterTrait
      * Gets the adapter class name from the adapter config
      *
      * @param string $configName Name of the configuration
-     * @return bool|string False if the config is not present
+     * @return string|null False if the config is not present
      */
-    protected function _getAdapterClassFromConfig(string $configName)
+    protected function _getAdapterClassFromConfig(string $configName): ?string
     {
         $config = StorageManager::config($configName);
         if (!empty($config['adapterClass'])) {
             return $config['adapterClass'];
         }
 
-        return false;
+        return null;
     }
 }

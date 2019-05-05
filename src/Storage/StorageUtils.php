@@ -49,18 +49,18 @@ class StorageUtils
      * @deprecated Use the randomPath() method from the BasePathBuilder instead.
      * @link http://php.net/manual/en/function.crc32.php
      * @link https://www.box.com/blog/crc32-checksums-the-good-the-bad-and-the-ugly/
-     * @throws \InvalidArgumentException
      * @param mixed $string
      * @param int|int $level 1 to 5
      * @return null|string
+     * @throws \InvalidArgumentException
      */
-    public static function randomPath($string, int $level = 3): string
+    public static function randomPath($string, int $level = 3): ?string
     {
         if (!$string) {
             throw new InvalidArgumentException('First argument is not a string!');
         }
 
-        return (new BasePathBuilder())->randomPath($string, $level, 'crc32');
+        return (new BasePathBuilder())->randomPath($string, $level, 'sha1');
     }
 
     /**
@@ -82,16 +82,16 @@ class StorageUtils
     /**
      * Converts windows to linux paths and vice versa
      *
-     * @param string Path
+     * @param string $path Path
      * @return string
      */
-    public static function normalizePath($string): string
+    public static function normalizePath($path): string
     {
         if (DS == '\\') {
-            return str_replace('/', '\\', $string);
+            return str_replace('/', '\\', $path);
         }
 
-        return str_replace('\\', '/', $string);
+        return str_replace('\\', '/', $path);
     }
 
     /**
@@ -164,7 +164,7 @@ class StorageUtils
      * Recursive ksort() implementation
      *
      * @param array $array Array
-     * @param int Sort flags
+     * @param int $sortFlags Sort flags
      * @return bool
      * @link https://gist.github.com/601849
      */
@@ -184,7 +184,7 @@ class StorageUtils
      * Returns an array that matches the structure of a regular upload for a local file
      *
      * @param string $file The file you want to get an upload array for.
-     * @param string|null Name of the file to use in the upload array.
+     * @param string|null $fileName Name of the file to use in the upload array.
      * @return array Array that matches the structure of a regular upload
      */
     public static function fileToUploadArray(string $file, $fileName = null): array
@@ -230,8 +230,8 @@ class StorageUtils
     /**
      * Convenience alias for fileToUploadArray
      *
-     * @param $file
-     * @param string|null File with path
+     * @param string $file The file you want to get an upload array for.
+     * @param string|null $filename File with path
      * @return array Array that matches the structure of a regular upload
      */
     public static function uploadArray($file, $filename = null): array

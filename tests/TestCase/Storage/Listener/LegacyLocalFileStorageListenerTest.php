@@ -61,8 +61,8 @@ class LegacyLocalFileStorageListenerTest extends TestCase
     {
         $entity = $this->FileStorage->get('file-storage-1');
         $result = $this->listener->pathBuilder()->path($entity);
-        $expected = 'files' . DS . '00' . DS . '14' . DS . '90' . DS . 'filestorage1' . DS;
-        $this->assertEquals($result, $expected);
+        $expected = 'files' . DS . '14' . DS . '83' . DS . '23' . DS . 'filestorage1' . DS;
+        $this->assertEquals($expected, $result);
     }
 
     /**

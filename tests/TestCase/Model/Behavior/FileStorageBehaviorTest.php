@@ -99,7 +99,7 @@ class FileStorageBehaviorTest extends FileStorageTestCase
      */
     public function testAfterDelete()
     {
-        $this->_createMockFile('\Item\14\83\23\filestorage1\filestorage1.png');
+        $this->_createMockFile('\Item\00\14\90\filestorage1\filestorage1.png');
 
         $entity = $this->FileStorage->get('file-storage-1');
         $entity->adapter = 'Local';
@@ -108,7 +108,7 @@ class FileStorageBehaviorTest extends FileStorageTestCase
             'adapter' => 'Local',
         ]);
 
-        $this->FileStorage->behaviors()->FileStorage->afterDelete($event, $entity, []);
+        $this->FileStorage->behaviors()->FileStorage->afterDelete($event, $entity, new \ArrayObject([]));
         $this->markTestIncomplete();
 
         // Testing the case the file does not exist
@@ -140,7 +140,7 @@ class FileStorageBehaviorTest extends FileStorageTestCase
             'entity' => $entity,
         ]);
 
-        $this->FileStorage->behaviors()->FileStorage->beforeSave($event, $entity);
+        $this->FileStorage->behaviors()->FileStorage->beforeSave($event, $entity, new \ArrayObject([]));
 
         $this->assertEquals($entity->adapter, 'Local');
         $this->assertEquals($entity->filesize, 332643);

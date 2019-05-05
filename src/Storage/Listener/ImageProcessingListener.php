@@ -6,7 +6,7 @@ use Burzum\FileStorage\Storage\PathBuilder\PathBuilderTrait;
 use Burzum\FileStorage\Storage\StorageTrait;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\Event\EventListenerInterface;
 
 class ImageProcessingListener implements EventListenerInterface
@@ -48,7 +48,7 @@ class ImageProcessingListener implements EventListenerInterface
         ]);
     }
 
-    public function afterStoreFile(Event $event, EntityInterface $entity): void
+    public function afterStoreFile(EventInterface $event, EntityInterface $entity): void
     {
         $this->loadImageProcessingFromConfig();
 
@@ -62,7 +62,7 @@ class ImageProcessingListener implements EventListenerInterface
         $this->createAllImageVersions($entity, $imageVersions[$entity->get('model')]);
     }
 
-    public function afterDeleteFile(Event $event, EntityInterface $entity): void
+    public function afterDeleteFile(EventInterface $event, EntityInterface $entity): void
     {
         $this->loadImageProcessingFromConfig();
 

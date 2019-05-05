@@ -17,8 +17,8 @@ class ImageStorage extends FileStorage
     /**
      * Gets the version of an image.
      *
-     * @param string
-     * @param array $options
+     * @param string $version Version name.
+     * @param array $options Options parameters.
      * @return string
      */
     public function imageVersion($version, array $options = []): string

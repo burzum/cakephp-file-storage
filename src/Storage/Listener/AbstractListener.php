@@ -12,10 +12,12 @@ use Burzum\FileStorage\Storage\PathBuilder\PathBuilderTrait;
 use Burzum\FileStorage\Storage\StorageException;
 use Burzum\FileStorage\Storage\StorageTrait;
 use Burzum\FileStorage\Storage\StorageUtils;
+use Cake\Core\App;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
+use Cake\Event\EventInterface;
 use Cake\Event\EventListenerInterface;
 use Cake\Log\LogTrait;
 use Cake\ORM\Table;
@@ -48,7 +50,7 @@ abstract class AbstractListener implements EventListenerInterface
     /**
      * The adapter class
      *
-     * @param null|string
+     * @var null|string
      */
     protected $_adapterClass = null;
 
@@ -76,6 +78,8 @@ abstract class AbstractListener implements EventListenerInterface
         'fileField' => 'file',
         'models' => false,
     ];
+
+    protected $_loaded;
 
     /**
      * Constructor
@@ -156,11 +160,11 @@ abstract class AbstractListener implements EventListenerInterface
      * Check if the event is of a type or subject object of type model we want to
      * process with this listener.
      *
-     * @param \Cake\Event\Event $event
+     * @param \Cake\Event\EventInterface $event
      * @return bool
      * @throws \Burzum\FileStorage\Storage\StorageException
      */
-    protected function _checkEvent(Event $event): bool
+    protected function _checkEvent(EventInterface $event): bool
     {
         $className = $this->_getAdapterClassFromConfig($event->getData('entity')['adapter']);
         $classes = $this->_adapterClasses;
@@ -177,7 +181,7 @@ abstract class AbstractListener implements EventListenerInterface
         return $event->getSubject() instanceof Table && $this->_modelFilter($event);
     }
 
-    public function _modelFilter(): bool
+    public function _modelFilter(EventInterface $event): bool
     {
         return true;
     }
@@ -320,7 +324,7 @@ abstract class AbstractListener implements EventListenerInterface
         ]);
 
         if ($event->isStopped()) {
-            return $event->result;
+            return $event->getResult();
         }
 
         if ($event->getSubject() instanceof EntityInterface) {
@@ -351,11 +355,11 @@ abstract class AbstractListener implements EventListenerInterface
     /**
      * Stores the file in the configured storage backend.
      *
-     * @param \Cake\Event\Event $event
+     * @param \Cake\Event\EventInterface $event
      * @return bool
      * @throws \Burzum\FileStorage\Storage\StorageException
      */
-    protected function _storeFile(Event $event): bool
+    protected function _storeFile(EventInterface $event): bool
     {
         try {
             $beforeEvent = $this->_beforeStoreFile($event);
@@ -383,18 +387,16 @@ abstract class AbstractListener implements EventListenerInterface
             $this->log($e->getMessage(), LogLevel::ERROR, ['scope' => ['storage']]);
             throw new StorageException($e->getMessage(), $e->getCode(), $e);
         }
-
-        return false;
     }
 
     /**
      * Deletes the file from the configured storage backend.
      *
-     * @param \Cake\Event\Event $event
+     * @param \Cake\Event\EventInterface $event
      * @return bool
      * @throws \Burzum\FileStorage\Storage\StorageException
      */
-    protected function _deleteFile(Event $event): bool
+    protected function _deleteFile(EventInterface $event): bool
     {
         try {
             $this->_beforeDeleteFile($event);
@@ -420,10 +422,10 @@ abstract class AbstractListener implements EventListenerInterface
     /**
      * Creates and triggers the FileStorage.beforeStoreFile event.
      *
-     * @param \Cake\Event\Event $event
-     * @return \Cake\Event\Event
+     * @param \Cake\Event\EventInterface $event
+     * @return \Cake\Event\EventInterface
      */
-    protected function _beforeStoreFile(Event $event): \Cake\Event\EventInterface
+    protected function _beforeStoreFile(EventInterface $event): EventInterface
     {
         $entity = $event->getData('entity');
 
@@ -444,10 +446,10 @@ abstract class AbstractListener implements EventListenerInterface
      * directly doing the post processing like image versions or
      * video compression.
      *
-     * @param \Cake\Event\Event $event
-     * @return \Cake\Event\Event
+     * @param \Cake\Event\EventInterface $event
+     * @return \Cake\Event\EventInterface
      */
-    protected function _afterStoreFile(Event $event): \Cake\Event\EventInterface
+    protected function _afterStoreFile(EventInterface $event): EventInterface
     {
         $entity = $event->getData('entity');
 
@@ -464,10 +466,10 @@ abstract class AbstractListener implements EventListenerInterface
      * By default this will trigger an event FileStorage.afterStoreFile but you
      * can also just overload this method.
      *
-     * @param \Cake\Event\Event $event
-     * @return \Cake\Event\Event
+     * @param \Cake\Event\EventInterface $event
+     * @return \Cake\Event\EventInterface
      */
-    protected function _beforeDeleteFile(Event $event): \Cake\Event\EventInterface
+    protected function _beforeDeleteFile(EventInterface $event): EventInterface
     {
         $entity = $event->getData('entity');
 
@@ -484,10 +486,10 @@ abstract class AbstractListener implements EventListenerInterface
      * By default this will trigger an event FileStorage.afterStoreFile but you
      * can also just overload this method.
      *
-     * @param \Cake\Event\Event $event
-     * @return \Cake\Event\Event
+     * @param \Cake\Event\EventInterface $event
+     * @return \Cake\Event\EventInterface
      */
-    protected function _afterDeleteFile(Event $event): \Cake\Event\EventInterface
+    protected function _afterDeleteFile(EventInterface $event): EventInterface
     {
         $entity = $event->getData('entity');
 

@@ -12,9 +12,11 @@ namespace Burzum\FileStorage\Model\Behavior;
 use ArrayAccess;
 use ArrayObject;
 use Burzum\FileStorage\Storage\StorageTrait;
+use Burzum\FileStorage\Storage\StorageUtils;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
+use Cake\Event\EventInterface;
 use Cake\Filesystem\File;
 use Cake\ORM\Behavior;
 
@@ -91,11 +93,12 @@ class FileStorageBehavior extends Behavior
     /**
      * beforeSave callback
      *
-     * @param \Cake\Event\Event $event
-     * @param \Cake\Datasource\EntityInterface $entity
+     * @param \Cake\Event\EventInterface $event The beforeSave event that was fired
+     * @param \Cake\Datasource\EntityInterface $entity The entity that is going to be saved
+     * @param \ArrayObject $options The options for the query
      * @return void
      */
-    public function beforeSave(Event $event, EntityInterface $entity): void
+    public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
         if (!$this->_isFileUploadPresent($entity)) {
             $event->stopPropagation();
@@ -114,12 +117,12 @@ class FileStorageBehavior extends Behavior
     /**
      * afterSave callback
      *
-     * @param \Cake\Event\Event $event
-     * @param \Cake\Datasource\EntityInterface $entity
-     * @param ArrayObject $options
+     * @param \Cake\Event\EventInterface $event The beforeSave event that was fired
+     * @param \Cake\Datasource\EntityInterface $entity The entity that is going to be saved
+     * @param \ArrayObject $options The options for the query
      * @return void
      */
-    public function afterSave(Event $event, EntityInterface $entity, ArrayObject $options): void
+    public function afterSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
         $this->dispatchEvent('FileStorage.afterSave', [
             'entity' => $entity,
@@ -157,12 +160,12 @@ class FileStorageBehavior extends Behavior
     /**
      * afterDelete callback
      *
-     * @param \Cake\Event\Event $event
-     * @param \Cake\Datasource\EntityInterface $entity
-     * @param array $options
-     * @return bool
+     * @param \Cake\Event\EventInterface $event The beforeSave event that was fired
+     * @param \Cake\Datasource\EntityInterface $entity The entity that is going to be saved
+     * @param \ArrayObject $options The options for the query
+     * @return void
      */
-    public function afterDelete(Event $event, EntityInterface $entity, array $options): void
+    public function afterDelete(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
         $this->dispatchEvent('FileStorage.afterDelete', [
             'entity' => $entity,
@@ -238,14 +241,14 @@ class FileStorageBehavior extends Behavior
      */
     public function deleteAllFiles(array $conditions): int
     {
-        $results = $this->find()
-            ->select((array)$this->primaryKey())
+        $results = $this->_table->find()
+            ->select((array)$this->_table->getPrimaryKey())
             ->where($conditions)
             ->all();
 
         if ($results->count() > 0) {
             foreach ($results as $result) {
-                $this->delete($result);
+                $this->_table->delete($result);
             }
         }
 

@@ -13,9 +13,11 @@ use Burzum\FileStorage\Storage\StorageException;
 use Burzum\FileStorage\Storage\StorageTrait;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
+use Cake\Datasource\ResultSetInterface;
 use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventManager;
+use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -31,6 +33,11 @@ class ImageTask extends Shell
 {
     use EventDispatcherTrait;
     use StorageTrait;
+
+    /**
+     * @var \Cake\ORM\Table
+     */
+    protected $Table;
 
     /**
      * {@inheritDoc}
@@ -65,6 +72,8 @@ class ImageTask extends Shell
      * Loops through image records and performs requested operations on them.
      *
      * @param string $identifier
+     * @param array $options
+     * @param string $action
      * @return void
      */
     protected function _loop(string $identifier, $options, $action): void
@@ -95,8 +104,8 @@ class ImageTask extends Shell
     /**
      * Triggers the event to remove image versions.
      *
-     * @param \Cake\ORM\Entity
-     * @param array
+     * @param \Cake\ORM\Entity $record
+     * @param array $options
      * @return void
      */
     protected function _removeImage($record, $options): void
@@ -111,8 +120,8 @@ class ImageTask extends Shell
     /**
      * Triggers the event to generate the new images.
      *
-     * @param \Cake\ORM\Entity
-     * @param array
+     * @param \Cake\ORM\Entity $record
+     * @param array $options
      * @return void
      */
     protected function _generateImage($record, $options): void
@@ -127,16 +136,16 @@ class ImageTask extends Shell
     /**
      * Gets the records for the loop.
      *
-     * @param string $identifier
-     * @param int $limit
-     * @param int $offset
-     * @return \Cake\ORM\ResultSet
+     * @param string $identifier Identifier.
+     * @param int $limit Records limit.
+     * @param int $offset Records offset.
+     * @return \Cake\Datasource\ResultSetInterface
      */
-    public function _getRecords(string $identifier, int $limit, int $offset): \Cake\ORM\ResultSet
+    public function _getRecords(string $identifier, int $limit, int $offset): ResultSetInterface
     {
         return $this->Table
             ->find()
-            ->where([$this->Table->alias() . '.model' => $identifier])
+            ->where([$this->Table->getAlias() . '.model' => $identifier])
             ->limit($limit)
             ->offset($offset)
             ->all();
@@ -165,12 +174,12 @@ class ImageTask extends Shell
      * @param string $identifier
      * @return \Cake\ORM\Query
      */
-    protected function _getCountQuery(string $identifier): \Cake\ORM\Query
+    protected function _getCountQuery(string $identifier): Query
     {
         return $this->Table
             ->find()
             ->where([
-                $this->Table->alias() . '.model' => $identifier,
+                $this->Table->getAlias() . '.model' => $identifier,
             ]);
     }
 

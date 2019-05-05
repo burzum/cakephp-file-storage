@@ -121,16 +121,6 @@ class BasePathBuilderTest extends TestCase
         $result = $builder->randomPath('test', 3, 'sha1');
         $this->assertEquals($result, '4a' . DS . '8f' . DS . 'e5' . DS);
 
-        if (PHP_INT_SIZE === 4) {
-            $result = $builder->randomPath('test', 3, 'crc32');
-            $this->assertEquals($result, '00' . DS . '33' . DS . '73' . DS);
-        }
-
-        if (PHP_INT_SIZE === 8) {
-            $result = $builder->randomPath('test', 3, 'crc32');
-            $this->assertEquals($result, '96' . DS . '39' . DS . '23' . DS);
-        }
-
         $result = $builder->randomPath('test', 3, 'randomPathTestMethod');
         $this->assertEquals($result, 'testtest');
     }

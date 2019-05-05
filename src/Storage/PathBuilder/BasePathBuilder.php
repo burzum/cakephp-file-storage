@@ -60,7 +60,7 @@ class BasePathBuilder implements PathBuilderInterface
     /**
      * Strips dashes from a string
      *
-     * @param string
+     * @param string $uuid String to strip dashes out.
      * @return string String without the dashed
      */
     public function stripDashes($uuid): string
@@ -91,12 +91,12 @@ class BasePathBuilder implements PathBuilderInterface
      *
      * Overload this method as needed with your custom implementation.
      *
-     * @param \Cake\Datasource\EntityInterface $entity
-     * @param $path string
-     * @param $config array
+     * @param \Cake\Datasource\EntityInterface $entity Уntity.
+     * @param string $path File path.
+     * @param array $config Options.
      * @return string
      */
-    protected function _pathPrefix(EntityInterface $entity, $path, array $config): string
+    protected function _pathPrefix(EntityInterface $entity, string $path, array $config): string
     {
         return $this->_pathPreAndSuffix($entity, $path, $config, 'prefix');
     }
@@ -105,24 +105,25 @@ class BasePathBuilder implements PathBuilderInterface
      * Builds a path.
      *
      * @param \Cake\Datasource\EntityInterface $entity
-     * @param string $path
-     * @param array $config
+     * @param string $path File path.
+     * @param array $config Options.
      * @return string
      */
     protected function _path(EntityInterface $entity, string $path, array $config): string
     {
         if ($config['modelFolder'] === true) {
-            $path .= $entity->model . DS;
+            $path .= $entity->get('model') . DS;
         }
+        $id = $entity->get('id');
         if ($config['randomPath'] === true) {
-            $path .= $this->randomPath($entity->id);
+            $path .= $this->randomPath($id);
         }
-        if (is_string($config['randomPath'])) {
-            $path .= $this->randomPath($entity->id, 3, $config['randomPath']);
+        if (is_string($config['randomPath']) && $id !== null) {
+            $path .= $this->randomPath($id, 3, $config['randomPath']);
         }
         // uuidFolder for backward compatibility
         if ($config['uuidFolder'] === true || $config['idFolder'] === true) {
-            $path .= $this->stripDashes($entity->id) . DS;
+            $path .= $this->stripDashes($id) . DS;
         }
 
         return $path;
@@ -134,11 +135,11 @@ class BasePathBuilder implements PathBuilderInterface
      * Overload this method as needed with your custom implementation.
      *
      * @param \Cake\Datasource\EntityInterface $entity
-     * @param $path string
-     * @param $config array
+     * @param string $path File path.
+     * @param array $config Options.
      * @return string
      */
-    protected function _pathSuffix(EntityInterface $entity, $path, array $config): string
+    protected function _pathSuffix(EntityInterface $entity, string $path, array $config): string
     {
         return $this->_pathPreAndSuffix($entity, $path, $config, 'suffix');
     }
@@ -154,12 +155,12 @@ class BasePathBuilder implements PathBuilderInterface
      * @see BasePathBuilder::_pathSuffix()
      * @see BasePathBuilder::_pathPrefix()
      * @param \Cake\Datasource\EntityInterface $entity
-     * @param $path string
-     * @param $config array
-     * @param $type|string string
+     * @param string $path
+     * @param array $config
+     * @param string $type
      * @return string
      */
-    protected function _pathPreAndSuffix(EntityInterface $entity, $path, array $config, $type = 'suffix'): string
+    protected function _pathPreAndSuffix(EntityInterface $entity, string $path, array $config, $type = 'suffix'): string
     {
         $type = ucfirst($type);
         if (!in_array($type, ['Suffix', 'Prefix'])) {
@@ -180,7 +181,7 @@ class BasePathBuilder implements PathBuilderInterface
      * Splits the filename in name and extension.
      *
      * @param string $filename Filename to split in name and extension.
-     * @param bool|bool $keepDot Keeps the dot in front of the extension.
+     * @param bool $keepDot Keeps the dot in front of the extension.
      * @return array
      */
     public function splitFilename(string $filename, bool $keepDot = false): array
@@ -316,10 +317,6 @@ class BasePathBuilder implements PathBuilderInterface
      */
     public function randomPath(string $string, int $level = 3, string $method = 'sha1'): string
     {
-        // Keeping this for backward compatibility but please stop using crc32()!
-        if ($method === 'crc32') {
-            return $this->_randomPathCrc32($string, $level);
-        }
         if ($method === 'sha1') {
             return $this->_randomPathSha1($string, $level);
         }
@@ -329,33 +326,7 @@ class BasePathBuilder implements PathBuilderInterface
         if (method_exists($this, $method)) {
             return $this->{$method}($string, $level);
         }
-        throw new InvalidArgumentException(sprintf('BasepathBuilder::randomPath() invalid hash `%s` method provided!', $method));
-    }
-
-    /**
-     * Creates a semi-random path based on a string.
-     *
-     * Please STOP USING CR32! See the huge warning on the php documentation page.
-     * of the crc32() function.
-     *
-     * @deprecated Stop using it, see the methods doc block for more info.
-     * @link http://php.net/manual/en/function.crc32.php
-     * @link https://www.box.com/blog/crc32-checksums-the-good-the-bad-and-the-ugly/
-     * @param string $string Input string
-     * @param int $level Depth of the path to generate.
-     * @return string
-     */
-    protected function _randomPathCrc32(string $string, int $level): ?string
-    {
-        $string = crc32($string);
-        $decrement = 0;
-        $path = null;
-        for ($i = 0; $i < $level; $i++) {
-            $decrement = $decrement - 2;
-            $path .= sprintf('%02d' . DS, substr(str_pad('', 2 * $level, '0') . $string, $decrement, 2));
-        }
-
-        return $path;
+        throw new InvalidArgumentException(sprintf('BasePathBuilder::randomPath() invalid hash `%s` method provided!', $method));
     }
 
     /**

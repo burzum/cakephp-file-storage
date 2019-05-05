@@ -34,8 +34,8 @@ class StorageHelper extends Helper
     /**
      * Constructor
      *
-     * @param \Cake\View\View
-     * @param array $config
+     * @param \Cake\View\View $view View instance.
+     * @param array $config Configuration options.
      */
     public function __construct(View $view, array $config = [])
     {

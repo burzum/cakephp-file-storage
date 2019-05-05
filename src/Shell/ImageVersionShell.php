@@ -13,6 +13,7 @@ use Burzum\FileStorage\Storage\StorageManager;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Core\Configure;
+use Cake\Datasource\ResultSetInterface;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\ORM\TableRegistry;
@@ -250,9 +251,10 @@ class ImageVersionShell extends Shell
      * Loops through image records and performs requested operation on them.
      *
      * @param string $action
-     * @param $model
+     * @param string $model
      * @param array $operations
      * @return void
+     * @throws \ReflectionException
      */
     protected function _loop(string $action, $model, array $operations = [], $options = []): void
     {
@@ -330,9 +332,9 @@ class ImageVersionShell extends Shell
      * @param int $limit
      * @param int $offset
      * @param array $extensions
-     * @return \Cake\Datasource\ResultSetDecorator
+     * @return \Cake\Datasource\ResultSetInterface
      */
-    protected function _getRecords(string $identifier, int $limit, int $offset, array $extensions = ['jpg', 'png', 'jpeg']): \Cake\Datasource\ResultSetInterface
+    protected function _getRecords(string $identifier, int $limit, int $offset, array $extensions = ['jpg', 'png', 'jpeg']): ResultSetInterface
     {
         return $this->Table
             ->find()

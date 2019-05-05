@@ -9,11 +9,13 @@
 declare(strict_types=1);
 namespace Burzum\FileStorage\Model\Behavior;
 
+use ArrayObject;
 use Burzum\FileStorage\Storage\StorageUtils;
 use Cake\Datasource\EntityInterface;
-use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
 use Cake\ORM\TableRegistry;
+use Cake\Validation\Validator;
 
 /**
  * Upload Behavior
@@ -47,11 +49,12 @@ class UploadBehavior extends Behavior
     /**
      * After save callback.
      *
-     * @param \Cake\Event\Event $event Event
-     * @param \Cake\Datasource\EntityInterface $entity Entity
+     * @param \Cake\Event\EventInterface $event The beforeSave event that was fired
+     * @param \Cake\Datasource\EntityInterface $entity The entity that is going to be saved
+     * @param \ArrayObject $options The options for the query
      * @return void
      */
-    public function afterSave(Event $event, EntityInterface $entity): void
+    public function afterSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
         if ($this->getConfig('uploadOn') === 'afterSave') {
             $this->_handleFiles($entity);
@@ -61,11 +64,12 @@ class UploadBehavior extends Behavior
     /**
      * Before save callback.
      *
-     * @param \Cake\Event\Event $event
-     * @param \Cake\Datasource\EntityInterface $entity
+     * @param \Cake\Event\EventInterface $event The beforeSave event that was fired
+     * @param \Cake\Datasource\EntityInterface $entity The entity that is going to be saved
+     * @param \ArrayObject $options The options for the query
      * @return void
      */
-    public function beforeSave(Event $event, EntityInterface $entity): void
+    public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
         if ($this->getConfig('uploadOn') === 'beforeSave') {
             $this->_handleFiles($entity);
@@ -75,7 +79,7 @@ class UploadBehavior extends Behavior
     /**
      * This method is looking for the actual file upload fields and processes them.
      *
-     * @param \Cake\Datasource\EntityInterface
+     * @param \Cake\Datasource\EntityInterface $entity
      * @return array
      */
     protected function _handleFiles(EntityInterface $entity): array
@@ -86,6 +90,7 @@ class UploadBehavior extends Behavior
         }
 
         $results = [];
+        $options = [];
         foreach ($files as $key => $file) {
             if (is_string($key)) {
                 $field = $key;
@@ -96,7 +101,9 @@ class UploadBehavior extends Behavior
                 $field = $file;
                 $options = $this->getConfig('defaults');
             }
-            $results[$field] = $this->saveFile($entity->{$field}, $options);
+            if (isset($field)) {
+                $results[$field] = $this->saveFile($entity->{$field}, $options);
+            }
         }
 
         return $results;
@@ -123,10 +130,10 @@ class UploadBehavior extends Behavior
      * @param array $options
      * @return \Cake\Datasource\EntityInterface
      */
-    protected function _composeEntity($file, \Cake\ORM\Table $table, array $options): \Cake\Datasource\EntityInterface
+    protected function _composeEntity($file, \Cake\ORM\Table $table, array $options): EntityInterface
     {
         if (isset($options['validate']) && is_callable($options['validate'])) {
-            $validator = $table->validationDefault();
+            $validator = $table->validationDefault(new Validator());
             $validator = $options['validate']($validator);
             $table->setValidator('_fileUploadValidator', $validator);
         }
@@ -150,7 +157,7 @@ class UploadBehavior extends Behavior
      * @param array $options
      * @return \Cake\Datasource\EntityInterface
      */
-    public function saveFile($file, array $options = []): \Cake\Datasource\EntityInterface
+    public function saveFile($file, array $options = []): EntityInterface
     {
         $defaults = $this->getConfig('defaults');
         $defaults += $options;

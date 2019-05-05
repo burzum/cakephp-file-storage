@@ -14,6 +14,12 @@ use Burzum\FileStorage\Storage\StorageUtils;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 
+/**
+ * Class StorageShell
+ *
+ * @package Burzum\FileStorage\Shell
+ * @property \Burzum\FileStorage\Shell\Task\ImageTask $Image
+ */
 class StorageShell extends Shell
 {
     /**

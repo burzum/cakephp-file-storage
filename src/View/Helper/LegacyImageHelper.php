@@ -20,7 +20,7 @@ class LegacyImageHelper extends ImageHelper
     /**
      * URL
      *
-     * @param EntityInterface $image FileStorage entity or whatever else table that matches this helpers needs
+     * @param \Cake\Datasource\EntityInterface $image FileStorage entity or whatever else table that matches this helpers needs
      * without the model, we just want the record fields
      * @param string|null $version Image version string
      * @param array $options HtmlHelper::image(), 2nd arg options array

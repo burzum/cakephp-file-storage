@@ -2,7 +2,6 @@
 declare(strict_types=1);
 namespace Burzum\FileStorage\Storage\Listener;
 
-use ArrayObject;
 use Burzum\FileStorage\Storage\StorageManager;
 use Burzum\FileStorage\Storage\StorageUtils;
 use Burzum\Imagine\Lib\ImageProcessor;
@@ -10,6 +9,7 @@ use Burzum\Imagine\Lib\ImagineUtility;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
+use Cake\Event\EventInterface;
 use Cake\ORM\Table;
 
 /**
@@ -32,7 +32,7 @@ class LegacyImageProcessingListener extends AbstractListener
 //          'pathPrefix' => 'files',
 //          'modelFolder' => false,
             'preserveFilename' => false,
-//          'randomPath' => 'crc32'
+//          'randomPath' => 'sha1'
         ],
         'disableDeprecationWarning' => false,
     ];
@@ -40,7 +40,7 @@ class LegacyImageProcessingListener extends AbstractListener
     /**
      * The adapter class
      *
-     * @param null|string
+     * @var ?string
      */
     public $adapterClass = null;
 
@@ -108,7 +108,7 @@ class LegacyImageProcessingListener extends AbstractListener
     {
         $orientation = ImagineUtility::getImageOrientation($imageFile);
         $degree = 0;
-        if ($orientation === false) {
+        if ($orientation === null) {
             return false;
         }
         if ($orientation === 0) {
@@ -126,9 +126,9 @@ class LegacyImageProcessingListener extends AbstractListener
                 break;
         }
         $processor = new ImageProcessor();
-        $image = $processor->open($imageFile);
-        $processor->rotate($image, ['degree' => $degree]);
-        $image->save(['format' => $format]);
+        $processor->open($imageFile);
+        $processor->rotate(['degree' => $degree]);
+        $processor->save($imageFile, ['format' => $format]);
 
         return true;
     }
@@ -137,13 +137,13 @@ class LegacyImageProcessingListener extends AbstractListener
      * Creates the different versions of images that are configured
      *
      * @param \Cake\ORM\Table $table
-     * @param array $entity
+     * @param EntityInterface $entity
      * @param array $operations
      * @throws \Burzum\FileStorage\Event\Exception
      * @throws \Exception
-     * @return false|null
+     * @return bool
      */
-    protected function _createVersions(Table $table, array $entity, array $operations): bool
+    protected function _createVersions(Table $table, EntityInterface $entity, array $operations): bool
     {
         $Storage = StorageManager::adapter($entity['adapter']);
         $path = $this->_buildPath($entity, true);
@@ -172,15 +172,16 @@ class LegacyImageProcessingListener extends AbstractListener
         }
 
         unlink($tmpFile);
+        return true;
     }
 
     /**
      * Creates versions for a given image record
      *
-     * @param \Cake\Event\Event $Event
+     * @param \Cake\Event\EventInterface  $Event
      * @return void
      */
-    public function createVersions(Event $Event): void
+    public function createVersions(EventInterface  $Event): void
     {
         if ($this->_checkEvent($Event)) {
             $table = $Event->getSubject();
@@ -443,7 +444,7 @@ class LegacyImageProcessingListener extends AbstractListener
      * @param bool $bucketPrefix
      * @return string
      */
-    protected function _buildCloudFrontDistributionUrl(string $protocol, string $image, string $bucket, bool $bucketPrefix = null, string $cfDist = null): string
+    protected function _buildCloudFrontDistributionUrl(string $protocol, string $image, string $bucket, ?bool $bucketPrefix = null, ?string $cfDist = null): string
     {
         $path = $protocol . '://';
         if (is_string($cfDist)) {
@@ -463,12 +464,12 @@ class LegacyImageProcessingListener extends AbstractListener
     /**
      * Builds a path to a file
      *
-     * @param EntityInterface $record
+     * @param \Cake\Datasource\EntityInterface $record
      * @param bool $extension
      * @param string $hash
      * @return string
      */
-    protected function _buildPath(EntityInterface $record, bool $extension = true, string $hash = null): string
+    protected function _buildPath(EntityInterface $record, bool $extension = true, ?string $hash = null): string
     {
         if ($this->_config['pathBuilderOptions']['preserveFilename'] === true) {
             if (!empty($hash)) {
