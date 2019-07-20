@@ -33,13 +33,14 @@ class StorageShell extends Shell
 
     /**
      * @inheritDoc
+     * @return void
      */
     public function main(): void
     {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getOptionParser(): ConsoleOptionParser
     {
@@ -109,8 +110,8 @@ class StorageShell extends Shell
 
         if ($model->save($entity)) {
             $this->out('File successfully saved!');
-            $this->out('UUID: ' . $entity->id);
-            $this->out('Path: ' . $entity->path());
+            $this->out('UUID: ' . $entity->get('id'));
+            $this->out('Path: ' . $entity->get('full_path'));
         } else {
             $this->abort('Failed to save the file.');
         }

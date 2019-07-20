@@ -128,11 +128,11 @@ class BasePathBuilderTest extends TestCase
     /**
      * testRandomPathInvalidArgumentException
      *
-     * @expectedException \InvalidArgumentException
      * @return void
      */
     public function testRandomPathInvalidArgumentException()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $builder = new BasePathBuilder();
         $result = $builder->randomPath('test', 5, 'does-not-exist');
     }
@@ -156,11 +156,11 @@ class BasePathBuilderTest extends TestCase
     /**
      * testEnsureSlashInvalidArgumentException
      *
-     * @expectedException \InvalidArgumentException
      * @return void
      */
     public function testEnsureSlashInvalidArgumentException()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $string = 'foo/bar';
         $builder = new BasePathBuilder();
         $builder->ensureSlash($string, 'INVALID!');

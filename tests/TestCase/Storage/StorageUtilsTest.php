@@ -216,11 +216,11 @@ class StorageUtilsTest extends FileStorageTestCase
     /**
      * testGenerateHashesRuntimeException
      *
-     * @expectedException \RuntimeException
      * @return void
      */
     public function testGenerateHashesRuntimeException()
     {
+        $this->expectException(\RuntimeException::class);
         Configure::write('FileStorage.imageSizes', null);
         StorageUtils::generateHashes();
     }
@@ -274,11 +274,11 @@ class StorageUtilsTest extends FileStorageTestCase
     /**
      * testGetFileHashInvalidArgumentException
      *
-     * @expectedException \InvalidArgumentException
      * @return void
      */
     public function testGetFileHashInvalidArgumentException()
     {
+        $this->expectException(\InvalidArgumentException::class);
         StorageUtils::getFileHash($this->fileFixtures . 'titus.jpg', 'invalid-hash-method!');
     }
 }

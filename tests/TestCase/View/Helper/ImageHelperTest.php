@@ -93,11 +93,11 @@ class ImageHelperTest extends FileStorageTestCase
     /**
      * testImage
      *
-     * @expectedException \InvalidArgumentException
      * @return void
      */
     public function testImageUrlInvalidArgumentException()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $image = $this->FileStorage->newEntity([
             'id' => 'e479b480-f60b-11e1-a21f-0800200c9a66',
             'filename' => 'testimage.jpg',

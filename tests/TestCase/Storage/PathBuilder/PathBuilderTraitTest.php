@@ -26,11 +26,11 @@ class PathBuilderTraitTest extends TestCase
      * Test createPathBuilder() method with invalid class.
      *
      * @return void
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Path builder class "\stdClass" does not implement the PathBuilderInterface interface!
      */
     public function testCreatePathBuilderInvalidClass()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Path builder class "\stdClass" does not implement the PathBuilderInterface interface!');
         $object = $this->getObjectForTrait(PathBuilderTrait::class);
         $object->createPathBuilder('\stdClass');
     }
@@ -39,11 +39,11 @@ class PathBuilderTraitTest extends TestCase
      * Test createPathBuilder() method with missing class.
      *
      * @return void
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Could not find path builder "Foo"!
      */
     public function testCreatePathBuilderMissingClass()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Could not find path builder "Foo"!');
         $object = $this->getObjectForTrait(PathBuilderTrait::class);
         $object->createPathBuilder('Foo');
     }
@@ -64,11 +64,11 @@ class PathBuilderTraitTest extends TestCase
      * Test createPathBuilder() method with missing class.
      *
      * @return void
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage The first arg does not implement Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface
      */
     public function testSetInvalidPathBuilder()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The first arg does not implement Burzum\FileStorage\Storage\PathBuilder\PathBuilderInterface');
         $object = $this->getObjectForTrait(PathBuilderTrait::class);
         $object->SetPathBuilder(new \stdClass());
     }

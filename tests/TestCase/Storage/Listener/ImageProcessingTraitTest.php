@@ -149,11 +149,11 @@ class ImageProcessingTraitTest extends FileStorageTestCase
     /**
      * testCheckImageVersionsRuntimeExceptionIdentifier
      *
-     * @expectedException \RuntimeException
      * @return void
      */
     public function testCheckImageVersionsRuntimeExceptionIdentifier()
     {
+        $this->expectException(\RuntimeException::class);
         $listener = new TraitTestClass();
         $listener->checkImageVersions('does not exist', []);
     }
@@ -161,11 +161,11 @@ class ImageProcessingTraitTest extends FileStorageTestCase
     /**
      * testCheckImageVersionsRuntimeExceptionVersion
      *
-     * @expectedException \RuntimeException
      * @return void
      */
     public function testCheckImageVersionsRuntimeExceptionVersion()
     {
+        $this->expectException(\RuntimeException::class);
         $listener = new TraitTestClass();
         $listener->checkImageVersions('Item', ['does not exist!']);
     }
