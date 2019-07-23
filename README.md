@@ -2,9 +2,9 @@ FileStorage Plugin for CakePHP
 ==============================
 
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.txt)
-[![Build Status](https://img.shields.io/travis/burzum/cakephp-file-storage/2.0.svg?style=flat-square)](https://travis-ci.org/burzum/cakephp-file-storage)
-[![Coverage Status](https://img.shields.io/coveralls/burzum/cakephp-file-storage.svg?branch=2.0.svg?style=flat-square)](https://coveralls.io/r/burzum/cakephp-file-storage)
-[![Code Quality](https://img.shields.io/scrutinizer/g/burzum/cakephp-file-storage.svg?branch=2.0?style=flat-square)](https://coveralls.io/r/burzum/cakephp-file-storage)
+[![Build Status](https://img.shields.io/travis/burzum/cakephp-file-storage/3.0.svg?style=flat-square)](https://travis-ci.org/burzum/cakephp-file-storage)
+[![Coverage Status](https://img.shields.io/coveralls/burzum/cakephp-file-storage.svg?branch=3.0.svg?style=flat-square)](https://coveralls.io/r/burzum/cakephp-file-storage)
+[![Code Quality](https://img.shields.io/scrutinizer/g/burzum/cakephp-file-storage.svg?branch=3.0?style=flat-square)](https://coveralls.io/r/burzum/cakephp-file-storage)
 
 **If you're upgrading from CakePHP 2.x please read [the migration guide](docs/Documentation/Migrating-from-CakePHP-2.md).**
 
@@ -38,11 +38,18 @@ List of supported Adapters
  * Sftp
  * Zip File
 
+Supported CakePHP Versions
+--------------------------
+
+ * CakePHP 4.x -> 3.0 Branch
+ * CakePHP 3.x -> 2.0 Branch
+ * CakePHP 2.x -> 1.0 Branch
+
 Requirements
 ------------
 
- * PHP 7.0+
- * CakePHP 3.6
+ * PHP 7.2+
+ * CakePHP 4.x
  * Gaufrette Storage Library 0.7.x
 
 Optional but required if you want image processing out of the box:
@@ -69,12 +76,12 @@ To contribute to this plugin please follow a few basic rules.
 
 * Pull requests must be send to the branch that reflects the version you want to contribute to.
 * Contributions must follow the [PSR2-**R** coding standard recommendation](https://github.com/php-fig-rectified/fig-rectified-standards).
-* [Unit tests](http://book.cakephp.org/3.0/en/development/testing.html) are required.
+* [Unit tests](http://book.cakephp.org/4.0/en/development/testing.html) are required.
 
 License
 -------
 
-Copyright 2012 - 2018, Florian Krämer
+Copyright Florian Krämer
 
 Licensed under The MIT License
 Redistributions of files must retain the above copyright notice.
