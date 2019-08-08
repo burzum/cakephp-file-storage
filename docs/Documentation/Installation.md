@@ -9,7 +9,7 @@ Using Composer
 Installing the plugin via [Composer](https://getcomposer.org/) is very simple, just run in your project folder:
 
 ```
-composer require burzum/file-storage:1.1.*
+composer require burzum/file-storage
 ```
 
 Database Setup
