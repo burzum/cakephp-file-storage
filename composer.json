@@ -23,10 +23,10 @@
 		"cakephp/cakephp": "^3.6.0",
 		"cakephp/plugin-installer": "^1.0.0",
 		"cakephp/migrations": "^2.0.0",
-		"knplabs/gaufrette": "^0.7.0|^0.8.0"
+		"knplabs/gaufrette": "^0.7.0||^0.8.0"
 	},
 	"require-dev": {
-		"phpunit/phpunit": "^5.7.14|^6.0",
+		"phpunit/phpunit": "^5.7.14||^6.0",
 		"burzum/cakephp-imagine-plugin": "3.x-dev",
 		"cakephp/cakephp-codesniffer": "^3.0.0",
 		"league/flysystem": "^1.0.0"
