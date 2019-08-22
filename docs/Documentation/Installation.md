@@ -18,7 +18,7 @@ Database Setup
 You need to setup the plugin database using [the official migrations plugin for CakePHP](https://github.com/cakephp/migrations).
 
 ```
-cake migrations migrate -p Burzum/FileStorage
+bin/cake migrations migrate --plugin Burzum/FileStorage
 ```
 
 If you're coming from the CakePHP 2.0 version of the plugin, the support for the CakeDC Migrations plugin has been dropped in favor of [the official migrations plugin](https://github.com/cakephp/migrations).
