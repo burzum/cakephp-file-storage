@@ -20,13 +20,14 @@ For example you have a `reports` table and want to save a PDF to it, you would t
 public function initialize(array $config)
 {
 	parent::initialize($config);
-	$this->table('reports');
+	
+	$this->setTable('reports');
 
-	$this->hasOne('PdfFiles', [
-		'className' => 'Burzum/FileStorage.PdfFiles',
+	$this->hasOne('Files', [
+		'className' => 'Burzum/FileStorage.FileStorage',
 		'foreignKey' => 'foreign_key',
 		'conditions' => [
-			'PdfFiles.model' => 'Reports'
+			'Files.model' => 'Reports'
 		]
 	]);
 }
