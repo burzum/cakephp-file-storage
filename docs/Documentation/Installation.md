@@ -15,7 +15,7 @@ composer require burzum/file-storage:"^2"
 Database Setup
 --------------
 
-You need to setup the plugin database using [the official migrations plugin for CakePHP](https://github.com/cakephp/migrations).
+You need to setup the plugin database using [the official migrations plugin for CakePHP](https://book.cakephp.org/migrations/2.x/en/).
 
 ```
 bin/cake migrations migrate --plugin Burzum/FileStorage
@@ -30,16 +30,8 @@ Add the following part to your applications ```config/bootstrap.php```.
 
 ```php
 use Cake\Event\EventManager;
-use Burzum\FileStorage\Lib\FileStorageUtils;
-use Burzum\FileStorage\Lib\StorageManager;
-use Burzum\FileStorage\Event\ImageProcessingListener;
-use Burzum\FileStorage\Event\LocalFileStorageListener;
-
-// Only required if you're *NOT* using composer or another autoloader!
-spl_autoload_register(__NAMESPACE__ .'\FileStorageUtils::gaufretteLoader');
-
-$listener = new LocalFileStorageListener();
-EventManager::instance()->on($listener);
+use Burzum\FileStorage\Storage\StorageManager;
+use Burzum\FileStorage\Storage\Listener\ImageProcessingListener;
 
 // For automated image processing you'll have to attach this listener as well
 $listener = new ImageProcessingListener();
