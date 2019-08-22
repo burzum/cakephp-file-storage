@@ -27,7 +27,7 @@ use Cake\ORM\Behavior;
  * as reference table for keeping the references to all the stored files.
  *
  * A table that will work with this behavior requires at least these fields:
- * id, filename, identifier, foreign_key, path, adapter, filename, mime_type, hash
+ * id, filename, identifier, foreign_key, path, adapter, mime_type, hash
  *
  * Behavior options:
  *
