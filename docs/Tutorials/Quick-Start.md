@@ -60,7 +60,7 @@ $this->hasOne('Avatars', [
 	'className' => 'Burzum/FileStorage.FileStorage',
 	'foreignKey' => 'foreign_key',
 	'conditions' => [
-		'Avatars.model' => 'User'
+		'Avatars.model' => 'Users'
 	]
 ]);
 ```
