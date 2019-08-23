@@ -103,7 +103,7 @@ class UsersController extends AppController {
 			$user = $this->Users->patchEntity($user, $this->request->data());
 			if (!empty($users->avatar->file)) {
 				$users->avatar->set('user_id', $userId); // Optional
-				$users->avatar->set('model', 'Avatars');
+				$users->avatar->set('model', 'Users');
 			}
 
 			if ($this->Users->save($user)) {
