@@ -100,7 +100,7 @@ class UsersController extends AppController {
 		$user = $this->Users->get($userId);
 
 		if ($this->request->is(['post', 'put'])) {
-			$user = $this->Users->patchEntity($user, $this->request->data());
+			$user = $this->Users->patchEntity($user, $this->request->getData());
 			if (!empty($users->avatar->file)) {
 				$users->avatar->set('user_id', $userId); // Optional
 				$users->avatar->set('model', 'Users');
