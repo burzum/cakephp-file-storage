@@ -44,6 +44,11 @@ class StorageShell extends Shell {
 			'help' => __('The files identifier (`model` field in `file_storage` table).'),
 			'default' => null
 		]);
+		$parser->addOption('identifier_key', [
+            'short' => 'k',
+            'help' => __('The files identifier id (`foreign_key` field in `file_storage` table).'),
+            'default' => null
+        ]);
 		$parser->addOption('model', [
 			'short' => 'm',
 			'help' => __('The model / table to use.'),
@@ -92,7 +97,9 @@ class StorageShell extends Shell {
 		$entity = $model->newEntity([
 			'adapter' => $this->params['adapter'],
 			'file' => $fileData,
-			'filename' => $fileData['name']
+			'filename' => $fileData['name'],
+            'model' => $this->params['identifier'],
+            'foreign_key' => $this->params['identifier_key']
 		]);
 
 		if ($model->save($entity)) {
