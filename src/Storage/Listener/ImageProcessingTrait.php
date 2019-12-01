@@ -6,10 +6,12 @@
  */
 namespace Burzum\FileStorage\Storage\Listener;
 
+use Burzum\FileStorage\Storage\StorageException;
 use Burzum\FileStorage\Storage\StorageUtils;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\Log\LogTrait;
+use Exception;
 use InvalidArgumentException;
 use Psr\Log\LogLevel;
 use RuntimeException;
@@ -48,12 +50,16 @@ trait ImageProcessingTrait {
 	 */
 	public function autoProcessImageVersions(EntityInterface $entity, $action) {
 		if (!in_array($action, ['create', 'remove'])) {
-			throw new InvalidArgumentException(sprintf('Action was `%s` but must be `create` or `remove`', $action));
+			throw new InvalidArgumentException(sprintf(
+				'Action was `%s` but must be `create` or `remove`', $action
+			));
 		}
+
 		$this->loadImageProcessingFromConfig();
 		if (!isset($this->_imageVersions[$entity->get('model')])) {
 			return false;
 		}
+
 		$method = $action . 'AllImageVersions';
 
 		return $this->{$method}($entity);
@@ -210,12 +216,16 @@ trait ImageProcessingTrait {
 			file_put_contents($tmpFile, $Storage->read($path));
 
 			return $tmpFile;
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			$this->log($e->getMessage(), LogLevel::ERROR, [
 				'fileStorage'
 			]);
 
-			throw new StorageException(sprintf('Failed to create the temporary file %s.', $tmpFile), $e->getCode(), $e);
+			throw new StorageException(
+				sprintf('Failed to create the temporary file %s.', $tmpFile),
+				$e->getCode(),
+				$e
+			);
 		}
 	}
 
