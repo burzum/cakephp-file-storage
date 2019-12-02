@@ -193,7 +193,7 @@ trait ImageProcessingTrait {
 					'path' => $path,
 					'hash' => $this->getImageVersionHash($entity->get('model'), $version)
 				];
-			} catch (\Exception $e) {
+			} catch (Exception $e) {
 				$this->log($e->getMessage(), LogLevel::ERROR, [
 					'fileStorage'
 				]);
