@@ -77,11 +77,9 @@ class FileStorageBehavior extends Behavior {
 	 * @return void
 	 */
 	public function beforeMarshal(Event $event, ArrayAccess $data) {
-		if (!$this->_isFileUploadPresent($data)) {
-			return;
+		if ($this->_isFileUploadPresent($data)) {
+			$this->_getFileInfoFromUpload($data);
 		}
-
-		$this->_getFileInfoFromUpload($data);
 	}
 
 	/**
@@ -93,8 +91,6 @@ class FileStorageBehavior extends Behavior {
 	 */
 	public function beforeSave(Event $event, EntityInterface $entity) {
 		if (!$this->_isFileUploadPresent($entity)) {
-			$event->stopPropagation();
-
 			return;
 		}
 
@@ -115,6 +111,10 @@ class FileStorageBehavior extends Behavior {
 	 * @return void
 	 */
 	public function afterSave(Event $event, EntityInterface $entity, $options) {
+		if (!$this->_isFileUploadPresent($entity)) {
+			return;
+		}
+
 		$this->dispatchEvent('FileStorage.afterSave', [
 			'entity' => $entity,
 			'storageAdapter' => $this->getStorageAdapter($entity->get('adapter'))
