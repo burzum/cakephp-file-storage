@@ -17,7 +17,7 @@ filter:
 build:
     environment:
         php:
-            version: 7.1.6
+            version: 7.2
     project_setup:
         before:
             - mysql -e "CREATE DATABASE test"
