@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace Burzum\FileStorage\Model\Entity;
 
 use Burzum\FileStorage\Storage\PathBuilder\PathBuilderTrait;
@@ -80,7 +81,7 @@ class FileStorage extends Entity
      * @link http://book.cakephp.org/3.0/en/orm/entities.html#accessors-mutators
      * @return string
      */
-    protected function _getFullPath(): string
+    protected function _getFullPath()
     {
         return $this->path();
     }
@@ -91,7 +92,7 @@ class FileStorage extends Entity
      * @link http://book.cakephp.org/3.0/en/orm/entities.html#accessors-mutators
      * @return string
      */
-    protected function _getUrl(): string
+    protected function _getUrl()
     {
         return $this->url();
     }
@@ -102,7 +103,7 @@ class FileStorage extends Entity
      * @param array $options Path options.
      * @return string
      */
-    public function path(array $options = []): string
+    public function path(array $options = [])
     {
         if (empty($options['method'])) {
             $options['method'] = 'fullPath';
@@ -117,7 +118,7 @@ class FileStorage extends Entity
      * @param array $options Path options.
      * @return string
      */
-    public function url(array $options = []): string
+    public function url(array $options = [])
     {
         $options['method'] = 'url';
 
@@ -130,7 +131,7 @@ class FileStorage extends Entity
      * @param array $options Path options.
      * @return string
      */
-    protected function _path(array $options): string
+    protected function _path(array $options)
     {
         if (empty($options['method'])) {
             $options['method'] = 'path';

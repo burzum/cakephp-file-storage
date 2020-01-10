@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace Burzum\FileStorage\Validation;
 
 use Cake\I18n\Number;

@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * @author Florian Krämer
  * @author Robert Pustułka

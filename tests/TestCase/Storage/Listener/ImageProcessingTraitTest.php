@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * @author Florian Krämer
  * @copyright 2012 - 2017 Florian Krämer
@@ -27,15 +28,18 @@ class TraitTestClass extends AbstractListener
             'preserveFilename' => true,
         ],
     ];
+
     public function __construct(array $config = [])
     {
         parent::__construct($config);
         $this->loadImageProcessingFromConfig();
     }
+
     public function checkImageVersions($identifier, array $versions)
     {
         return $this->_checkImageVersions($identifier, $versions);
     }
+
     public function implementedEvents(): array
     {
         return [];

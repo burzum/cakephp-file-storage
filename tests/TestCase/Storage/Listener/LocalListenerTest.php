@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace Burzum\FileStorage\Test\TestCase\Storage\Listener;
 
 use Cake\Core\Configure;
@@ -111,7 +112,7 @@ class LocalListenerTest extends TestCase
     public function testAfterSave()
     {
         $entity = $this->FileStorage->get('file-storage-3');
-        $entity->isNew(true);
+        $entity->setNew(true);
         $entity->file = [
             'name' => 'titus.jpg',
             'tmp_name' => $this->fileFixtures . 'titus.jpg',

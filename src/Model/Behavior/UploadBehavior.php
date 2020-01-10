@@ -7,6 +7,7 @@
  * @license MIT
  */
 declare(strict_types=1);
+
 namespace Burzum\FileStorage\Model\Behavior;
 
 use ArrayObject;

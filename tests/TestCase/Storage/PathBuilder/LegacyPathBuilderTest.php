@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace Burzum\FileStorage\Test\TestCase\Storage\PathBuilder;
 
 use Burzum\FileStorage\Storage\PathBuilder\LegacyPathBuilder;

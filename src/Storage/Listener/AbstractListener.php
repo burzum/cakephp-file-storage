@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * @author Florian Krämer
  * @copyright 2012 - 2017 Florian Krämer
@@ -371,12 +372,10 @@ abstract class AbstractListener implements EventListenerInterface
             $entity = $event->getData('entity');
             $Storage = $this->getStorageAdapter($entity['adapter']);
             $Storage->write($entity['path'], file_get_contents($entity[$fileField]['tmp_name']), true);
-
             $event->setResult($event->getSubject()
                     ->save($entity, [
                         'checkRules' => false,
                     ]));
-
             $this->_afterStoreFile($event);
             if ($event->isStopped()) {
                 return $event->getResult();

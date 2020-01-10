@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * File Storage Plugin for CakePHP
  *
@@ -98,12 +99,12 @@ class FileStorageBehavior extends Behavior
      * @param \ArrayObject $options The options for the query
      * @return void
      */
-    public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
+    public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): bool
     {
         if (!$this->_isFileUploadPresent($entity)) {
             $event->stopPropagation();
 
-            return;
+            return false;
         }
 
         $this->_checkEntityBeforeSave($entity);
@@ -112,6 +113,8 @@ class FileStorageBehavior extends Behavior
             'entity' => $entity,
             'storageAdapter' => $this->getStorageAdapter($entity->get('adapter')),
         ], $this->_table);
+
+        return true;
     }
 
     /**

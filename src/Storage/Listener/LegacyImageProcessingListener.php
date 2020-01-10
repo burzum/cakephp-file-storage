@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace Burzum\FileStorage\Storage\Listener;
 
 use Burzum\FileStorage\Storage\StorageManager;
@@ -137,7 +138,7 @@ class LegacyImageProcessingListener extends AbstractListener
      * Creates the different versions of images that are configured
      *
      * @param \Cake\ORM\Table $table
-     * @param EntityInterface $entity
+     * @param \Cake\Datasource\EntityInterface $entity
      * @param array $operations
      * @throws \Burzum\FileStorage\Event\Exception
      * @throws \Exception
@@ -172,6 +173,7 @@ class LegacyImageProcessingListener extends AbstractListener
         }
 
         unlink($tmpFile);
+
         return true;
     }
 
@@ -181,7 +183,7 @@ class LegacyImageProcessingListener extends AbstractListener
      * @param \Cake\Event\EventInterface  $Event
      * @return void
      */
-    public function createVersions(EventInterface  $Event): void
+    public function createVersions(EventInterface $Event): void
     {
         if ($this->_checkEvent($Event)) {
             $table = $Event->getSubject();

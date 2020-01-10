@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace Burzum\FileStorage\Model\Entity;
 
 use Cake\Core\Configure;

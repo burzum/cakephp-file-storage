@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * @author Florian Krämer
  * @copyright 2012 - 2017 Florian Krämer
