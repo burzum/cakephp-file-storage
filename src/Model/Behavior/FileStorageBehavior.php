@@ -10,6 +10,7 @@ namespace Burzum\FileStorage\Model\Behavior;
 
 use ArrayAccess;
 use Burzum\FileStorage\Storage\StorageTrait;
+use Burzum\FileStorage\Storage\StorageUtils;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
