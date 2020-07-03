@@ -2,7 +2,15 @@
     "name": "burzum/cakephp-file-storage",
     "type": "cakephp-plugin",
     "description": "This plugin is giving you the possibility to store files in virtually any kind of storage backend. This plugin is wrapping the Gaufrette library (https://github.com/KnpLabs/Gaufrette) library in a CakePHP fashion and provides a simple way to use the storage adapters through the StorageManager class.",
-    "keywords": ["file", "filesystem", "media", "abstraction", "upload", "cakephp", "storage"],
+    "keywords": [
+        "file",
+        "filesystem",
+        "media",
+        "abstraction",
+        "upload",
+        "cakephp",
+        "storage"
+    ],
     "homepage": "http://github.com/burzum/cakephp-file-storage-plugin",
     "license": "MIT",
     "authors": [
@@ -17,18 +25,18 @@
         }
     ],
     "prefer-stable": true,
-    "minimum-stability": "dev", 
+    "minimum-stability": "dev",
     "require": {
         "php": ">=7.2.0",
-        "cakephp/cakephp": "4.x-dev as 4.0.0",
+        "cakephp/cakephp": ">=4.0.0",
         "cakephp/plugin-installer": "^1.0.0",
         "knplabs/gaufrette": "^0.7.0|^0.8.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.0",
         "vlucas/phpdotenv": "^3.3",
-        "cakephp/cakephp-codesniffer": "dev-next",
-        "burzum/cakephp-imagine-plugin": "4.x-dev",
+        "cakephp/cakephp-codesniffer": "^4.0",
+        "burzum/cakephp-imagine-plugin": "^4.0",
         "league/flysystem": "^1.0.0",
         "aws/aws-sdk-php": "*"
     },
@@ -68,7 +76,7 @@
         "psalm": "psalm --show-info=false",
         "stan-setup": "cp composer.json composer.backup && composer require --dev phpstan/phpstan:^0.11 vimeo/psalm:^3.0 && mv composer.backup composer.json",
         "rector": "rector process src/",
-        "rector-setup": "cp composer.json composer.backup && composer require --dev rector/rector:^0.4.11 && mv composer.backup composer.json", 
+        "rector-setup": "cp composer.json composer.backup && composer require --dev rector/rector:^0.4.11 && mv composer.backup composer.json",
         "test": "phpunit",
         "coverage-test": "phpunit --stderr --coverage-clover=clover.xml"
     }
