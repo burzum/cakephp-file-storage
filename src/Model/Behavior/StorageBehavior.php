@@ -39,7 +39,7 @@ use Cake\ORM\Behavior;
  * - `ignoreEmptyFile`: If not file is present nothing will be saved.
  * - `fileField`: The field that will be checked for a file upload.
  */
-class FileStorageBehavior extends Behavior
+class StorageBehavior extends Behavior
 {
     use EventDispatcherTrait;
     use StorageTrait;
@@ -147,7 +147,7 @@ class FileStorageBehavior extends Behavior
                 $entity->set('adapter', $this->getConfig('defaultStorageConfig'));
             }
 
-            $fileHashMethod = $this->getConfig('getFileHash');
+           $fileHashMethod = $this->getConfig('getFileHash');
             if ($fileHashMethod) {
                 if ($fileHashMethod === true) {
                     $fileHashMethod = 'sha1';
