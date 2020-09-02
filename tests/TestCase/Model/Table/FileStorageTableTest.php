@@ -1,16 +1,16 @@
 <?php
+
 declare(strict_types=1);
+
 namespace Burzum\FileStorage\Test\TestCase\Model\Table;
 
 use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
-use Cake\Event\EventManager;
-use Cake\ORM\TableRegistry;
 
 /**
  * File Storage Test
  *
  * @author Florian Krämer
- * @copyright 2012 - 2017 Florian Krämer
+ * @copyright 2012 - 2020 Florian Krämer
  * @license MIT
  */
 class FileStorageTableTest extends FileStorageTestCase
@@ -25,17 +25,6 @@ class FileStorageTableTest extends FileStorageTestCase
     ];
 
     /**
-     * startTest
-     *
-     * @return void
-     */
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->FileStorage = TableRegistry::getTableLocator()->get('Burzum/FileStorage.FileStorage');
-    }
-
-    /**
      * endTest
      *
      * @return void
@@ -44,8 +33,7 @@ class FileStorageTableTest extends FileStorageTestCase
     {
         parent::tearDown();
         unset($this->FileStorage);
-        unset($this->FileStorageBehavior);
-        TableRegistry::getTableLocator()->clear();
+        $this->getTableLocator()->clear();
     }
 
     /**
@@ -67,10 +55,6 @@ class FileStorageTableTest extends FileStorageTestCase
      */
     public function testFileSaving()
     {
-        $this->_removeListeners();
-
-        EventManager::instance()->on($this->listeners['LocalListener']);
-//dd(StorageManager::getConfigs());
         $entity = $this->FileStorage->newEntity([
             'model' => 'Document',
             'adapter' => 'Local',
@@ -85,8 +69,5 @@ class FileStorageTableTest extends FileStorageTestCase
 
         $this->FileStorage->save($entity);
         $this->assertEquals($entity->getErrors(), []);
-
-//      $result = $this->FileStorage->delete($entity);
-//      $this->assertTrue($result);
     }
 }

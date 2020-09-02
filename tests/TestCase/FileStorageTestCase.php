@@ -1,28 +1,25 @@
 <?php
 declare(strict_types=1);
+
 namespace Burzum\FileStorage\Test\TestCase;
 
-use Burzum\FileStorage\Storage\Listener\LegacyImageProcessingListener;
-use Burzum\FileStorage\Storage\Listener\LegacyLocalFileStorageListener;
-use Burzum\FileStorage\Storage\Listener\LocalListener;
-use Burzum\FileStorage\Storage\StorageManager;
-use Burzum\FileStorage\Storage\StorageUtils;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
-use Cake\Event\EventManager;
 use Cake\Filesystem\Folder;
-use Cake\ORM\TableRegistry;
+use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\TestSuite\TestCase;
 
 /**
  * FileStorageTestCase
  *
  * @author Florian Krämer
- * @copyright 2012 - 2017 Florian Krämer
+ * @copyright 2012 - 2020 Florian Krämer
  * @license MIT
  */
 class FileStorageTestCase extends TestCase
 {
+    use LocatorAwareTrait;
+
     /**
      * Fixtures
      *
@@ -33,13 +30,6 @@ class FileStorageTestCase extends TestCase
     ];
 
     /**
-     * Listeners to be used in tests.
-     *
-     * @var array
-     */
-    public $listeners = [];
-
-    /**
      * FileStorage Table instance.
      *
      * @var \Burzum\FileStorage\Model\Table\FileStorageTable
@@ -47,25 +37,18 @@ class FileStorageTestCase extends TestCase
     public $FileStorage;
 
     /**
-     * ImageStorage Table instance.
-     *
-     * @var \Burzum\FileStorage\Model\Table\ImageStorageTable
-     */
-    public $ImageStorage;
-
-    /**
      * Path to the file fixtures, set in the setUp() method.
      *
      * @var string
      */
-    public $fileFixtures;
+    public string $fileFixtures;
 
     /**
      * Test file path
      *
      * @var string
      */
-    public $testPath;
+    public string $testPath = '';
 
     /**
      * Setup test folders and files
@@ -76,8 +59,6 @@ class FileStorageTestCase extends TestCase
     {
         parent::setUp();
 
-        $this->_setupListeners();
-
         $this->testPath = TMP . 'file-storage-test' . DS;
         $this->fileFixtures = Plugin::path('Burzum/FileStorage') . 'tests' . DS . 'Fixture' . DS . 'File' . DS;
 
@@ -85,17 +66,33 @@ class FileStorageTestCase extends TestCase
             mkdir($this->testPath);
         }
 
-        Configure::write('FileStorage.basePath', $this->testPath);
-        Configure::write('FileStorage.imageSizes', [
+        $this->prepareDependencies();
+        $this->configureImageVariants();
+
+        $this->FileStorage = $this
+            ->getTableLocator()
+            ->get(FileStorageTestTable::class);
+    }
+
+    /**
+     * @return void
+     */
+    private function configureImageVariants(): void
+    {
+        Configure::write('FileStorage.imageVariants', [
             'Test' => [
                 't50' => [
                     'thumbnail' => [
                         'mode' => 'outbound',
-                        'width' => 50, 'height' => 50]],
+                        'width' => 50,
+                        'height' => 50
+                    ]
+                ],
                 't150' => [
                     'thumbnail' => [
                         'mode' => 'outbound',
-                        'width' => 150, 'height' => 150,
+                        'width' => 150,
+                        'height' => 150,
                     ],
                 ],
             ],
@@ -109,41 +106,49 @@ class FileStorageTestCase extends TestCase
                 ],
             ],
         ]);
-
-        StorageUtils::generateHashes();
-
-        StorageManager::config('Local', [
-            'adapterOptions' => [$this->testPath, true],
-            'adapterClass' => '\Gaufrette\Adapter\Local',
-            'class' => '\Gaufrette\Filesystem',
-        ]);
-
-        $this->FileStorage = TableRegistry::getTableLocator()->get('Burzum/FileStorage.FileStorage');
     }
 
     /**
-     * Setting up the listeners.
-     *
      * @return void
      */
-    protected function _setupListeners()
+    private function prepareDependencies(): void
     {
-        $this->listeners['LocalListener'] = new LocalListener();
-        $this->listeners['LocalListenerImageProcessing'] = new LocalListener([
-            'imageProcessing' => true,
+        $pathBuilder = new \Phauthentic\Infrastructure\Storage\PathBuilder\PathBuilder([
+            'pathTemplate' => '{model}{ds}{collection}{ds}{randomPath}{ds}{strippedId}{ds}{strippedId}.{extension}',
+            'variantPathTemplate' => '{model}{ds}{collection}{ds}{randomPath}{ds}{strippedId}{ds}{strippedId}.{hashedVariant}.{extension}',
         ]);
 
-        $this->listeners['LegacyLocalListener'] = new LegacyLocalFileStorageListener([
-            'disableDeprecationWarning' => true,
+        $storageService = new \Phauthentic\Infrastructure\Storage\StorageService(
+            new \Phauthentic\Infrastructure\Storage\StorageAdapterFactory()
+        );
+
+        $storageService->setAdapterConfigFromArray([
+            'Local' => [
+                'class' => \Phauthentic\Infrastructure\Storage\Factories\LocalFactory::class,
+                'options' => [
+                    'root' => $this->testPath, true
+                ]
+            ],
         ]);
 
-        $this->listeners['LegacyLocalListenerImageProcessing'] = new LegacyLocalFileStorageListener([
-            'imageProcessing' => true,
-            'disableDeprecationWarning' => true,
+        $fileStorage = new \Phauthentic\Infrastructure\Storage\FileStorage(
+            $storageService,
+            $pathBuilder
+        );
+
+        $imageManager = new \Intervention\Image\ImageManager([
+            'driver' => 'gd'
         ]);
 
-        $this->listeners['LegacyImageProcessingListener'] = new LegacyImageProcessingListener([
-            'disableDeprecationWarning' => true,
+        $imageProcessor = new \Phauthentic\Infrastructure\Storage\Processor\Image\ImageProcessor(
+            $fileStorage,
+            $pathBuilder,
+            $imageManager
+        );
+
+        Configure::write('FileStorage.behaviorConfig', [
+            'fileStorage' => $fileStorage,
+            'imageProcessor' => $imageProcessor
         ]);
     }
 
@@ -156,44 +161,34 @@ class FileStorageTestCase extends TestCase
     {
         parent::tearDown();
 
-        $this->_removeListeners();
-
-        TableRegistry::getTableLocator()->clear();
+        $this->getTableLocator()->clear();
         $Folder = new Folder($this->testPath);
         $Folder->delete();
-    }
-
-    /**
-     * Helper method to remove all listeners.
-     *
-     * @return void
-     */
-    protected function _removeListeners()
-    {
-        foreach ($this->listeners as $listener) {
-            EventManager::instance()->off($listener);
-        }
     }
 
     /**
      * Creates a file
      *
      * @string $file File path and name, relative to FileStorageTestCase::$testPath
-     * @return void
+     * @return string
      */
-    protected function _createMockFile($file)
+    protected function _createMockFile($file): string
     {
         if (DS === '/') {
             $file = str_replace('\\', DS, $file);
         } else {
             $file = str_replace('/', DS, $file);
         }
+
         $path = dirname($file);
         if (!is_dir($this->testPath . $path)) {
             mkdir($this->testPath . $path, 0777, true);
         }
+
         if (!file_exists($this->testPath . $file)) {
             touch($this->testPath . $file);
         }
+
+        return $this->testPath . $file;
     }
 }

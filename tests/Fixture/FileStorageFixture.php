@@ -3,7 +3,7 @@
  * File Storage Fixture
  *
  * @author Florian Krämer
- * @copyright 2012 - 2017 Florian Krämer
+ * @copyright 2012 - 2020 Florian Krämer
  * @license MIT
  */
 namespace Burzum\FileStorage\Test\Fixture;
@@ -43,6 +43,8 @@ class FileStorageFixture extends TestFixture
         'hash' => ['type' => 'string', 'null' => true, 'default' => null, 'length' => 64],
         'path' => ['type' => 'string', 'null' => true, 'default' => null],
         'adapter' => ['type' => 'string', 'null' => true, 'default' => null, 'length' => 32, 'comment' => 'Gaufrette Storage Adapter Class'],
+        'variants' => ['type' => 'json', 'null' => true, 'default' => null],
+        'metadata' => ['type' => 'json', 'null' => true, 'default' => null],
         'created' => ['type' => 'datetime', 'null' => true, 'default' => null],
         'modified' => ['type' => 'datetime', 'null' => true, 'default' => null],
         '_constraints' => [
@@ -68,6 +70,8 @@ class FileStorageFixture extends TestFixture
             'hash' => '',
             'path' => '',
             'adapter' => 'Local',
+            'variants' => '{}',
+            'metadata' => '{}',
             'created' => '2012-01-01 12:00:00',
             'modified' => '2012-01-01 12:00:00',
         ],
@@ -83,6 +87,8 @@ class FileStorageFixture extends TestFixture
             'hash' => '',
             'path' => '',
             'adapter' => 'Local',
+            'variants' => '{}',
+            'metadata' => '{}',
             'created' => '2012-01-01 12:00:00',
             'modified' => '2012-01-01 12:00:00',
         ],
@@ -98,6 +104,8 @@ class FileStorageFixture extends TestFixture
             'hash' => '',
             'path' => '',
             'adapter' => 'Local',
+            'variants' => '{}',
+            'metadata' => '{}',
             'created' => '2012-01-01 12:00:00',
             'modified' => '2012-01-01 12:00:00',
         ],
@@ -113,6 +121,8 @@ class FileStorageFixture extends TestFixture
             'hash' => '09d82a31',
             'path' => null,
             'adapter' => 'S3',
+            'variants' => '{}',
+            'metadata' => '{}',
             'created' => '2012-01-01 12:00:00',
             'modified' => '2012-01-01 12:00:00',
         ],

@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace Burzum\FileStorage\Test\TestCase\View\Helper;
 
 use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
@@ -8,6 +9,7 @@ use Cake\Core\Configure;
 use Cake\Http\ServerRequest as Request;
 use Cake\View\Helper\HtmlHelper;
 use Cake\View\View;
+use Phauthentic\Infrastructure\Storage\Processor\Exception\VariantDoesNotExistException;
 
 /**
  * ImageHelperTest
@@ -49,11 +51,7 @@ class ImageHelperTest extends FileStorageTestCase
             ->withAttribute('webroot', '/')
             ->withAttribute('base', '/');
 
-        if (\version_compare(Configure::version(), '3.7.0', 'ge')) {
-            $this->Image->Html->getView()->setRequest($request);
-        } else {
-            $this->Image->Html->request = $request;
-        }
+        $this->Image->Html->getView()->setRequest($request);
     }
 
     /**
@@ -81,6 +79,11 @@ class ImageHelperTest extends FileStorageTestCase
             'path' => 'test/path/testimage.jpg',
             'extension' => 'jpg',
             'adapter' => 'Local',
+            'variants' => [
+                't150' => [
+                    'url' => 'test/path/testimage.c3f33c2a.jpg'
+                ]
+            ]
         ], ['accessibleFields' => ['*' => true]]);
 
         $result = $this->Image->imageUrl($image, 't150', ['pathPrefix' => '/src/']);
@@ -97,7 +100,7 @@ class ImageHelperTest extends FileStorageTestCase
      */
     public function testImageUrlInvalidArgumentException()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(VariantDoesNotExistException::class);
         $image = $this->FileStorage->newEntity([
             'id' => 'e479b480-f60b-11e1-a21f-0800200c9a66',
             'filename' => 'testimage.jpg',

@@ -4,7 +4,7 @@ declare(strict_types=1);
  * File Storage Plugin for CakePHP
  *
  * @author Florian Krämer
- * @copyright 2012 - 2017 Florian Krämer
+ * @copyright 2012 - 2020 Florian Krämer
  * @license MIT
  */
 namespace Burzum\FileStorage\Shell\Task;

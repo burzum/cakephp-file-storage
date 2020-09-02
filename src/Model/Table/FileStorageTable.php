@@ -2,6 +2,8 @@
 declare(strict_types=1);
 namespace Burzum\FileStorage\Model\Table;
 
+use Cake\Core\Configure;
+use Cake\Database\Schema\TableSchemaInterface;
 use Cake\ORM\Table;
 
 /**
@@ -19,11 +21,22 @@ use Cake\ORM\Table;
  * Behavior that is attached to this table object.
  *
  * @author Florian Krämer
- * @copyright 2012 - 2017 Florian Krämer
+ * @copyright 2012 - 2020 Florian Krämer
  * @license MIT
  */
 class FileStorageTable extends Table
 {
+    /**
+     * @inheritDoc
+     */
+    public function _initializeSchema(TableSchemaInterface $schema): TableSchemaInterface
+    {
+        $schema->addColumn('variants', 'json');
+        $schema->addColumn('metadata', 'json');
+
+        return parent::_initializeSchema($schema);
+    }
+
     /**
      * Initialize
      *
@@ -39,6 +52,9 @@ class FileStorageTable extends Table
         $this->setDisplayField('filename');
 
         $this->addBehavior('Timestamp');
-        $this->addBehavior('Burzum/FileStorage.FileStorage');
+        $this->addBehavior(
+            'Burzum/FileStorage.FileStorage',
+            (array)Configure::read('FileStorage.behaviorConfig'),
+        );
     }
 }
