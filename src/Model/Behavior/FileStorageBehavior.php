@@ -169,7 +169,7 @@ class FileStorageBehavior extends Behavior
             try {
                 $file = $this->entityToFileObject($entity);
                 $file = $this->fileStorage->store($file);
-                $file = $this->processImages($file);
+                $file = $this->processImages($file, $entity);
 
                 foreach ($this->processors as $processor) {
                     $file = $processor->process($file);
@@ -303,18 +303,20 @@ class FileStorageBehavior extends Behavior
      * Processes images
      *
      * @param \Phauthentic\Infrastructure\Storage\FileInterface $file File
+     * @param \Cake\Datasource\EntityInterface
      * @return \Phauthentic\Infrastructure\Storage\FileInterface
      */
-    public function processImages(FileInterface $file): FileInterface
+    public function processImages(FileInterface $file, EntityInterface $entity): FileInterface
     {
         $imageSizes = Configure::read('FileStorage.imageVariants');
         $model = $file->model();
+        $identifier = $entity->get('identifier');
 
-        if (!isset($imageSizes[$model])) {
+        if (!isset($imageSizes[$model][$identifier])) {
             return $file;
         }
 
-        $file = $file->withVariants($imageSizes[$model]);
+        $file = $file->withVariants($imageSizes[$model][$identifier]);
         $file = $this->imageProcessor->process($file);
 
         return $file;
