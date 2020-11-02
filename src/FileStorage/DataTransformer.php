@@ -42,7 +42,7 @@ class DataTransformer implements DataTransformerInterface
             (array)$entity->get('metadata')
         );
 
-        $file = $file->withUuid($entity->get('id'));
+        $file = $file->withUuid((string)$entity->get('id'));
 
         if ($entity->has('path')) {
             $file = $file->withPath($entity->get('path'));

@@ -108,7 +108,7 @@ class StorageShell extends Shell
 
         if ($model->save($entity)) {
             $this->out('File successfully saved!');
-            $this->out('UUID: ' . $entity->get('id'));
+            $this->out('ID:   ' . $entity->get('id'));
             $this->out('Path: ' . $entity->get('full_path'));
         } else {
             $this->abort('Failed to save the file.');
