@@ -108,7 +108,7 @@ class FileStorageBehavior extends Behavior
     {
         $field = $this->getConfig('fileField');
         if ($this->getConfig('ignoreEmptyFile') === true) {
-            if (!isset($entity[$field]['error']) || $entity[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+            if (!isset($entity[$field]) || $entity[$field]->getError() === UPLOAD_ERR_NO_FILE) {
                 return false;
             }
         }
@@ -148,7 +148,7 @@ class FileStorageBehavior extends Behavior
         $this->dispatchEvent('FileStorage.beforeSave', [
             'entity' => $entity,
             'storageAdapter' => $this->getStorageAdapter($entity->get('adapter'))
-        ], $this->_table);
+        ], $this->getTable());
     }
 
     /**
@@ -182,6 +182,7 @@ class FileStorageBehavior extends Behavior
                 );
             } catch (Throwable $exception) {
                 $this->getTable()->delete($entity);
+                throw $exception;
             }
         }
 
@@ -223,7 +224,7 @@ class FileStorageBehavior extends Behavior
     {
         $this->dispatchEvent('FileStorage.afterDelete', [
             'entity' => $entity,
-        ], $this->_table);
+        ], $this->getTable());
 
         $file = $this->entityToFileObject($entity);
         $this->fileStorage->remove($file);
@@ -242,16 +243,15 @@ class FileStorageBehavior extends Behavior
      */
     protected function getFileInfoFromUpload(&$upload, $field = 'file')
     {
-        if (!empty($upload[$field]['tmp_name'])) {
-            $File = new \Cake\Filesystem\File($upload[$field]['tmp_name']);
-            $upload['filesize'] = filesize($upload[$field]['tmp_name']);
-            $upload['mime_type'] = $File->mime();
-        }
+        /**
+         * @var $uploadedFile \Psr\Http\Message\UploadedFileInterface
+         */
+        $uploadedFile = $upload[$field];
 
-        if (!empty($upload[$field]['name'])) {
-            $upload['extension'] = pathinfo($upload[$field]['name'], PATHINFO_EXTENSION);
-            $upload['filename'] = $upload[$field]['name'];
-        }
+        $upload['filesize'] = $uploadedFile->getSize();
+        $upload['mime_type'] = $uploadedFile->getClientMediaType();
+        $upload['extension'] = pathinfo($uploadedFile->getClientFilename(), PATHINFO_EXTENSION);
+        $upload['filename'] = $uploadedFile->getClientFilename();
     }
 
     /**

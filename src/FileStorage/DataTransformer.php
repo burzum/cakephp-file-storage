@@ -49,7 +49,11 @@ class DataTransformer implements DataTransformerInterface
         }
 
         if ($entity->has('file')) {
-            $file = $file->withFile($entity->get('file')['tmp_name']);
+            /**
+             * @var $uploadedFile \Psr\Http\Message\UploadedFileInterface
+             */
+            $uploadedFile = $entity->get('file');
+            $file = $file->withFile($uploadedFile->getStream()->getMetadata('uri'));
         }
 
         return $file;
