@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Burzum\FileStorage\Test\TestCase\Model\Table;
 
 use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
+use Laminas\Diactoros\UploadedFile;
 
 /**
  * File Storage Test
@@ -15,15 +16,6 @@ use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
  */
 class FileStorageTableTest extends FileStorageTestCase
 {
-    /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = [
-        'plugin.Burzum\FileStorage.FileStorage',
-    ];
-
     /**
      * endTest
      *
@@ -58,6 +50,30 @@ class FileStorageTableTest extends FileStorageTestCase
         $entity = $this->FileStorage->newEntity([
             'model' => 'Document',
             'adapter' => 'Local',
+            'file' => new UploadedFile(
+                $this->fileFixtures . 'titus.jpg',
+                filesize($this->fileFixtures . 'titus.jpg'),
+                UPLOAD_ERR_OK,
+                'tituts.jpg',
+                'image/jpeg'
+            ),
+        ], ['accessibleFields' => ['*' => true]]);
+        $this->assertSame([], $entity->getErrors());
+
+        $this->FileStorage->saveOrFail($entity);
+    }
+
+    /**
+     * Testing a complete save call
+     *
+     * @link https://github.com/burzum/cakephp-file-storage/issues/85
+     * @return void
+     */
+    public function testFileSavingArray()
+    {
+        $entity = $this->FileStorage->newEntity([
+            'model' => 'Document',
+            'adapter' => 'Local',
             'file' => [
                 'error' => UPLOAD_ERR_OK,
                 'size' => filesize($this->fileFixtures . 'titus.jpg'),
@@ -66,8 +82,8 @@ class FileStorageTableTest extends FileStorageTestCase
                 'tmp_name' => $this->fileFixtures . 'titus.jpg',
             ],
         ], ['accessibleFields' => ['*' => true]]);
+        $this->assertSame([], $entity->getErrors());
 
-        $this->FileStorage->save($entity);
-        $this->assertEquals($entity->getErrors(), []);
+        $this->FileStorage->saveOrFail($entity);
     }
 }

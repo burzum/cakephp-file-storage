@@ -37,16 +37,16 @@ class ImageHelper extends Helper
     /**
      * Generates an image url based on the image record data and the used Gaufrette adapter to store it
      *
-     * @param \Burzum\FileStorage\Model\Entity\FileStorageEntityInterface $image FileStorage entity or whatever else table that matches this helpers needs without
+     * @param \Burzum\FileStorage\Model\Entity\FileStorageEntityInterface|null $image FileStorage entity or whatever else table that matches this helpers needs without
      * the model, we just want the record fields
      * @param string|null $version Image version string
      * @param array $options HtmlHelper::image(), 2nd arg options array
      * @return string
      */
-    public function display(FileStorageEntityInterface $image, ?string $version = null, array $options = []): string
+    public function display(?FileStorageEntityInterface $image, ?string $version = null, array $options = []): string
     {
-        if (empty($image)) {
-            return $this->fallbackImage($options, $image, $version);
+        if ($image === null) {
+            return $this->fallbackImage($options, $version);
         }
 
         $url = $this->imageUrl($image, $version, $options);
@@ -54,7 +54,7 @@ class ImageHelper extends Helper
             return $this->Html->image($url, $options);
         }
 
-        return $this->fallbackImage($options, $image, $version);
+        return $this->fallbackImage($options, $version);
     }
 
     /**
@@ -62,26 +62,34 @@ class ImageHelper extends Helper
      *
      * @param \Burzum\FileStorage\Model\Entity\FileStorageEntityInterface $image FileStorage entity or whatever else table that matches this helpers needs without
      * the model, we just want the record fields
-     * @param string|null $version Image version string
+     * @param string|null $variant Image version string
      * @param array $options HtmlHelper::image(), 2nd arg options array
-     * @throws \InvalidArgumentException
+     * @throws \Phauthentic\Infrastructure\Storage\Processor\Exception\VariantDoesNotExistException
      * @return string|null
      */
     public function imageUrl(FileStorageEntityInterface $image, ?string $variant = null, array $options = []): ?string
     {
         if ($variant === null) {
-            $url = $image->get('path');
+            $url = $image->get('url');
+            if ($url) {
+                return $url;
+            }
+            $path = $image->get('path');
         } else {
             $url = $image->getVariantUrl($variant);
+            if ($url) {
+                return $url;
+            }
+            $path = $image->getVariantPath($variant);
         }
 
-        if (empty($url)) {
+        if (!$path) {
             throw VariantDoesNotExistException::withName($variant);
         }
 
         $options = array_merge($this->getConfig(), $options);
         if (!empty($options['pathPrefix'])) {
-            $url = $options['pathPrefix'] . $url;
+            $url = $options['pathPrefix'] . $path;
         }
 
         return $this->normalizePath((string)$url);
@@ -91,11 +99,10 @@ class ImageHelper extends Helper
      * Provides a fallback image if the image record is empty
      *
      * @param array $options
-     * @param array $image
      * @param string|null $version
      * @return string
      */
-    public function fallbackImage(array $options = [], array $image = [], ?string $version = null): string
+    public function fallbackImage(array $options = [], ?string $version = null): string
     {
         if (isset($options['fallback'])) {
             if ($options['fallback'] === true) {

@@ -1,8 +1,8 @@
-.idea/
+/.idea/
 /vendor
-/plugins
 /tmp
 /nbproject
 /config/Migrations/schema-dump-default.lock
 /clover.xml
-composer.lock
+/composer.lock
+/.phpunit.result.cache

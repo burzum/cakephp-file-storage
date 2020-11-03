@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace Burzum\FileStorage\Model\Behavior;
 
-use ArrayAccess;
+use ArrayObject;
 use Burzum\FileStorage\FileStorage\DataTransformer;
 use Burzum\FileStorage\FileStorage\DataTransformerInterface;
 use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
-use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
+use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
 use Phauthentic\Infrastructure\Storage\FileInterface;
 use Phauthentic\Infrastructure\Storage\FileStorage;
@@ -101,16 +101,24 @@ class FileStorageBehavior extends Behavior
     /**
      * Checks if a file upload is present.
      *
-     * @param \Cake\Datasource\EntityInterface|array $entity
+     * @param \Cake\Datasource\EntityInterface|\ArrayObject $entity
      * @return bool
      */
     protected function isFileUploadPresent($entity)
     {
         $field = $this->getConfig('fileField');
         if ($this->getConfig('ignoreEmptyFile') === true) {
-            if (!isset($entity[$field]) || $entity[$field]->getError() === UPLOAD_ERR_NO_FILE) {
+            if (!isset($entity[$field])) {
                 return false;
             }
+
+            /** @var \Psr\Http\Message\UploadedFileInterface|array $file */
+            $file = $entity[$field];
+            if (!is_array($file)) {
+                return $file->getError() !== UPLOAD_ERR_NO_FILE;
+            }
+
+            return $file['error'] !== UPLOAD_ERR_NO_FILE;
         }
 
         return true;
@@ -119,11 +127,11 @@ class FileStorageBehavior extends Behavior
     /**
      * beforeMarshal callback
      *
-     * @param \Cake\Event\Event $event
-     * @param \ArrayAccess $data
+     * @param \Cake\Event\EventInterface $event
+     * @param \ArrayObject $data
      * @return void
      */
-    public function beforeMarshal(Event $event, ArrayAccess $data)
+    public function beforeMarshal(EventInterface $event, ArrayObject $data, ArrayObject $options): void
     {
         if ($this->isFileUploadPresent($data)) {
             $this->getFileInfoFromUpload($data);
@@ -133,11 +141,12 @@ class FileStorageBehavior extends Behavior
     /**
      * beforeSave callback
      *
-     * @param \Cake\Event\Event $event
+     * @param \Cake\Event\EventInterface $event
      * @param \Cake\Datasource\EntityInterface $entity
+     * @param \ArrayObject $options
      * @return void
      */
-    public function beforeSave(Event $event, EntityInterface $entity)
+    public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
         if (!$this->isFileUploadPresent($entity)) {
             return;
@@ -154,12 +163,12 @@ class FileStorageBehavior extends Behavior
     /**
      * afterSave callback
      *
-     * @param \Cake\Event\Event $event
+     * @param \Cake\Event\EventInterface $event
      * @param \Cake\Datasource\EntityInterface $entity
-     * @param array $options
+     * @param \ArrayObject $options
      * @return void
      */
-    public function afterSave(Event $event, EntityInterface $entity, $options)
+    public function afterSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
         if (!$this->isFileUploadPresent($entity)) {
             return;
@@ -190,7 +199,6 @@ class FileStorageBehavior extends Behavior
             'entity' => $entity,
             'storageAdapter' => $this->getStorageAdapter($entity->get('adapter'))
         ], $this->getTable());
-
     }
 
     /**
@@ -215,12 +223,12 @@ class FileStorageBehavior extends Behavior
     /**
      * afterDelete callback
      *
-     * @param \Cake\Event\Event $event
+     * @param \Cake\Event\EventInterface $event
      * @param \Cake\Datasource\EntityInterface $entity
-     * @param array $options
-     * @return bool
+     * @param \ArrayObject $options
+     * @return void
      */
-    public function afterDelete(Event $event, EntityInterface $entity, $options)
+    public function afterDelete(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
         $this->dispatchEvent('FileStorage.afterDelete', [
             'entity' => $entity,
@@ -243,15 +251,19 @@ class FileStorageBehavior extends Behavior
      */
     protected function getFileInfoFromUpload(&$upload, $field = 'file')
     {
-        /**
-         * @var $uploadedFile \Psr\Http\Message\UploadedFileInterface
-         */
+        /** @var \Psr\Http\Message\UploadedFileInterface|array $uploadedFile */
         $uploadedFile = $upload[$field];
-
-        $upload['filesize'] = $uploadedFile->getSize();
-        $upload['mime_type'] = $uploadedFile->getClientMediaType();
-        $upload['extension'] = pathinfo($uploadedFile->getClientFilename(), PATHINFO_EXTENSION);
-        $upload['filename'] = $uploadedFile->getClientFilename();
+        if (!is_array($uploadedFile)) {
+            $upload['filesize'] = $uploadedFile->getSize();
+            $upload['mime_type'] = $uploadedFile->getClientMediaType();
+            $upload['extension'] = pathinfo($uploadedFile->getClientFilename(), PATHINFO_EXTENSION);
+            $upload['filename'] = $uploadedFile->getClientFilename();
+        } else {
+            $upload['filesize'] = $uploadedFile['size'];
+            $upload['mime_type'] = $uploadedFile['type'];
+            $upload['extension'] = pathinfo($uploadedFile['name'], PATHINFO_EXTENSION);
+            $upload['filename'] = $uploadedFile['name'];
+        }
     }
 
     /**

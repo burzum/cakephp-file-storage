@@ -1,35 +1,32 @@
 language: php
-sudo: false
 
 php:
-  - 7.2
-  - 7.3
+  - 7.4
 
 env:
   matrix:
     - GENERIC=1
-    
+
   global:
     - DEFAULT=1
-  
+
 matrix:
   fast_finish: true
   include:
-    - php: 7.3
+    - php: 7.4
       env: COVERAGE=1 DEFAULT=0
 
-    - php: 7.3
+    - php: 7.4
       env: PHPCS=1 DEFAULT=0
 
-    - php: 7.3
+    - php: 7.4
       env: PHPSTAN=1 DEFAULT=0
 
 before_script:
   - composer self-update
-  - composer global require hirak/prestissimo
   - composer install --prefer-dist --no-interaction
   - sh -c "if [ '$COVERALLS' = '1' ]; then mkdir -p build/logs; fi"
-  - if [[ $TRAVIS_PHP_VERSION != 7.3 ]]; then phpenv config-rm xdebug.ini; fi
+  - phpenv config-rm xdebug.ini
   - if [[ $PHPSTAN = 1 ]]; then composer stan-setup; fi
 
 script:

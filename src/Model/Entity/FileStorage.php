@@ -66,7 +66,7 @@ class FileStorage extends Entity implements FileStorageEntityInterface
     protected function _getVariantUrls() {
         $variants = (array)$this->get('variants');
         $list = [
-            'original' => $this->get('path')
+            'original' => $this->get('url')
         ];
 
         foreach ($variants as $name => $data) {
