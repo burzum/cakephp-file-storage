@@ -72,7 +72,7 @@ class ImageHelper extends Helper
         if ($variant === null) {
             $url = $image->get('path');
         } else {
-            $url = $image->getVariantUrl($variant);
+            $url = $image->getVariantPath($variant);
         }
 
         if (empty($url)) {
