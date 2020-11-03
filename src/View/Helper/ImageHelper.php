@@ -62,7 +62,7 @@ class ImageHelper extends Helper
      *
      * @param \Burzum\FileStorage\Model\Entity\FileStorageEntityInterface $image FileStorage entity or whatever else table that matches this helpers needs without
      * the model, we just want the record fields
-     * @param string|null $version Image version string
+     * @param string|null $variant Image version string
      * @param array $options HtmlHelper::image(), 2nd arg options array
      * @throws \InvalidArgumentException
      * @return string|null
