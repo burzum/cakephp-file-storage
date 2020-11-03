@@ -45,7 +45,7 @@ class ImageHelper extends Helper
      */
     public function display(FileStorageEntityInterface $image, ?string $version = null, array $options = []): string
     {
-        if (empty($image)) {
+        if ($image === null) {
             return $this->fallbackImage($options, $image, $version);
         }
 
@@ -64,7 +64,7 @@ class ImageHelper extends Helper
      * the model, we just want the record fields
      * @param string|null $variant Image version string
      * @param array $options HtmlHelper::image(), 2nd arg options array
-     * @throws \InvalidArgumentException
+     * @throws \Phauthentic\Infrastructure\Storage\Processor\Exception\VariantDoesNotExistException
      * @return string|null
      */
     public function imageUrl(FileStorageEntityInterface $image, ?string $variant = null, array $options = []): ?string
