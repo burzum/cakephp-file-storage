@@ -23,16 +23,16 @@ class ImageHelperTest extends FileStorageTestCase
     /**
      * Image Helper
      *
-     * @var \Burzum\FileStorage\View\Helper\ImageHelper|null
+     * @var \Burzum\FileStorage\View\Helper\ImageHelper
      */
-    public $Image = null;
+    protected $helper;
 
     /**
      * Image Helper
      *
-     * @var \Cake\View\View|null
+     * @var \Cake\View\View
      */
-    public $View = null;
+    protected $view;
 
     /**
      * Start Test
@@ -43,15 +43,15 @@ class ImageHelperTest extends FileStorageTestCase
     {
         parent::setUp();
         $null = null;
-        $this->View = new View($null);
-        $this->Image = new ImageHelper($this->View);
-        $this->Image->Html = new HtmlHelper($this->View);
+        $this->view = new View($null);
+        $this->helper = new ImageHelper($this->view);
+        $this->helper->Html = new HtmlHelper($this->view);
 
         $request = (new Request(['url' => 'contacts/add']))
             ->withAttribute('webroot', '/')
             ->withAttribute('base', '/');
 
-        $this->Image->Html->getView()->setRequest($request);
+        $this->helper->Html->getView()->setRequest($request);
     }
 
     /**
@@ -62,7 +62,7 @@ class ImageHelperTest extends FileStorageTestCase
     public function tearDown(): void
     {
         parent::tearDown();
-        unset($this->Image);
+        unset($this->helper);
     }
 
     /**
@@ -81,15 +81,16 @@ class ImageHelperTest extends FileStorageTestCase
             'adapter' => 'Local',
             'variants' => [
                 't150' => [
-                    'url' => 'test/path/testimage.c3f33c2a.jpg'
-                ]
+                    'path' => 'test/path/testimage.c3f33c2a.jpg',
+                    'url' => '',
+                ],
             ]
         ], ['accessibleFields' => ['*' => true]]);
 
-        $result = $this->Image->imageUrl($image, 't150', ['pathPrefix' => '/src/']);
+        $result = $this->helper->imageUrl($image, 't150', ['pathPrefix' => '/src/']);
         $this->assertEquals('/src/test/path/testimage.c3f33c2a.jpg', $result);
 
-        $result = $this->Image->imageUrl($image, null, ['pathPrefix' => '/src/']);
+        $result = $this->helper->imageUrl($image, null, ['pathPrefix' => '/src/']);
         $this->assertEquals('/src/test/path/testimage.jpg', $result);
     }
 
@@ -110,7 +111,7 @@ class ImageHelperTest extends FileStorageTestCase
             'adapter' => 'Local',
         ], ['accessibleFields' => ['*' => true]]);
 
-        $this->Image->imageUrl($image, 'invalid-version!');
+        $this->helper->imageUrl($image, 'invalid-version!');
     }
 
     /**
@@ -122,13 +123,13 @@ class ImageHelperTest extends FileStorageTestCase
     {
         Configure::write('Media.fallbackImages.Test.t150', 't150fallback.png');
 
-        $result = $this->Image->fallbackImage(['fallback' => true], [], 't150');
-        $this->assertEquals($result, '<img src="/img/placeholder/t150.jpg" alt=""/>');
+        $result = $this->helper->fallbackImage(['fallback' => true], 't150');
+        $this->assertSame('<img src="/img/placeholder/t150.jpg" alt=""/>', $result);
 
-        $result = $this->Image->fallbackImage(['fallback' => 'something.png'], [], 't150');
-        $this->assertEquals($result, '<img src="/img/something.png" alt=""/>');
+        $result = $this->helper->fallbackImage(['fallback' => 'something.png'], 't150');
+        $this->assertSame('<img src="/img/something.png" alt=""/>', $result);
 
-        $result = $this->Image->fallbackImage([], [], 't150');
-        $this->assertEquals($result, '');
+        $result = $this->helper->fallbackImage([], 't150');
+        $this->assertSame('', $result);
     }
 }

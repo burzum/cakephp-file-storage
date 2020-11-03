@@ -8,6 +8,7 @@ use Burzum\FileStorage\Test\TestCase\FileStorageTestTable;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Event\Event;
+use Laminas\Diactoros\UploadedFile;
 
 /**
  * StorageBehaviorTest
@@ -17,17 +18,17 @@ class FileStorageBehaviorTest extends FileStorageTestCase
     /**
      * Holds the instance of the table
      *
-     * @var \Burzum\FileStorage\Model\Table\FileStorageTable|null
+     * @var \Burzum\FileStorage\Model\Table\FileStorageTable
      */
-    public $FileStorage = null;
+    protected $FileStorage;
 
     /**
      * Fixtures
      *
      * @var array
      */
-    public $fixtures = [
-        'plugin.Burzum\FileStorage.FileStorage',
+    protected $fixtures = [
+        'plugin.Burzum/FileStorage.FileStorage',
     ];
 
     /**
@@ -69,12 +70,12 @@ class FileStorageBehaviorTest extends FileStorageTestCase
      */
     public function testAfterDelete()
     {
-        $file = $this->_createMockFile('\Item\00\14\90\filestorage1\filestorage1.png');
+        $file = $this->_createMockFile('/Item/00/14/90/filestorage1/filestorage1.png');
         $this->assertFileExists($file);
 
         $entity = $this->FileStorage->get('file-storage-1');
         $entity->adapter = 'Local';
-        $entity->path = '\Item\00\14\90\filestorage1\filestorage1.png';
+        $entity->path = '/Item/00/14/90/filestorage1/filestorage1.png';
 
         $event = new Event('FileStorage.afterDelete', $this->FileStorage, [
             'entity' => $entity,
@@ -97,12 +98,19 @@ class FileStorageBehaviorTest extends FileStorageTestCase
      */
     public function testBeforeSave()
     {
+        $file = new UploadedFile(
+            $this->fileFixtures . 'titus.jpg',
+            filesize($this->fileFixtures . 'titus.jpg'),
+            UPLOAD_ERR_OK,
+            'titus.png',
+            'image/jpeg'
+        );
+
         $entity = $this->FileStorage->newEntity([
-            'file' => [
-                'error' => UPLOAD_ERR_OK,
-                'tmp_name' => $this->fileFixtures . 'titus.jpg',
-            ],
-        ], ['accessibleFields' => ['*' => true]]);
+            'file' => $file,
+        ], [
+            'accessibleFields' => ['*' => true],
+        ]);
 
         $event = new Event('Model.beforeSave', $this->FileStorage, [
             'entity' => $entity,
@@ -110,9 +118,38 @@ class FileStorageBehaviorTest extends FileStorageTestCase
 
         $this->FileStorage->behaviors()->FileStorage->beforeSave($event, $entity, new \ArrayObject([]));
 
-        $this->assertEquals($entity->adapter, 'Local');
-        $this->assertEquals($entity->filesize, 332643);
-        $this->assertEquals($entity->mime_type, 'image/jpeg');
-        $this->assertEquals($entity->model, 'file_storage');
+        $this->assertSame($entity->adapter, 'Local');
+        $this->assertSame($entity->filesize, 332643);
+        $this->assertSame($entity->mime_type, 'image/jpeg');
+        $this->assertSame($entity->model, 'file_storage');
+    }
+
+    /**
+     * @return void
+     */
+    public function testBeforeSaveArray()
+    {
+        $entity = $this->FileStorage->newEntity([
+            'file' => [
+                'error' => UPLOAD_ERR_OK,
+                'tmp_name' => $this->fileFixtures . 'titus.jpg',
+                'size' => filesize($this->fileFixtures . 'titus.jpg'),
+                'name' => 'titus.png',
+                'type' => 'image/jpeg',
+            ],
+        ], [
+            'accessibleFields' => ['*' => true],
+        ]);
+
+        $event = new Event('Model.beforeSave', $this->FileStorage, [
+            'entity' => $entity,
+        ]);
+
+        $this->FileStorage->behaviors()->FileStorage->beforeSave($event, $entity, new \ArrayObject([]));
+
+        $this->assertSame($entity->adapter, 'Local');
+        $this->assertSame($entity->filesize, 332643);
+        $this->assertSame($entity->mime_type, 'image/jpeg');
+        $this->assertSame($entity->model, 'file_storage');
     }
 }

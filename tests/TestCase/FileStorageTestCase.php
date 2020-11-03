@@ -25,8 +25,8 @@ class FileStorageTestCase extends TestCase
      *
      * @var array
      */
-    public $fixtures = [
-        'plugin.Burzum\FileStorage.FileStorage',
+    protected $fixtures = [
+        'plugin.Burzum/FileStorage.FileStorage',
     ];
 
     /**
@@ -34,21 +34,21 @@ class FileStorageTestCase extends TestCase
      *
      * @var \Burzum\FileStorage\Model\Table\FileStorageTable
      */
-    public $FileStorage;
+    protected $FileStorage;
 
     /**
      * Path to the file fixtures, set in the setUp() method.
      *
      * @var string
      */
-    public string $fileFixtures;
+    protected string $fileFixtures;
 
     /**
      * Test file path
      *
      * @var string
      */
-    public string $testPath = '';
+    protected string $testPath = '';
 
     /**
      * Setup test folders and files
