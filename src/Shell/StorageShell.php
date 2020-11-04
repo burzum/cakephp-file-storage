@@ -9,8 +9,10 @@ declare(strict_types=1);
  */
 namespace Burzum\FileStorage\Shell;
 
+use Burzum\FileStorage\Utility\StorageUtils;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
+use Cake\Core\Configure;
 
 /**
  * Class StorageShell
@@ -30,14 +32,6 @@ class StorageShell extends Shell
     ];
 
     /**
-     * @inheritDoc
-     * @return void
-     */
-    public function main(): void
-    {
-    }
-
-    /**
      * {@inheritDoc}
      */
     public function getOptionParser(): ConsoleOptionParser
@@ -50,7 +44,7 @@ class StorageShell extends Shell
         ]);
         $parser->addOption('identifier', [
             'short' => 'i',
-            'help' => __('The files identifier (`model` field in `file_storage` table).'),
+            'help' => __('The file identifier (`model` field in `file_storage` table).'),
             'default' => null,
         ]);
         $parser->addOption('model', [
@@ -65,6 +59,9 @@ class StorageShell extends Shell
         $parser->addSubcommand('store', [
             'help' => __('Stores a file in the DB.'),
         ]);
+        $parser->addSubcommand('attach', [
+            'help' => __('Attach a file to a record.'),
+        ]);
 
         return $parser;
     }
@@ -74,7 +71,7 @@ class StorageShell extends Shell
      *
      * @return void
      */
-    protected function _storePrecheck(): void
+    protected function _storePreCheck(): void
     {
         if (empty($this->args[0])) {
             $this->abort('No file provided!');
@@ -84,10 +81,12 @@ class StorageShell extends Shell
             $this->abort('The file does not exist!');
         }
 
-        $adapterConfig = StorageManager::config($this->params['adapter']);
-        if (empty($adapterConfig)) {
+        /** @var \Phauthentic\Infrastructure\Storage\FileStorage|null $storage */
+        $storage = Configure::read('FileStorage.behaviorConfig.fileStorage');
+        if (!$storage) {
             $this->abort(sprintf('Invalid adapter config `%s` provided!', $this->params['adapter']));
         }
+        //$adapter = $storage->getStorage($this->params['adapter']);
     }
 
     /**
@@ -97,21 +96,64 @@ class StorageShell extends Shell
      */
     public function store(): void
     {
-        $this->_storePrecheck();
+        $this->_storePreCheck();
         $model = $this->loadModel($this->params['model']);
-        $fileData = StorageUtils::fileToUploadArray($this->args[0]);
+        if (Configure::read('App.uploadedFilesAsObjects', true)) {
+            $fileData = StorageUtils::fileToUploadedFileObject($this->args[0]);
+        } else {
+            $fileData = StorageUtils::fileToUploadedFileArray($this->args[0]);
+        }
         $entity = $model->newEntity([
             'adapter' => $this->params['adapter'],
             'file' => $fileData,
-            'filename' => $fileData['name'],
+            'filename' => is_array($fileData) ? $fileData['name'] : $fileData->getClientFilename(),
         ]);
+        if ($entity->getErrors()) {
+            $this->abort('Validation failed: ' . print_r($entity->getErrors(), true));
+        }
 
-        if ($model->save($entity)) {
-            $this->out('File successfully saved!');
-            $this->out('ID:   ' . $entity->get('id'));
-            $this->out('Path: ' . $entity->get('full_path'));
-        } else {
+        if (!$model->save($entity)) {
             $this->abort('Failed to save the file.');
         }
+
+        $this->out('File successfully saved!');
+        $this->out('ID:   ' . $entity->get('id'));
+        $this->out('Path: ' . $entity->get('path'));
+        $this->out('Size: ' . $entity->get('filesize'));
+    }
+
+    /**
+     * Store a local file via command line in any storage backend.
+     *
+     * @return void
+     */
+    public function attach(): void
+    {
+        $this->_storePreCheck();
+        $model = $this->loadModel($this->params['model']);
+        if (Configure::read('App.uploadedFilesAsObjects', true)) {
+            $fileData = StorageUtils::fileToUploadedFileObject($this->args[0]);
+        } else {
+            $fileData = StorageUtils::fileToUploadedFileArray($this->args[0]);
+        }
+        $entity = $model->newEntity([
+            'adapter' => $this->params['adapter'],
+            'file' => $fileData,
+            'filename' => is_array($fileData) ? $fileData['name'] : $fileData->getClientFilename(),
+            'model' => 'X',
+            'foreign_key' => '1',
+        ]);
+        if ($entity->getErrors()) {
+            $this->abort('Validation failed: ' . print_r($entity->getErrors(), true));
+        }
+
+        if (!$model->save($entity)) {
+            $this->abort('Failed to save the file.');
+        }
+
+        $this->out('File successfully attached to record ``!');
+        $this->out('ID:   ' . $entity->get('id'));
+        $this->out('Path: ' . $entity->get('path'));
+        $this->out('Size: ' . $entity->get('filesize'));
     }
 }

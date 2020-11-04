@@ -25,8 +25,8 @@ class DataTransformer implements DataTransformerInterface
     }
 
     /**
-     * @param \Cake\Datasource\EntityInterface $entity Entity
-     * @return \Phauthentic\Infrastructure\Storage\FileInterface File
+     * @param \Cake\Datasource\EntityInterface $entity
+     * @return \Phauthentic\Infrastructure\Storage\FileInterface
      */
     public function entityToFileObject(EntityInterface $entity): FileInterface
     {
@@ -49,7 +49,7 @@ class DataTransformer implements DataTransformerInterface
         }
 
         if ($entity->has('file')) {
-            /** @var $uploadedFile \Psr\Http\Message\UploadedFileInterface|array */
+            /** @var \Psr\Http\Message\UploadedFileInterface|array $uploadedFile */
             $uploadedFile = $entity->get('file');
             if (!is_array($uploadedFile)) {
                 $filename = $uploadedFile->getStream()->getMetadata('uri');
@@ -64,8 +64,8 @@ class DataTransformer implements DataTransformerInterface
     }
 
     /**
-     * @param \Phauthentic\Infrastructure\Storage\FileInterface $file File
-     * @param \Cake\Datasource\EntityInterface|null
+     * @param \Phauthentic\Infrastructure\Storage\FileInterface $file
+     * @param \Cake\Datasource\EntityInterface|null $entity
      * @return \Cake\Datasource\EntityInterface
      */
     public function fileObjectToEntity(FileInterface $file, ?EntityInterface $entity): EntityInterface

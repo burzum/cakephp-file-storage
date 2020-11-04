@@ -11,10 +11,10 @@ use Cake\Datasource\EntityInterface;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventInterface;
 use Cake\ORM\Behavior;
+use League\Flysystem\AdapterInterface;
 use Phauthentic\Infrastructure\Storage\FileInterface;
 use Phauthentic\Infrastructure\Storage\FileStorage;
 use Phauthentic\Infrastructure\Storage\Processor\ProcessorInterface;
-use Phauthentic\Infrastructure\Storage\StorageServiceInterface;
 use RuntimeException;
 use Throwable;
 
@@ -35,9 +35,9 @@ class FileStorageBehavior extends Behavior
     protected FileStorage $fileStorage;
 
     /**
-     * @var \Phauthentic\Infrastructure\Storage\Processor\Image\ImageProcessor
+     * @var \Phauthentic\Infrastructure\Storage\Processor\ProcessorInterface
      */
-    protected ?ProcessorInterface $imageProcessor = null;
+    protected ?ProcessorInterface $imageProcessor;
 
     /**
      * @var \Burzum\FileStorage\FileStorage\DataTransformerInterface
@@ -77,10 +77,6 @@ class FileStorageBehavior extends Behavior
            );
         }
 
-        if ($this->getConfig('imageProcessor') instanceOf ProcessorInterface) {
-            $this->imageProcessor = $this->getConfig('imageProcessor');
-        }
-
         if (!$this->getConfig('dataTransformer') instanceof DataTransformerInterface) {
             $this->transformer = new DataTransformer(
                 $this->getTable()
@@ -91,11 +87,11 @@ class FileStorageBehavior extends Behavior
     /**
      * @throws \InvalidArgumentException
      * @param string $configName
-     * @return array
+     * @return \League\Flysystem\AdapterInterface
      */
-    public function getStorageAdapter($configName)
+    public function getStorageAdapter(string $configName): AdapterInterface
     {
-        $this->fileStorage->getStorage($configName);
+        return $this->fileStorage->getStorage($configName);
     }
 
     /**
@@ -303,7 +299,7 @@ class FileStorageBehavior extends Behavior
 
     /**
      * @param \Phauthentic\Infrastructure\Storage\FileInterface $file File
-     * @param \Cake\Datasource\EntityInterface|null
+     * @param \Cake\Datasource\EntityInterface|null $entity
      * @return \Cake\Datasource\EntityInterface
      */
     public function fileObjectToEntity(FileInterface $file, ?EntityInterface $entity)
@@ -315,7 +311,7 @@ class FileStorageBehavior extends Behavior
      * Processes images
      *
      * @param \Phauthentic\Infrastructure\Storage\FileInterface $file File
-     * @param \Cake\Datasource\EntityInterface
+     * @param \Cake\Datasource\EntityInterface $entity
      * @return \Phauthentic\Infrastructure\Storage\FileInterface
      */
     public function processImages(FileInterface $file, EntityInterface $entity): FileInterface
@@ -332,5 +328,25 @@ class FileStorageBehavior extends Behavior
         $file = $this->imageProcessor->process($file);
 
         return $file;
+    }
+
+    /**
+     * @return \Phauthentic\Infrastructure\Storage\Processor\ProcessorInterface
+     */
+    protected function getImageProcessor(): ProcessorInterface
+    {
+        if ($this->imageProcessor !== null) {
+            return $this->imageProcessor;
+        }
+
+        if ($this->getConfig('imageProcessor') instanceOf ProcessorInterface) {
+            $this->imageProcessor = $this->getConfig('imageProcessor');
+        }
+
+        if ($this->imageProcessor === null) {
+            throw new RuntimeException('No image processor found');
+        }
+
+        return $this->imageProcessor;
     }
 }

@@ -70,11 +70,11 @@ class ImageHelper extends Helper
     public function imageUrl(FileStorageEntityInterface $image, ?string $variant = null, array $options = []): ?string
     {
         if ($variant === null) {
-            $url = $image->get('url');
+            $url = (string)$image->get('url');
             if ($url) {
                 return $url;
             }
-            $path = $image->get('path');
+            $path = (string)$image->get('path');
         } else {
             $url = $image->getVariantUrl($variant);
             if ($url) {

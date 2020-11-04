@@ -1,4 +1,9 @@
 parameters:
-    level: 4
-    autoload_files:
+    level: 7
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
+    bootstrapFiles:
         - tests/bootstrap.php
+    earlyTerminatingMethodCalls:
+        Cake\Console\Shell:
+            - abort

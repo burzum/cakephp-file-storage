@@ -9,14 +9,14 @@ use Phauthentic\Infrastructure\Storage\FileInterface;
 interface DataTransformerInterface
 {
     /**
-     * @param \Cake\Datasource\EntityInterface $entity Entity
-     * @return \Phauthentic\Infrastructure\Storage\FileInterface File
+     * @param \Cake\Datasource\EntityInterface $entity
+     * @return \Phauthentic\Infrastructure\Storage\FileInterface
      */
     public function entityToFileObject(EntityInterface $entity): FileInterface;
 
     /**
-     * @param \Phauthentic\Infrastructure\Storage\FileInterface $file File
-     * @param \Cake\Datasource\EntityInterface|null
+     * @param \Phauthentic\Infrastructure\Storage\FileInterface $file
+     * @param \Cake\Datasource\EntityInterface|null $entity
      * @return \Cake\Datasource\EntityInterface
      */
     public function fileObjectToEntity(FileInterface $file, ?EntityInterface $entity): EntityInterface;

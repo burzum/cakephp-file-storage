@@ -56,13 +56,13 @@ Optional but required if you want image processing out of the box:
 
  * The [Imagine Image processing plugin](https://github.com/burzum/cakephp-imagine-plugin) if you want to process and store images.
  * [FlySystem](https://github.com/thephpleague/flysystem) as alternative library over Gaufrette
- 
-You can still implement whatever file processing you want very easy. It's not tied to Imagine. 
+
+You can still implement whatever file processing you want very easy. It's not tied to Imagine.
 
 Documentation
 -------------
 
-For documentation, as well as tutorials, see the [docs](docs/Home.md) directory of this repository.
+For documentation, as well as tutorials, see the [docs](docs/README.md) directory of this repository.
 
 Support
 -------

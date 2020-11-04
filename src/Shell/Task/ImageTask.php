@@ -9,8 +9,6 @@ declare(strict_types=1);
  */
 namespace Burzum\FileStorage\Shell\Task;
 
-use Burzum\FileStorage\Storage\StorageException;
-use Burzum\FileStorage\Storage\StorageTrait;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Datasource\ResultSetInterface;
@@ -19,6 +17,7 @@ use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventManager;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
+use Phauthentic\Infrastructure\Storage\Exception\StorageException;
 
 /**
  * Task to generate and remove image versions based on the identifier and the versions.
@@ -32,7 +31,6 @@ use Cake\ORM\TableRegistry;
 class ImageTask extends Shell
 {
     use EventDispatcherTrait;
-    use StorageTrait;
 
     /**
      * @var \Cake\ORM\Table
@@ -86,7 +84,7 @@ class ImageTask extends Shell
 
         do {
             $records = $this->_getRecords($identifier, $limit, $offset);
-            if (!empty($records)) {
+            if ($records->count()) {
                 foreach ($records as $record) {
                     $method = '_' . $action . 'Image';
                     try {
@@ -201,21 +199,9 @@ class ImageTask extends Shell
             'default' => 50,
         ]);
 
-        $parser->addOption('versions', [
-            'short' => 's',
-            'help' => __('The model to use.'),
-            'default' => 'Burzum/FileStorage.ImageStorage',
-        ])
-        ->addSubcommand('remove', [
-            'remove' => 'Remove image versions.',
-        ])
-        ->addSubcommand('generate', [
-            'remove' => 'Generate image versions.',
-        ]);
-
         $parser->addArguments([
             'identifier' => ['help' => 'The identifier to process', 'required' => true],
-            'versions' => ['help' => 'The identifier to process', 'required' => true],
+            'versions' => ['help' => 'The versions to process', 'required' => true],
         ]);
 
         return $parser;
