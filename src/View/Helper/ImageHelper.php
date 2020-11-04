@@ -22,7 +22,7 @@ class ImageHelper extends Helper
      *
      * @var array
      */
-    public $helpers = [
+    protected $helpers = [
         'Html',
     ];
 
