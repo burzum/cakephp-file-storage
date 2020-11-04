@@ -1,5 +1,6 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
+
 namespace Burzum\FileStorage\Model\Table;
 
 use Cake\Core\Configure;
@@ -41,6 +42,7 @@ class FileStorageTable extends Table
      * Initialize
      *
      * @param array $config
+     *
      * @return void
      */
     public function initialize(array $config): void

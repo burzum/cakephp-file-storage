@@ -1,11 +1,5 @@
 <?php
-/**
- * File Storage Fixture
- *
- * @author Florian Krämer
- * @copyright 2012 - 2020 Florian Krämer
- * @license MIT
- */
+
 namespace Burzum\FileStorage\Test\Fixture;
 
 use Cake\TestSuite\Fixture\TestFixture;

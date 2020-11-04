@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Burzum\FileStorage\Model\Entity;
 
@@ -27,11 +27,12 @@ class FileStorage extends Entity implements FileStorageEntityInterface
      * @var array
      */
     protected $_virtual = [
-        'variantUrls'
+        'variantUrls',
     ];
 
     /**
      * @param string $variant Variant
+     *
      * @return string|null
      */
     public function getVariantUrl(string $variant): ?string
@@ -46,6 +47,7 @@ class FileStorage extends Entity implements FileStorageEntityInterface
 
     /**
      * @param string $variant Variant
+     *
      * @return string|null
      */
     public function getVariantPath(string $variant): ?string
@@ -63,10 +65,11 @@ class FileStorage extends Entity implements FileStorageEntityInterface
      *
      * @return array
      */
-    protected function _getVariantUrls() {
+    protected function _getVariantUrls()
+    {
         $variants = (array)$this->get('variants');
         $list = [
-            'original' => $this->get('url')
+            'original' => $this->get('url'),
         ];
 
         foreach ($variants as $name => $data) {

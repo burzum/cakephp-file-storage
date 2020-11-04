@@ -1,12 +1,6 @@
 <?php
-declare(strict_types=1);
-/**
- * File Storage Plugin for CakePHP
- *
- * @author Florian Krämer
- * @copyright 2012 - 2020 Florian Krämer
- * @license MIT
- */
+declare(strict_types = 1);
+
 namespace Burzum\FileStorage\Shell;
 
 use Burzum\FileStorage\Utility\StorageUtils;
@@ -17,7 +11,6 @@ use Cake\Core\Configure;
 /**
  * Class StorageShell
  *
- * @package Burzum\FileStorage\Shell
  * @property \Burzum\FileStorage\Shell\Task\ImageTask $Image
  */
 class StorageShell extends Shell
@@ -32,7 +25,7 @@ class StorageShell extends Shell
     ];
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function getOptionParser(): ConsoleOptionParser
     {

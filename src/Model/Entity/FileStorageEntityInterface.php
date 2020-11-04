@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Burzum\FileStorage\Model\Entity;
 
@@ -16,12 +16,14 @@ interface FileStorageEntityInterface extends EntityInterface
 {
     /**
      * @param string $variant Variant
+     *
      * @return string|null
      */
     public function getVariantUrl(string $variant): ?string;
 
     /**
      * @param string $variant Variant
+     *
      * @return string|null
      */
     public function getVariantPath(string $variant): ?string;

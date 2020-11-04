@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Burzum\FileStorage\View\Helper;
 
@@ -31,7 +31,7 @@ class ImageHelper extends Helper
      * @var array
      */
     protected $_defaultConfig = [
-        'pathPrefix' => ''
+        'pathPrefix' => '',
     ];
 
     /**
@@ -41,6 +41,7 @@ class ImageHelper extends Helper
      * the model, we just want the record fields
      * @param string|null $version Image version string
      * @param array $options HtmlHelper::image(), 2nd arg options array
+     *
      * @return string
      */
     public function display(?FileStorageEntityInterface $image, ?string $version = null, array $options = []): string
@@ -64,7 +65,9 @@ class ImageHelper extends Helper
      * the model, we just want the record fields
      * @param string|null $variant Image version string
      * @param array $options HtmlHelper::image(), 2nd arg options array
+     *
      * @throws \Phauthentic\Infrastructure\Storage\Processor\Exception\VariantDoesNotExistException
+     *
      * @return string|null
      */
     public function imageUrl(FileStorageEntityInterface $image, ?string $variant = null, array $options = []): ?string
@@ -100,6 +103,7 @@ class ImageHelper extends Helper
      *
      * @param array $options
      * @param string|null $version
+     *
      * @return string
      */
     public function fallbackImage(array $options = [], ?string $version = null): string
@@ -122,6 +126,7 @@ class ImageHelper extends Helper
      * Turns the windows \ into / so that the path can be used in an url
      *
      * @param string $path
+     *
      * @return string
      */
     protected function normalizePath(string $path): string

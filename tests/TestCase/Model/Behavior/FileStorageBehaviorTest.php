@@ -1,8 +1,9 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Burzum\FileStorage\Test\TestCase\Model\Behavior;
 
+use ArrayObject;
 use Burzum\FileStorage\Test\TestCase\FileStorageTestCase;
 use Burzum\FileStorage\Test\TestCase\FileStorageTestTable;
 use Cake\Core\Configure;
@@ -85,7 +86,7 @@ class FileStorageBehaviorTest extends FileStorageTestCase
         $this->FileStorage->behaviors()->FileStorage->afterDelete(
             $event,
             $entity,
-            new \ArrayObject([])
+            new ArrayObject([])
         );
 
         $this->assertFileNotExists($file);
@@ -116,7 +117,7 @@ class FileStorageBehaviorTest extends FileStorageTestCase
             'entity' => $entity,
         ]);
 
-        $this->FileStorage->behaviors()->FileStorage->beforeSave($event, $entity, new \ArrayObject([]));
+        $this->FileStorage->behaviors()->FileStorage->beforeSave($event, $entity, new ArrayObject([]));
 
         $this->assertSame($entity->adapter, 'Local');
         $this->assertSame($entity->filesize, 332643);
@@ -145,7 +146,7 @@ class FileStorageBehaviorTest extends FileStorageTestCase
             'entity' => $entity,
         ]);
 
-        $this->FileStorage->behaviors()->FileStorage->beforeSave($event, $entity, new \ArrayObject([]));
+        $this->FileStorage->behaviors()->FileStorage->beforeSave($event, $entity, new ArrayObject([]));
 
         $this->assertSame($entity->adapter, 'Local');
         $this->assertSame($entity->filesize, 332643);

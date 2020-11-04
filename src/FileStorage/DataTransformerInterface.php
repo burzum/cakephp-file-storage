@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Burzum\FileStorage\FileStorage;
 
@@ -10,6 +10,7 @@ interface DataTransformerInterface
 {
     /**
      * @param \Cake\Datasource\EntityInterface $entity
+     *
      * @return \Phauthentic\Infrastructure\Storage\FileInterface
      */
     public function entityToFileObject(EntityInterface $entity): FileInterface;
@@ -17,6 +18,7 @@ interface DataTransformerInterface
     /**
      * @param \Phauthentic\Infrastructure\Storage\FileInterface $file
      * @param \Cake\Datasource\EntityInterface|null $entity
+     *
      * @return \Cake\Datasource\EntityInterface
      */
     public function fileObjectToEntity(FileInterface $file, ?EntityInterface $entity): EntityInterface;

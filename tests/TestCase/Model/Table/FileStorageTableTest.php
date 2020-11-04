@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Burzum\FileStorage\Test\TestCase\Model\Table;
 
@@ -43,6 +43,7 @@ class FileStorageTableTest extends FileStorageTestCase
      * Testing a complete save call
      *
      * @link https://github.com/burzum/cakephp-file-storage/issues/85
+     *
      * @return void
      */
     public function testFileSaving()
@@ -67,6 +68,7 @@ class FileStorageTableTest extends FileStorageTestCase
      * Testing a complete save call
      *
      * @link https://github.com/burzum/cakephp-file-storage/issues/85
+     *
      * @return void
      */
     public function testFileSavingArray()

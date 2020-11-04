@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Burzum\FileStorage\FileStorage;
 
@@ -18,14 +18,14 @@ class DataTransformer implements DataTransformerInterface
     /**
      * @param \Cake\ORM\Table $table Table
      */
-    public function __construct(
-        Table $table
-    ) {
+    public function __construct(Table $table)
+    {
         $this->table = $table;
     }
 
     /**
      * @param \Cake\Datasource\EntityInterface $entity
+     *
      * @return \Phauthentic\Infrastructure\Storage\FileInterface
      */
     public function entityToFileObject(EntityInterface $entity): FileInterface
@@ -66,6 +66,7 @@ class DataTransformer implements DataTransformerInterface
     /**
      * @param \Phauthentic\Infrastructure\Storage\FileInterface $file
      * @param \Cake\Datasource\EntityInterface|null $entity
+     *
      * @return \Cake\Datasource\EntityInterface
      */
     public function fileObjectToEntity(FileInterface $file, ?EntityInterface $entity): EntityInterface
@@ -80,7 +81,7 @@ class DataTransformer implements DataTransformerInterface
             'variants' => $file->variants(),
             'metadata' => $file->metadata(),
             'adapter' => $file->storage(),
-            'path' => $file->path()
+            'path' => $file->path(),
         ];
 
         return $entity

@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Burzum\FileStorage\Test\TestCase\View\Helper;
 
@@ -84,7 +84,7 @@ class ImageHelperTest extends FileStorageTestCase
                     'path' => 'test/path/testimage.c3f33c2a.jpg',
                     'url' => '',
                 ],
-            ]
+            ],
         ], ['accessibleFields' => ['*' => true]]);
 
         $result = $this->helper->imageUrl($image, 't150', ['pathPrefix' => '/src/']);

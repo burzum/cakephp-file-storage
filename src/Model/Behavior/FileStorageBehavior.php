@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Burzum\FileStorage\Model\Behavior;
 
@@ -54,7 +54,7 @@ class FileStorageBehavior extends Behavior
         'ignoreEmptyFile' => true,
         'fileField' => 'file',
         'fileStorage' => null,
-        'imageProcessor' => null
+        'imageProcessor' => null,
     ];
 
     /**
@@ -64,17 +64,19 @@ class FileStorageBehavior extends Behavior
 
     /**
      * @inheritDoc
+     *
+     * @throws \RuntimeException
      */
     public function initialize(array $config): void
     {
         parent::initialize($config);
 
-        if ($this->getConfig('fileStorage') instanceOf FileStorage) {
+        if ($this->getConfig('fileStorage') instanceof FileStorage) {
             $this->fileStorage = $this->getConfig('fileStorage');
         } else {
-           throw new RuntimeException(
+            throw new RuntimeException(
                 'Missing or invalid fileStorage config key'
-           );
+            );
         }
 
         if (!$this->getConfig('dataTransformer') instanceof DataTransformerInterface) {
@@ -85,8 +87,8 @@ class FileStorageBehavior extends Behavior
     }
 
     /**
-     * @throws \InvalidArgumentException
      * @param string $configName
+     *
      * @return \League\Flysystem\AdapterInterface
      */
     public function getStorageAdapter(string $configName): AdapterInterface
@@ -98,6 +100,7 @@ class FileStorageBehavior extends Behavior
      * Checks if a file upload is present.
      *
      * @param \Cake\Datasource\EntityInterface|\ArrayObject $entity
+     *
      * @return bool
      */
     protected function isFileUploadPresent($entity)
@@ -125,6 +128,8 @@ class FileStorageBehavior extends Behavior
      *
      * @param \Cake\Event\EventInterface $event
      * @param \ArrayObject $data
+     * @param \ArrayObject $options
+     *
      * @return void
      */
     public function beforeMarshal(EventInterface $event, ArrayObject $data, ArrayObject $options): void
@@ -140,6 +145,7 @@ class FileStorageBehavior extends Behavior
      * @param \Cake\Event\EventInterface $event
      * @param \Cake\Datasource\EntityInterface $entity
      * @param \ArrayObject $options
+     *
      * @return void
      */
     public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
@@ -152,7 +158,7 @@ class FileStorageBehavior extends Behavior
 
         $this->dispatchEvent('FileStorage.beforeSave', [
             'entity' => $entity,
-            'storageAdapter' => $this->getStorageAdapter($entity->get('adapter'))
+            'storageAdapter' => $this->getStorageAdapter($entity->get('adapter')),
         ], $this->getTable());
     }
 
@@ -162,6 +168,9 @@ class FileStorageBehavior extends Behavior
      * @param \Cake\Event\EventInterface $event
      * @param \Cake\Datasource\EntityInterface $entity
      * @param \ArrayObject $options
+     *
+     * @throws \Exception
+     *
      * @return void
      */
     public function afterSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
@@ -187,13 +196,14 @@ class FileStorageBehavior extends Behavior
                 );
             } catch (Throwable $exception) {
                 $this->getTable()->delete($entity);
+
                 throw $exception;
             }
         }
 
         $this->dispatchEvent('FileStorage.afterSave', [
             'entity' => $entity,
-            'storageAdapter' => $this->getStorageAdapter($entity->get('adapter'))
+            'storageAdapter' => $this->getStorageAdapter($entity->get('adapter')),
         ], $this->getTable());
     }
 
@@ -201,6 +211,7 @@ class FileStorageBehavior extends Behavior
      * checkEntityBeforeSave
      *
      * @param \Cake\Datasource\EntityInterface $entity
+     *
      * @return void
      */
     protected function checkEntityBeforeSave(EntityInterface $entity)
@@ -222,6 +233,7 @@ class FileStorageBehavior extends Behavior
      * @param \Cake\Event\EventInterface $event
      * @param \Cake\Datasource\EntityInterface $entity
      * @param \ArrayObject $options
+     *
      * @return void
      */
     public function afterDelete(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
@@ -243,6 +255,7 @@ class FileStorageBehavior extends Behavior
      *
      * @param array|\ArrayAccess $upload
      * @param string $field
+     *
      * @return void
      */
     protected function getFileInfoFromUpload(&$upload, $field = 'file')
@@ -268,6 +281,7 @@ class FileStorageBehavior extends Behavior
      * callbacks. So the events that will remove the files won't get fired.
      *
      * @param array $conditions Query::where() array structure.
+     *
      * @return int Number of deleted records / files
      */
     public function deleteAllFiles($conditions)
@@ -290,6 +304,7 @@ class FileStorageBehavior extends Behavior
 
     /**
      * @param \Cake\Datasource\EntityInterface $entity Entity
+     *
      * @return \Phauthentic\Infrastructure\Storage\FileInterface
      */
     public function entityToFileObject(EntityInterface $entity): FileInterface
@@ -300,6 +315,7 @@ class FileStorageBehavior extends Behavior
     /**
      * @param \Phauthentic\Infrastructure\Storage\FileInterface $file File
      * @param \Cake\Datasource\EntityInterface|null $entity
+     *
      * @return \Cake\Datasource\EntityInterface
      */
     public function fileObjectToEntity(FileInterface $file, ?EntityInterface $entity)
@@ -312,6 +328,7 @@ class FileStorageBehavior extends Behavior
      *
      * @param \Phauthentic\Infrastructure\Storage\FileInterface $file File
      * @param \Cake\Datasource\EntityInterface $entity
+     *
      * @return \Phauthentic\Infrastructure\Storage\FileInterface
      */
     public function processImages(FileInterface $file, EntityInterface $entity): FileInterface
@@ -331,6 +348,8 @@ class FileStorageBehavior extends Behavior
     }
 
     /**
+     * @throws \RuntimeException
+     *
      * @return \Phauthentic\Infrastructure\Storage\Processor\ProcessorInterface
      */
     protected function getImageProcessor(): ProcessorInterface
@@ -339,7 +358,7 @@ class FileStorageBehavior extends Behavior
             return $this->imageProcessor;
         }
 
-        if ($this->getConfig('imageProcessor') instanceOf ProcessorInterface) {
+        if ($this->getConfig('imageProcessor') instanceof ProcessorInterface) {
             $this->imageProcessor = $this->getConfig('imageProcessor');
         }
 
