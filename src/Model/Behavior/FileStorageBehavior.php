@@ -36,9 +36,9 @@ class FileStorageBehavior extends Behavior
     protected FileStorage $fileStorage;
 
     /**
-     * @var \Phauthentic\Infrastructure\Storage\Processor\ProcessorInterface
+     * @var \Phauthentic\Infrastructure\Storage\Processor\ProcessorInterface|null
      */
-    protected ?ProcessorInterface $imageProcessor;
+    protected $imageProcessor;
 
     /**
      * @var \Burzum\FileStorage\FileStorage\DataTransformerInterface
@@ -219,7 +219,7 @@ class FileStorageBehavior extends Behavior
     {
         if ($entity->isNew()) {
             if (!$entity->has('model')) {
-                $entity->set('model', $this->getTable()->getTable());
+                $entity->set('model', $this->getTable()->getAlias());
             }
 
             if (!$entity->has('adapter')) {
@@ -338,12 +338,15 @@ class FileStorageBehavior extends Behavior
         $model = $file->model();
         $identifier = $entity->get('identifier');
 
+        $model = 'Events'; //FIXME
+        $identifier = 'EventImages'; //FIXME
+
         if (!isset($imageSizes[$model][$identifier])) {
             return $file;
         }
 
         $file = $file->withVariants($imageSizes[$model][$identifier]);
-        $file = $this->imageProcessor->process($file);
+        $file = $this->getImageProcessor()->process($file);
 
         return $file;
     }
