@@ -336,16 +336,13 @@ class FileStorageBehavior extends Behavior
     {
         $imageSizes = Configure::read('FileStorage.imageVariants');
         $model = $file->model();
-        $identifier = $entity->get('identifier');
+        $collection = $entity->get('collection');
 
-        $model = 'Events'; //FIXME
-        $identifier = 'EventImages'; //FIXME
-
-        if (!isset($imageSizes[$model][$identifier])) {
+        if (!isset($imageSizes[$model][$collection])) {
             return $file;
         }
 
-        $file = $file->withVariants($imageSizes[$model][$identifier]);
+        $file = $file->withVariants($imageSizes[$model][$collection]);
         $file = $this->getImageProcessor()->process($file);
 
         return $file;

@@ -12,6 +12,7 @@ use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventInterface;
+use Cake\ORM\Association\HasOne;
 use Cake\ORM\Behavior;
 use League\Flysystem\AdapterInterface;
 use Phauthentic\Infrastructure\Storage\FileInterface;
@@ -41,18 +42,22 @@ class FileAssociationBehavior extends Behavior
      */
     public function initialize(array $config): void
     {
+        parent::initialize($config);
+
         $class = get_class($this->getTable());
-        foreach ($config['associations'] as $association => &$assocConfig) {
+        foreach ($config['associations'] as $association => $assocConfig) {
+            $associationObject = $this->getTable()->getAssociation($association);
+
             $defaults = [
-                'overrideable' => false,
-                'model' => substr($class, strrpos($class, '\\') + 1),
+                'replace' => $associationObject instanceof HasOne,
+                'model' => substr($class, strrpos($class, '\\') + 1, -5),
                 'property' => $this->getTable()->getAssociation($association)->getProperty()
             ];
 
-            $assoConfig += $assoConfig;
+            $config['associations'][$association] = $assocConfig += $defaults;
         }
 
-        parent::initialize($config);
+        $this->setConfig('associations', $config['associations']);
     }
 
     /**
@@ -62,12 +67,12 @@ class FileAssociationBehavior extends Behavior
      *
      * @return void
      */
-    public function afterSave(
+    public function beforeSave(
         EventInterface $event,
         EntityInterface $entity,
         ArrayObject $options
     ): void {
-        $associations = $this->getConfig('assocations');
+        $associations = $this->getConfig('associations');
 
         foreach ($associations as $association => $assocConfig) {
             $property = $assocConfig['property'];
@@ -76,15 +81,13 @@ class FileAssociationBehavior extends Behavior
             }
 
             if ($entity->id && $entity->{$property} && $entity->{$property}->file->getError() === UPLOAD_ERR_OK) {
-                if ($assocConfig['overrideable'] === true) {
+                if ($assocConfig['replace'] === true) {
                     $this->findAndRemovePreviousFile($entity, $association, $assocConfig);
                 }
 
                 $entity->{$property}->set('collection', $assocConfig['collection']);
                 $entity->{$property}->set('model', $assocConfig['model']);
                 $entity->{$property}->set('foreign_key', $entity->id);
-
-                $this->{$association}->saveOrFail($entity->{$property});
             }
         }
     }
@@ -100,15 +103,16 @@ class FileAssociationBehavior extends Behavior
         string $association,
         array $assocConfig
     ): void {
-        $result = $this->{$association}->find()
+        $result = $this->getTable()->{$association}->find()
             ->where([
                 'collection' => $assocConfig['collection'],
                 'model' => $assocConfig['model'],
                 'foreign_key' => $entity->get((string)$this->getTable()->getPrimaryKey())
-            ]);
+            ])
+            ->first();
 
         if ($result) {
-            $this->{$association}->delete($result);
+            $this->getTable()->{$association}->delete($result);
         }
     }
 }
