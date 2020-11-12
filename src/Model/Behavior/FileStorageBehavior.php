@@ -33,17 +33,17 @@ class FileStorageBehavior extends Behavior
     /**
      * @var \Phauthentic\Infrastructure\Storage\FileStorage
      */
-    protected FileStorage $fileStorage;
-
-    /**
-     * @var \Phauthentic\Infrastructure\Storage\Processor\ProcessorInterface|null
-     */
-    protected $imageProcessor;
+    protected $fileStorage;
 
     /**
      * @var \Burzum\FileStorage\FileStorage\DataTransformerInterface
      */
-    protected DataTransformerInterface $transformer;
+    protected $transformer;
+
+    /**
+     * @var \Phauthentic\Infrastructure\Storage\Processor\ProcessorInterface
+     */
+    protected $processor;
 
     /**
      * Default config
@@ -55,13 +55,8 @@ class FileStorageBehavior extends Behavior
         'ignoreEmptyFile' => true,
         'fileField' => 'file',
         'fileStorage' => null,
-        'imageProcessor' => null,
+        'fileProcessor' => null,
     ];
-
-    /**
-     * @var array
-     */
-    protected array $processors = [];
 
     /**
      * @inheritDoc
@@ -85,6 +80,8 @@ class FileStorageBehavior extends Behavior
                 $this->getTable()
             );
         }
+
+        $this->processors = (array)$this->getConfig('processors');
     }
 
     /**
@@ -184,11 +181,12 @@ class FileStorageBehavior extends Behavior
             try {
                 $file = $this->entityToFileObject($entity);
                 $file = $this->fileStorage->store($file);
+
+                // TODO: move into stack processing
                 $file = $this->processImages($file, $entity);
 
-                foreach ($this->processors as $processor) {
-                    $file = $processor->process($file);
-                }
+                $processor = $this->getFileProcessor();
+                $file = $processor->process($file);
 
                 $entity = $this->fileObjectToEntity($file, $entity);
                 $this->getTable()->save(
@@ -285,7 +283,7 @@ class FileStorageBehavior extends Behavior
      *
      * @return int Number of deleted records / files
      */
-    public function deleteAllFiles($conditions)
+    public function deleteAllFiles(array $conditions)
     {
         $table = $this->getTable();
 
@@ -334,7 +332,7 @@ class FileStorageBehavior extends Behavior
      */
     public function processImages(FileInterface $file, EntityInterface $entity): FileInterface
     {
-        $imageSizes = Configure::read('FileStorage.imageVariants');
+        $imageSizes = (array)Configure::read('FileStorage.imageVariants');
         $model = $file->model();
         $collection = $entity->get('collection');
 
@@ -343,7 +341,6 @@ class FileStorageBehavior extends Behavior
         }
 
         $file = $file->withVariants($imageSizes[$model][$collection]);
-        $file = $this->getImageProcessor()->process($file);
 
         return $file;
     }
@@ -353,20 +350,20 @@ class FileStorageBehavior extends Behavior
      *
      * @return \Phauthentic\Infrastructure\Storage\Processor\ProcessorInterface
      */
-    protected function getImageProcessor(): ProcessorInterface
+    protected function getFileProcessor(): ProcessorInterface
     {
-        if ($this->imageProcessor !== null) {
-            return $this->imageProcessor;
+        if ($this->processor !== null) {
+            return $this->processor;
         }
 
-        if ($this->getConfig('imageProcessor') instanceof ProcessorInterface) {
-            $this->imageProcessor = $this->getConfig('imageProcessor');
+        if ($this->getConfig('fileProcessor') instanceof ProcessorInterface) {
+            $this->processor = $this->getConfig('fileProcessor');
         }
 
-        if ($this->imageProcessor === null) {
-            throw new RuntimeException('No image processor found');
+        if ($this->processor === null) {
+            throw new RuntimeException('No processor found');
         }
 
-        return $this->imageProcessor;
+        return $this->processor;
     }
 }

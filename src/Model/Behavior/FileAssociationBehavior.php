@@ -82,7 +82,7 @@ class FileAssociationBehavior extends Behavior
 
             if ($entity->id && $entity->{$property} && $entity->{$property}->file->getError() === UPLOAD_ERR_OK) {
                 if ($assocConfig['replace'] === true) {
-                    $this->findAndRemovePreviousFile($entity, $association, $assocConfig);
+                    //$this->findAndRemovePreviousFile($entity, $association, $assocConfig);
                 }
 
                 $entity->{$property}->set('collection', $assocConfig['collection']);
@@ -107,7 +107,8 @@ class FileAssociationBehavior extends Behavior
             ->where([
                 'collection' => $assocConfig['collection'],
                 'model' => $assocConfig['model'],
-                'foreign_key' => $entity->get((string)$this->getTable()->getPrimaryKey())
+                'foreign_key' => $entity->get((string)$this->getTable()->getPrimaryKey()),
+                'id !=' => $entity->get($assocConfig['property'])->get($this->getTable()->{$association}->getPrimaryKey())
             ])
             ->first();
 
