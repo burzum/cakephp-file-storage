@@ -4,22 +4,12 @@ declare(strict_types = 1);
 
 namespace Burzum\FileStorage\Model\Behavior;
 
-use App\Storage\Identifiers;
 use ArrayObject;
-use Burzum\FileStorage\FileStorage\DataTransformer;
-use Burzum\FileStorage\FileStorage\DataTransformerInterface;
-use Cake\Core\Configure;
 use Cake\Datasource\EntityInterface;
-use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventInterface;
 use Cake\ORM\Association\HasOne;
 use Cake\ORM\Behavior;
-use League\Flysystem\AdapterInterface;
-use Phauthentic\Infrastructure\Storage\FileInterface;
-use Phauthentic\Infrastructure\Storage\FileStorage;
-use Phauthentic\Infrastructure\Storage\Processor\ProcessorInterface;
-use RuntimeException;
-use Throwable;
+use Laminas\Diactoros\UploadedFile;
 
 /**
  * File Association Behavior.
@@ -31,14 +21,15 @@ use Throwable;
 class FileAssociationBehavior extends Behavior
 {
     /**
-     * @inheritdoc
+     * @var array
+     * @inheritDoc
      */
     protected $_defaultConfig = [
-        'associations' => []
+        'associations' => [],
     ];
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function initialize(array $config): void
     {
@@ -51,10 +42,10 @@ class FileAssociationBehavior extends Behavior
             $defaults = [
                 'replace' => $associationObject instanceof HasOne,
                 'model' => substr($class, strrpos($class, '\\') + 1, -5),
-                'property' => $this->getTable()->getAssociation($association)->getProperty()
+                'property' => $this->getTable()->getAssociation($association)->getProperty(),
             ];
 
-            $config['associations'][$association] = $assocConfig += $defaults;
+            $config['associations'][$association] = $assocConfig + $defaults;
         }
 
         $this->setConfig('associations', $config['associations']);
@@ -62,12 +53,12 @@ class FileAssociationBehavior extends Behavior
 
     /**
      * @param \Cake\Event\EventInterface $event
-     * @param \App\Model\Entity\Event $entity
+     * @param \Cake\Datasource\EntityInterface $entity
      * @param \ArrayObject $options
      *
      * @return void
      */
-    public function beforeSave(
+    public function afterSave(
         EventInterface $event,
         EntityInterface $entity,
         ArrayObject $options
@@ -80,22 +71,38 @@ class FileAssociationBehavior extends Behavior
                 continue;
             }
 
-            if ($entity->id && $entity->{$property} && $entity->{$property}->file->getError() === UPLOAD_ERR_OK) {
+            if ($entity->id && $entity->{$property} && $entity->{$property}->file) {
+                $file = $entity->{$property}->file;
+
+                $ok = false;
+                if (is_array($file) && $file['error'] === UPLOAD_ERR_OK) {
+                    $ok = true;
+                } elseif ($file instanceof UploadedFile && $file->getError() === UPLOAD_ERR_OK) {
+                    $ok = true;
+                }
+
+                if (!$ok) {
+                    continue;
+                }
+
                 if ($assocConfig['replace'] === true) {
-                    //$this->findAndRemovePreviousFile($entity, $association, $assocConfig);
+                    $this->findAndRemovePreviousFile($entity, $association, $assocConfig);
                 }
 
                 $entity->{$property}->set('collection', $assocConfig['collection']);
                 $entity->{$property}->set('model', $assocConfig['model']);
                 $entity->{$property}->set('foreign_key', $entity->id);
+
+                $this->getTable()->{$association}->saveOrFail($entity->{$property});
             }
         }
     }
 
     /**
-     * @param \Cake\Event\EventInterface $event
+     * @param \Cake\Datasource\EntityInterface $entity
      * @param string $association
      * @param array $assocConfig
+     *
      * @return void
      */
     protected function findAndRemovePreviousFile(
@@ -108,7 +115,7 @@ class FileAssociationBehavior extends Behavior
                 'collection' => $assocConfig['collection'],
                 'model' => $assocConfig['model'],
                 'foreign_key' => $entity->get((string)$this->getTable()->getPrimaryKey()),
-                'id !=' => $entity->get($assocConfig['property'])->get($this->getTable()->{$association}->getPrimaryKey())
+                'id !=' => $entity->get($assocConfig['property'])->get((string)$this->getTable()->{$association}->getPrimaryKey()),
             ])
             ->first();
 

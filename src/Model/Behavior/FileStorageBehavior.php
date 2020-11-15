@@ -81,7 +81,7 @@ class FileStorageBehavior extends Behavior
             );
         }
 
-        $this->processors = (array)$this->getConfig('processors');
+        //$this->processors = (array)$this->getConfig('processors');
     }
 
     /**
@@ -264,7 +264,7 @@ class FileStorageBehavior extends Behavior
         if (!is_array($uploadedFile)) {
             $upload['filesize'] = $uploadedFile->getSize();
             $upload['mime_type'] = $uploadedFile->getClientMediaType();
-            $upload['extension'] = pathinfo($uploadedFile->getClientFilename(), PATHINFO_EXTENSION);
+            $upload['extension'] = pathinfo((string)$uploadedFile->getClientFilename(), PATHINFO_EXTENSION);
             $upload['filename'] = $uploadedFile->getClientFilename();
         } else {
             $upload['filesize'] = $uploadedFile['size'];
