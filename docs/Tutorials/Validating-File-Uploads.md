@@ -32,5 +32,5 @@ This will attach the listener to the `Model.initialize()` event and add your con
 
 References:
 
-* (Using A Different Validation Set)[http://book.cakephp.org/3.0/en/orm/validation.html#using-a-different-validation-set]
-* (Table::validator())[http://api.cakephp.org/3.3/class-Cake.Validation.ValidatorAwareTrait.html#_validator]
+* [Using A Different Validation Set](http://book.cakephp.org/3.0/en/orm/validation.html#using-a-different-validation-set)
+* [Table::validator()](http://api.cakephp.org/3.3/class-Cake.Validation.ValidatorAwareTrait.html#_validator)
