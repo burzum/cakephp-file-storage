@@ -59,7 +59,7 @@ The versioned image files will be in the same folder, which is the id of the rec
 /ModelName/51/21/63/4c0f128f91fc48749662761d407888cc/4c0f128f91fc48749662761d407888cc.f91fsc.jpg
 ```
 
-You should smylink your image root folder to APP/webroot/images for example to avoid that images go through php and are send directly instead.
+You should symlink your image root folder to APP/webroot/images for example to avoid that images go through php and are send directly instead.
 
 Extending and Changing Image Versioning
 ---------------------------------------
