@@ -97,6 +97,6 @@ $this->loadHelper('Burzum/FileStorage.Storage', [
 $url = $this->Storage->url($yourEntity);
 
 // Change the path builder at run time
-// Be carefully, this will change the path builder instance in the helper!
+// Be careful, this will change the path builder instance in the helper!
 $this->Storage->pathBuilder('SomePathBuilder', ['options' => 'here']);
 ```
