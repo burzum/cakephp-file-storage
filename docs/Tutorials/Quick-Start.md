@@ -22,7 +22,7 @@ Plugin::load('Burzum/Imagine');
 
 This will load the `bootstrap.php` of the File Storage plugin. The default configuration in there will load the LocalStorage listener and the ImageProcessing listener. You can also skip that bootstrap part and configure your own listeners in your apps bootstrap.php or a new file.
 
-To make image processing work you'll have to add this to your applications bootstrap.php as well:
+To make image processing work you'll have to add this to your application's bootstrap.php as well:
 
 ```php
 /**
@@ -77,7 +77,7 @@ Inside the `edit.ctp` view file of your users edit method:
 echo $this->Form->create($user);
 echo $this->Form->input('username');
 // That's the important line / field
-echo $this->From->file('avatar.file');
+echo $this->Form->file('avatar.file');
 echo $this->Form->submit(__('Submit'));
 echo $this->Form->end();
 ```
