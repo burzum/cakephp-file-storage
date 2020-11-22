@@ -40,6 +40,7 @@ class FileStorage extends Entity implements FileStorageEntityInterface
      */
     protected $_accessible = [
         '*' => true,
+        'id' => false,
     ];
 
     /**
