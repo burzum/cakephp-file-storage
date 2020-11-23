@@ -189,7 +189,7 @@ class FileStorageBehavior extends Behavior
                 $file = $processor->process($file);
 
                 $entity = $this->fileObjectToEntity($file, $entity);
-                $this->getTable()->save(
+                $this->getTable()->saveOrFail(
                     $entity,
                     ['callbacks' => false]
                 );
