@@ -118,5 +118,64 @@ class ItemsTableTest extends FileStorageTestCase
      */
     public function testUploadOverwriteExisting()
     {
+        // Upload first pic
+        $entity = $this->table->newEntity([
+            'name' => 'Test',
+            'avatar' => [
+                'file' => new UploadedFile(
+                    $this->fileFixtures . 'titus.jpg',
+                    filesize($this->fileFixtures . 'titus.jpg'),
+                    UPLOAD_ERR_OK,
+                    'tituts.jpg',
+                    'image/jpeg',
+                )
+            ],
+        ]);
+        $this->assertSame([], $entity->getErrors());
+
+        $this->table->saveOrFail($entity);
+
+        $entity = $this->table->get($entity->id, ['contain' => 'Avatars']);
+debug(json_encode($entity->avatar));
+        $this->assertNotEmpty($entity->avatar);
+
+        $expected = [
+            'width' => 512,
+            'height' => 768,
+        ];
+        $this->assertSame($expected, $entity->avatar->metadata);
+
+        // Upload second pic
+        $entity = $this->table->patchEntity($entity, [
+            'avatar' => [
+                'file' => new UploadedFile(
+                    $this->fileFixtures . 'demo.png',
+                    filesize($this->fileFixtures . 'demo.png'),
+                    UPLOAD_ERR_OK,
+                    'demo.png',
+                    'image/png',
+                )
+            ],
+        ]);
+        $this->assertSame([], $entity->getErrors());
+
+        $this->table->saveOrFail($entity);
+
+        $entity = $this->table->get($entity->id, ['contain' => 'Avatars']);
+
+        $this->assertNotEmpty($entity->avatar);
+
+        $this->assertSame('Items', $entity->avatar->model);
+        $this->assertNotEmpty($entity->avatar->foreign_key);
+        $this->assertSame('Avatars', $entity->avatar->collection);
+        $this->assertStringStartsWith('Avatars/', $entity->avatar->path);
+        $this->assertNotEmpty($entity->avatar->metadata);
+        $this->assertNotEmpty($entity->avatar->variants);
+debug(json_encode($entity->avatar));
+        $expected = [
+            'width' => 512,
+            'height' => 512,
+        ];
+        $this->assertSame($expected, $entity->avatar->metadata);
     }
 }
