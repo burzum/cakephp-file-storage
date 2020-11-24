@@ -6,7 +6,7 @@ namespace Burzum\FileStorage\Test\Fixture;
 
 use Cake\TestSuite\Fixture\TestFixture;
 
-class FileStorageFixture extends TestFixture
+class UuidFileStorageFixture extends TestFixture
 {
     /**
      * Model name

@@ -35,8 +35,8 @@ class FileStorageTableTest extends FileStorageTestCase
      */
     public function testInitialize()
     {
-        $this->assertEquals($this->FileStorage->getTable(), 'file_storage');
-        $this->assertEquals($this->FileStorage->getDisplayField(), 'filename');
+        $this->assertSame('file_storage', $this->FileStorage->getTable());
+        $this->assertSame('filename', $this->FileStorage->getDisplayField());
     }
 
     /**
@@ -58,7 +58,7 @@ class FileStorageTableTest extends FileStorageTestCase
                 'tituts.jpg',
                 'image/jpeg'
             ),
-        ], ['accessibleFields' => ['*' => true]]);
+        ]);
         $this->assertSame([], $entity->getErrors());
 
         $this->FileStorage->saveOrFail($entity);
@@ -83,7 +83,7 @@ class FileStorageTableTest extends FileStorageTestCase
                 'name' => 'tituts.jpg',
                 'tmp_name' => $this->fileFixtures . 'titus.jpg',
             ],
-        ], ['accessibleFields' => ['*' => true]]);
+        ]);
         $this->assertSame([], $entity->getErrors());
 
         $this->FileStorage->saveOrFail($entity);

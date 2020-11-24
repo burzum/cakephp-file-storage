@@ -35,13 +35,13 @@ class FileAssociationBehavior extends Behavior
     {
         parent::initialize($config);
 
-        $class = get_class($this->getTable());
+        $model = $this->getTable()->getAlias();
         foreach ($config['associations'] as $association => $assocConfig) {
             $associationObject = $this->getTable()->getAssociation($association);
 
             $defaults = [
                 'replace' => $associationObject instanceof HasOne,
-                'model' => substr($class, strrpos($class, '\\') + 1, -5),
+                'model' => $model,
                 'property' => $this->getTable()->getAssociation($association)->getProperty(),
             ];
 
