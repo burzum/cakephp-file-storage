@@ -174,7 +174,7 @@ class ItemsTableTest extends FileStorageTestCase
 
         $expected = [
             'width' => 512,
-            'height' => 768,
+            'height' => 512, // !!!
         ];
         $this->assertSame($expected, $entity->avatar->metadata);
     }
