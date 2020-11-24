@@ -42,6 +42,7 @@ class ItemsTableTest extends FileStorageTestCase
             ],
             'joinType' => 'LEFT',
         ]);
+
         $this->table->hasMany('Photos', [
             'className' => 'Burzum/FileStorage.FileStorage',
             'foreignKey' => 'foreign_key',
@@ -75,8 +76,7 @@ class ItemsTableTest extends FileStorageTestCase
     {
         parent::tearDown();
 
-        unset($this->FileStorage);
-        unset($this->table);
+        unset($this->FileStorage, $this->table);
         $this->getTableLocator()->clear();
     }
 
@@ -108,7 +108,7 @@ class ItemsTableTest extends FileStorageTestCase
         $this->assertSame('Items', $entity->avatar->model);
         $this->assertNotEmpty($entity->avatar->foreign_key);
         $this->assertSame('Avatars', $entity->avatar->collection);
-        $this->assertStringStartsWith('Avatars/', $entity->avatar->path);
+        $this->assertStringStartsWith('Avatars', $entity->avatar->path);
         $this->assertNotEmpty($entity->avatar->metadata);
         $this->assertNotEmpty($entity->avatar->variants);
     }
@@ -136,7 +136,7 @@ class ItemsTableTest extends FileStorageTestCase
         $this->table->saveOrFail($entity);
 
         $entity = $this->table->get($entity->id, ['contain' => 'Avatars']);
-debug(json_encode($entity->avatar));
+
         $this->assertNotEmpty($entity->avatar);
 
         $expected = [
@@ -168,13 +168,13 @@ debug(json_encode($entity->avatar));
         $this->assertSame('Items', $entity->avatar->model);
         $this->assertNotEmpty($entity->avatar->foreign_key);
         $this->assertSame('Avatars', $entity->avatar->collection);
-        $this->assertStringStartsWith('Avatars/', $entity->avatar->path);
+        $this->assertStringStartsWith('Avatars', $entity->avatar->path);
         $this->assertNotEmpty($entity->avatar->metadata);
         $this->assertNotEmpty($entity->avatar->variants);
-debug(json_encode($entity->avatar));
+
         $expected = [
             'width' => 512,
-            'height' => 512,
+            'height' => 768,
         ];
         $this->assertSame($expected, $entity->avatar->metadata);
     }

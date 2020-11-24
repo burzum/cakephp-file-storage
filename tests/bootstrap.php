@@ -2,10 +2,6 @@
 
 declare(strict_types = 1);
 
-/**
- * Bootstrap
- */
-
 use Cake\Core\Plugin;
 
 $findRoot = function ($root) {

@@ -42,6 +42,7 @@ class FileAssociationBehavior extends Behavior
             $defaults = [
                 'replace' => $associationObject instanceof HasOne,
                 'model' => $model,
+                'collection' => $association,
                 'property' => $this->getTable()->getAssociation($association)->getProperty(),
             ];
 
@@ -136,8 +137,8 @@ class FileAssociationBehavior extends Behavior
     ): void {
         $result = $this->getTable()->{$association}->find()
             ->where([
-                'collection' => $assocConfig['collection'],
                 'model' => $assocConfig['model'],
+                'collection' => $assocConfig['collection'] ?? null,
                 'foreign_key' => $entity->get((string)$this->getTable()->getPrimaryKey()),
                 'id !=' => $entity->get($assocConfig['property'])->get((string)$this->getTable()->{$association}->getPrimaryKey()),
             ])
