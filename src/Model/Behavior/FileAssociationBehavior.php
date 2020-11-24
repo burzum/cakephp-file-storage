@@ -58,6 +58,30 @@ class FileAssociationBehavior extends Behavior
      *
      * @return void
      */
+    public function beforeSave(
+        EventInterface $event,
+        EntityInterface $entity,
+        ArrayObject $options
+    ): void
+    {
+        $associations = $this->getConfig('associations');
+        foreach ($associations as $association => $assocConfig) {
+            $property = $assocConfig['property'];
+            if ($entity->{$property} === null) {
+                continue;
+            }
+
+            $entity->{$property}->set('collection', $assocConfig['collection']);
+        }
+    }
+
+    /**
+     * @param \Cake\Event\EventInterface $event
+     * @param \Cake\Datasource\EntityInterface $entity
+     * @param \ArrayObject $options
+     *
+     * @return void
+     */
     public function afterSave(
         EventInterface $event,
         EntityInterface $entity,
