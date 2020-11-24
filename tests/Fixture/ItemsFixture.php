@@ -6,14 +6,14 @@ namespace Burzum\FileStorage\Test\Fixture;
 
 use Cake\TestSuite\Fixture\TestFixture;
 
-class ItemFixture extends TestFixture
+class ItemsFixture extends TestFixture
 {
     /**
      * Name
      *
      * @var string
      */
-    public $name = 'Item';
+    public $name = 'Items';
 
     /**
      * Table
@@ -28,7 +28,7 @@ class ItemFixture extends TestFixture
      * @var array
      */
     public $fields = [
-        'id' => ['type' => 'uuid', 'null' => true, 'default' => null, 'length' => 36],
+        'id' => ['type' => 'integer', 'null' => true, 'default' => null, 'autoIncrement' => true],
         'name' => ['type' => 'string', 'null' => true, 'default' => null],
         'path' => ['type' => 'string', 'null' => true, 'default' => null],
         'filename' => ['type' => 'string', 'null' => true, 'default' => null],
@@ -44,15 +44,12 @@ class ItemFixture extends TestFixture
      */
     public $records = [
         [
-            'id' => 'item-1',
             'name' => 'Cake',
         ],
         [
-            'id' => 'item-2',
             'name' => 'More Cake',
         ],
         [
-            'id' => 'item-3',
             'name' => 'A lot Cake',
         ],
     ];

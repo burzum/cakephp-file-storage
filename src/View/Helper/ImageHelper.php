@@ -88,7 +88,7 @@ class ImageHelper extends Helper
         }
 
         if (!$path) {
-            throw VariantDoesNotExistException::withName($variant);
+            throw VariantDoesNotExistException::withName((string)$variant);
         }
 
         $options = array_merge($this->getConfig(), $options);

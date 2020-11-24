@@ -73,7 +73,7 @@ class DataTransformer implements DataTransformerInterface
     public function fileObjectToEntity(FileInterface $file, ?EntityInterface $entity): EntityInterface
     {
         $data = [
-            'id' => $file->uuid(),
+            'id' => $file->uuid(), //FIXME
             'model' => $file->model(),
             'foreign_key' => $file->modelId(),
             'filesize' => $file->filesize(),

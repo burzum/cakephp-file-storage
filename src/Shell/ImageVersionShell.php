@@ -25,7 +25,7 @@ class ImageVersionShell extends Shell
     /**
      * Storage Table Object
      *
-     * @var \Cake\ORM\Table|null
+     * @var \Cake\ORM\Table
      */
     public $Table;
 
@@ -200,6 +200,9 @@ class ImageVersionShell extends Shell
 
         foreach ($operations as $version => $operation) {
             try {
+                if ($this->command === null) {
+                    $this->abort('No command given');
+                }
                 $this->_loop($this->command, $this->args[0], [$version => $operation], $options);
             } catch (Exception $e) {
                 $this->abort($e->getMessage());

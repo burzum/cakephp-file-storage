@@ -1,5 +1,5 @@
 parameters:
-    level: 7
+    level: 8
     checkMissingIterableValueType: false
     checkGenericClassInNonGenericObjectType: false
     bootstrapFiles:
@@ -7,3 +7,5 @@ parameters:
     earlyTerminatingMethodCalls:
         Cake\Console\Shell:
             - abort
+    ignoreErrors:
+        - '#Cannot cast array\<string\>\|string to string#'

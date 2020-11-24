@@ -6,7 +6,7 @@ namespace Burzum\FileStorage\Test\Fixture;
 
 use Cake\TestSuite\Fixture\TestFixture;
 
-class FileStorageFixture extends TestFixture
+class UuidFileStorageFixture extends TestFixture
 {
     /**
      * Model name
@@ -28,9 +28,9 @@ class FileStorageFixture extends TestFixture
      * @var array
      */
     public $fields = [
-        'id' => ['type' => 'integer', 'null' => true, 'default' => null, 'autoIncrement' => true],
-        'user_id' => ['type' => 'integer', 'null' => true, 'default' => null],
-        'foreign_key' => ['type' => 'integer', 'null' => true, 'default' => null],
+        'id' => ['type' => 'uuid', 'null' => true, 'default' => null, 'length' => 36],
+        'user_id' => ['type' => 'string', 'null' => true, 'default' => null, 'length' => 36],
+        'foreign_key' => ['type' => 'string', 'null' => true, 'default' => null, 'length' => 36],
         'model' => ['type' => 'string', 'null' => true, 'default' => null, 'length' => 64],
         'collection' => ['type' => 'string', 'null' => true, 'default' => null, 'length' => 128],
         'filename' => ['type' => 'string', 'null' => false, 'default' => null],
@@ -56,8 +56,9 @@ class FileStorageFixture extends TestFixture
      */
     public $records = [
         [
-            'user_id' => 1,
-            'foreign_key' => 1,
+            'id' => 'file-storage-1',
+            'user_id' => 'user-1',
+            'foreign_key' => 'item-1',
             'model' => 'Item',
             'filename' => 'cake.icon.png',
             'filesize' => '',
@@ -72,8 +73,9 @@ class FileStorageFixture extends TestFixture
             'modified' => '2012-01-01 12:00:00',
         ],
         [
-            'user_id' => 1,
-            'foreign_key' => 1,
+            'id' => 'file-storage-2',
+            'user_id' => 'user-1',
+            'foreign_key' => 'item-1',
             'model' => 'Item',
             'filename' => 'titus-bienebek-bridle.jpg',
             'filesize' => '',
@@ -88,8 +90,9 @@ class FileStorageFixture extends TestFixture
             'modified' => '2012-01-01 12:00:00',
         ],
         [
-            'user_id' => 1,
-            'foreign_key' => 2,
+            'id' => 'file-storage-3',
+            'user_id' => 'user-1',
+            'foreign_key' => 'item-2',
             'model' => 'Item',
             'filename' => 'titus.jpg',
             'filesize' => '335872',
@@ -104,8 +107,9 @@ class FileStorageFixture extends TestFixture
             'modified' => '2012-01-01 12:00:00',
         ],
         [
-            'user_id' => 1,
-            'foreign_key' => 4,
+            'id' => 'file-storage-4',
+            'user_id' => 'user-1',
+            'foreign_key' => 'item-4',
             'model' => 'Item',
             'filename' => 'titus.jpg',
             'filesize' => '335872',

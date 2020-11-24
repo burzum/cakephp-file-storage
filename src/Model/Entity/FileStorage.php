@@ -12,6 +12,24 @@ use Cake\ORM\Entity;
  * @author Florian Krämer
  * @copyright 2012 - 2020 Florian Krämer
  * @license MIT
+ *
+ * @property array $variants
+ * @property array $metadata
+ * @property int $id
+ * @property int|null $user_id
+ * @property int|null $foreign_key
+ * @property string|null $model
+ * @property string|null $filename
+ * @property int|null $filesize
+ * @property string|null $mime_type
+ * @property string|null $extension
+ * @property string|null $hash
+ * @property string|null $path
+ * @property string|null $adapter
+ * @property \Cake\I18n\FrozenTime $created
+ * @property \Cake\I18n\FrozenTime $modified
+ * @property string|null $collection
+ * @property array $variant_urls
  */
 class FileStorage extends Entity implements FileStorageEntityInterface
 {
@@ -22,6 +40,7 @@ class FileStorage extends Entity implements FileStorageEntityInterface
      */
     protected $_accessible = [
         '*' => true,
+        'id' => false,
     ];
 
     /**

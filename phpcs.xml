@@ -10,12 +10,12 @@
 
     <rule ref="SlevomatCodingStandard.TypeHints.DeclareStrictTypes">
         <properties>
-            <property name="newlinesCountBetweenOpenTagAndDeclare" value="2" />
+            <property name="newlinesCountBetweenOpenTagAndDeclare" value="2"/>
         </properties>
     </rule>
 
     <rule ref="Spryker">
-        <exclude name="Spryker.Formatting.MethodSignatureParametersLineBreakMethod" />
+        <exclude name="Spryker.Formatting.MethodSignatureParametersLineBreakMethod"/>
     </rule>
 
 </ruleset>

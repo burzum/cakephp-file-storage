@@ -85,29 +85,26 @@ class FileStorageTestCase extends TestCase
     /**
      * @return void
      */
-    private function configureImageVariants(): void
+    protected function configureImageVariants(): void
     {
         Configure::write('FileStorage.imageVariants', [
-            'Test' => [
-                't50' => [
+            'Photos' => [
+                'Photos' => [
                     'thumbnail' => [
-                        'mode' => 'outbound',
                         'width' => 50,
                         'height' => 50,
                     ],
                 ],
                 't150' => [
                     'thumbnail' => [
-                        'mode' => 'outbound',
                         'width' => 150,
                         'height' => 150,
                     ],
                 ],
             ],
-            'UserAvatar' => [
-                'small' => [
+            'Avatars' => [
+                'Avatars' => [
                     'thumbnail' => [
-                        'mode' => 'inbound',
                         'width' => 80,
                         'height' => 80,
                     ],
@@ -119,7 +116,7 @@ class FileStorageTestCase extends TestCase
     /**
      * @return void
      */
-    private function prepareDependencies(): void
+    protected function prepareDependencies(): void
     {
         $pathBuilder = new PathBuilder([
             'pathTemplate' => '{model}{ds}{collection}{ds}{randomPath}{ds}{strippedId}{ds}{strippedId}.{extension}',
@@ -153,10 +150,17 @@ class FileStorageTestCase extends TestCase
             $pathBuilder,
             $imageManager
         );
+        $imageDimensionsProcessor = new \TestApp\Storage\Processor\ImageDimensionsProcessor(
+            $this->testPath
+        );
+        $stackProcessor = new \Phauthentic\Infrastructure\Storage\Processor\StackProcessor([
+            $imageProcessor,
+            $imageDimensionsProcessor,
+        ]);
 
         Configure::write('FileStorage.behaviorConfig', [
             'fileStorage' => $fileStorage,
-            'imageProcessor' => $imageProcessor,
+            'fileProcessor' => $stackProcessor,
         ]);
     }
 

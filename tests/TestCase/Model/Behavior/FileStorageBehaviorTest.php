@@ -25,15 +25,6 @@ class FileStorageBehaviorTest extends FileStorageTestCase
     protected $FileStorage;
 
     /**
-     * Fixtures
-     *
-     * @var array
-     */
-    protected $fixtures = [
-        'plugin.Burzum/FileStorage.FileStorage',
-    ];
-
-    /**
      * startTest
      *
      * @return void
@@ -75,7 +66,7 @@ class FileStorageBehaviorTest extends FileStorageTestCase
         $file = $this->_createMockFile('/Item/00/14/90/filestorage1/filestorage1.png');
         $this->assertFileExists($file);
 
-        $entity = $this->FileStorage->get('file-storage-1');
+        $entity = $this->FileStorage->get(1);
         $entity->adapter = 'Local';
         $entity->path = '/Item/00/14/90/filestorage1/filestorage1.png';
 
@@ -123,7 +114,7 @@ class FileStorageBehaviorTest extends FileStorageTestCase
         $this->assertSame($entity->adapter, 'Local');
         $this->assertSame($entity->filesize, 332643);
         $this->assertSame($entity->mime_type, 'image/jpeg');
-        $this->assertSame($entity->model, 'file_storage');
+        $this->assertSame($entity->model, 'FileStorage');
     }
 
     /**
@@ -152,6 +143,6 @@ class FileStorageBehaviorTest extends FileStorageTestCase
         $this->assertSame($entity->adapter, 'Local');
         $this->assertSame($entity->filesize, 332643);
         $this->assertSame($entity->mime_type, 'image/jpeg');
-        $this->assertSame($entity->model, 'file_storage');
+        $this->assertSame($entity->model, 'FileStorage');
     }
 }
