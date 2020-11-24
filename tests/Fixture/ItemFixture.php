@@ -28,7 +28,7 @@ class ItemFixture extends TestFixture
      * @var array
      */
     public $fields = [
-        'id' => ['type' => 'integer', 'null' => true, 'default' => null],
+        'id' => ['type' => 'integer', 'null' => true, 'default' => null, 'autoIncrement' => true],
         'name' => ['type' => 'string', 'null' => true, 'default' => null],
         'path' => ['type' => 'string', 'null' => true, 'default' => null],
         'filename' => ['type' => 'string', 'null' => true, 'default' => null],

@@ -28,7 +28,7 @@ class FileStorageFixture extends TestFixture
      * @var array
      */
     public $fields = [
-        'id' => ['type' => 'integer', 'null' => true, 'default' => null],
+        'id' => ['type' => 'integer', 'null' => true, 'default' => null, 'autoIncrement' => true],
         'user_id' => ['type' => 'integer', 'null' => true, 'default' => null],
         'foreign_key' => ['type' => 'integer', 'null' => true, 'default' => null],
         'model' => ['type' => 'string', 'null' => true, 'default' => null, 'length' => 64],
