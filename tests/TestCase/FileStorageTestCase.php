@@ -156,7 +156,7 @@ class FileStorageTestCase extends TestCase
 
         Configure::write('FileStorage.behaviorConfig', [
             'fileStorage' => $fileStorage,
-            'imageProcessor' => $imageProcessor,
+            'fileProcessor' => $imageProcessor,
         ]);
     }
 
