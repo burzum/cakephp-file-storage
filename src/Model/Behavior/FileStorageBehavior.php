@@ -180,13 +180,34 @@ class FileStorageBehavior extends Behavior
         if ($entity->isNew()) {
             try {
                 $file = $this->entityToFileObject($entity);
+
+                $this->dispatchEvent('FileStorage.beforeStoringFile', [
+                    'entity' => $entity,
+                    'file' => $file,
+                ], $this->getTable());
+
                 $file = $this->fileStorage->store($file);
 
-                // TODO: move into stack processing
+                $this->dispatchEvent('FileStorage.afterStoringFile', [
+                    'entity' => $entity,
+                    'file' => $file,
+                ], $this->getTable());
+
                 $file = $this->processImages($file, $entity);
 
                 $processor = $this->getFileProcessor();
+
+                $this->dispatchEvent('FileStorage.beforeFileProcessing', [
+                    'entity' => $entity,
+                    'file' => $file,
+                ], $this->getTable());
+
                 $file = $processor->process($file);
+
+                $this->dispatchEvent('FileStorage.afterFileProcessing', [
+                    'entity' => $entity,
+                    'file' => $file
+                ], $this->getTable());
 
                 $entity = $this->fileObjectToEntity($file, $entity);
                 $this->getTable()->saveOrFail(
